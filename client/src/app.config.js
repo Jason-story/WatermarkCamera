@@ -1,20 +1,12 @@
 export default {
-  pages: [
-    'pages/index/index'
-  ],
-  "permission": {
-    "scope.userLocation": {
-      "desc": "你的位置信息将用于小程序位置接口的效果展示"
-    },
-    "scope.writePhotosAlbum": {
-      "desc": "你的相册权限将用于保存图片"
-    }
-  },
+  pages: ["pages/index/index", "pages/result/index"],
+
   window: {
-    backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: 'WeChat',
-    navigationBarTextStyle: 'black'
+    backgroundTextStyle: "light",
+    navigationBarBackgroundColor: "#fff",
+    navigationBarTitleText: "WeChat",
+    navigationBarTextStyle: "black",
+    navigationStyle: "custom",
   },
-  cloud: true
-}
+  cloud: true,
+};

@@ -26,10 +26,10 @@ page {
 }
 .mask-box {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  bottom: 26px;
+  left: 20px;
   z-index: 100;
+
 }
 .camera-btns {
   position: absolute;
@@ -161,6 +161,7 @@ page {
   align-items: center;
   border: 1px solid #515151;
   border-radius: 50px;
+  width: 45%;
   image{
     width: 40px;
     height:40px;
@@ -171,4 +172,17 @@ page {
 .vip-btn image {
   width: 50px;
   height:50px;
+}
+.modal-list{
+  view{
+    margin-bottom: 10px;
+  }
+}
+.txt1{
+  margin-top: 20px;
+  display: flex;
+  view{
+    margin: 0 5px;
+    color:cornflowerblue
+  }
 }
