@@ -31,17 +31,34 @@ page {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 100;
 }
-.zoom-box{
+.camera-btns {
   position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translate(0, -50%);
+  right: 20px;
+  bottom:20px;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
-.zoom-text {
-
+.zoom-box,.fanzhuan-icon{
+}
+.fanzhuan-icon,.shanguangdeng-icon{
+  width: 100px;
+  height: 100px;
+  image{
+    width:60%;
+    height: 60%;
+  }
+}
+.shanguangdeng-icon image{
+  width: 45%;
+  height: 45%;
+}
+.zoom-text,.fanzhuan-icon,.shanguangdeng-icon {
   font-size: 15pt;
   width: 80px;
   height: 80px;
+  margin-left: 10px;
   background-color: rgba(0, 0, 0, 0.5); // 半透明的黑色背景
   color: #fff; // 白色字体
   border-radius: 50%; // 使div变成圆形
@@ -84,4 +101,74 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.tools-bar{
+  height: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  >view {
+    width:25%;
+    flex-shrink: 0;
+  }
+}
+.bottom-btns{
+  height:8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  padding: 0 40px;
+  >view{
+    width: 45%;
+    text-align: center;
+    height: 64px;
+    line-height: 64px;
+    flex-shrink: 0;
+  }
+}
+
+/* pages/index/index.scss */
+.take-photo {
+  position: absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.camera-button {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #000; // 外边细线
+  border-radius: 50%; // 外圆
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.camera-button-inner {
+  width: 90px;
+  height: 90px;
+  background-color: #000; // 内部实心圆
+  border-radius: 50%; // 内圆
+}
+.share-btn,.vip-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #515151;
+  border-radius: 50px;
+  image{
+    width: 40px;
+    height:40px;
+    margin-left: 10px;
+  }
+}
+
+.vip-btn image {
+  width: 50px;
+  height:50px;
 }
