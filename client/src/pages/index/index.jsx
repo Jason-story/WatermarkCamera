@@ -5,6 +5,7 @@ import {
   AtIcon,
   AtDrawer,
   AtModal,
+  AtButton,
   AtModalHeader,
   AtModalContent,
   AtModalAction,
@@ -21,6 +22,7 @@ const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [settingShow, setSettingShow] = useState(false);
+  const [allAuth, setAllAuth] = useState(false);
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
   const [vipModal, setVipModal] = useState(false);
@@ -30,6 +32,20 @@ const CameraPage = () => {
     const context = createCameraContext();
     setCameraContext(context);
 
+    Taro.getSetting().then((res) => {
+      const authSetting = res.authSetting;
+
+      // 是否完全授权
+      if (
+        authSetting["scope.camera"] &&
+        authSetting["scope.userLocation"] &&
+        authSetting["scope.writePhotosAlbum"]
+      ) {
+        setAllAuth(true);
+      } else {
+        setAllAuth(false);
+      }
+    });
   }, []);
   useEffect(() => {
     cameraContext?.setZoom({
@@ -90,7 +106,10 @@ const CameraPage = () => {
             console.log("res.tempFilePath: ", res.tempFilePath);
             Taro.navigateTo({
               url:
-                "/pages/result/index?bg=" +  path.tempImagePath  + "&mask=" + res.tempFilePath ,
+                "/pages/result/index?bg=" +
+                path.tempImagePath +
+                "&mask=" +
+                res.tempFilePath,
             });
           },
           fail: (err) => {
@@ -102,7 +121,6 @@ const CameraPage = () => {
             });
           },
         });
-
       },
       fail: (error) => {},
     });
@@ -132,19 +150,23 @@ const CameraPage = () => {
   const drawMask = () => {
     const ctx = Taro.createCanvasContext("fishCanvas");
     ctx.setFillStyle("rgba(0, 0, 0, 0.5)");
-    ctx.fillRect(0, 0, 300, 300);
+    ctx.fillRect(0, 0, 100, 100);
 
     // 绘制红色圆
     ctx.beginPath();
-    ctx.arc(150, 150, 50, 0, 2 * Math.PI);
+    ctx.arc(50, 50, 10, 0, 2 * Math.PI);
     ctx.setFillStyle("red");
     ctx.fill();
 
     ctx.draw();
   };
   useEffect(() => {
-    drawMask()
+    drawMask();
   }, []);
+  const openSetting = () => {
+    Taro.openSetting();
+  };
+
   return (
     <View className="container">
       <View className="camera-box">
@@ -154,12 +176,22 @@ const CameraPage = () => {
           flash={shanguangflag}
           onError={cameraError}
         />
+        {!allAuth && (
+          <View className="auth-box">
+            <View>
+              小程序需要相机、相册、位置权限才可以正常运行，请您点击按钮授权后重启小程序
+            </View>
+            <AtButton type="primary" size="normal" circle onClick={openSetting}>
+              去授权
+            </AtButton>
+          </View>
+        )}
         {/* <View className="setting-box" onClick={handleSetting}>
           <View className="setting-icon">
             <AtIcon value="settings" size="25" color="#fff"></AtIcon>
           </View>
         </View> */}
-        <View className="camera-btns">
+        {allAuth && <View className="camera-btns">
           <View className="zoom-box">
             <View className="zoom-text" onClick={zoomClick}>
               {zoomLevel}
@@ -176,15 +208,15 @@ const CameraPage = () => {
               <Image src={shanguangdengImg}></Image>
             )}
           </View>
-        </View>
+        </View>}
 
-        <View className="mask-box">
+        {allAuth && <View className="mask-box">
           {/* ****************** */}
           <Canvas
             canvas-id="fishCanvas"
-            style={{ width: "300px", height: "300px" }}
+            style={{ width: "100px", height: "100px" }}
           />
-        </View>
+        </View>}
       </View>
       <View className="tools-bar">
         <View className="xiangce"></View>
@@ -218,10 +250,12 @@ const CameraPage = () => {
         <AtModalHeader>高级功能(19.9元/月)</AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
-            <View>1、可自定义时间、位置</View> <View>2、高质量水印图片</View>{" "}
-            <View>3、每月不限量水印照片生成</View>
+            <View>1、可自定义时间、位置</View>
+            <View>2、去掉所有广告</View>
+            <View>3、高质量水印图片</View>
+            <View>4、每月不限量水印照片生成</View>
             <View className="txt1">
-              可添加 <View>jason_story</View> 了解详情
+              可添加 <View>jason_story</View> 了解详情或提出建议
             </View>
           </View>
         </AtModalContent>

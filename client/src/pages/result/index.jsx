@@ -52,8 +52,6 @@ const MergeCanvas = () => {
             // 绘制第二张图片在左下角
             const x = 10;
             const y = ((screenWidth / img1Width) * img1Height - img2Height/dpr) - 10;
-            console.log("img1Height: ", img1Height);
-            console.log("img2Height: ", img2Height);
             ctx.drawImage(img2Path, x, y, img2Width / dpr, img2Height / dpr);
 
             // 完成绘制
