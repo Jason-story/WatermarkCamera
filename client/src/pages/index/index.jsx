@@ -148,15 +148,33 @@ const CameraPage = () => {
     });
   };
   const drawMask = () => {
-    const ctx = Taro.createCanvasContext("fishCanvas");
-    ctx.setFillStyle("rgba(0, 0, 0, 0.5)");
-    ctx.fillRect(0, 0, 100, 100);
+    const now = new Date();
 
-    // 绘制红色圆
-    ctx.beginPath();
-    ctx.arc(50, 50, 10, 0, 2 * Math.PI);
-    ctx.setFillStyle("red");
-    ctx.fill();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1
+    const day = String(now.getDate()).padStart(2, '0');
+
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    const date =  `${year}-${month}-${day}`;
+    const time = `${hours}:${minutes}:${seconds}`
+
+    const ctx = Taro.createCanvasContext("fishCanvas");
+
+    // 设置黑色背景
+    ctx.setFillStyle("rgba(0, 0, 0, 0.3)");
+    ctx.fillRect(0, 0, 150, 150);
+
+    // 绘制白色文字 "hello"
+    ctx.setFontSize(16); // 设置字体大小
+    ctx.setFillStyle("white");
+    ctx.fillText(date, 10, 30); // 10, 30 为起始坐标
+
+    ctx.setFontSize(15); // 设置字体大小
+    // 绘制红色文字 "你好"
+    ctx.fillText(time, 10, 60); // 10, 60 为起始坐标
 
     ctx.draw();
   };
@@ -191,32 +209,36 @@ const CameraPage = () => {
             <AtIcon value="settings" size="25" color="#fff"></AtIcon>
           </View>
         </View> */}
-        {allAuth && <View className="camera-btns">
-          <View className="zoom-box">
-            <View className="zoom-text" onClick={zoomClick}>
-              {zoomLevel}
-              <View className="icon-x"></View>
+        {allAuth && (
+          <View className="camera-btns">
+            <View className="zoom-box">
+              <View className="zoom-text" onClick={zoomClick}>
+                {zoomLevel}
+                <View className="icon-x"></View>
+              </View>
+            </View>
+            <View className="fanzhuan-icon" onClick={fanzhuanClick}>
+              <Image src={fanzhuanImg}></Image>
+            </View>
+            <View className="shanguangdeng-icon" onClick={shanguangClick}>
+              {shanguangflag === "off" ? (
+                <Image src={shanguangdengOffImg}></Image>
+              ) : (
+                <Image src={shanguangdengImg}></Image>
+              )}
             </View>
           </View>
-          <View className="fanzhuan-icon" onClick={fanzhuanClick}>
-            <Image src={fanzhuanImg}></Image>
-          </View>
-          <View className="shanguangdeng-icon" onClick={shanguangClick}>
-            {shanguangflag === "off" ? (
-              <Image src={shanguangdengOffImg}></Image>
-            ) : (
-              <Image src={shanguangdengImg}></Image>
-            )}
-          </View>
-        </View>}
+        )}
 
-        {allAuth && <View className="mask-box">
-          {/* ****************** */}
-          <Canvas
-            canvas-id="fishCanvas"
-            style={{ width: "100px", height: "100px" }}
-          />
-        </View>}
+        {allAuth && (
+          <View className="mask-box">
+            {/* ******************************* */}
+            <Canvas
+              canvas-id="fishCanvas"
+              style={{ width: "150px", height: "150px" }}
+            />
+          </View>
+        )}
       </View>
       <View className="tools-bar">
         <View className="xiangce"></View>
@@ -247,7 +269,10 @@ const CameraPage = () => {
         <View className="drawer-item">这是自定义内容</View>
       </AtDrawer>
       <AtModal isOpened={vipModal} closeOnClickOverlay={false}>
-        <AtModalHeader>高级功能(19.9元/月)</AtModalHeader>
+        <AtModalHeader>
+          高级功能
+          {/* (19.9元/月) */}
+        </AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
             <View>1、可自定义时间、位置</View>
