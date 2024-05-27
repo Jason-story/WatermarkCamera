@@ -123,10 +123,12 @@ const MergeCanvas = () => {
   useEffect(() => {
     drawImages();
   }, []);
+
   Taro.useShareAppMessage((res) => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
       path: "/pages/index/index",
+      imageUrl: "https://img2.imgtp.com/2024/05/28/pJCAITAT.jpg",
     };
   });
   console.log("333: ", screenWidth / imageWidth);
@@ -159,9 +161,16 @@ const MergeCanvas = () => {
         <button className="share-btn" openType="share">
           分享好友
           <Image src={shareImg}></Image>
-
         </button>
-        <button className="vip-btn" type="primary">
+        <button
+          className="vip-btn"
+          type="primary"
+          onClick={() => {
+            Taro.navigateBack({
+              delta: 1 // delta 参数表示需要返回的页面数，默认为1
+            });
+          }}
+        >
           重新拍摄
           <Image src={restart}></Image>
         </button>

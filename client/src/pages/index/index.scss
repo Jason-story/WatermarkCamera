@@ -26,34 +26,37 @@ page {
 }
 .mask-box {
   position: absolute;
-  bottom: 26px;
-  left: 20px;
-
+  bottom: 10px;
+  left: 10px;
 }
 .camera-btns {
   position: absolute;
   right: 20px;
-  bottom:20px;
+  bottom: 20px;
   width: 50%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
-.zoom-box,.fanzhuan-icon{
+.zoom-box,
+.fanzhuan-icon {
 }
-.fanzhuan-icon,.shanguangdeng-icon{
+.fanzhuan-icon,
+.shanguangdeng-icon {
   width: 100px;
   height: 100px;
-  image{
-    width:60%;
+  image {
+    width: 60%;
     height: 60%;
   }
 }
-.shanguangdeng-icon image{
+.shanguangdeng-icon image {
   width: 45%;
   height: 45%;
 }
-.zoom-text,.fanzhuan-icon,.shanguangdeng-icon {
+.zoom-text,
+.fanzhuan-icon,
+.shanguangdeng-icon {
   font-size: 15pt;
   width: 80px;
   height: 80px;
@@ -68,7 +71,7 @@ page {
 }
 .icon-x {
   position: relative;
-  width: 25px;  // 图标的宽度
+  width: 25px; // 图标的宽度
   height: 25px; // 图标的高度
   display: flex;
   justify-content: center;
@@ -76,7 +79,7 @@ page {
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 24px; // 交叉线的宽度
     height: 5px; // 交叉线的高度
@@ -91,34 +94,34 @@ page {
     transform: rotate(-50deg); // 逆时针旋转45度
   }
 }
-.setting-icon{
+.setting-icon {
   position: absolute;
-  width:100px;
+  width: 100px;
   height: 100px;
-  right:0;
-  top:0;
+  right: 0;
+  top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.tools-bar{
+.tools-bar {
   height: 12%;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  >view {
-    width:25%;
+  > view {
+    width: 25%;
     flex-shrink: 0;
   }
 }
-.bottom-btns{
-  height:8%;
+.bottom-btns {
+  height: 8%;
   display: flex;
   justify-content: space-between;
   align-items: end;
   padding: 0 40px;
-  >view{
+  > view {
     width: 45%;
     text-align: center;
     height: 64px;
@@ -130,9 +133,9 @@ page {
 /* pages/index/index.scss */
 .take-photo {
   position: absolute;
-  left:50%;
-  top:50%;
-  transform: translate(-50%,-50%);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,41 +157,42 @@ page {
   background-color: #000; // 内部实心圆
   border-radius: 50%; // 内圆
 }
-.share-btn,.vip-btn {
+.share-btn,
+.vip-btn {
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid #515151;
   border-radius: 50px;
   width: 45%;
-  image{
+  image {
     width: 40px;
-    height:40px;
+    height: 40px;
     margin-left: 10px;
   }
 }
 
 .vip-btn image {
   width: 50px;
-  height:50px;
+  height: 50px;
 }
-.modal-list{
-  view{
+.modal-list {
+  view {
     margin-bottom: 10px;
   }
 }
-.txt1{
+.txt1 {
   margin-top: 20px;
   display: flex;
-  view{
+  view {
     margin: 0 5px;
-    color:cornflowerblue
+    color: cornflowerblue;
   }
 }
 .auth-box {
   position: absolute;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -198,8 +202,19 @@ page {
   padding: 0 40px;
   box-sizing: border-box;
   background-color: #515151;
-
+  color: #fff;
   view {
     margin-bottom: 40px;
   }
+}
+.auth-list {
+  view {
+    margin-bottom: 10px;
+  }
+}
+.hasAuth {
+  color: rgb(82, 196, 26);
+}
+.noAuth {
+  color: rgb(255, 77, 79);
 }

@@ -10107,6 +10107,11 @@ pupa@^2.1.1:
   dependencies:
     escape-goat "^2.0.0"
 
+qqmap-wx-jssdk@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/qqmap-wx-jssdk/-/qqmap-wx-jssdk-1.0.0.tgz#8ab4b0d3aa900458217d6fbe52af832bb6c63c73"
+  integrity sha512-wuaNetsA9/OKEQGgK1CNPsX6pppWpY10cQwQu1OHJplGMyMIMzK2bliMkNXjtry99qXYCsvDAWPqw2DI+/foJg==
+
 qs@6.11.0:
   version "6.11.0"
   resolved "https://registry.npmjs.org/qs/-/qs-6.11.0.tgz"

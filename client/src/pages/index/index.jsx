@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { View, Camera, Button, Image, Canvas } from "@tarojs/components";
-import { createCameraContext } from "@tarojs/taro";
+import { View, Camera, Button, Text, Image, Canvas } from "@tarojs/components";
+import { createCameraContext, useDidShow } from "@tarojs/taro";
 import {
   AtIcon,
   AtDrawer,
@@ -11,6 +11,7 @@ import {
   AtModalAction,
 } from "taro-ui";
 import Taro from "@tarojs/taro";
+import QQMapWX from "qqmap-wx-jssdk";
 import shareImg from "../../images/share.png";
 import vipImg from "../../images/vip.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
@@ -26,12 +27,141 @@ const CameraPage = () => {
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
   const [vipModal, setVipModal] = useState(false);
-  // const [maskTempPath, setMaskTempPath] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [weather, setWeather] = useState(null);
+  const [locationName, setLocationName] = useState("");
+  const [permissions, setPermissions] = useState({
+    camera: false,
+    writePhotosAlbum: false,
+    userLocation: false,
+  });
+
+  const fetchWeather = () => {
+    const url =
+      "https://api.seniverse.com/v3/weather/now.json?key=S7OyUofVVMeBcrLsC&location=beijing&language=zh-Hans&unit=c";
+
+    Taro.request({
+      url,
+      method: "GET",
+      success: (res) => {
+        if (res.statusCode === 200) {
+          setWeather(res.data.results[0]?.now);
+          console.log('res.data.results[0]: ', res.data.results[0]);
+        } else {
+          setError(`Error: ${res.statusCode}`);
+        }
+      },
+      fail: (err) => {
+        console.error("Failed to fetch weather:", err);
+        setError("Failed to fetch weather");
+      },
+    });
+  };
+  useEffect(() => {
+    getLocation();
+    fetchWeather();
+  }, []);
+
+  const getLocation = () => {
+    Taro.getLocation({
+      type: "wgs84",
+      success: (res) => {
+        setLatitude(res.latitude);
+        setLongitude(res.longitude);
+        reverseGeocode(res.latitude, res.longitude);
+      },
+      fail: (err) => {
+        console.error("Failed to get location:", err);
+        Taro.showToast({
+          title: "无法获取位置信息，请检查权限设置",
+          icon: "none",
+        });
+      },
+    });
+  };
+
+  const reverseGeocode = (lat, lng) => {
+    const qqmapsdk = new QQMapWX({
+      key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
+    });
+    qqmapsdk.reverseGeocoder({
+      location: {
+        latitude: lat,
+        longitude: lng,
+      },
+      success: (res) => {
+        console.log("res: ", res);
+        const addressComponent = res.result.formatted_addresses;
+        const addr = addressComponent.recommend;
+
+        // 拼接市以下的地址信息，不包括门牌号
+        const detailedAddress = `${addr}`;
+        setLocationName(detailedAddress);
+      },
+      fail: (err) => {
+        console.error("Failed to reverse geocode:", err);
+      },
+    });
+  };
+  useEffect(() => {
+    checkPermissions();
+  }, []);
+
+  useDidShow(() => {
+    checkPermissions();
+    getAuth();
+  });
+
+  const checkPermissions = async () => {
+    const res = await Taro.getSetting();
+    setPermissions({
+      camera: !!res.authSetting["scope.camera"],
+      writePhotosAlbum: !!res.authSetting["scope.writePhotosAlbum"],
+      userLocation: !!res.authSetting["scope.userLocation"],
+    });
+  };
+
+  const requestPermissions = () => {
+    Taro.openSetting();
+
+    // try {
+    //   await requestPermission("scope.camera");
+    //   await requestPermission("scope.writePhotosAlbum");
+    //   await requestPermission("scope.userLocation");
+    // } catch (error) {
+
+    //   Taro.showModal({
+    //     title: "权限不足",
+    //     content: "请在设置中打开相机、相册和位置权限",
+    //     showCancel: false,
+    //     success: (res) => {
+    //       if (res.confirm) {
+    //         Taro.openSetting();
+    //       }
+    //     },
+    //   });
+    // }
+  };
+
+  const requestPermission = async (scope) => {
+    const res = await Taro.getSetting();
+    if (!res.authSetting[scope]) {
+      try {
+        await Taro.authorize({ scope });
+      } catch (error) {
+        console.error(`${scope} 权限被拒绝`, error);
+        throw error;
+      }
+    }
+  };
 
   useEffect(() => {
     const context = createCameraContext();
     setCameraContext(context);
-
+    getAuth();
+  }, []);
+  const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
 
@@ -46,7 +176,7 @@ const CameraPage = () => {
         setAllAuth(false);
       }
     });
-  }, []);
+  };
   useEffect(() => {
     cameraContext?.setZoom({
       zoom: zoomLevel,
@@ -130,6 +260,7 @@ const CameraPage = () => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
       path: "/pages/index/index",
+      imageUrl: "https://img2.imgtp.com/2024/05/28/pJCAITAT.jpg",
     };
   });
   const vipModalCLick = () => {
@@ -151,39 +282,73 @@ const CameraPage = () => {
     const now = new Date();
 
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1
-    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
+    const day = String(now.getDate()).padStart(2, "0");
 
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
 
-    const date =  `${year}-${month}-${day}`;
-    const time = `${hours}:${minutes}:${seconds}`
+    const daysOfWeek = [
+      "星期日",
+      "星期一",
+      "星期二",
+      "星期三",
+      "星期四",
+      "星期五",
+      "星期六",
+    ];
+    const today = new Date();
+    const dayIndex = today.getDay();
+
+    const date = `${year}年${month}月${day}日`;
+    const time = `${hours}:${minutes}`;
 
     const ctx = Taro.createCanvasContext("fishCanvas");
 
     // 设置黑色背景
-    ctx.setFillStyle("rgba(0, 0, 0, 0.3)");
-    ctx.fillRect(0, 0, 150, 150);
-
-    // 绘制白色文字 "hello"
-    ctx.setFontSize(16); // 设置字体大小
+    ctx.setFillStyle("rgba(0, 0, 0, 0)");
+    ctx.fillRect(0, 0, 280, 120);
+    // 绘制时间
+    ctx.setFontSize(28); // 设置字体大小
     ctx.setFillStyle("white");
-    ctx.fillText(date, 10, 30); // 10, 30 为起始坐标
-
-    ctx.setFontSize(15); // 设置字体大小
-    // 绘制红色文字 "你好"
-    ctx.fillText(time, 10, 60); // 10, 60 为起始坐标
-
+    ctx.fillText(time, 0, 40); // 10, 30 为起始坐标
+    // 黄色竖线
+    ctx.setLineWidth(4);
+    ctx.setStrokeStyle("yellow");
+    ctx.beginPath();
+    ctx.moveTo(82, 0); // 起点
+    ctx.lineTo(82, 55); // 终点，竖线高度为20px
+    ctx.stroke();
+    // 绘制日期
+    ctx.setFontSize(16); // 设置字体大小
+    ctx.fillText(date, 88, 20); // 10, 60 为起始坐标
+    // 绘制天气
+    // ctx.setFontSize(18); // 设置字体大小
+    console.log('weather: ', weather);
+    ctx.fillText(
+      daysOfWeek[dayIndex] +
+        " 天气" +
+        weather?.text +
+        " " +
+        weather?.temperature +
+        "℃",
+      88,
+      50
+    ); // 10, 60 为起始坐标
+    // 地点
+    ctx.fillText(locationName, 0, 90); // 10, 60 为起始坐标
+    // 经纬度
+    ctx.fillText(
+      "经纬度:" + latitude?.toFixed(4) + "," + longitude?.toFixed(4),
+      0,
+      115
+    ); // 10, 60 为起始坐标
     ctx.draw();
   };
   useEffect(() => {
     drawMask();
-  }, []);
-  const openSetting = () => {
-    Taro.openSetting();
-  };
+  }, [locationName]);
 
   return (
     <View className="container">
@@ -194,12 +359,44 @@ const CameraPage = () => {
           flash={shanguangflag}
           onError={cameraError}
         />
+
         {!allAuth && (
           <View className="auth-box">
             <View>
-              小程序需要相机、相册、位置权限才可以正常运行，请您点击按钮授权后重启小程序
+              小程序需要相机、相册、位置权限才可以正常运行，请您点击按钮授权
             </View>
-            <AtButton type="primary" size="normal" circle onClick={openSetting}>
+            <View className="auth-list">
+              <View>
+                相机权限：
+                {permissions.camera ? (
+                  <Text className="hasAuth">已授权</Text>
+                ) : (
+                  <Text className="noAuth">未授权</Text>
+                )}
+              </View>
+              <View>
+                相册权限：
+                {permissions.writePhotosAlbum ? (
+                  <Text className="hasAuth">已授权</Text>
+                ) : (
+                  <Text className="noAuth">未授权</Text>
+                )}
+              </View>
+              <View>
+                位置权限：
+                {permissions.userLocation ? (
+                  <Text className="hasAuth">已授权</Text>
+                ) : (
+                  <Text className="noAuth">未授权</Text>
+                )}
+              </View>
+            </View>
+            <AtButton
+              type="primary"
+              size="normal"
+              circle
+              onClick={requestPermissions}
+            >
               去授权
             </AtButton>
           </View>
@@ -235,7 +432,7 @@ const CameraPage = () => {
             {/* ******************************* */}
             <Canvas
               canvas-id="fishCanvas"
-              style={{ width: "150px", height: "150px" }}
+              style={{ width: "280px", height: "120px" }}
             />
           </View>
         )}
