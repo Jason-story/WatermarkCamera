@@ -30,6 +30,8 @@ const CameraPage = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [weather, setWeather] = useState(null);
+  const [canvasImg, setCanvasImg] = useState("");
+
   const [locationName, setLocationName] = useState("");
   const [permissions, setPermissions] = useState({
     camera: false,
@@ -47,7 +49,6 @@ const CameraPage = () => {
       success: (res) => {
         if (res.statusCode === 200) {
           setWeather(res.data.results[0]?.now);
-          console.log('res.data.results[0]: ', res.data.results[0]);
         } else {
           setError(`Error: ${res.statusCode}`);
         }
@@ -61,9 +62,10 @@ const CameraPage = () => {
   useEffect(() => {
     getLocation();
     fetchWeather();
-  }, []);
+  }, [allAuth, permissions]);
 
   const getLocation = () => {
+    if (!permissions.userLocation) return;
     Taro.getLocation({
       type: "wgs84",
       success: (res) => {
@@ -72,7 +74,6 @@ const CameraPage = () => {
         reverseGeocode(res.latitude, res.longitude);
       },
       fail: (err) => {
-        console.error("Failed to get location:", err);
         Taro.showToast({
           title: "无法获取位置信息，请检查权限设置",
           icon: "none",
@@ -91,7 +92,6 @@ const CameraPage = () => {
         longitude: lng,
       },
       success: (res) => {
-        console.log("res: ", res);
         const addressComponent = res.result.formatted_addresses;
         const addr = addressComponent.recommend;
 
@@ -106,6 +106,7 @@ const CameraPage = () => {
   };
   useEffect(() => {
     checkPermissions();
+    requestPermissions();
   }, []);
 
   useDidShow(() => {
@@ -122,26 +123,25 @@ const CameraPage = () => {
     });
   };
 
-  const requestPermissions = () => {
-    Taro.openSetting();
+  const requestPermissions = async () => {
+    try {
+      await requestPermission("scope.camera");
+      await requestPermission("scope.writePhotosAlbum");
+      await requestPermission("scope.userLocation");
+    } catch (error) {
+      console.log("error: ", error);
 
-    // try {
-    //   await requestPermission("scope.camera");
-    //   await requestPermission("scope.writePhotosAlbum");
-    //   await requestPermission("scope.userLocation");
-    // } catch (error) {
-
-    //   Taro.showModal({
-    //     title: "权限不足",
-    //     content: "请在设置中打开相机、相册和位置权限",
-    //     showCancel: false,
-    //     success: (res) => {
-    //       if (res.confirm) {
-    //         Taro.openSetting();
-    //       }
-    //     },
-    //   });
-    // }
+      // Taro.showModal({
+      //   title: "权限不足",
+      //   content: "请在设置中打开相机、相册和位置权限",
+      //   showCancel: false,
+      //   success: (res) => {
+      //     if (res.confirm) {
+      //       Taro.openSetting();
+      //     }
+      //   },
+      // });
+    }
   };
 
   const requestPermission = async (scope) => {
@@ -154,13 +154,15 @@ const CameraPage = () => {
         throw error;
       }
     }
+    checkPermissions();
+    getAuth();
   };
 
   useEffect(() => {
     const context = createCameraContext();
     setCameraContext(context);
     getAuth();
-  }, []);
+  }, [allAuth, permissions]);
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
@@ -168,8 +170,8 @@ const CameraPage = () => {
       // 是否完全授权
       if (
         authSetting["scope.camera"] &&
-        authSetting["scope.userLocation"] &&
-        authSetting["scope.writePhotosAlbum"]
+        authSetting["scope.writePhotosAlbum"] &&
+        authSetting["scope.userLocation"]
       ) {
         setAllAuth(true);
       } else {
@@ -230,26 +232,12 @@ const CameraPage = () => {
     cameraContext?.takePhoto({
       zoom: zoomLevel,
       success: (path) => {
-        Taro.canvasToTempFilePath({
-          canvasId: "fishCanvas",
-          success: (res) => {
-            console.log("res.tempFilePath: ", res.tempFilePath);
-            Taro.navigateTo({
-              url:
-                "/pages/result/index?bg=" +
-                path.tempImagePath +
-                "&mask=" +
-                res.tempFilePath,
-            });
-          },
-          fail: (err) => {
-            console.error(err);
-            Taro.showToast({
-              title: "图片生成失败,请重新启动小程序",
-              icon: "none",
-              duration: 2000,
-            });
-          },
+        Taro.navigateTo({
+          url:
+            "/pages/result/index?bg=" +
+            path.tempImagePath +
+            "&mask=" +
+            canvasImg,
         });
       },
       fail: (error) => {},
@@ -280,11 +268,9 @@ const CameraPage = () => {
   };
   const drawMask = () => {
     const now = new Date();
-
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
     const day = String(now.getDate()).padStart(2, "0");
-
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const seconds = String(now.getSeconds()).padStart(2, "0");
@@ -325,7 +311,6 @@ const CameraPage = () => {
     ctx.fillText(date, 88, 20); // 10, 60 为起始坐标
     // 绘制天气
     // ctx.setFontSize(18); // 设置字体大小
-    console.log('weather: ', weather);
     ctx.fillText(
       daysOfWeek[dayIndex] +
         " 天气" +
@@ -344,28 +329,45 @@ const CameraPage = () => {
       0,
       115
     ); // 10, 60 为起始坐标
-    ctx.draw();
+    ctx.draw(false, () => {
+      setTimeout(() => {
+        Taro.canvasToTempFilePath({
+          canvasId: "fishCanvas",
+          success: (res) => {
+            setCanvasImg(res.tempFilePath);
+            console.log("图片路径：", res.tempFilePath);
+            // 这里可以将图片路径保存或用于展示
+          },
+          fail: (err) => {
+            console.error("转换图片失败：", err);
+          },
+        });
+      }, 300); // 延迟执行以确保绘制完成
+    });
   };
   useEffect(() => {
     drawMask();
-  }, [locationName]);
+  }, [locationName, weather, latitude]);
+  console.log("canvasImg: ", canvasImg);
 
   return (
     <View className="container">
       <View className="camera-box">
-        <Camera
-          className="camera"
-          devicePosition={devicePosition}
-          flash={shanguangflag}
-          onError={cameraError}
-        />
+        {permissions.camera && (
+          <Camera
+            className="camera"
+            devicePosition={devicePosition}
+            flash={shanguangflag}
+            onError={cameraError}
+          />
+        )}
 
         {!allAuth && (
           <View className="auth-box">
             <View>
-              小程序需要相机、相册、位置权限才可以正常运行，请您点击按钮授权
+              小程序需要相机、相册、位置权限才可以正常运行，请点击右上角-设置授权后刷新
             </View>
-            <View className="auth-list">
+            {/* <View className="auth-list">
               <View>
                 相机权限：
                 {permissions.camera ? (
@@ -390,12 +392,14 @@ const CameraPage = () => {
                   <Text className="noAuth">未授权</Text>
                 )}
               </View>
-            </View>
+            </View> */}
             <AtButton
               type="primary"
               size="normal"
               circle
-              onClick={requestPermissions}
+              onClick={() => {
+                Taro.openSetting();
+              }}
             >
               去授权
             </AtButton>
@@ -428,12 +432,22 @@ const CameraPage = () => {
         )}
 
         {allAuth && (
-          <View className="mask-box">
+          <View className={"mask-box "}>
             {/* ******************************* */}
             <Canvas
               canvas-id="fishCanvas"
-              style={{ width: "280px", height: "120px" }}
+              className={canvasImg ? "hideCanvas" : ""}
+              style={{
+                width: "280px",
+                height: "120px",
+              }}
             />
+            {canvasImg && (
+              <Image
+                src={canvasImg}
+                style={{ width: "280px", height: "120px" }}
+              ></Image>
+            )}
           </View>
         )}
       </View>

@@ -38,9 +38,7 @@ page {
   align-items: center;
   justify-content: flex-end;
 }
-.zoom-box,
-.fanzhuan-icon {
-}
+
 .fanzhuan-icon,
 .shanguangdeng-icon {
   width: 100px;
@@ -93,6 +91,11 @@ page {
   &::after {
     transform: rotate(-50deg); // 逆时针旋转45度
   }
+}
+.hideCanvas {
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
 }
 .setting-icon {
   position: absolute;
