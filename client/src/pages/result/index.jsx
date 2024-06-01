@@ -158,22 +158,46 @@ const MergeCanvas = () => {
         />
       )}
       <View className="bottom-btns">
-        <button className="share-btn" openType="share">
+      <Button
+          className="share-btn"
+          openType="share"
+          style={{
+            background: "linear-gradient(45deg,#ff512f, #dd2476)",
+            color: "white",
+            border: "none",
+            borderRadius: "25px",
+            padding: "0 16px",
+            fontSize: "30rpx",
+            cursor: "pointer",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            width: "45%",
+          }}
+        >
           分享好友
-          <Image src={shareImg}></Image>
-        </button>
-        <button
-          className="vip-btn"
-          type="primary"
+        </Button>
+        <Button
+          className="share-btn"
           onClick={() => {
             Taro.navigateBack({
-              delta: 1 // delta 参数表示需要返回的页面数，默认为1
+              delta: 1, // delta 参数表示需要返回的页面数，默认为1
             });
+          }}
+          style={{
+            background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
+            color: "white",
+            border: "none",
+            borderRadius: "25px",
+            padding: "0 16px",
+            fontSize: "30rpx",
+            cursor: "pointer",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            width: "45%",
           }}
         >
           重新拍摄
-          <Image src={restart}></Image>
-        </button>
+        </Button>
+
+
       </View>
     </View>
   );

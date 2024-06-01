@@ -256,15 +256,15 @@ const CameraPage = () => {
   };
   const copyWx = () => {
     setVipModal(!vipModal);
-    Taro.setClipboardData({
-      data: "jason_story",
-      success: () => {
-        Taro.showToast({
-          title: "复制成功",
-          icon: "success",
-        });
-      },
-    });
+    // Taro.setClipboardData({
+    //   data: "jason_story",
+    //   success: () => {
+    //     Taro.showToast({
+    //       title: "复制成功",
+    //       icon: "success",
+    //     });
+    //   },
+    // });
   };
   const drawMask = () => {
     const now = new Date();
@@ -462,23 +462,46 @@ const CameraPage = () => {
         <View className="qiehuan"></View>
       </View>
       <View className="bottom-btns">
-        <Button className="share-btn" openType="share">
-          分享 <Image src={shareImg}></Image>
+        <Button className="share-btn" openType="share"
+         style={{
+          background: "linear-gradient(45deg,#ff512f, #dd2476)",
+          color: "white",
+          border: "none",
+          borderRadius: "25px",
+          padding: "0 16px",
+          fontSize: "30rpx",
+          cursor: "pointer",
+          transition: "transform 0.2s, box-shadow 0.2s",
+          width: "45%",
+
+        }}>
+          分享好友
         </Button>
-        <Button className="vip-btn" onClick={vipModalCLick}>
+
+        <Button className="vip-btn" onClick={vipModalCLick}
+         style={{
+          background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
+          color: "white",
+          border: "none",
+          borderRadius: "25px",
+          padding: "0px 20px",
+          fontSize: "30rpx",
+          cursor: "pointer",
+          transition: "transform 0.2s, box-shadow 0.2s",
+          width: "45%",
+        }}>
           高级功能
-          <Image src={vipImg}></Image>
         </Button>
       </View>
 
-      <AtDrawer show={settingShow} right mask>
+      {/* <AtDrawer show={settingShow} right mask>
         <View className="drawer-item">优先展示items里的数据</View>
         <View className="drawer-item">如果items没有数据就会展示children</View>
         <View className="drawer-item">
           这是自定义内容 <AtIcon value="home" size="20" />
         </View>
         <View className="drawer-item">这是自定义内容</View>
-      </AtDrawer>
+      </AtDrawer> */}
       <AtModal isOpened={vipModal} closeOnClickOverlay={false}>
         <AtModalHeader>
           高级功能
@@ -491,12 +514,32 @@ const CameraPage = () => {
             <View>3、高质量水印图片</View>
             <View>4、每月不限量水印照片生成</View>
             <View className="txt1">
-              可添加 <View>jason_story</View> 了解详情或提出建议
+              <View style={{marginBottom:'20px',color:'#000'}}>可点击按钮咨询</View>
+              <View>
+                <button
+                  openType="contact"
+                  style={{
+                    background: "linear-gradient(45deg,#24c6dc, #514a9d)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "25px",
+                    padding: "0 16px",
+                    fontSize: "30rpx",
+                    cursor: "pointer",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    width: "100%",
+                  }}
+                  type="default"
+                  className="guide-btn"
+                >
+                  咨询反馈
+                </button>
+              </View>
             </View>
           </View>
         </AtModalContent>
         <AtModalAction>
-          <Button onClick={copyWx}>关闭并复制客服微信</Button>{" "}
+          <Button onClick={copyWx}>关闭</Button>{" "}
         </AtModalAction>
       </AtModal>
     </View>
