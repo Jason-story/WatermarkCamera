@@ -101,9 +101,9 @@ const CameraPage = () => {
     });
   };
   useEffect(() => {
-    getLocation();
+    allAuth && permissions.userLocation && !city && getLocation();
     city && fetchWeather(city);
-  }, [allAuth, permissions, city]);
+  }, [allAuth, permissions.userLocation, city]);
 
   const getLocation = () => {
     if (!permissions.userLocation) return;
@@ -465,369 +465,6 @@ const CameraPage = () => {
           ],
           img: Shuiyin1,
         },
-      ],[
-        {
-          path: [
-            {
-              draw: (ctx, backgroundConfig) => {
-                const { color, rect } = backgroundConfig;
-                ctx.setFillStyle(color);
-                ctx.fillRect(...rect);
-              },
-              args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 280, 120] }],
-            },
-            {
-              draw: (ctx, textConfig) => {
-                const { fontSize, color, text, position } = textConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 28,
-                  color: "white",
-                  text: `${hours}:${minutes}`,
-                  position: [0, 40],
-                },
-              ],
-            },
-            {
-              draw: (ctx, lineConfig) => {
-                const { lineWidth, color, start, end } = lineConfig;
-                ctx.setLineWidth(lineWidth);
-                ctx.setStrokeStyle(color);
-                ctx.beginPath();
-                ctx.moveTo(...start);
-                ctx.lineTo(...end);
-                ctx.stroke();
-              },
-              args: [
-                {
-                  lineWidth: 4,
-                  color: "yellow",
-                  start: [82, 0],
-                  end: [82, 55],
-                },
-              ],
-            },
-            {
-              draw: (ctx, config) => {
-                const { fontSize, color, text, position } = config;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text: `${year}年${month}月${day}日`,
-                  position: [88, 20],
-                },
-              ],
-            },
-            {
-              draw: (ctx, weatherConfig) => {
-                const { fontSize, color, text, position } = weatherConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text:
-                    daysOfWeek[dayIndex] +
-                    " " +
-                    weather?.text +
-                    " " +
-                    weather?.temperature +
-                    "℃",
-                  position: [88, 50],
-                },
-              ],
-            },
-            {
-              draw: (ctx, locationConfig) => {
-                const { fontSize, color, text, position } = locationConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text: locationName,
-                  position: [0, 90],
-                },
-              ],
-            },
-            {
-              draw: (ctx, coordinateConfig) => {
-                const { fontSize, color, text, position } = coordinateConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text:
-                    "经纬度: " +
-                    (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
-                  position: [0, 115],
-                },
-              ],
-            },
-          ],
-          img: Shuiyin1,
-        },
-      ],[
-        {
-          path: [
-            {
-              draw: (ctx, backgroundConfig) => {
-                const { color, rect } = backgroundConfig;
-                ctx.setFillStyle(color);
-                ctx.fillRect(...rect);
-              },
-              args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 280, 120] }],
-            },
-            {
-              draw: (ctx, textConfig) => {
-                const { fontSize, color, text, position } = textConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 28,
-                  color: "white",
-                  text: `${hours}:${minutes}`,
-                  position: [0, 40],
-                },
-              ],
-            },
-            {
-              draw: (ctx, lineConfig) => {
-                const { lineWidth, color, start, end } = lineConfig;
-                ctx.setLineWidth(lineWidth);
-                ctx.setStrokeStyle(color);
-                ctx.beginPath();
-                ctx.moveTo(...start);
-                ctx.lineTo(...end);
-                ctx.stroke();
-              },
-              args: [
-                {
-                  lineWidth: 4,
-                  color: "yellow",
-                  start: [82, 0],
-                  end: [82, 55],
-                },
-              ],
-            },
-            {
-              draw: (ctx, config) => {
-                const { fontSize, color, text, position } = config;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text: `${year}年${month}月${day}日`,
-                  position: [88, 20],
-                },
-              ],
-            },
-            {
-              draw: (ctx, weatherConfig) => {
-                const { fontSize, color, text, position } = weatherConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text:
-                    daysOfWeek[dayIndex] +
-                    " " +
-                    weather?.text +
-                    " " +
-                    weather?.temperature +
-                    "℃",
-                  position: [88, 50],
-                },
-              ],
-            },
-            {
-              draw: (ctx, locationConfig) => {
-                const { fontSize, color, text, position } = locationConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text: locationName,
-                  position: [0, 90],
-                },
-              ],
-            },
-            {
-              draw: (ctx, coordinateConfig) => {
-                const { fontSize, color, text, position } = coordinateConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text:
-                    "经纬度: " +
-                    (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
-                  position: [0, 115],
-                },
-              ],
-            },
-          ],
-          img: Shuiyin1,
-        },
-      ],[
-        {
-          path: [
-            {
-              draw: (ctx, backgroundConfig) => {
-                const { color, rect } = backgroundConfig;
-                ctx.setFillStyle(color);
-                ctx.fillRect(...rect);
-              },
-              args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 280, 120] }],
-            },
-            {
-              draw: (ctx, textConfig) => {
-                const { fontSize, color, text, position } = textConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 28,
-                  color: "white",
-                  text: `${hours}:${minutes}`,
-                  position: [0, 40],
-                },
-              ],
-            },
-            {
-              draw: (ctx, lineConfig) => {
-                const { lineWidth, color, start, end } = lineConfig;
-                ctx.setLineWidth(lineWidth);
-                ctx.setStrokeStyle(color);
-                ctx.beginPath();
-                ctx.moveTo(...start);
-                ctx.lineTo(...end);
-                ctx.stroke();
-              },
-              args: [
-                {
-                  lineWidth: 4,
-                  color: "yellow",
-                  start: [82, 0],
-                  end: [82, 55],
-                },
-              ],
-            },
-            {
-              draw: (ctx, config) => {
-                const { fontSize, color, text, position } = config;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text: `${year}年${month}月${day}日`,
-                  position: [88, 20],
-                },
-              ],
-            },
-            {
-              draw: (ctx, weatherConfig) => {
-                const { fontSize, color, text, position } = weatherConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text:
-                    daysOfWeek[dayIndex] +
-                    " " +
-                    weather?.text +
-                    " " +
-                    weather?.temperature +
-                    "℃",
-                  position: [88, 50],
-                },
-              ],
-            },
-            {
-              draw: (ctx, locationConfig) => {
-                const { fontSize, color, text, position } = locationConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text: locationName,
-                  position: [0, 90],
-                },
-              ],
-            },
-            {
-              draw: (ctx, coordinateConfig) => {
-                const { fontSize, color, text, position } = coordinateConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text:
-                    "经纬度: " +
-                    (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
-                  position: [0, 115],
-                },
-              ],
-            },
-          ],
-          img: Shuiyin1,
-        },
       ],
       [
         {
@@ -948,7 +585,7 @@ const CameraPage = () => {
               ],
             },
           ],
-          img: "",
+          img: Shuiyin1,
         },
       ],
     ];
@@ -968,7 +605,7 @@ const CameraPage = () => {
           canvasId: "fishCanvas",
           success: (res) => {
             setCanvasImg(res.tempFilePath);
-            console.log("图片路径：", res.tempFilePath);
+            // console.log("图片路径：", res.tempFilePath);
             // 这里可以将图片路径保存或用于展示
           },
           fail: (err) => {
@@ -1043,6 +680,7 @@ const CameraPage = () => {
               className="xiangceIcon"
               onClick={selectImg}
             ></Image>
+            <Text>相册</Text>
           </View>
           <View className="shuiyin">
             <Image
@@ -1052,6 +690,7 @@ const CameraPage = () => {
                 setShowFloatLayout(!showFloatLayout);
               }}
             ></Image>
+            <Text>修改</Text>
           </View>
         </View>
         <View className="take-photo" onClick={takePhoto}>
@@ -1075,7 +714,7 @@ const CameraPage = () => {
             cursor: "pointer",
             transition: "transform 0.2s, box-shadow 0.2s",
             width: "80%",
-            margin:'0'
+            margin: "0",
           }}
         >
           分享好友
@@ -1182,7 +821,7 @@ const CameraPage = () => {
                 </View>
                 {currentShuiyinIndex === index && (
                   <View className="shuiyin-item-cover">
-                    <Button size="mini">编辑</Button>
+                    <Button>编辑</Button>
                   </View>
                 )}
               </View>
