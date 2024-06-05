@@ -274,6 +274,7 @@ const CameraPage = () => {
   };
 
   const takePhoto = (camera = true, path) => {
+    console.log('camera: ', camera);
     if (camera) {
       cameraContext?.takePhoto({
         zoom: zoomLevel,
