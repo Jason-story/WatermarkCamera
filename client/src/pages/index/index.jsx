@@ -19,6 +19,7 @@ import fanzhuanImg from "../../images/fanzhuan.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import XiangceIcon from "../../images/xiangce.png";
+import KefuIcon from "../../images/kefu.png";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import Shuiyin1 from "../../images/shuiyin-1.png";
 
@@ -67,10 +68,11 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [seconds, setSeconds] = useState(secondsD);
   const [locationName, setLocationName] = useState("");
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(1);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
+  const [edit, setEdit] = useState(false);
 
   const [permissions, setPermissions] = useState({
     camera: false,
@@ -620,6 +622,10 @@ const CameraPage = () => {
   }, [locationName, weather, latitude]);
   // console.log("canvasImg: ", canvasImg);
 
+  const editShuiyin = () => {
+    // currentShuiyinIndex
+    console.log("currentShuiyinIndex: ", currentShuiyinIndex);
+  };
   return (
     <View className="container">
       <View className="camera-box">
@@ -698,7 +704,26 @@ const CameraPage = () => {
             <View className="camera-button-inner"></View>
           </View>
         </View>
-        <View className="qiehuan"></View>
+        <View className="tools-bar-inner">
+          <View className="xiangce kefu">
+            <Button
+              openType="contact"
+              style={{
+                background: "none",
+                color: "inherit",
+                border: "none",
+                padding: 0,
+                font: "inherit",
+                cursor: "pointer",
+                outline: "none",
+                height: "39px",
+              }}
+            >
+              <Image src={KefuIcon} className="xiangceIcon"></Image>
+            </Button>
+            <Text>客服</Text>
+          </View>
+        </View>
       </View>
       <View className="bottom-btns">
         <Button
@@ -757,10 +782,9 @@ const CameraPage = () => {
           )}
         </View>
       )}
-      <AtModal isOpened={vipModal} closeOnClickOverlay={false}>
+      {/* <AtModal isOpened={vipModal} closeOnClickOverlay={false}>
         <AtModalHeader>
           高级功能
-          {/* (19.9元/月) */}
         </AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
@@ -798,36 +822,48 @@ const CameraPage = () => {
         <AtModalAction>
           <Button onClick={copyWx}>关闭</Button>{" "}
         </AtModalAction>
-      </AtModal>
+      </AtModal> */}
       <AtFloatLayout
         isOpened={showFloatLayout}
         title="水印选择、修改"
         onClose={() => {
           setShowFloatLayout(!showFloatLayout);
+          setEdit(false);
         }}
       >
-        <View className="shuiyin-list">
-          {canvasConfigState.map((item, index) => {
-            return (
-              <View
-                className="shuiyin-item"
-                key={index}
-                onClick={() => {
-                  setCurrentShuiyinIndex(index);
-                }}
-              >
-                <View className="shuiyin-item-img">
-                  <Image mode="aspectFit" src={item[0].img}></Image>
-                </View>
-                {currentShuiyinIndex === index && (
-                  <View className="shuiyin-item-cover">
-                    <Button>编辑</Button>
+        {!edit ? (
+          <View className="shuiyin-list">
+            {canvasConfigState.map((item, index) => {
+              return (
+                <View
+                  className="shuiyin-item"
+                  key={index}
+                  onClick={() => {
+                    setCurrentShuiyinIndex(index);
+                  }}
+                >
+                  <View className="shuiyin-item-img">
+                    <Image mode="aspectFit" src={item[0].img}></Image>
                   </View>
-                )}
-              </View>
-            );
-          })}
-        </View>
+                  {currentShuiyinIndex === index && (
+                    <View className="shuiyin-item-cover">
+                      <Button
+                        onClick={() => {
+                          setEdit(true);
+                          editShuiyin();
+                        }}
+                      >
+                        编辑
+                      </Button>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        ) : (
+          <View className="shuiyin-list">ddd</View>
+        )}
       </AtFloatLayout>
     </View>
   );
