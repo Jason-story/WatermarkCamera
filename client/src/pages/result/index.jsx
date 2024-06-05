@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Button, Image } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import shareImg from "../../images/share2.png";
+import ShareImg from "../../images/logo.jpg";
+
 import "./index.scss";
 import restart from "../../images/restart.png";
 
@@ -128,7 +129,7 @@ const MergeCanvas = () => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
       path: "/pages/index/index",
-      imageUrl: "https://img2.imgtp.com/2024/05/28/pJCAITAT.jpg",
+      imageUrl: ShareImg,
     };
   });
   console.log("333: ", screenWidth / imageWidth);

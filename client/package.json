@@ -11,9 +11,7 @@
   },
   "scripts": {
     "build": "taro build --type weapp",
-
     "dev": "npm run build -- --watch"
-
   },
   "author": "",
   "license": "MIT",
