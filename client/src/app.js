@@ -2,6 +2,9 @@ import { Component } from "react";
 import Taro from "@tarojs/taro";
 import "./app.scss";
 import 'taro-ui/dist/style/index.scss'
+import uma from './uma';
+
+Taro.uma = uma;
 
 class App extends Component {
   componentDidMount() {

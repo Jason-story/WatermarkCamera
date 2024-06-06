@@ -17,6 +17,7 @@ import {
   AtButton,
   AtModal,
   AtListItem,
+  AtToast,
   AtCard,
   AtFloatLayout,
   AtModalHeader,
@@ -37,9 +38,7 @@ import Shuiyin1 from "../../images/shuiyin-1.png";
 
 // import canvasConfig from "./canvasConfig";
 import "./index.scss";
-import uma from "./uma";
 
-Taro.uma = uma;
 const now = new Date();
 const yearD = now.getFullYear();
 const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
@@ -47,18 +46,6 @@ const dayD = String(now.getDate()).padStart(2, "0");
 const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
 const secondsD = String(now.getSeconds()).padStart(2, "0");
-
-const daysOfWeek = [
-  "星期日",
-  "星期一",
-  "星期二",
-  "星期三",
-  "星期四",
-  "星期五",
-  "星期六",
-];
-const today = new Date();
-const dayIndex = today.getDay();
 
 const maxDate = new Date("2030-01-01");
 
@@ -82,38 +69,61 @@ const CameraPage = () => {
   const [day, setDay] = useState(dayD);
   const [hours, setHours] = useState(hoursD);
   const [minutes, setMinutes] = useState(minutesD);
-  const [seconds, setSeconds] = useState(secondsD);
   const [locationName, setLocationName] = useState("");
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(1);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
   const [edit, setEdit] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [showInput, setShowInput] = useState(false);
+  const [editCity, setEditCity] = useState("");
+  const [showToast, setToast] = useState(false);
+  const [weekly, setWeekly] = useState(getWeekday(year, month, day));
 
-  const [todayDateString, setTodayDateString] = useState(today.toISOString().split("T")[0]);
-  const [todayTimeString, setTodayTimeString] = useState(`${hoursD}:${minutesD}`);
+  // 根据年月日计算星期几的函数
+  function getWeekday(year, month, day) {
+    const weekDays = [
+      "星期日",
+      "星期一",
+      "星期二",
+      "星期三",
+      "星期四",
+      "星期五",
+      "星期六",
+    ];
+    const date = new Date(year, month - 1, day); // 月份从0开始，所以需要减去1
+    const weekday = date.getDay(); // 获取星期几的数字表示，0代表星期日，1代表星期一，依此类推
+    return weekDays[weekday];
+  }
 
   const handleDateChange = (e) => {
-    setTodayDateString(e.detail.value);
+    const [year, month, day] = e.detail.value.split("-");
+
+    setWeekly(getWeekday(year, month, day));
+    setYear(year);
+    setMonth(month);
+    setDay(day);
   };
   const handleTimeChange = (e) => {
-    setTodayTimeString(e.detail.value);
+    const [hours, minutes] = e.detail.value.split(":");
+    setHours(hours);
+    setMinutes(minutes);
   };
 
-
+  const handleCityChange = (e) => {
+    geocoder(e.detail.value);
+    setEditCity(e.detail.value);
+  };
 
   const [permissions, setPermissions] = useState({
     camera: false,
     writePhotosAlbum: false,
     userLocation: false,
   });
-
-  const fetchWeather = (cityName) => {
+  const fetchWeather = (longitude, latitude) => {
+    // https://www.seniverse.com/
     const url =
       "https://api.seniverse.com/v3/weather/now.json?key=S7OyUofVVMeBcrLsC&location=" +
-      cityName +
+      `${latitude}:${longitude}` +
       "&language=zh-Hans&unit=c";
 
     Taro.request({
@@ -134,8 +144,10 @@ const CameraPage = () => {
   };
   useEffect(() => {
     allAuth && permissions.userLocation && !city && getLocation();
-    city && fetchWeather(city);
-  }, [allAuth, permissions.userLocation, city]);
+      longitude &&
+      latitude &&
+      fetchWeather(longitude, latitude);
+  }, [allAuth, permissions.userLocation, city, longitude, latitude]);
 
   const getLocation = () => {
     if (!permissions.userLocation) return;
@@ -155,6 +167,32 @@ const CameraPage = () => {
     });
   };
 
+  const geocoder = (addr) => {
+    const qqmapsdk = new QQMapWX({
+      key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
+    });
+    qqmapsdk.geocoder({
+      address: addr,
+      success: (res) => {
+        const { lat, lng } = res.result.location;
+        setLatitude(lat);
+        setLongitude(lng);
+      },
+      fail: (err) => {
+        console.error("Failed to reverse geocode:", err);
+      },
+    });
+  };
+  // 防抖函数
+  function debounce(func, delay) {
+    let timer;
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(this, arguments);
+      }, delay);
+    };
+  }
   const reverseGeocode = (lat, lng) => {
     const qqmapsdk = new QQMapWX({
       key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
@@ -168,7 +206,12 @@ const CameraPage = () => {
         const addressComponent = res.result.formatted_addresses;
         const addr = addressComponent.recommend;
         const city = res.result.address_component.city;
+        const district = res.result.address_component.district;
+
+        const province = res.result.address_component.province;
+
         setCity(city);
+        setEditCity(province + city + district);
 
         // 拼接市以下的地址信息，不包括门牌号
         const detailedAddress = `${addr}`;
@@ -368,12 +411,6 @@ const CameraPage = () => {
   //     draw(ctx, ...args);
   //   });
   // };
-  const drawCanvas = () => {
-    config.forEach((item, index) => {
-      const { draw, args } = item;
-      draw(ctx, ...args[index]);
-    });
-  };
 
   const drawMask = () => {
     const canvasConfig = [
@@ -451,129 +488,7 @@ const CameraPage = () => {
                   fontSize: 18,
                   color: "white",
                   text:
-                    daysOfWeek[dayIndex] +
-                    " " +
-                    weather?.text +
-                    " " +
-                    weather?.temperature +
-                    "℃",
-                  position: [88, 50],
-                },
-              ],
-            },
-            {
-              draw: (ctx, locationConfig) => {
-                const { fontSize, color, text, position } = locationConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text: locationName,
-                  position: [0, 90],
-                },
-              ],
-            },
-            {
-              draw: (ctx, coordinateConfig) => {
-                const { fontSize, color, text, position } = coordinateConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 16,
-                  color: "white",
-                  text:
-                    "经纬度: " +
-                    (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
-                  position: [0, 115],
-                },
-              ],
-            },
-          ],
-          img: Shuiyin1,
-        },
-      ],
-      [
-        {
-          path: [
-            {
-              draw: (ctx, backgroundConfig) => {
-                const { color, rect } = backgroundConfig;
-                ctx.setFillStyle(color);
-                ctx.fillRect(...rect);
-              },
-              args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 280, 120] }],
-            },
-            {
-              draw: (ctx, textConfig) => {
-                const { fontSize, color, text, position } = textConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 28,
-                  color: "white",
-                  text: `${hours}:${minutes}`,
-                  position: [0, 40],
-                },
-              ],
-            },
-            {
-              draw: (ctx, lineConfig) => {
-                const { lineWidth, color, start, end } = lineConfig;
-                ctx.setLineWidth(lineWidth);
-                ctx.setStrokeStyle(color);
-                ctx.beginPath();
-                ctx.moveTo(...start);
-                ctx.lineTo(...end);
-                ctx.stroke();
-              },
-              args: [
-                {
-                  lineWidth: 4,
-                  color: "yellow",
-                  start: [82, 0],
-                  end: [82, 55],
-                },
-              ],
-            },
-            {
-              draw: (ctx, config) => {
-                const { fontSize, color, text, position } = config;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text: `${year}年${month}月${day}日`,
-                  position: [88, 20],
-                },
-              ],
-            },
-            {
-              draw: (ctx, weatherConfig) => {
-                const { fontSize, color, text, position } = weatherConfig;
-                ctx.setFontSize(fontSize);
-                ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
-              },
-              args: [
-                {
-                  fontSize: 18,
-                  color: "white",
-                  text:
-                    daysOfWeek[dayIndex] +
+                    weekly +
                     " " +
                     weather?.text +
                     " " +
@@ -649,13 +564,22 @@ const CameraPage = () => {
     });
   };
   useEffect(() => {
-    locationName && weather && latitude && drawMask();
-  }, [locationName, weather, latitude]);
+    // locationName &&
+    weather &&
+      latitude &&
+      minutes &&
+      hours &&
+      year &&
+      month &&
+      day &&
+      drawMask();
+  }, [locationName, weather, latitude, minutes, hours, year, month, day]);
   // console.log("canvasImg: ", canvasImg);
 
-  const editShuiyin = () => {
+  const updateShuiyinIndex = (current) => {
+    setCurrentShuiyinIndex(current);
     // currentShuiyinIndex
-    console.log("currentShuiyinIndex: ", currentShuiyinIndex);
+    // console.log("currentShuiyinIndex: ", currentShuiyinIndex);
   };
   return (
     <View className="container">
@@ -769,7 +693,7 @@ const CameraPage = () => {
             fontSize: "30rpx",
             cursor: "pointer",
             transition: "transform 0.2s, box-shadow 0.2s",
-            width: "80%",
+            width: "100%",
             margin: "0",
           }}
         >
@@ -857,9 +781,9 @@ const CameraPage = () => {
       <AtFloatLayout
         isOpened={showFloatLayout}
         title="水印选择、修改"
-        onClose={() => {
-          setShowFloatLayout(!showFloatLayout);
+        onClose={(e) => {
           setEdit(false);
+          setShowFloatLayout(!showFloatLayout);
         }}
       >
         {!edit ? (
@@ -881,7 +805,7 @@ const CameraPage = () => {
                       <Button
                         onClick={() => {
                           setEdit(true);
-                          editShuiyin();
+                          updateShuiyinIndex(index);
                         }}
                       >
                         编辑
@@ -895,58 +819,60 @@ const CameraPage = () => {
         ) : (
           <View className="shuiyin-list">
             <View className="input-item">
+              <Text className="tips red">
+                只有点击右上角-重新进入小程序，才会恢复默认正确的时间位置等信息
+              </Text>
+              <Text className="tips">
+                星期、天气、经纬度会自动计算,无需修改
+              </Text>
               {/* <Switch checked={showInput} onChange={handleSwitchChange} /> */}
               {/* {showInput && <Input placeholder="请输入内容" />} */}
               <AtCard title="时间">
-              <Picker
+                <Picker
                   mode="date"
-                  value={todayDateString}
-                  start={today.toISOString().split("T")[0]}
-                  end={maxDate.toISOString().split("T")[0]}
+                  value={`${year}年${month}月${day}日`}
                   onChange={handleDateChange}
                 >
-                  <View>选择日期： {todayDateString}</View>
+                  <View>选择日期： {`${year}年${month}月${day}日`}</View>
                 </Picker>
                 <Picker
                   mode="time"
-                  value={todayTimeString}
+                  value={`${hours}:${minutes}`}
                   onChange={handleTimeChange}
                 >
-                  <View>选择时间： {todayTimeString}</View>
+                  <View>选择时间： {`${hours}:${minutes}`}</View>
                 </Picker>
               </AtCard>
               <AtCard title="地点">
-
                 <Picker
-                  mode="date"
-                  // value={todayString}
-                  start={today.toISOString().split("T")[0]}
-                  end={maxDate.toISOString().split("T")[0]}
-                  onChange={handleDateChange}
+                  mode="region"
+                  value={editCity}
+                  onChange={handleCityChange}
                 >
-                  <View className="input-picker">选择城市： </View>
+                  <View className="input-picker">选择城市： {editCity}</View>
                 </Picker>
                 <View className="picker">
                   <Text>详细地点： </Text>
-                  <Input className="input"></Input>
+                  <Input
+                    className="input"
+                    value={locationName}
+                    maxlength={20}
+                    onInput={(e) => {
+                      debounce(setLocationName(e.detail.value), 100);
+                    }}
+                  ></Input>
                 </View>
               </AtCard>
-
-              {/* <Text className="input-title">日期</Text>
-              <Picker
-                mode="date"
-                value={todayString}
-                start={today.toISOString().split("T")[0]}
-                end={maxDate.toISOString().split("T")[0]}
-                onChange={handleDateChange}
-              >
-                <View>选择日期 {todayString}</View>
-              </Picker> */}
-              {/* <View>选择的日期: {todayString}</View> */}
             </View>
           </View>
         )}
+        {!edit && (
+          <Text style={{ display: "block", textAlign: "center" }}>
+            更多样式开发中...
+          </Text>
+        )}
       </AtFloatLayout>
+      <AtToast isOpened={showToast} text="请输入详细地点"></AtToast>
     </View>
   );
 };
