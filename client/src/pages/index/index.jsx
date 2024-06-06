@@ -1,12 +1,24 @@
 import { useEffect, useState } from "react";
-import { View, Camera, Button, Text, Image, Canvas } from "@tarojs/components";
+import {
+  View,
+  Camera,
+  Button,
+  Text,
+  Image,
+  Canvas,
+  Switch,
+  Picker,
+  Input,
+} from "@tarojs/components";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
-import { AtFloatLayout } from "taro-ui";
 import {
   AtIcon,
   AtDrawer,
-  AtModal,
   AtButton,
+  AtModal,
+  AtListItem,
+  AtCard,
+  AtFloatLayout,
   AtModalHeader,
   AtModalContent,
   AtModalAction,
@@ -25,7 +37,9 @@ import Shuiyin1 from "../../images/shuiyin-1.png";
 
 // import canvasConfig from "./canvasConfig";
 import "./index.scss";
+import uma from "./uma";
 
+Taro.uma = uma;
 const now = new Date();
 const yearD = now.getFullYear();
 const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
@@ -45,6 +59,8 @@ const daysOfWeek = [
 ];
 const today = new Date();
 const dayIndex = today.getDay();
+
+const maxDate = new Date("2030-01-01");
 
 // const date = `${year}年${month}月${day}日`;
 // const time = `${hours}:${minutes}`;
@@ -73,6 +89,20 @@ const CameraPage = () => {
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
   const [edit, setEdit] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [showInput, setShowInput] = useState(false);
+
+  const [todayDateString, setTodayDateString] = useState(today.toISOString().split("T")[0]);
+  const [todayTimeString, setTodayTimeString] = useState(`${hoursD}:${minutesD}`);
+
+  const handleDateChange = (e) => {
+    setTodayDateString(e.detail.value);
+  };
+  const handleTimeChange = (e) => {
+    setTodayTimeString(e.detail.value);
+  };
+
+
 
   const [permissions, setPermissions] = useState({
     camera: false,
@@ -274,7 +304,7 @@ const CameraPage = () => {
   };
 
   const takePhoto = (camera = true, path) => {
-    console.log('camera: ', camera);
+    console.log("camera: ", camera);
     if (camera) {
       cameraContext?.takePhoto({
         zoom: zoomLevel,
@@ -619,7 +649,7 @@ const CameraPage = () => {
     });
   };
   useEffect(() => {
-    drawMask();
+    locationName && weather && latitude && drawMask();
   }, [locationName, weather, latitude]);
   // console.log("canvasImg: ", canvasImg);
 
@@ -863,11 +893,61 @@ const CameraPage = () => {
             })}
           </View>
         ) : (
-          <View className="shuiyin-list">ddd</View>
+          <View className="shuiyin-list">
+            <View className="input-item">
+              {/* <Switch checked={showInput} onChange={handleSwitchChange} /> */}
+              {/* {showInput && <Input placeholder="请输入内容" />} */}
+              <AtCard title="时间">
+              <Picker
+                  mode="date"
+                  value={todayDateString}
+                  start={today.toISOString().split("T")[0]}
+                  end={maxDate.toISOString().split("T")[0]}
+                  onChange={handleDateChange}
+                >
+                  <View>选择日期： {todayDateString}</View>
+                </Picker>
+                <Picker
+                  mode="time"
+                  value={todayTimeString}
+                  onChange={handleTimeChange}
+                >
+                  <View>选择时间： {todayTimeString}</View>
+                </Picker>
+              </AtCard>
+              <AtCard title="地点">
+
+                <Picker
+                  mode="date"
+                  // value={todayString}
+                  start={today.toISOString().split("T")[0]}
+                  end={maxDate.toISOString().split("T")[0]}
+                  onChange={handleDateChange}
+                >
+                  <View className="input-picker">选择城市： </View>
+                </Picker>
+                <View className="picker">
+                  <Text>详细地点： </Text>
+                  <Input className="input"></Input>
+                </View>
+              </AtCard>
+
+              {/* <Text className="input-title">日期</Text>
+              <Picker
+                mode="date"
+                value={todayString}
+                start={today.toISOString().split("T")[0]}
+                end={maxDate.toISOString().split("T")[0]}
+                onChange={handleDateChange}
+              >
+                <View>选择日期 {todayString}</View>
+              </Picker> */}
+              {/* <View>选择的日期: {todayString}</View> */}
+            </View>
+          </View>
         )}
       </AtFloatLayout>
     </View>
   );
 };
-
 export default CameraPage;

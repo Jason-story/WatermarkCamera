@@ -262,7 +262,7 @@ page {
 }
 .shuiyin-list {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -306,4 +306,34 @@ page {
     border: none;
     font-size: 32px;
   }
+}
+.input-item {
+  width: 100%;
+  padding:10px 0px;
+}
+.input-title{
+  font-size: 26px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+picker,.picker {
+  height: 60px;
+  line-height: 60px;
+  text{
+    flex-shrink: 0;
+  }
+}
+.picker {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+.at-card__content {
+  padding: 10px 30px;
+}
+.input {
+  height: 60px;
+  line-height: 60px;
+  width: 90%;
 }

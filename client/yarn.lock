@@ -4295,6 +4295,7 @@ __metadata:
     taro-ui: "npm:^3.3.0"
     ts-node: "npm:^10.9.1"
     typescript: "npm:^4.1.0"
+    umtrack-wx: "npm:^2.8.0"
     webpack: "npm:^5.78.0"
     wx-canvas-2d: "npm:^2.5.1"
   languageName: unknown
@@ -16916,6 +16917,13 @@ __metadata:
   bin:
     uglifyjs: bin/uglifyjs
   checksum: 10c0/8b7fcdca69deb284fed7d2025b73eb747ce37f9aca6af53422844f46427152d5440601b6e2a033e77856a2f0591e4167153d5a21b68674ad11f662034ec13ced
+  languageName: node
+  linkType: hard
+
+"umtrack-wx@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "umtrack-wx@npm:2.8.0"
+  checksum: 10c0/752eab1852018dd48e27964566732c502d181e1382f8ca3770cbe3300dbd750d364f1df49f690dfc02cc4c752d685717b910930de78e8dcd3d3ec8d1126d250e
   languageName: node
   linkType: hard
 
