@@ -35,6 +35,7 @@ import XiangceIcon from "../../images/xiangce.png";
 import KefuIcon from "../../images/kefu.png";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import Shuiyin1 from "../../images/shuiyin-1.png";
+import Shuiyin2 from "../../images/shuiyin-2.png";
 
 // import canvasConfig from "./canvasConfig";
 import "./index.scss";
@@ -70,7 +71,7 @@ const CameraPage = () => {
   const [hours, setHours] = useState(hoursD);
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(1);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
@@ -534,13 +535,176 @@ const CameraPage = () => {
           ],
           img: Shuiyin1,
         },
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+        // -----------------------------------------
+      ],
+      [
+        {
+          path: [
+            // 背景
+
+            {
+              draw: (ctx, rectConfig) => {
+                const { width, height, color } = rectConfig;
+
+                // 设置矩形的颜色
+                ctx.setFillStyle(color);
+
+                // 绘制一个带5px圆角的指定宽高和颜色的矩形
+                const radius = 5; // 圆角半径
+                ctx.beginPath();
+                ctx.moveTo(10 + radius, 0);
+                ctx.lineTo(10 + width - radius, 0);
+                ctx.arcTo(10 + width, 0, 10 + width, radius, radius);
+                ctx.lineTo(10 + width, height - radius);
+                ctx.arcTo(10 + width, height, 10 + width - radius, height, radius);
+                ctx.lineTo(10 + radius, height);
+                ctx.arcTo(10, height, 10, height - radius, radius);
+                ctx.lineTo(10, radius);
+                ctx.arcTo(10, 0, 10 + radius, 0, radius);
+                ctx.closePath();
+                ctx.fill();
+                 // 设置黄色矩形背景
+                 ctx.setFillStyle('yellow');
+                 ctx.fillRect(13, 3, 50, 33);
+
+                 // 写入"打卡"文字
+                 ctx.setFillStyle('black');
+                 ctx.setFontSize(18);
+                 ctx.fillText('打卡', 20, 28);
+              },
+              args: [
+                {
+                  width: 150,
+                  height: 40,
+                  color: "white",
+                },
+              ],
+            },
+            // {
+            //   draw: (ctx, backgroundConfig) => {
+            //     const { color, rect } = backgroundConfig;
+            //     ctx.setFillStyle(color);
+            //     ctx.fillRect(...rect);
+            //   },
+            //   args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 280, 120] }],
+            // },
+            // 时间
+            {
+              draw: (ctx, textConfig) => {
+                const { fontSize, color, text, position } = textConfig;
+                ctx.setFontSize(fontSize);
+                ctx.setFillStyle(color);
+                ctx.fillText(text, ...position);
+              },
+              args: [
+                {
+                  fontSize: 24,
+                  color: "#1895e6",
+                  text: `${hours}:${minutes}`,
+                  position: [82, 30],
+                },
+              ],
+            },
+            // 日期
+            {
+              draw: (ctx, config) => {
+                const { fontSize, color, text, position } = config;
+                ctx.setFontSize(fontSize);
+                ctx.setFillStyle(color);
+                ctx.fillText(text, ...position);
+              },
+              args: [
+                {
+                  fontSize: 16,
+                  color: "white",
+                  text: `${year}年${month}月${day}日 ${weekly}`,
+                  position: [22, 92],
+                },
+              ],
+            },
+            // 地址
+            {
+              draw: (ctx, locationConfig) => {
+                const { fontSize, color, text, position } = locationConfig;
+                ctx.setFontSize(fontSize);
+                ctx.setFillStyle(color);
+                ctx.fillText(text, ...position);
+              },
+              args: [
+                {
+                  fontSize: 16,
+                  color: "white",
+                  text: locationName,
+                  position: [22, 65],
+                },
+              ],
+            },
+            // 经纬度
+            {
+              draw: (ctx, coordinateConfig) => {
+                const { fontSize, color, text, position } = coordinateConfig;
+                ctx.setFontSize(fontSize);
+                ctx.setFillStyle(color);
+                ctx.fillText(text, ...position);
+              },
+              args: [
+                {
+                  fontSize: 16,
+                  color: "white",
+                  text:
+                    "经纬度: " +
+                    (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
+                  position: [10, 115],
+                },
+              ],
+            },
+            // 黄色线
+            {
+              draw: (ctx, lineConfig) => {
+                const { lineWidth, color, start, end } = lineConfig;
+                ctx.setLineWidth(lineWidth);
+                ctx.setStrokeStyle(color);
+                ctx.beginPath();
+                ctx.moveTo(...start);
+                ctx.lineTo(...end);
+                ctx.stroke();
+              },
+
+              args: [
+                {
+                  lineWidth: 3,
+                  color: "yellow",
+                  start: [14, 50],
+                  end: [14, 95],
+                },
+              ],
+            },
+          ],
+          img: Shuiyin2,
+        },
       ],
     ];
-
-    setCanvasConfigState(canvasConfig);
     const ctx = Taro.createCanvasContext("fishCanvas");
 
-    // 绘制
+    setCanvasConfigState(canvasConfig);
+    console.log("canvasConfig[currentShuiyinIndex]: ", canvasConfig);
+    console.log("currentShuiyinIndex: ", currentShuiyinIndex);
     canvasConfig[currentShuiyinIndex][0].path.forEach((item, index) => {
       const { draw, args } = item;
       draw(ctx, ...args);
@@ -561,6 +725,12 @@ const CameraPage = () => {
         });
       }, 300); // 延迟执行以确保绘制完成
     });
+
+    // 绘制
+    console.log(
+      "canvasConfig[currentShuiyinIndex]: ",
+      canvasConfig[currentShuiyinIndex]
+    );
   };
   useEffect(() => {
     // locationName &&
@@ -573,7 +743,7 @@ const CameraPage = () => {
       month &&
       day &&
       drawMask();
-  }, [locationName, weather, latitude, minutes, hours, year, month, day]);
+  }, [locationName, weather, latitude, minutes, hours, year, month, day,currentShuiyinIndex]);
   // console.log("canvasImg: ", canvasImg);
 
   const updateShuiyinIndex = (current) => {
