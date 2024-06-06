@@ -271,7 +271,7 @@ page {
   width:95%;
   border-radius: 16px;
   margin-bottom: 40px;
-  height: 300px;
+  height: 250px;
   background: #aaa;
   overflow: hidden;
   .shuiyin-item-cover {
@@ -298,13 +298,13 @@ page {
     width: 70%;
   }
   button {
-    width: 50%;
+    width: 30%;
     display: inline-block;
-    padding: 4px 12px;
+    padding: 4px 0px;
     background-color: #ff6347; /* 橙红色背景 */
     color: #fff; /* 白色文字 */
     border: none;
-    font-size: 32px;
+    font-size: 30px;
   }
 }
 .input-item {

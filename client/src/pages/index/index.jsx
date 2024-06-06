@@ -144,9 +144,7 @@ const CameraPage = () => {
   };
   useEffect(() => {
     allAuth && permissions.userLocation && !city && getLocation();
-      longitude &&
-      latitude &&
-      fetchWeather(longitude, latitude);
+    longitude && latitude && fetchWeather(longitude, latitude);
   }, [allAuth, permissions.userLocation, city, longitude, latitude]);
 
   const getLocation = () => {
@@ -441,25 +439,7 @@ const CameraPage = () => {
                 },
               ],
             },
-            {
-              draw: (ctx, lineConfig) => {
-                const { lineWidth, color, start, end } = lineConfig;
-                ctx.setLineWidth(lineWidth);
-                ctx.setStrokeStyle(color);
-                ctx.beginPath();
-                ctx.moveTo(...start);
-                ctx.lineTo(...end);
-                ctx.stroke();
-              },
-              args: [
-                {
-                  lineWidth: 4,
-                  color: "yellow",
-                  start: [82, 0],
-                  end: [82, 55],
-                },
-              ],
-            },
+
             {
               draw: (ctx, config) => {
                 const { fontSize, color, text, position } = config;
@@ -532,6 +512,25 @@ const CameraPage = () => {
                 },
               ],
             },
+            {
+              draw: (ctx, lineConfig) => {
+                const { lineWidth, color, start, end } = lineConfig;
+                ctx.setLineWidth(lineWidth);
+                ctx.setStrokeStyle(color);
+                ctx.beginPath();
+                ctx.moveTo(...start);
+                ctx.lineTo(...end);
+                ctx.stroke();
+              },
+              args: [
+                {
+                  lineWidth: 4,
+                  color: "yellow",
+                  start: [82, 0],
+                  end: [82, 55],
+                },
+              ],
+            },
           ],
           img: Shuiyin1,
         },
@@ -553,7 +552,7 @@ const CameraPage = () => {
           canvasId: "fishCanvas",
           success: (res) => {
             setCanvasImg(res.tempFilePath);
-            // console.log("图片路径：", res.tempFilePath);
+            console.log("图片路径：", res.tempFilePath);
             // 这里可以将图片路径保存或用于展示
           },
           fail: (err) => {
@@ -565,7 +564,8 @@ const CameraPage = () => {
   };
   useEffect(() => {
     // locationName &&
-    weather &&
+    cameraContext &&
+      weather &&
       latitude &&
       minutes &&
       hours &&
