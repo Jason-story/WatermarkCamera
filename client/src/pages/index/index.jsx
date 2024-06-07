@@ -152,7 +152,9 @@ const CameraPage = () => {
     if (!permissions.userLocation) return;
     Taro.getLocation({
       type: "wgs84",
+      isHighAccuracy:true,
       success: (res) => {
+        console.log('res: ', res);
         setLatitude(res.latitude);
         setLongitude(res.longitude);
         reverseGeocode(res.latitude, res.longitude);
