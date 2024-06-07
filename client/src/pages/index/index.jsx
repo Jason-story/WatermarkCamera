@@ -10,11 +10,20 @@ import {
   Input,
 } from "@tarojs/components";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
-import { AtButton, AtModal, AtToast, AtCard, AtFloatLayout } from "taro-ui";
+import {
+  AtButton,
+  AtModal,
+  AtToast,
+  AtCard,
+  AtModalHeader,
+  AtModalContent,
+  AtModalAction,
+  AtFloatLayout,
+} from "taro-ui";
 import Taro from "@tarojs/taro";
 import QQMapWX from "qqmap-wx-jssdk";
 import ShareImg from "../../images/logo.jpg";
-import vipImg from "../../images/vip.png";
+import VipImg from "../../images/vip.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
@@ -800,6 +809,26 @@ const CameraPage = () => {
           </View>
         </View>
         <View className="tools-bar-inner">
+        <View className="xiangce kefu vip">
+            <Button
+              onClick={() => {
+                setVipModal(!vipModal);
+              }}
+              style={{
+                background: "none",
+                color: "inherit",
+                border: "none",
+                padding: 0,
+                font: "inherit",
+                cursor: "pointer",
+                outline: "none",
+                height: "39px",
+              }}
+            >
+              <Image src={VipImg} className="xiangceIcon"></Image>
+            </Button>
+            <Text>定制</Text>
+          </View>
           <View className="xiangce kefu">
             <Button
               openType="contact"
@@ -818,6 +847,7 @@ const CameraPage = () => {
             </Button>
             <Text>客服</Text>
           </View>
+
         </View>
       </View>
       <View className="bottom-btns">
@@ -859,7 +889,45 @@ const CameraPage = () => {
           )}
         </View>
       )}
-
+      <AtModal isOpened={vipModal} closeOnClickOverlay={false}>
+        <AtModalHeader>高级功能（收费项目）</AtModalHeader>
+        <AtModalContent>
+          <View className="modal-list">
+            <View>1、 定制您专属的水印样式</View>
+            {/* <View>2、去掉所有广告</View> */}
+            <View>2、高质量水印图片</View>
+            <View>3、每月不限量水印照片</View>
+            <View className="txt1">
+              <View style={{ marginBottom: "20px", color: "#000" }}>
+                详细信息请咨询客服
+              </View>
+              <View>
+                <button
+                  openType="contact"
+                  style={{
+                    background: "linear-gradient(45deg,#f0b532, #f0b532)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "25px",
+                    padding: "0 0",
+                    fontSize: "28rpx",
+                    cursor: "pointer",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    width: "50%",
+                  }}
+                  type="default"
+                  className="guide-btn"
+                >
+                  客服
+                </button>
+              </View>
+            </View>
+          </View>
+        </AtModalContent>
+        <AtModalAction>
+          <Button onClick={copyWx}>关闭</Button>{" "}
+        </AtModalAction>
+      </AtModal>
       <AtFloatLayout
         isOpened={showFloatLayout}
         title="水印选择、修改"
