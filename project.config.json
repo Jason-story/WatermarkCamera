@@ -18,7 +18,7 @@
     "enhance": true,
     "compileHotReLoad": false,
     "postcss": true,
-    "minified": false,
+    "minified": true,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -26,7 +26,8 @@
     },
     "packNpmRelationList": [],
     "condition": true,
-    "uglifyFileName": false
+    "uglifyFileName": false,
+    "compileWorklet": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.4.4",
