@@ -34,18 +34,20 @@ page {
 }
 .camera-btns {
   position: absolute;
-  right: 20px;
+  right: 10px;
   bottom: 20px;
-  width: 50%;
+  width: 110px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-direction: column;
 }
 
 .fanzhuan-icon,
 .shanguangdeng-icon {
   width: 100px;
   height: 100px;
+  margin-top: 10px;
   image {
     width: 60%;
     height: 60%;
@@ -354,5 +356,178 @@ picker,.picker {
   &.red {
     margin-bottom: 0px!important;
     color: #FF6666;
+  }
+}
+.add-my-app{
+
+  right: 30px;
+  top: 200px;
+  // margin: 10px 30px 0 0;
+  position: absolute;
+  image {
+    z-index: 999;
+    width: 316px;
+    height: 70px;
+    display: block;
+  }
+}
+.yinsiModal{
+  min-height: 100px!important;
+  font-size: 30px !important;
+}
+
+
+.share-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 3px 20px;
+  background-size: 300% 300%;
+  backdrop-filter: blur(10px);
+  border-radius: 80px;
+  transition: 0.5s;
+  height:90px;
+  width: 50%;
+  animation: gradient_301 5s ease infinite;
+  border: double 8px transparent;
+  background-image: linear-gradient(rgba(44, 44, 44, 0.1),rgb(44, 44, 44)),
+    linear-gradient(
+      137.48deg,
+      #ff512f 10%,
+      #fe53bb 45%,
+      #d2cc37 67%,
+      #0044ff 87%
+    );
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+
+  text {
+    z-index: 2;
+    /* letter-spacing: 5px; */
+    color: #ffffff;
+    /* text-shadow: 0 0 2px white; */
+  }
+}
+
+#container-stars {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: 0.3s;
+  backdrop-filter: blur(30px);
+  border-radius: 80px;
+}
+
+#glow {
+  position: absolute;
+  display: flex;
+  width: 12rem;
+}
+
+.circle {
+  width: 100%;
+  height: 30px;
+  filter: blur(20px);
+  animation: pulse_3011 4s infinite;
+  z-index: -1;
+}
+
+.circle:nth-of-type(1) {
+  background: rgba(254, 83, 186, 0.636);
+}
+
+.circle:nth-of-type(2) {
+  background: rgba(142, 81, 234, 0.704);
+}
+
+#stars {
+  position: relative;
+  background: transparent;
+  width: 200rem;
+  height: 200rem;
+}
+
+#stars::after {
+  content: "";
+  position: absolute;
+  top: -10rem;
+  left: -100rem;
+  width: 100%;
+  height: 100%;
+  animation: animStarRotate 90s linear infinite;
+}
+
+#stars::after {
+  background-image: radial-gradient(#ffffff 2px, transparent 1%);
+  background-size: 100px 100px;
+}
+
+#stars::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 170%;
+  height: 500%;
+  animation: animStar 60s linear infinite;
+}
+
+#stars::before {
+  background-image: radial-gradient(#ffffff 2px, transparent 1%);
+  background-size: 80px 80px;
+  opacity: 0.5;
+}
+
+@keyframes animStar {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-135rem);
+  }
+}
+
+@keyframes animStarRotate {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0);
+  }
+}
+
+@keyframes gradient_301 {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse_3011 {
+  0% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
   }
 }

@@ -1,6 +1,6 @@
 // src/pages/merge/index.jsx
 import React, { useEffect, useState } from "react";
-import { View, Button, Image } from "@tarojs/components";
+import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
 
@@ -21,6 +21,7 @@ const MergeCanvas = () => {
   const drawImages = () => {
     // 获取第一张图片的信息
     const dpr = Taro.getSystemInfoSync().pixelRatio;
+    const ctx = Taro.createCanvasContext("mergeCanvas");
     Taro.getImageInfo({
       src: firstImagePath,
       success: (res1) => {
@@ -38,51 +39,59 @@ const MergeCanvas = () => {
             const img2Width = res2.width;
             const img2Height = res2.height;
 
-            const ctx = Taro.createCanvasContext("mergeCanvas");
+            const canvasHeight = (screenWidth / img1Width) * img1Height;
+
+            // 设置画布大小
+            ctx.width = screenWidth;
+            ctx.height = canvasHeight;
+            console.log("canvasHeight: ", canvasHeight);
 
             // 绘制第一张图片作为背景
-            ctx.drawImage(img1Path, 0, 0, img1Width, img1Height);
+            ctx.drawImage(img1Path, 0, 0, screenWidth, canvasHeight);
 
-            ctx.drawImage(
-              img1Path,
-              0,
-              0,
-              screenWidth,
-              (screenWidth / img1Width) * img1Height
-            );
+            // // 绘制第一张图片作为背景
+            // ctx.drawImage(img1Path, 0, 0, img1Width, img1Height);
+            // console.log('img1Height: ', img1Height);
+            // console.log('img1Width: ', img1Width);
+            // console.log('screenWidth: ', screenWidth);
+            // console.log(' (screenWidth / img1Width) * img1Height: ',  (screenWidth / img1Width) * img1Height);
+
+            // ctx.drawImage(
+            //   img1Path,
+            //   0,
+            //   0,
+            //   screenWidth,
+            //   (screenWidth / img1Width) * img1Height
+            // );
 
             // 绘制第二张图片在左下角
             const x = 10;
-            const y =
-              (screenWidth / img1Width) * img1Height - img2Height / dpr - 10;
+            const y = canvasHeight - img2Height / dpr - 10;
             ctx.drawImage(img2Path, x, y, img2Width / dpr, img2Height / dpr);
-
             // 完成绘制
             ctx.draw(false, () => {
-              Taro.canvasToTempFilePath({
-                canvasId: "mergeCanvas",
-                success: (res) => {
-                  saveImage(res.tempFilePath);
-                  Taro.showToast({
-                    title: "图片生成成功",
-                    icon: "success",
-                    duration: 2000,
-                  });
-                },
-                fail: (err) => {
-                  Taro.showToast({
-                    title: "图片生成失败",
-                    icon: "none",
-                    duration: 2000,
-                  });
-                },
-              });
+              setTimeout(() => {
+                Taro.canvasToTempFilePath({
+                  canvasId: "mergeCanvas",
+
+                  success: (res) => {
+                    saveImage(res.tempFilePath);
+                  },
+                  fail: (err) => {
+                    Taro.showToast({
+                      title: "图片生成失败",
+                      icon: "none",
+                      duration: 2000,
+                    });
+                  },
+                });
+              }, 100);
             });
           },
           fail: (err) => {
             console.error(err);
             Taro.showToast({
-              title: "加载第二张图片失败",
+              title: "加载水印图片失败",
               icon: "none",
               duration: 2000,
             });
@@ -132,73 +141,103 @@ const MergeCanvas = () => {
       imageUrl: ShareImg,
     };
   });
-  console.log("333: ", screenWidth / imageWidth);
-  console.log("screenWidth: ", screenWidth);
-  console.log("imageWidth: ", imageWidth);
-  console.log("222: ", imageHeight);
-  console.log("imagePath: ", imagePath);
 
   return (
     <View className="container">
       <canvas
         canvas-id="mergeCanvas"
         style={{
+          position: "absolute",
+          left: "-9999px",
+          top: "-9999px",
+          display: imagePath ? "none" : "block",
           width: `${screenWidth}px`,
           height: `${(screenWidth / imageWidth) * imageHeight}px`,
         }}
       />
-      {imagePath && (
-        <Image
-          className="result-img"
-          mode="scaleToFill"
-          src={imagePath}
-          style={{
-            width: `${screenWidth}px`,
-            height: `${(screenWidth / imageWidth) * imageHeight}px`,
-          }}
-        />
-      )}
-      <View className="bottom-btns">
-      <Button
-          className="share-btn"
-          openType="share"
-          style={{
-            background: "linear-gradient(45deg,#ff512f, #dd2476)",
-            color: "white",
-            border: "none",
-            borderRadius: "25px",
-            padding: "0 16px",
-            fontSize: "30rpx",
-            cursor: "pointer",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            width: "45%",
-          }}
-        >
-          分享好友
-        </Button>
-        <Button
-          className="share-btn"
-          onClick={() => {
-            Taro.navigateBack({
-              delta: 1, // delta 参数表示需要返回的页面数，默认为1
-            });
-          }}
-          style={{
-            background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
-            color: "white",
-            border: "none",
-            borderRadius: "25px",
-            padding: "0 16px",
-            fontSize: "30rpx",
-            cursor: "pointer",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            width: "45%",
-          }}
-        >
-          重新拍摄
-        </Button>
+      <View
+        // style={{
+        //   width: `${screenWidth / 2}px`,
+        //   height: `${((screenWidth / imageWidth) * imageHeight) / 2}px`,
+        // }}
+        style={{
+          width: `${screenWidth}px`,
+          height: `${(screenWidth / imageWidth) * imageHeight}px`,
+        }}
+      >
+        {imagePath && (
+          <Image
+            className="result-img"
+            mode="scaleToFill"
+            src={imagePath}
+            style={{
+              width: `100%`,
+              height: `100%`,
+            }}
+          />
+        )}
+      </View>
 
+      <View
+        className="bottom-btns"
+        style={{
+          height: `calc(100vh - ${(screenWidth / imageWidth) * imageHeight}px)`,
+        }}
+      >
+        <View>
+          <Button
+            className="share-btn"
+            onClick={() => {
+              Taro.navigateBack({
+                delta: 1, // delta 参数表示需要返回的页面数，默认为1
+              });
+            }}
+            style={{
+              background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
+              color: "white",
+              border: "none",
+              borderRadius: "30px",
+              padding: "5px 16px",
+              fontSize: "32rpx",
+              cursor: "pointer",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              marginBottom: "30px",
+              width: "50%",
+            }}
+          >
+            重新拍摄
+          </Button>
 
+          <Button openType="share" className="share-btn" type="button">
+            <Text> 分享好友</Text>
+            <View id="container-stars">
+              <View id="stars"></View>
+            </View>
+
+            <View id="glow">
+              <View className="circle"></View>
+              <View className="circle"></View>
+            </View>
+          </Button>
+          {/* <Button
+            className="share-btn"
+            openType="share"
+            style={{
+              background: "linear-gradient(45deg,#ff512f, #dd2476)",
+              color: "white",
+              border: "none",
+              borderRadius: "30px",
+              padding: "5px 16px",
+              fontSize: "32rpx",
+              cursor: "pointer",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              width: "70%",
+
+            }}
+          >
+            分享好友
+          </Button> */}
+        </View>
       </View>
     </View>
   );

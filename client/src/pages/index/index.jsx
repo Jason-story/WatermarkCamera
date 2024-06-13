@@ -32,6 +32,7 @@ import KefuIcon from "../../images/kefu.png";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import Shuiyin1 from "../../images/shuiyin-1.png";
 import Shuiyin2 from "../../images/shuiyin-2.png";
+import AddMyApp from "../../images/add-my-app.png";
 
 // import canvasConfig from "./canvasConfig";
 import "./index.scss";
@@ -67,6 +68,7 @@ const CameraPage = () => {
   const [hours, setHours] = useState(hoursD);
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
+  // 水印选择
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(1);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
@@ -75,6 +77,8 @@ const CameraPage = () => {
   const [editCity, setEditCity] = useState("");
   const [showToast, setToast] = useState(false);
   const [weekly, setWeekly] = useState(getWeekday(year, month, day));
+  const [showAddMyApp, setAddMyAppShow] = useState(true);
+  const [firstModal, setShowFirstModal] = useState(false);
 
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -333,7 +337,13 @@ const CameraPage = () => {
   };
 
   const takePhoto = (camera = true, path) => {
-    console.log("camera: ", camera);
+    if (!allAuth) {
+      Taro.showToast({
+        title: "请先授权相机、相册、位置权限",
+        icon: "none",
+      });
+      return;
+    }
     if (camera) {
       cameraContext?.takePhoto({
         zoom: zoomLevel,
@@ -365,10 +375,14 @@ const CameraPage = () => {
   const vipModalCLick = () => {
     setVipModal(!vipModal);
   };
-  const copyWx = () => {
-    setVipModal(!vipModal);
-  };
   const selectImg = () => {
+    if (!allAuth) {
+      Taro.showToast({
+        title: "请先授权相机、相册、位置权限",
+        icon: "none",
+      });
+      return;
+    }
     Taro.chooseImage({
       count: 1,
       success: function (res) {
@@ -387,7 +401,12 @@ const CameraPage = () => {
                 ctx.setFillStyle(color);
                 ctx.fillRect(...rect);
               },
-              args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 280, 120] }],
+              args: [
+                {
+                  color: "rgba(0, 0, 0, 0)",
+                  rect: [0, 0, 330, 120],
+                },
+              ],
             },
             {
               draw: (ctx, textConfig) => {
@@ -499,6 +518,8 @@ const CameraPage = () => {
             },
           ],
           img: Shuiyin1,
+          width: 330,
+          height: 120,
         },
       ],
       [
@@ -550,14 +571,6 @@ const CameraPage = () => {
                 },
               ],
             },
-            // {
-            //   draw: (ctx, backgroundConfig) => {
-            //     const { color, rect } = backgroundConfig;
-            //     ctx.setFillStyle(color);
-            //     ctx.fillRect(...rect);
-            //   },
-            //   args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 280, 120] }],
-            // },
             // 时间
             {
               draw: (ctx, textConfig) => {
@@ -651,6 +664,8 @@ const CameraPage = () => {
             },
           ],
           img: Shuiyin2,
+          width: 330,
+          height: 120,
         },
       ],
       // -----------------------------------------
@@ -671,12 +686,164 @@ const CameraPage = () => {
       // -----------------------------------------
       // -----------------------------------------
       // []
+      // [
+      //   {
+      //     path: [
+      //       // 背景
+
+      //       {
+      //         draw: (ctx, rectConfig) => {
+      //           const { width, height, color } = rectConfig;
+
+      //           // 设置矩形的颜色
+      //           ctx.setFillStyle(color);
+
+      //           // 绘制一个带5px圆角的指定宽高和颜色的矩形
+      //           const radius = 5; // 圆角半径
+      //           ctx.beginPath();
+      //           ctx.moveTo(10 + radius, 0);
+      //           ctx.lineTo(10 + width - radius, 0);
+      //           ctx.arcTo(10 + width, 0, 10 + width, radius, radius);
+      //           ctx.lineTo(10 + width, height - radius);
+      //           ctx.arcTo(
+      //             10 + width,
+      //             height,
+      //             10 + width - radius,
+      //             height,
+      //             radius
+      //           );
+      //           ctx.lineTo(10 + radius, height);
+      //           ctx.arcTo(10, height, 10, height - radius, radius);
+      //           ctx.lineTo(10, radius);
+      //           ctx.arcTo(10, 0, 10 + radius, 0, radius);
+      //           ctx.closePath();
+      //           ctx.fill();
+      //           // 设置黄色矩形背景
+      //           ctx.setFillStyle("yellow");
+      //           ctx.fillRect(13, 3, 50, 33);
+
+      //           // 写入"打卡"文字
+      //           ctx.setFillStyle("black");
+      //           ctx.setFontSize(18);
+      //           ctx.fillText("打卡", 20, 28);
+      //         },
+      //         args: [
+      //           {
+      //             width: 150,
+      //             height: 40,
+      //             color: "white",
+      //           },
+      //         ],
+      //       },
+      //       // {
+      //       //   draw: (ctx, backgroundConfig) => {
+      //       //     const { color, rect } = backgroundConfig;
+      //       //     ctx.setFillStyle(color);
+      //       //     ctx.fillRect(...rect);
+      //       //   },
+      //       //   args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 330, 120] }],
+      //       // },
+      //       // 时间
+      //       {
+      //         draw: (ctx, textConfig) => {
+      //           const { fontSize, color, text, position } = textConfig;
+      //           ctx.setFontSize(fontSize);
+      //           ctx.setFillStyle(color);
+      //           ctx.fillText(text, ...position);
+      //         },
+      //         args: [
+      //           {
+      //             fontSize: 24,
+      //             color: "#1895e6",
+      //             text: `${hours}:${minutes}`,
+      //             position: [82, 30],
+      //           },
+      //         ],
+      //       },
+      //       // 日期
+      //       {
+      //         draw: (ctx, config) => {
+      //           const { fontSize, color, text, position } = config;
+      //           ctx.setFontSize(fontSize);
+      //           ctx.setFillStyle(color);
+      //           ctx.fillText(text, ...position);
+      //         },
+      //         args: [
+      //           {
+      //             fontSize: 16,
+      //             color: "white",
+      //             text: `${year}年${month}月${day}日 ${weekly}`,
+      //             position: [22, 92],
+      //           },
+      //         ],
+      //       },
+      //       // 地址
+      //       {
+      //         draw: (ctx, locationConfig) => {
+      //           const { fontSize, color, text, position } = locationConfig;
+      //           ctx.setFontSize(fontSize);
+      //           ctx.setFillStyle(color);
+      //           ctx.fillText(text, ...position);
+      //         },
+      //         args: [
+      //           {
+      //             fontSize: 16,
+      //             color: "white",
+      //             text: locationName,
+      //             position: [22, 65],
+      //           },
+      //         ],
+      //       },
+      //       // 经纬度
+      //       {
+      //         draw: (ctx, coordinateConfig) => {
+      //           const { fontSize, color, text, position } = coordinateConfig;
+      //           ctx.setFontSize(fontSize);
+      //           ctx.setFillStyle(color);
+      //           ctx.fillText(text, ...position);
+      //         },
+      //         args: [
+      //           {
+      //             fontSize: 16,
+      //             color: "white",
+      //             text:
+      //               "经纬度: " +
+      //               (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
+      //             position: [10, 115],
+      //           },
+      //         ],
+      //       },
+      //       // 黄色线
+      //       {
+      //         draw: (ctx, lineConfig) => {
+      //           const { lineWidth, color, start, end } = lineConfig;
+      //           ctx.setLineWidth(lineWidth);
+      //           ctx.setStrokeStyle(color);
+      //           ctx.beginPath();
+      //           ctx.moveTo(...start);
+      //           ctx.lineTo(...end);
+      //           ctx.stroke();
+      //         },
+
+      //         args: [
+      //           {
+      //             lineWidth: 3,
+      //             color: "yellow",
+      //             start: [14, 50],
+      //             end: [14, 95],
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //     img: Shuiyin2,
+      //     width: 330,
+      //     height: 200,
+      //   },
+      // ],
     ];
     const ctx = Taro.createCanvasContext("fishCanvas");
 
     setCanvasConfigState(canvasConfig);
-    console.log("canvasConfig[currentShuiyinIndex]: ", canvasConfig);
-    console.log("currentShuiyinIndex: ", currentShuiyinIndex);
     canvasConfig[currentShuiyinIndex][0].path.forEach((item, index) => {
       const { draw, args } = item;
       draw(ctx, ...args);
@@ -697,17 +864,10 @@ const CameraPage = () => {
         });
       }, 300); // 延迟执行以确保绘制完成
     });
-
-    // 绘制
-    console.log(
-      "canvasConfig[currentShuiyinIndex]: ",
-      canvasConfig[currentShuiyinIndex]
-    );
   };
   useEffect(() => {
     // locationName &&
-    cameraContext &&
-      weather &&
+    weather &&
       latitude &&
       minutes &&
       hours &&
@@ -725,11 +885,40 @@ const CameraPage = () => {
     month,
     day,
     currentShuiyinIndex,
+    canvasConfigState.length,
   ]);
 
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
   };
+  useEffect(() => {
+    if (allAuth) {
+      // 检查本地存储中是否有记录
+      // const isFirstVisit = Taro.getStorageSync("isFirstVisit");
+
+      // // 如果没有记录，说明是第一次进入
+      // if (!isFirstVisit) {
+      //   setShowFirstModal(true);
+      // }
+
+      Taro.getStorage({ key: "hasVisited" })
+        .then(() => {
+          // 用户已经访问过小程序，不显示弹窗
+          setShowFirstModal(false);
+
+          // setIsFirstVisit(false);
+        })
+        .catch(() => {
+          // 用户第一次访问小程序，显示弹窗
+          // setIsFirstVisit(true);
+          setShowFirstModal(true);
+
+          // 设置标志位，表示用户已经访问过小程序
+          Taro.setStorage({ key: "hasVisited", data: true });
+        });
+    }
+  }, [allAuth]);
+  // console.log("canvasConfigState[currentShuiyinIndex][0]: ", canvasConfigState);
   return (
     <View className="container">
       <View className="camera-box">
@@ -745,7 +934,7 @@ const CameraPage = () => {
         {!allAuth && (
           <View className="auth-box">
             <View>
-              小程序需要相机、相册、位置权限才可以正常运行，请点击右上角-设置授权后刷新
+              需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行，请在底部授权弹窗选择同意或者点击右上角-设置授权后刷新即可
             </View>
 
             <AtButton
@@ -782,6 +971,16 @@ const CameraPage = () => {
           </View>
         )}
       </View>
+      {showAddMyApp && (
+        <View
+          className="add-my-app"
+          onClick={() => {
+            setAddMyAppShow(false);
+          }}
+        >
+          <Image src={AddMyApp}></Image>
+        </View>
+      )}
       <View className="tools-bar">
         <View className="tools-bar-inner">
           <View className="xiangce">
@@ -797,6 +996,13 @@ const CameraPage = () => {
               src={ShuiyinIcon}
               className="shuiyinIcon"
               onClick={() => {
+                if (!allAuth) {
+                  Taro.showToast({
+                    title: "请先授权相机、相册、位置权限",
+                    icon: "none",
+                  });
+                  return;
+                }
                 setShowFloatLayout(!showFloatLayout);
               }}
             ></Image>
@@ -809,7 +1015,7 @@ const CameraPage = () => {
           </View>
         </View>
         <View className="tools-bar-inner">
-        <View className="xiangce kefu vip">
+          <View className="xiangce kefu vip">
             <Button
               onClick={() => {
                 setVipModal(!vipModal);
@@ -847,15 +1053,20 @@ const CameraPage = () => {
             </Button>
             <Text>客服</Text>
           </View>
-
         </View>
       </View>
       <View className="bottom-btns">
         <Button
           className="share-btn"
-          openType="share"
+          onClick={() => {
+            wx.navigateToMiniProgram({
+              appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+              path: "pages/index/index",
+            });
+          }}
           style={{
-            background: "linear-gradient(45deg,#ff512f, #dd2476)",
+            background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
+
             color: "white",
             border: "none",
             borderRadius: "25px",
@@ -863,11 +1074,23 @@ const CameraPage = () => {
             fontSize: "30rpx",
             cursor: "pointer",
             transition: "transform 0.2s, box-shadow 0.2s",
-            width: "100%",
-            margin: "0",
+            width: "50%",
+            margin: "0 5px 0 0",
           }}
         >
-          分享好友
+          抖音去水印
+        </Button>
+
+        <Button openType="share" className="share-btn" type="button">
+          <Text> 分享好友</Text>
+          <View id="container-stars">
+            <View id="stars"></View>
+          </View>
+
+          <View id="glow">
+            <View className="circle"></View>
+            <View className="circle"></View>
+          </View>
         </Button>
       </View>
       {allAuth && (
@@ -877,14 +1100,25 @@ const CameraPage = () => {
             canvas-id="fishCanvas"
             className={canvasImg ? "hideCanvas" : ""}
             style={{
-              width: "280px",
-              height: "120px",
+              width:
+                canvasConfigState.length > 0 &&
+                canvasConfigState[currentShuiyinIndex][0].width + "px",
+              height:
+                canvasConfigState.length > 0 &&
+                canvasConfigState[currentShuiyinIndex][0].height + "px",
             }}
           />
           {canvasImg && (
             <Image
               src={canvasImg}
-              style={{ width: "280px", height: "120px" }}
+              style={{
+                width:
+                  canvasConfigState.length > 0 &&
+                  canvasConfigState[currentShuiyinIndex][0].width + "px",
+                height:
+                  canvasConfigState.length > 0 &&
+                  canvasConfigState[currentShuiyinIndex][0].height + "px",
+              }}
             ></Image>
           )}
         </View>
@@ -893,10 +1127,10 @@ const CameraPage = () => {
         <AtModalHeader>高级功能（收费项目）</AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
-            <View>1、 定制您专属的水印样式</View>
-            {/* <View>2、去掉所有广告</View> */}
-            <View>2、高质量水印图片</View>
-            <View>3、每月不限量水印照片</View>
+            <View>1、定制您专属的水印样式</View>
+            <View>2、去掉除封面广告外的所有广告</View>
+            <View>3、高质量水印图片</View>
+            <View>4、每月不限量水印照片</View>
             <View className="txt1">
               <View style={{ marginBottom: "20px", color: "#000" }}>
                 详细信息请咨询客服
@@ -925,9 +1159,34 @@ const CameraPage = () => {
           </View>
         </AtModalContent>
         <AtModalAction>
-          <Button onClick={copyWx}>关闭</Button>{" "}
+          <Button onClick={vipModalCLick}>关闭</Button>{" "}
         </AtModalAction>
       </AtModal>
+      <AtModal isOpened={firstModal} closeOnClickOverlay={false}>
+        <AtModalHeader>隐私通知</AtModalHeader>
+        <AtModalContent className="yinsiModal">
+          <View
+            className="modal-list"
+            style={{
+              height: "70px",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            小程序不会上传您的照片，不会有任何隐私问题，请您放心使用
+          </View>
+        </AtModalContent>
+        <AtModalAction>
+          <Button
+            onClick={() => {
+              setShowFirstModal(false);
+            }}
+          >
+            关闭
+          </Button>{" "}
+        </AtModalAction>
+      </AtModal>
+
       <AtFloatLayout
         isOpened={showFloatLayout}
         title="水印选择、修改"
@@ -1006,7 +1265,7 @@ const CameraPage = () => {
                   <Input
                     className="input"
                     value={locationName}
-                    maxlength={20}
+                    maxlength={19}
                     onInput={(e) => {
                       debounce(setLocationName(e.detail.value), 100);
                     }}
