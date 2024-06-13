@@ -15,6 +15,7 @@ import {
   AtModal,
   AtToast,
   AtCard,
+  AtSwitch,
   AtModalHeader,
   AtModalContent,
   AtModalAction,
@@ -79,6 +80,7 @@ const CameraPage = () => {
   const [weekly, setWeekly] = useState(getWeekday(year, month, day));
   const [showAddMyApp, setAddMyAppShow] = useState(true);
   const [firstModal, setShowFirstModal] = useState(false);
+  const [hideJw, setHideJw] = useState(true);
 
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -491,8 +493,9 @@ const CameraPage = () => {
                   fontSize: 16,
                   color: "white",
                   text:
-                    "经纬度: " +
-                    (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
+                  hideJw === true
+                      ? "经纬度: " + (latitude + ", " + longitude)
+                      : "",
                   position: [0, 115],
                 },
               ],
@@ -635,8 +638,10 @@ const CameraPage = () => {
                   fontSize: 16,
                   color: "white",
                   text:
-                    "经纬度: " +
-                    (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
+                  hideJw === true
+
+                      ? "经纬度: " + (latitude + ", " + longitude)
+                      : "",
                   position: [10, 115],
                 },
               ],
@@ -855,7 +860,6 @@ const CameraPage = () => {
           canvasId: "fishCanvas",
           success: (res) => {
             setCanvasImg(res.tempFilePath);
-            console.log("图片路径：", res.tempFilePath);
             // 这里可以将图片路径保存或用于展示
           },
           fail: (err) => {
@@ -866,19 +870,15 @@ const CameraPage = () => {
     });
   };
   useEffect(() => {
-    // locationName &&
-    weather &&
-      latitude &&
-      minutes &&
-      hours &&
-      year &&
-      month &&
-      day &&
-      drawMask();
+    drawMask();
+  }, [hideJw]);
+  useEffect(() => {
+    weather && minutes && hours && year && month && day && drawMask();
   }, [
     locationName,
     weather,
     latitude,
+    longitude,
     minutes,
     hours,
     year,
@@ -1127,9 +1127,10 @@ const CameraPage = () => {
         <AtModalHeader>高级功能（收费项目）</AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
-            <View>1、定制您专属的水印样式</View>
-            <View>2、去掉除封面广告外的所有广告</View>
-            <View>3、高清图片</View>
+            <View>1、 定制您专属的水印样式，1:1完美</View>
+            <View style={{ paddingLeft: "24px" }}>复刻</View>
+            <View>2、 无广告</View>
+            <View>3、 高清图片</View>
             <View className="txt1">
               <View style={{ marginBottom: "20px", color: "#000" }}>
                 详细信息请咨询客服
@@ -1264,11 +1265,23 @@ const CameraPage = () => {
                   <Input
                     className="input"
                     value={locationName}
-                    maxlength={19}
+                    maxlength={10}
+                    clear={true}
                     onInput={(e) => {
                       debounce(setLocationName(e.detail.value), 100);
                     }}
                   ></Input>
+                </View>
+              </AtCard>
+              <AtCard title="经纬度">
+                <View className="picker" style={{height:"50px"}}>
+                <Text>是否显示： </Text>
+                  <AtSwitch
+                    checked={hideJw}
+                    onChange={(e) => {
+                      setHideJw(e)
+                    }}
+                  />
                 </View>
               </AtCard>
             </View>
