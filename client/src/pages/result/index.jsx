@@ -85,7 +85,7 @@ const MergeCanvas = () => {
                     });
                   },
                 });
-              }, 100);
+              }, 500);
             });
           },
           fail: (err) => {
@@ -160,12 +160,13 @@ const MergeCanvas = () => {
         //   width: `${screenWidth / 2}px`,
         //   height: `${((screenWidth / imageWidth) * imageHeight) / 2}px`,
         // }}
+        className={!imagePath ? "hasLoading":""}
         style={{
           width: `${screenWidth}px`,
           height: `${(screenWidth / imageWidth) * imageHeight}px`,
         }}
       >
-        {imagePath && (
+        {imagePath ? (
           <Image
             className="result-img"
             mode="scaleToFill"
@@ -175,6 +176,8 @@ const MergeCanvas = () => {
               height: `100%`,
             }}
           />
+        ) : (
+          <View className="loader"></View>
         )}
       </View>
 
@@ -202,7 +205,7 @@ const MergeCanvas = () => {
               cursor: "pointer",
               transition: "transform 0.2s, box-shadow 0.2s",
               marginBottom: "30px",
-              width: "50%",
+              width: "60%",
             }}
           >
             重新拍摄

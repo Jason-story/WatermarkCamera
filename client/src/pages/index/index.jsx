@@ -493,8 +493,9 @@ const CameraPage = () => {
                   fontSize: 16,
                   color: "white",
                   text:
-                  hideJw === true
-                      ? "经纬度: " + (latitude + ", " + longitude)
+                    hideJw === true
+                      ? "经纬度: " +
+                        (latitude?.toFixed(5) + ", " + longitude?.toFixed(5))
                       : "",
                   position: [0, 115],
                 },
@@ -638,9 +639,9 @@ const CameraPage = () => {
                   fontSize: 16,
                   color: "white",
                   text:
-                  hideJw === true
-
-                      ? "经纬度: " + (latitude + ", " + longitude)
+                    hideJw === true
+                      ? "经纬度: " +
+                        (latitude?.toFixed(5) + ", " + longitude?.toFixed(5))
                       : "",
                   position: [10, 115],
                 },
@@ -813,7 +814,7 @@ const CameraPage = () => {
       //             color: "white",
       //             text:
       //               "经纬度: " +
-      //               (latitude?.toFixed(4) + ", " + longitude?.toFixed(4)),
+      //               (latitude??.toFixed(4) + ", " + longitude??.toFixed(4)),
       //             position: [10, 115],
       //           },
       //         ],
@@ -1274,12 +1275,12 @@ const CameraPage = () => {
                 </View>
               </AtCard>
               <AtCard title="经纬度">
-                <View className="picker" style={{height:"50px"}}>
-                <Text>是否显示： </Text>
+                <View className="picker" style={{ height: "50px" }}>
+                  <Text>是否显示： </Text>
                   <AtSwitch
                     checked={hideJw}
                     onChange={(e) => {
-                      setHideJw(e)
+                      setHideJw(e);
                     }}
                   />
                 </View>
