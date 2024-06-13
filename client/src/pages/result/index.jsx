@@ -38,32 +38,12 @@ const MergeCanvas = () => {
             const img2Path = res2.path;
             const img2Width = res2.width;
             const img2Height = res2.height;
-
             const canvasHeight = (screenWidth / img1Width) * img1Height;
-
             // 设置画布大小
             ctx.width = screenWidth;
             ctx.height = canvasHeight;
-            console.log("canvasHeight: ", canvasHeight);
-
             // 绘制第一张图片作为背景
             ctx.drawImage(img1Path, 0, 0, screenWidth, canvasHeight);
-
-            // // 绘制第一张图片作为背景
-            // ctx.drawImage(img1Path, 0, 0, img1Width, img1Height);
-            // console.log('img1Height: ', img1Height);
-            // console.log('img1Width: ', img1Width);
-            // console.log('screenWidth: ', screenWidth);
-            // console.log(' (screenWidth / img1Width) * img1Height: ',  (screenWidth / img1Width) * img1Height);
-
-            // ctx.drawImage(
-            //   img1Path,
-            //   0,
-            //   0,
-            //   screenWidth,
-            //   (screenWidth / img1Width) * img1Height
-            // );
-
             // 绘制第二张图片在左下角
             const x = 10;
             const y = canvasHeight - img2Height / dpr - 10;
@@ -73,7 +53,6 @@ const MergeCanvas = () => {
               setTimeout(() => {
                 Taro.canvasToTempFilePath({
                   canvasId: "mergeCanvas",
-
                   success: (res) => {
                     saveImage(res.tempFilePath);
                   },
@@ -156,11 +135,7 @@ const MergeCanvas = () => {
         }}
       />
       <View
-        // style={{
-        //   width: `${screenWidth / 2}px`,
-        //   height: `${((screenWidth / imageWidth) * imageHeight) / 2}px`,
-        // }}
-        className={!imagePath ? "hasLoading":""}
+        className={!imagePath ? "hasLoading" : ""}
         style={{
           width: `${screenWidth}px`,
           height: `${(screenWidth / imageWidth) * imageHeight}px`,

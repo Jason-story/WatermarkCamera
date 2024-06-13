@@ -43,11 +43,11 @@
   backdrop-filter: blur(10px);
   border-radius: 80px;
   transition: 0.5s;
-  height:100px;
+  height: 100px;
   width: 60%;
   animation: gradient_301 5s ease infinite;
   border: double 10px transparent;
-  background-image: linear-gradient(rgba(44, 44, 44, 0.1),rgb(44, 44, 44)),
+  background-image: linear-gradient(rgba(44, 44, 44, 0.1), rgb(44, 44, 44)),
     linear-gradient(
       137.48deg,
       #ff512f 10%,
@@ -98,8 +98,6 @@
 .circle:nth-of-type(2) {
   background: rgba(142, 81, 234, 0.704);
 }
-
-
 
 #stars {
   position: relative;
@@ -189,40 +187,22 @@
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
   }
 }
-.hasLoading{
+.hasLoading {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+/* HTML: <div class="loader"></div> */
 .loader {
   width: 120px;
   aspect-ratio: 1;
+  --_c:no-repeat radial-gradient(farthest-side,#ff6ec4 92%,#0000);
   background:
-    linear-gradient(#f77825 0 0),
-    linear-gradient(#f77825 0 0),
-    linear-gradient(#f77825 0 0),
-    linear-gradient(#f77825 0 0),
-    linear-gradient(#60B99A 0 0),
-    linear-gradient(#60B99A 0 0),
-    linear-gradient(#554236 0 0),
-    linear-gradient(#554236 0 0);
-  background-size: 25% 25%,25% 25%,25% 25%,25% 25%,25% 50%,25% 50%,50% 25%,50% 25%;
-  background-repeat: no-repeat;
-  animation: l20 1.5s infinite alternate;
+    var(--_c) top,
+    var(--_c) left,
+    var(--_c) right,
+    var(--_c) bottom;
+  background-size: 24px 24px;
+  animation: l7 1s infinite;
 }
-@keyframes l20 {
-  0%,
-  10%  {background-position:
-            calc(1*100%/3) calc(1*100%/3),calc(2*100%/3) calc(1*100%/3),calc(1*100%/3) calc(2*100%/3),calc(2*100%/3) calc(2*100%/3),
-            calc(1*100%/3) 50%,calc(2*100%/3) 50%,50% calc(1*100%/3),50% calc(2*100%/3)}
-  33%  {background-position:
-            calc(0*100%/3) calc(0*100%/3),calc(3*100%/3) calc(0*100%/3),calc(0*100%/3) calc(3*100%/3),calc(3*100%/3) calc(3*100%/3),
-            calc(1*100%/3) 50%,calc(2*100%/3) 50%,50% calc(1*100%/3),50% calc(2*100%/3)}
-  66%  {background-position:
-            calc(0*100%/3) calc(0*100%/3),calc(3*100%/3) calc(0*100%/3),calc(0*100%/3) calc(3*100%/3),calc(3*100%/3) calc(3*100%/3),
-            calc(0*100%/3) 50%,calc(3*100%/3) 50%,50% calc(1*100%/3),50% calc(2*100%/3)}
-  90%,
-  100%  {background-position:
-            calc(0*100%/3) calc(0*100%/3),calc(3*100%/3) calc(0*100%/3),calc(0*100%/3) calc(3*100%/3),calc(3*100%/3) calc(3*100%/3),
-            calc(0*100%/3) 50%,calc(3*100%/3) 50%,50% calc(0*100%/3),50% calc(3*100%/3)}
-}
+@keyframes l7 {to{transform: rotate(.5turn)}}
