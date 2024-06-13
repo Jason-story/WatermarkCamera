@@ -1129,8 +1129,7 @@ const CameraPage = () => {
           <View className="modal-list">
             <View>1、定制您专属的水印样式</View>
             <View>2、去掉除封面广告外的所有广告</View>
-            <View>3、高质量水印图片</View>
-            <View>4、每月不限量水印照片</View>
+            <View>3、高清图片</View>
             <View className="txt1">
               <View style={{ marginBottom: "20px", color: "#000" }}>
                 详细信息请咨询客服
