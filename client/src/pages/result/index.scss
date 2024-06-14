@@ -194,15 +194,18 @@
 }
 /* HTML: <div class="loader"></div> */
 .loader {
-  width: 120px;
+  width: 80px;
   aspect-ratio: 1;
-  --_c:no-repeat radial-gradient(farthest-side,#ff6ec4 92%,#0000);
+  --_g: no-repeat radial-gradient(farthest-side,#ff6ec4 94%,#0000);
   background:
-    var(--_c) top,
-    var(--_c) left,
-    var(--_c) right,
-    var(--_c) bottom;
-  background-size: 24px 24px;
-  animation: l7 1s infinite;
+    var(--_g) 0    0,
+    var(--_g) 100% 0,
+    var(--_g) 100% 100%,
+    var(--_g) 0    100%;
+  background-size: 40% 40%;
+  animation: l38 .5s infinite;
 }
-@keyframes l7 {to{transform: rotate(.5turn)}}
+@keyframes l38 {
+  100% {background-position: 100% 0,100% 100%,0 100%,0 0}
+}
+

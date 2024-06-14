@@ -18,74 +18,66 @@ const MergeCanvas = () => {
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
 
-  const drawImages = () => {
-    // 获取第一张图片的信息
-    const dpr = Taro.getSystemInfoSync().pixelRatio;
-    const ctx = Taro.createCanvasContext("mergeCanvas");
-    Taro.getImageInfo({
-      src: firstImagePath,
-      success: (res1) => {
-        const img1Path = res1.path;
-        const img1Width = res1.width;
-        const img1Height = res1.height;
-        setImageWidth(img1Width);
-        setImageHeight(img1Height);
-
-        // 获取第二张图片的信息
-        Taro.getImageInfo({
-          src: secondImagePath,
-          success: (res2) => {
-            const img2Path = res2.path;
-            const img2Width = res2.width;
-            const img2Height = res2.height;
-            const canvasHeight = (screenWidth / img1Width) * img1Height;
-            // 设置画布大小
-            ctx.width = screenWidth;
-            ctx.height = canvasHeight;
-            // 绘制第一张图片作为背景
-            ctx.drawImage(img1Path, 0, 0, screenWidth, canvasHeight);
-            // 绘制第二张图片在左下角
-            const x = 10;
-            const y = canvasHeight - img2Height / dpr - 10;
-            ctx.drawImage(img2Path, x, y, img2Width / dpr, img2Height / dpr);
-            // 完成绘制
-            ctx.draw(false, () => {
-              setTimeout(() => {
-                Taro.canvasToTempFilePath({
-                  canvasId: "mergeCanvas",
-                  success: (res) => {
-                    saveImage(res.tempFilePath);
-                  },
-                  fail: (err) => {
-                    Taro.showToast({
-                      title: "图片生成失败",
-                      icon: "none",
-                      duration: 2000,
-                    });
-                  },
-                });
-              }, 500);
-            });
-          },
-          fail: (err) => {
-            console.error(err);
-            Taro.showToast({
-              title: "加载水印图片失败",
-              icon: "none",
-              duration: 2000,
-            });
-          },
-        });
-      },
-      fail: (err) => {
-        console.error(err);
-        Taro.showToast({
-          title: "加载第一张图片失败",
-          icon: "none",
-          duration: 2000,
-        });
-      },
+  const drawCanvas = (ctx) => {
+    return new Promise((resolve, reject) => {
+      ctx.draw(false, () => {
+        resolve();
+      });
     });
+  };
+  const drawImages = async () => {
+    try {
+      // 获取第一张图片的信息
+      const dpr = Taro.getSystemInfoSync().pixelRatio;
+      const ctx = Taro.createCanvasContext("mergeCanvas");
+
+      const info1 = await Taro.getImageInfo({
+        src: firstImagePath,
+      });
+      const img1Path = info1.path;
+      const img1Width = info1.width;
+      const img1Height = info1.height;
+      setImageWidth(img1Width);
+      setImageHeight(img1Height);
+
+      const info2 = await Taro.getImageInfo({
+        src: secondImagePath,
+      });
+
+      const img2Path = info2.path;
+      const img2Width = info2.width;
+      const img2Height = info2.height;
+      const canvasHeight = (screenWidth / img1Width) * img1Height;
+      // 设置画布大小
+      ctx.width = screenWidth;
+      ctx.height = canvasHeight;
+      ctx.drawImage(img1Path, 0, 0, screenWidth, canvasHeight);
+      // 绘制第二张图片在左下角
+      const x = 10;
+      const y = canvasHeight - img2Height / dpr - 10;
+      ctx.drawImage(img2Path, x, y, img2Width / dpr, img2Height / dpr);
+
+      await drawCanvas(ctx);
+
+      setTimeout(async () => {
+        try {
+          const { tempFilePath } = await Taro.canvasToTempFilePath({
+            canvasId: "mergeCanvas",
+          });
+          saveImage(tempFilePath);
+        } catch (error) {
+          console.error("保存图片失败:", error);
+        }
+      }, 300); // 延迟100毫秒
+
+      // const { tempFilePath } = await Taro.canvasToTempFilePath({
+      //   canvasId: "mergeCanvas",
+      // });
+
+      saveImage(tempFilePath);
+    } catch (err) {
+      console.error("绘制图片出错:", error);
+    }
   };
 
   const saveImage = (tempFilePath) => {
@@ -129,7 +121,6 @@ const MergeCanvas = () => {
           position: "absolute",
           left: "-9999px",
           top: "-9999px",
-          display: imagePath ? "none" : "block",
           width: `${screenWidth}px`,
           height: `${(screenWidth / imageWidth) * imageHeight}px`,
         }}

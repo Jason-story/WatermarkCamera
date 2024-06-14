@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   Canvas,
+  Switch,
   Picker,
   Input,
 } from "@tarojs/components";
@@ -937,17 +938,26 @@ const CameraPage = () => {
             <View>
               需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行，请在底部授权弹窗选择同意或者点击右上角-设置授权后刷新即可
             </View>
-
-            <AtButton
-              type="primary"
-              size="normal"
-              circle
+            <Button
+              className="share-btn"
               onClick={() => {
                 Taro.openSetting();
               }}
+              style={{
+                background: "linear-gradient(45deg,#ff6ec4, #FF5722)",
+                color: "white",
+                border: "none",
+                borderRadius: "25px",
+                marginLeft: "0",
+                fontSize: "30rpx",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                width: "50%",
+                margin: "0 5px 0 0",
+              }}
             >
               去授权
-            </AtButton>
+            </Button>
           </View>
         )}
 
@@ -1125,19 +1135,22 @@ const CameraPage = () => {
         </View>
       )}
       <AtModal isOpened={vipModal} closeOnClickOverlay={false}>
-        <AtModalHeader>高级功能（收费项目）</AtModalHeader>
+        <AtModalHeader>
+          <Text style={{ color: "#ffaa00" }}>高级功能</Text>
+        </AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
-            <View>1、 定制您专属的水印样式，1:1完美</View>
-            <View style={{ paddingLeft: "24px" }}>复刻</View>
-            <View>2、 无广告</View>
-            <View>3、 高清图片</View>
+            <View>
+              • 定制您专属的水印样式，1:1完美复刻，解决您的考勤打卡难题
+            </View>
+            <View>• 无广告</View>
+            <View>• 高清图片</View>
             <View className="txt1">
-              <View style={{ marginBottom: "20px", color: "#000" }}>
-                详细信息请咨询客服
-              </View>
+              {/* <View style={{ marginBottom: "20px", color: "#000" }}> */}
+              详细信息请咨询客服
+              {/* </View> */}
               <View>
-                <button
+                {/* <button
                   openType="contact"
                   style={{
                     background: "linear-gradient(45deg,#f0b532, #f0b532)",
@@ -1154,13 +1167,18 @@ const CameraPage = () => {
                   className="guide-btn"
                 >
                   客服
-                </button>
+                </button> */}
               </View>
             </View>
           </View>
         </AtModalContent>
         <AtModalAction>
-          <Button onClick={vipModalCLick}>关闭</Button>{" "}
+          <Button onClick={vipModalCLick} style={{ flex: 1 }}>
+            关闭
+          </Button>
+          <Button openType="contact" style={{ flex: 1 }}>
+            咨询客服
+          </Button>
         </AtModalAction>
       </AtModal>
       <AtModal isOpened={firstModal} closeOnClickOverlay={false}>
@@ -1277,10 +1295,11 @@ const CameraPage = () => {
               <AtCard title="经纬度">
                 <View className="picker" style={{ height: "50px" }}>
                   <Text>是否显示： </Text>
-                  <AtSwitch
+
+                  <Switch
                     checked={hideJw}
                     onChange={(e) => {
-                      setHideJw(e);
+                      setHideJw(e.detail.value);
                     }}
                   />
                 </View>
