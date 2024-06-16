@@ -24,8 +24,8 @@ exports.main = async (event, context) => {
         if (userCheck.data.length > 0) {
             const data = {
                 // type: 'month',
-                remark: event.remark,
-                _updateTime: +new Date() // 最近登录时间
+                _updateTime: +new Date(), // 最近登录时间
+                ...event,
             };
             if (event.remark === '成功使用') {
                 data.times = db.command.inc(1);

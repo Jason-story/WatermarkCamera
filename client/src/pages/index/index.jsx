@@ -244,7 +244,7 @@ const CameraPage = () => {
   };
   useEffect(() => {
     checkPermissions();
-    requestPermissions();
+    requestPermission();
   }, []);
 
   useDidShow(() => {
@@ -260,28 +260,47 @@ const CameraPage = () => {
       userLocation: !!res.authSetting["scope.userLocation"],
     });
   };
+  const requestPermission = async () => {
+    const scopes = [
+      "scope.userLocation",
+      "scope.camera",
+      "scope.writePhotosAlbum",
+    ];
 
-  const requestPermissions = async () => {
-    try {
-      await requestPermission("scope.camera");
-      await requestPermission("scope.writePhotosAlbum");
-      await requestPermission("scope.userLocation");
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
-
-  const requestPermission = async (scope) => {
-    const res = await Taro.getSetting();
-    if (!res.authSetting[scope]) {
+    for (const scope of scopes) {
       try {
-        await Taro.authorize({ scope });
+        const res = await Taro.getSetting();
+        if (!res.authSetting[scope]) {
+          try {
+            await Taro.authorize({ scope });
+            setPermissions({
+              [scope.split(".")[1]]: true,
+            });
+            await Taro.cloud.callFunction({
+              name: "addUser",
+              data: {
+                [scope.split(".")[1].slice(0, 15)]: "已授权",
+              },
+            });
+          } catch (error) {
+            console.error(`${scope} 权限被拒绝`, error);
+            setPermissions({
+              [scope.split(".")[1]]: false,
+            });
+            await Taro.cloud.callFunction({
+              name: "addUser",
+              data: {
+                [scope.split(".")[1].slice(0, 15)]: "拒绝",
+              },
+            });
+          }
+        }
       } catch (error) {
-        console.error(`${scope} 权限被拒绝`, error);
-        throw error;
+        console.error(`获取 ${scope} 权限设置时出错`, error);
       }
     }
-    checkPermissions();
+
+    // 执行权限检查后的后续操作
     getAuth();
   };
 
@@ -290,6 +309,21 @@ const CameraPage = () => {
     setCameraContext(context);
     getAuth();
   }, [allAuth, permissions]);
+
+  useEffect(() => {
+    const convertedObject = Object.keys(permissions).reduce((acc, key) => {
+      if (permissions[key]) {
+        acc[key.slice(0, 15)] = "授权";
+      } else {
+        acc[key.slice(0, 15)] = "拒绝";
+      }
+      return acc;
+    }, {});
+    Taro.cloud.callFunction({
+      name: "addUser",
+      data: convertedObject,
+    });
+  }, [permissions]);
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
@@ -366,9 +400,9 @@ const CameraPage = () => {
     if (camera) {
       Taro.cloud.callFunction({
         name: "addUser",
-        data:{
+        data: {
           remark: "成功使用",
-        }
+        },
       });
 
       cameraContext?.takePhoto({
