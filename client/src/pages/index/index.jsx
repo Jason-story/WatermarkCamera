@@ -71,7 +71,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(1);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
@@ -411,6 +411,7 @@ const CameraPage = () => {
                 },
               ],
             },
+            // 时间
             {
               draw: (ctx, textConfig) => {
                 const { fontSize, color, text, position } = textConfig;
@@ -427,7 +428,7 @@ const CameraPage = () => {
                 },
               ],
             },
-
+            // 日期
             {
               draw: (ctx, config) => {
                 const { fontSize, color, text, position } = config;
@@ -444,6 +445,7 @@ const CameraPage = () => {
                 },
               ],
             },
+            // 天气
             {
               draw: (ctx, weatherConfig) => {
                 const { fontSize, color, text, position } = weatherConfig;
@@ -466,25 +468,39 @@ const CameraPage = () => {
                 },
               ],
             },
+            // 位置
             {
               draw: (ctx, locationConfig) => {
                 const { fontSize, color, text, position } = locationConfig;
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
+
+                const maxLength = 16;
+                const firstLine = text.slice(0, maxLength);
+                const secondLine =
+                  text.length > maxLength ? text.slice(maxLength) : "";
+
+                ctx.fillText(firstLine, ...position);
+                if (secondLine) {
+                  ctx.fillText(secondLine, position[0], position[1] + 25); // 15是行高，可以根据需要调整
+                }
               },
               args: [
                 {
                   fontSize: 16,
                   color: "white",
                   text: locationName,
-                  position: [0, 90],
+                  position: [0, 80],
                 },
               ],
             },
+            // 经纬度
             {
               draw: (ctx, coordinateConfig) => {
-                const { fontSize, color, text, position } = coordinateConfig;
+                let { fontSize, color, text, position } = coordinateConfig;
+                if (locationName.length > 16) {
+                  position = [position[0], position[1] + 25];
+                }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
                 ctx.fillText(text, ...position);
@@ -498,7 +514,7 @@ const CameraPage = () => {
                       ? "经纬度: " +
                         (latitude?.toFixed(5) + ", " + longitude?.toFixed(5))
                       : "",
-                  position: [0, 115],
+                  position: [0, 105],
                 },
               ],
             },
@@ -523,8 +539,9 @@ const CameraPage = () => {
             },
           ],
           img: Shuiyin1,
-          width: 330,
-          height: 120,
+          width: 280,
+          // height: 110,
+          height: locationName.length > 16 ? 140 : 110,
         },
       ],
       [
