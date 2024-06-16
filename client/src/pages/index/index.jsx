@@ -82,7 +82,7 @@ const CameraPage = () => {
   const [showAddMyApp, setAddMyAppShow] = useState(true);
   const [firstModal, setShowFirstModal] = useState(false);
   const [hideJw, setHideJw] = useState(true);
-
+  var cloud = "";
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
     const weekDays = [
@@ -98,6 +98,22 @@ const CameraPage = () => {
     const weekday = date.getDay(); // 获取星期几的数字表示，0代表星期日，1代表星期一，依此类推
     return weekDays[weekday];
   }
+
+  useEffect(() => {
+    const init = async () => {
+      await Taro.cloud.init({
+        env: "sy-4gecj2zw90583b8b",
+      });
+
+      Taro.cloud.callFunction({
+        name: "addUser",
+        success: function (res) {
+          console.log("addUser: ", res);
+        },
+      });
+    };
+    init();
+  }, []);
 
   const handleDateChange = (e) => {
     const [year, month, day] = e.detail.value.split("-");
@@ -348,16 +364,26 @@ const CameraPage = () => {
       return;
     }
     if (camera) {
+      Taro.cloud.callFunction({
+        name: "addUser",
+        data:{
+          remark: "成功使用",
+        }
+      });
+
       cameraContext?.takePhoto({
         zoom: zoomLevel,
+        quality: "low",
         success: (path) => {
-          Taro.navigateTo({
-            url:
-              "/pages/result/index?bg=" +
-              path.tempImagePath +
-              "&mask=" +
-              canvasImg,
-          });
+          setTimeout(() => {
+            Taro.navigateTo({
+              url:
+                "/pages/result/index?bg=" +
+                path.tempImagePath +
+                "&mask=" +
+                canvasImg,
+            });
+          }, 200);
         },
         fail: (error) => {},
       });
@@ -660,7 +686,7 @@ const CameraPage = () => {
               draw: (ctx, coordinateConfig) => {
                 let { fontSize, color, text, position } = coordinateConfig;
                 if (locationName.length > 16) {
-                  position = [position[0], position[1] + 30];
+                  position = [position[0], position[1] + 27];
                 }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
@@ -923,7 +949,6 @@ const CameraPage = () => {
     currentShuiyinIndex,
     canvasConfigState.length,
   ]);
-
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
   };
@@ -937,7 +962,6 @@ const CameraPage = () => {
         .catch(() => {
           // 用户第一次访问小程序，显示弹窗
           setShowFirstModal(true);
-
           // 设置标志位，表示用户已经访问过小程序
           Taro.setStorage({ key: "hasVisited", data: true });
         });
@@ -950,6 +974,7 @@ const CameraPage = () => {
         {permissions.camera && (
           <Camera
             className="camera"
+            resolution="high"
             devicePosition={devicePosition}
             flash={shanguangflag}
             onError={cameraError}
@@ -1100,7 +1125,6 @@ const CameraPage = () => {
           }}
           style={{
             background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
-
             color: "white",
             border: "none",
             borderRadius: "25px",
@@ -1114,7 +1138,6 @@ const CameraPage = () => {
         >
           抖音去水印
         </Button>
-
         <Button openType="share" className="share-btn" type="button">
           <Text> 分享好友</Text>
           <View id="container-stars">
@@ -1129,7 +1152,6 @@ const CameraPage = () => {
       </View>
       {allAuth && (
         <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
-          {/* ******************************* */}
           <Canvas
             canvas-id="fishCanvas"
             className={canvasImg ? "hideCanvas" : ""}
@@ -1168,31 +1190,8 @@ const CameraPage = () => {
             </View>
             <View>• 无广告</View>
             <View>• 高清图片</View>
-            <View className="txt1">
-              {/* <View style={{ marginBottom: "20px", color: "#000" }}> */}
-              详细信息请咨询客服
-              {/* </View> */}
-              <View>
-                {/* <button
-                  openType="contact"
-                  style={{
-                    background: "linear-gradient(45deg,#f0b532, #f0b532)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "25px",
-                    padding: "0 0",
-                    fontSize: "28rpx",
-                    cursor: "pointer",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    width: "50%",
-                  }}
-                  type="default"
-                  className="guide-btn"
-                >
-                  客服
-                </button> */}
-              </View>
-            </View>
+            <View>• 无限生成水印图片</View>
+            <View className="txt1">详细信息请咨询客服</View>
           </View>
         </AtModalContent>
         <AtModalAction>

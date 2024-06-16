@@ -25,6 +25,7 @@ const MergeCanvas = () => {
       });
     });
   };
+
   const drawImages = async () => {
     try {
       // 获取第一张图片的信息
@@ -62,6 +63,8 @@ const MergeCanvas = () => {
       setTimeout(async () => {
         try {
           const { tempFilePath } = await Taro.canvasToTempFilePath({
+            fileType: 'jpg',
+            quality: 0.8, // 设置图片质量为30%
             canvasId: "mergeCanvas",
           });
           saveImage(tempFilePath);
@@ -69,14 +72,9 @@ const MergeCanvas = () => {
           console.error("保存图片失败:", error);
         }
       }, 300); // 延迟100毫秒
-
-      // const { tempFilePath } = await Taro.canvasToTempFilePath({
-      //   canvasId: "mergeCanvas",
-      // });
-
       saveImage(tempFilePath);
     } catch (err) {
-      console.error("绘制图片出错:", error);
+      // console.error("绘制图片出错:", error);
     }
   };
 
