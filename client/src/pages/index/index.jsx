@@ -531,7 +531,6 @@ const CameraPage = () => {
         {
           path: [
             // 背景
-
             {
               draw: (ctx, rectConfig) => {
                 const { width, height, color } = rectConfig;
@@ -596,7 +595,10 @@ const CameraPage = () => {
             // 日期
             {
               draw: (ctx, config) => {
-                const { fontSize, color, text, position } = config;
+                let { fontSize, color, text, position } = config;
+                if (locationName.length > 16) {
+                  position = [position[0], position[1] + 20];
+                }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
                 ctx.fillText(text, ...position);
@@ -616,7 +618,16 @@ const CameraPage = () => {
                 const { fontSize, color, text, position } = locationConfig;
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
-                ctx.fillText(text, ...position);
+
+                const maxLength = 16;
+                const firstLine = text.slice(0, maxLength);
+                const secondLine =
+                  text.length > maxLength ? text.slice(maxLength) : "";
+
+                ctx.fillText(firstLine, ...position);
+                if (secondLine) {
+                  ctx.fillText(secondLine, position[0], position[1] + 25); // 15是行高，可以根据需要调整
+                }
               },
               args: [
                 {
@@ -630,7 +641,10 @@ const CameraPage = () => {
             // 经纬度
             {
               draw: (ctx, coordinateConfig) => {
-                const { fontSize, color, text, position } = coordinateConfig;
+                let { fontSize, color, text, position } = coordinateConfig;
+                if (locationName.length > 16) {
+                  position = [position[0], position[1] + 30];
+                }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
                 ctx.fillText(text, ...position);
@@ -651,11 +665,14 @@ const CameraPage = () => {
             // 黄色线
             {
               draw: (ctx, lineConfig) => {
-                const { lineWidth, color, start, end } = lineConfig;
+                let { lineWidth, color, start, end } = lineConfig;
                 ctx.setLineWidth(lineWidth);
                 ctx.setStrokeStyle(color);
                 ctx.beginPath();
                 ctx.moveTo(...start);
+                if (locationName.length > 16) {
+                  end = [end[0], end[1] + 20];
+                }
                 ctx.lineTo(...end);
                 ctx.stroke();
               },
@@ -671,8 +688,8 @@ const CameraPage = () => {
             },
           ],
           img: Shuiyin2,
-          width: 330,
-          height: 120,
+          width: 280,
+          height: locationName.length > 16 ? 150 : 120,
         },
       ],
       // -----------------------------------------
@@ -895,24 +912,13 @@ const CameraPage = () => {
   };
   useEffect(() => {
     if (allAuth) {
-      // 检查本地存储中是否有记录
-      // const isFirstVisit = Taro.getStorageSync("isFirstVisit");
-
-      // // 如果没有记录，说明是第一次进入
-      // if (!isFirstVisit) {
-      //   setShowFirstModal(true);
-      // }
-
       Taro.getStorage({ key: "hasVisited" })
         .then(() => {
           // 用户已经访问过小程序，不显示弹窗
           setShowFirstModal(false);
-
-          // setIsFirstVisit(false);
         })
         .catch(() => {
           // 用户第一次访问小程序，显示弹窗
-          // setIsFirstVisit(true);
           setShowFirstModal(true);
 
           // 设置标志位，表示用户已经访问过小程序
@@ -1284,7 +1290,7 @@ const CameraPage = () => {
                   <Input
                     className="input"
                     value={locationName}
-                    maxlength={10}
+                    maxlength={30}
                     clear={true}
                     onInput={(e) => {
                       debounce(setLocationName(e.detail.value), 100);
