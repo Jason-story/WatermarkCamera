@@ -6,15 +6,18 @@ cloud.init();
 
 // 获取数据库引用
 const db = cloud.database();
+const _ = db.command;
 
 // 云函数入口函数
 exports.main = async (event, context) => {
     const wxContext = cloud.getWXContext(); 
     const { OPENID } = wxContext;
 
+    const transaction = await db.startTransaction();
+
     try {
         // 查询数据库中是否已存在该 openid 的记录
-        const userCheck = await db
+        const userCheck = await transaction
             .collection('users')
             .where({
                 openid: OPENID
@@ -28,11 +31,12 @@ exports.main = async (event, context) => {
                 ...event,
             };
             if (event.remark === '成功使用') {
-                data.times = db.command.inc(1);
+                data.times = _.inc(1);
             }
             // 如果记录存在，则更新该记录
             const openId = userCheck.data[0]._id;
-            const res = await db.collection('users').doc(openId).update({ data });
+            const res = await transaction.collection('users').doc(openId).update({ data });
+            await transaction.commit();
             return {
                 success: true,
                 data: res,
@@ -40,7 +44,7 @@ exports.main = async (event, context) => {
             };
         } else {
             // 如果记录不存在，则插入新记录
-            const res = await db.collection('users').add({
+            const res = await transaction.collection('users').add({
                 data: {
                     openid: OPENID,
                     _createTime: +new Date(), // 第一次登录时间
@@ -48,6 +52,7 @@ exports.main = async (event, context) => {
                     times: 0
                 }
             });
+            await transaction.commit();
             return {
                 success: true,
                 data: res,
@@ -55,6 +60,7 @@ exports.main = async (event, context) => {
             };
         }
     } catch (e) {
+        await transaction.rollback();
         return {
             success: false,
             errorMessage: e.message

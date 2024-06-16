@@ -8,6 +8,7 @@ import "./index.scss";
 import restart from "../../images/restart.png";
 
 const screenWidth = Taro.getSystemInfoSync().screenWidth;
+let interstitialAd = null;
 
 const MergeCanvas = () => {
   const [imagePath, setImagePath] = useState("");
@@ -63,7 +64,7 @@ const MergeCanvas = () => {
       setTimeout(async () => {
         try {
           const { tempFilePath } = await Taro.canvasToTempFilePath({
-            fileType: 'jpg',
+            fileType: "jpg",
             quality: 0.8, // 设置图片质量为30%
             canvasId: "mergeCanvas",
           });
@@ -79,6 +80,11 @@ const MergeCanvas = () => {
   };
 
   const saveImage = (tempFilePath) => {
+    if (interstitialAd) {
+      interstitialAd.show().catch((err) => {
+        console.error("插屏广告显示失败", err);
+      });
+    }
     setImagePath(tempFilePath);
     Taro.saveImageToPhotosAlbum({
       filePath: tempFilePath,
@@ -100,6 +106,16 @@ const MergeCanvas = () => {
     });
   };
   useEffect(() => {
+    if (wx.createInterstitialAd) {
+      interstitialAd = wx.createInterstitialAd({
+        adUnitId: "adunit-16f07f02a3feec0a",
+      });
+      interstitialAd.onLoad(() => {});
+      interstitialAd.onError((err) => {
+        console.error("插屏广告加载失败", err);
+      });
+      interstitialAd.onClose(() => {});
+    }
     drawImages();
   }, []);
 

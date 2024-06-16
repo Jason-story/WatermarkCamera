@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Camera,
@@ -9,6 +9,7 @@ import {
   Switch,
   Picker,
   Input,
+  AdCustom,
 } from "@tarojs/components";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import {
@@ -242,7 +243,30 @@ const CameraPage = () => {
       },
     });
   };
+  let interstitialAd = null;
   useEffect(() => {
+    // 若在开发者工具中无法预览广告，请切换开发者工具中的基础库版本
+    // 在页面中定义插屏广告
+
+    // 在页面onLoad回调事件中创建插屏广告实例
+    if (wx.createInterstitialAd) {
+      interstitialAd = wx.createInterstitialAd({
+        adUnitId: "adunit-39ab5f712a4521b4",
+      });
+      interstitialAd.onLoad(() => {});
+      interstitialAd.onError((err) => {
+        console.error("插屏广告加载失败", err);
+      });
+      interstitialAd.onClose(() => {});
+    }
+
+    // 在适合的场景显示插屏广告
+    if (interstitialAd) {
+      interstitialAd.show().catch((err) => {
+        console.error("插屏广告显示失败", err);
+      });
+    }
+
     checkPermissions();
     requestPermission();
   }, []);
@@ -1274,29 +1298,38 @@ const CameraPage = () => {
           <View className="shuiyin-list">
             {canvasConfigState.map((item, index) => {
               return (
-                <View
-                  className="shuiyin-item"
-                  key={index}
-                  onClick={() => {
-                    setCurrentShuiyinIndex(index);
-                  }}
-                >
-                  <View className="shuiyin-item-img">
-                    <Image mode="aspectFit" src={item[0].img}></Image>
-                  </View>
-                  {currentShuiyinIndex === index && (
-                    <View className="shuiyin-item-cover">
-                      <Button
-                        onClick={() => {
-                          setEdit(true);
-                          updateShuiyinIndex(index);
-                        }}
-                      >
-                        编辑
-                      </Button>
+                <React.Fragment key={index}>
+                  {index === 1 && (
+                    <View className="extra-view">
+                      <AdCustom
+                        unitId="adunit-d0875afa048b3342"
+                        style={{ width: "90%!important" }}
+                      />
                     </View>
                   )}
-                </View>
+                  <View
+                    className="shuiyin-item"
+                    onClick={() => {
+                      setCurrentShuiyinIndex(index);
+                    }}
+                  >
+                    <View className="shuiyin-item-img">
+                      <Image mode="aspectFit" src={item[0].img}></Image>
+                    </View>
+                    {currentShuiyinIndex === index && (
+                      <View className="shuiyin-item-cover">
+                        <Button
+                          onClick={() => {
+                            setEdit(true);
+                            updateShuiyinIndex(index);
+                          }}
+                        >
+                          编辑
+                        </Button>
+                      </View>
+                    )}
+                  </View>
+                </React.Fragment>
               );
             })}
           </View>
