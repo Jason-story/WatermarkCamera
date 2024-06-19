@@ -1,5 +1,5 @@
 export default {
-  pages: ["pages/index/index", "pages/result/index"],
+  pages: ["pages/index/index", "pages/result/index","pages/me/index"],
   "requiredPrivateInfos": [
     "getLocation"
   ],

@@ -29,6 +29,7 @@ const MergeCanvas = () => {
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
   const [isShowModal, setIsShowModal] = useState(false);
+  const [isShowTimesModal, setIsShowTimesModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
 
   const drawCanvas = (ctx) => {
@@ -77,7 +78,7 @@ const MergeCanvas = () => {
         try {
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
-            quality: 0.5, // 设置图片质量为30%
+            quality: userInfo.type === "default" ? 0.5 : 1, // 设置图片质量为30%
             canvasId: "mergeCanvas",
           });
           saveImage(tempFilePath);
@@ -120,6 +121,11 @@ const MergeCanvas = () => {
         },
       });
     };
+    if (userInfo.times >= 60 && userInfo.type === "default") {
+      setIsShowTimesModal(true)
+      return;
+    }
+
     // 会员直接保存 无广告
     if (userInfo.type !== "default") {
       save();
@@ -155,15 +161,19 @@ const MergeCanvas = () => {
     }
   };
   useEffect(() => {
-    Taro.cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        setUserInfo(res.result.data);
-      },
-    });
-
-    drawImages();
+    const getData = async () => {
+      await Taro.cloud.callFunction({
+        name: "addUser",
+        success: function (res) {
+          setUserInfo(res.result.data);
+        },
+      });
+    };
+    getData();
   }, []);
+  useEffect(() => {
+    userInfo.type && drawImages();
+  }, [userInfo]);
 
   Taro.useShareAppMessage((res) => {
     return {
@@ -174,7 +184,7 @@ const MergeCanvas = () => {
   });
 
   return (
-    <View className="container">
+    <View className="container result">
       <canvas
         canvas-id="mergeCanvas"
         style={{
@@ -327,6 +337,31 @@ const MergeCanvas = () => {
               style={{ flex: 1 }}
             >
               观看广告
+            </Button>
+          </AtModalAction>
+        </AtModal>
+        <AtModal isOpened={isShowTimesModal} closeOnClickOverlay={false}>
+          <AtModalHeader>
+            <Text>提示</Text>
+          </AtModalHeader>
+          <AtModalContent style={{minHeight:"auto"}}>
+            <View >
+              <View>
+                免费额度已用完，请联系客服开通会员
+              </View>
+            </View>
+          </AtModalContent>
+          <AtModalAction>
+            <Button
+              onClick={() => {
+                setIsShowTimesModal(false);
+              }}
+              style={{ flex: 1 }}
+            >
+              关闭
+            </Button>
+            <Button openType="contact" style={{ flex: 1 }}>
+              客服
             </Button>
           </AtModalAction>
         </AtModal>

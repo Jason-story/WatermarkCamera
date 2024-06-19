@@ -113,7 +113,6 @@ const CameraPage = () => {
         name: "addUser",
         success: function (res) {
           setUserInfo(res.result.data);
-          console.log("res.result.data: ", res.result.data);
         },
       });
     };
@@ -408,7 +407,7 @@ const CameraPage = () => {
     if (camera) {
       cameraContext?.takePhoto({
         zoom: zoomLevel,
-        quality: "low",
+        quality: userInfo.type === "default" ? "low" :"original",
         success: (path) => {
           setTimeout(() => {
             Taro.navigateTo({
@@ -1012,6 +1011,7 @@ const CameraPage = () => {
             resolution="high"
             devicePosition={devicePosition}
             flash={shanguangflag}
+            frameSize="large"
             onError={cameraError}
           />
         )}
@@ -1134,7 +1134,12 @@ const CameraPage = () => {
           </View>
           <View className="xiangce kefu">
             <Button
-              openType="contact"
+              // openType="contact"
+              onClick={()=>{
+                Taro.navigateTo({
+                  url: "/pages/me/index",
+                });
+              }}
               style={{
                 background: "none",
                 color: "inherit",
@@ -1148,7 +1153,7 @@ const CameraPage = () => {
             >
               <Image src={KefuIcon} className="xiangceIcon"></Image>
             </Button>
-            <Text>客服</Text>
+            <Text>我的</Text>
           </View>
         </View>
       </View>
@@ -1227,7 +1232,7 @@ const CameraPage = () => {
             <View>
               • 定制您专属的水印样式，1:1完美复刻，解决您的考勤打卡难题
             </View>
-            <View>• 无广告</View>
+            <View>• 无广告（封面广告除外）</View>
             <View>• 高清图片</View>
             <View>• 无限生成水印图片</View>
             <View className="txt1">详细信息请咨询客服</View>
