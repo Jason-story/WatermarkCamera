@@ -9,8 +9,10 @@ import {
   Switch,
   Picker,
   Input,
+  Ad,
   AdCustom,
 } from "@tarojs/components";
+
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import {
   AtButton,
@@ -302,9 +304,6 @@ const CameraPage = () => {
             });
             await Taro.cloud.callFunction({
               name: "addUser",
-              data: {
-                [scope.split(".")[1].slice(0, 15)]: "已授权",
-              },
             });
           } catch (error) {
             console.error(`${scope} 权限被拒绝`, error);
@@ -313,9 +312,6 @@ const CameraPage = () => {
             });
             await Taro.cloud.callFunction({
               name: "addUser",
-              data: {
-                [scope.split(".")[1].slice(0, 15)]: "拒绝",
-              },
             });
           }
         }
@@ -334,20 +330,6 @@ const CameraPage = () => {
     getAuth();
   }, [allAuth, permissions]);
 
-  useEffect(() => {
-    const convertedObject = Object.keys(permissions).reduce((acc, key) => {
-      if (permissions[key]) {
-        acc[key.slice(0, 15)] = "授权";
-      } else {
-        acc[key.slice(0, 15)] = "拒绝";
-      }
-      return acc;
-    }, {});
-    Taro.cloud.callFunction({
-      name: "addUser",
-      data: convertedObject,
-    });
-  }, [permissions]);
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
@@ -413,7 +395,7 @@ const CameraPage = () => {
     });
   };
 
-  const takePhoto = (camera = true, path) => {
+  const takePhoto = async (camera = true, path) => {
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -422,12 +404,7 @@ const CameraPage = () => {
       return;
     }
     if (camera) {
-      Taro.cloud.callFunction({
-        name: "addUser",
-        data: {
-          remark: "成功使用",
-        },
-      });
+
 
       cameraContext?.takePhoto({
         zoom: zoomLevel,
@@ -439,7 +416,7 @@ const CameraPage = () => {
                 "/pages/result/index?bg=" +
                 path.tempImagePath +
                 "&mask=" +
-                canvasImg,
+                canvasImg
             });
           }, 200);
         },
@@ -1098,6 +1075,7 @@ const CameraPage = () => {
           <Image src={AddMyApp}></Image>
         </View>
       )}
+      <ad-custom unit-id="adunit-ba74b4bc4303c143"></ad-custom>
       <View className="tools-bar">
         <View className="tools-bar-inner">
           <View className="xiangce">
@@ -1208,6 +1186,7 @@ const CameraPage = () => {
           </View>
         </Button>
       </View>
+      <View></View>
       {allAuth && (
         <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
           <Canvas

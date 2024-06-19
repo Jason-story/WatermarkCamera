@@ -3,7 +3,17 @@ import React, { useEffect, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
-
+import {
+  AtButton,
+  AtModal,
+  AtToast,
+  AtCard,
+  AtSwitch,
+  AtModalHeader,
+  AtModalContent,
+  AtModalAction,
+  AtFloatLayout,
+} from "taro-ui";
 import "./index.scss";
 import restart from "../../images/restart.png";
 
@@ -11,13 +21,14 @@ const screenWidth = Taro.getSystemInfoSync().screenWidth;
 let interstitialAd = null;
 
 const MergeCanvas = () => {
-  const [imagePath, setImagePath] = useState("");
-  const [imageWidth, setImageWidth] = useState(0);
-  const [imageHeight, setImageHeight] = useState(0);
-
   Taro.getCurrentInstance().router.params;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
+
+  const [imagePath, setImagePath] = useState("");
+  const [imageWidth, setImageWidth] = useState(0);
+  const [imageHeight, setImageHeight] = useState(0);
+  const [isShowModal, setIsShowModal] = useState(false);
 
   const drawCanvas = (ctx) => {
     return new Promise((resolve, reject) => {
@@ -65,7 +76,7 @@ const MergeCanvas = () => {
         try {
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
-            quality: 0.8, // 设置图片质量为30%
+            quality: 0.5, // 设置图片质量为30%
             canvasId: "mergeCanvas",
           });
           saveImage(tempFilePath);
@@ -78,44 +89,117 @@ const MergeCanvas = () => {
       // console.error("绘制图片出错:", error);
     }
   };
+  let videoAd = null;
 
-  const saveImage = (tempFilePath) => {
-    if (interstitialAd) {
-      interstitialAd.show().catch((err) => {
-        console.error("插屏广告显示失败", err);
-      });
-    }
+  const saveImage = async (tempFilePath) => {
     setImagePath(tempFilePath);
-    Taro.saveImageToPhotosAlbum({
-      filePath: tempFilePath,
-      success: () => {
-        Taro.showToast({
-          title: "保存成功",
-          icon: "success",
-          duration: 2000,
-        });
-      },
-      fail: (error) => {
-        console.log("保存失败", error);
-        Taro.showToast({
-          title: "保存失败",
-          icon: "none",
-          duration: 2000,
-        });
-      },
+
+    const userData = await Taro.cloud.callFunction({
+      name: "addUser",
+      // data: {
+      // remark: "成功使用",
+      // },
     });
-  };
-  useEffect(() => {
+    // 激励广告
+    if (userData.result.data.todayUsageCount >= 5) {
+      setIsShowModal(true);
+      return;
+    }
+
     if (wx.createInterstitialAd) {
       interstitialAd = wx.createInterstitialAd({
         adUnitId: "adunit-16f07f02a3feec0a",
       });
-      interstitialAd.onLoad(() => {});
+      interstitialAd.onLoad(() => {
+        console.log(333)
+      });
       interstitialAd.onError((err) => {
         console.error("插屏广告加载失败", err);
+        Taro.saveImageToPhotosAlbum({
+          filePath: tempFilePath,
+          success: async () => {
+            await Taro.cloud.callFunction({
+              name: "addUser",
+              data: {
+                remark: "成功使用",
+              },
+            });
+            Taro.showToast({
+              title: "保存成功",
+              icon: "success",
+              duration: 2000,
+            });
+          },
+          fail: (error) => {
+            console.log("保存失败", error);
+            Taro.showToast({
+              title: "保存失败",
+              icon: "none",
+              duration: 2000,
+            });
+          },
+        });
       });
-      interstitialAd.onClose(() => {});
+      interstitialAd.onClose(() => {
+        console.log(3333333)
+        Taro.saveImageToPhotosAlbum({
+          filePath: tempFilePath,
+          success: async () => {
+            await Taro.cloud.callFunction({
+              name: "addUser",
+              data: {
+                remark: "成功使用",
+              },
+            });
+            Taro.showToast({
+              title: "保存成功",
+              icon: "success",
+              duration: 2000,
+            });
+          },
+          fail: (error) => {
+            console.log("保存失败", error);
+            Taro.showToast({
+              title: "保存失败",
+              icon: "none",
+              duration: 2000,
+            });
+          },
+        });
+      });
     }
+
+    if (interstitialAd) {
+      interstitialAd.show().catch((err) => {
+        console.error("插屏广告显示失败", err);
+        Taro.saveImageToPhotosAlbum({
+          filePath: tempFilePath,
+          success: async () => {
+            await Taro.cloud.callFunction({
+              name: "addUser",
+              data: {
+                remark: "成功使用",
+              },
+            });
+            Taro.showToast({
+              title: "保存成功",
+              icon: "success",
+              duration: 2000,
+            });
+          },
+          fail: (error) => {
+            console.log("保存失败", error);
+            Taro.showToast({
+              title: "保存失败",
+              icon: "none",
+              duration: 2000,
+            });
+          },
+        });
+      });
+    }
+  };
+  useEffect(() => {
     drawImages();
   }, []);
 
@@ -160,67 +244,129 @@ const MergeCanvas = () => {
           <View className="loader"></View>
         )}
       </View>
-
+      <ad-custom unit-id="adunit-400b4fabebcc3e5d"></ad-custom>
       <View
         className="bottom-btns"
         style={{
-          height: `calc(100vh - ${(screenWidth / imageWidth) * imageHeight}px)`,
+          padding: "0 10px",
+          marginTop: "10px",
         }}
       >
-        <View>
-          <Button
-            className="share-btn"
-            onClick={() => {
-              Taro.navigateBack({
-                delta: 1, // delta 参数表示需要返回的页面数，默认为1
-              });
-            }}
-            style={{
-              background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
-              color: "white",
-              border: "none",
-              borderRadius: "30px",
-              padding: "5px 16px",
-              fontSize: "32rpx",
-              cursor: "pointer",
-              transition: "transform 0.2s, box-shadow 0.2s",
-              marginBottom: "30px",
-              width: "60%",
-            }}
-          >
-            重新拍摄
-          </Button>
+        <Button
+          className="share-btn"
+          onClick={() => {
+            Taro.navigateBack({
+              delta: 1, // delta 参数表示需要返回的页面数，默认为1
+            });
+          }}
+          style={{
+            background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
+            color: "white",
+            border: "none",
+            borderRadius: "30px",
+            padding: "5px 16px",
+            fontSize: "32rpx",
+            cursor: "pointer",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            marginRight: "10px",
+          }}
+        >
+          重新拍摄
+        </Button>
 
-          <Button openType="share" className="share-btn" type="button">
-            <Text> 分享好友</Text>
-            <View id="container-stars">
-              <View id="stars"></View>
+        <Button openType="share" className="share-btn" type="button">
+          <Text> 分享好友</Text>
+          <View id="container-stars">
+            <View id="stars"></View>
+          </View>
+
+          <View id="glow">
+            <View className="circle"></View>
+            <View className="circle"></View>
+          </View>
+        </Button>
+        <AtModal isOpened={isShowModal} closeOnClickOverlay={false}>
+          <AtModalHeader>
+            <Text>提示</Text>
+          </AtModalHeader>
+          <AtModalContent>
+            <View className="modal-list">
+              <View>
+                {" "}
+                您今日已使用5次，需要观看广告之后才可保存，或者联系客服开通会员免广告。
+              </View>
             </View>
+          </AtModalContent>
+          <AtModalAction>
+            <Button
+              onClick={() => {
+                setIsShowModal(false);
+              }}
+              style={{ flex: 1 }}
+            >
+              关闭
+            </Button>
+            <Button
+              onClick={() => {
+                if (wx.createRewardedVideoAd) {
+                  videoAd = wx.createRewardedVideoAd({
+                    adUnitId: "adunit-8e7c0d51dd273cd1",
+                  });
+                  videoAd.onLoad(() => {});
+                  videoAd.onError((err) => {
+                    console.error("激励视频光告加载失败", err);
+                  });
+                  videoAd.onClose((res) => {
+                    console.log("res: ", res);
+                    if (res.isEnded === true) {
+                      Taro.saveImageToPhotosAlbum({
+                        filePath: imagePath,
+                        success: async () => {
+                          setIsShowModal(false);
+                          await Taro.cloud.callFunction({
+                            name: "addUser",
+                            data: {
+                              remark: "成功使用",
+                            },
+                          });
+                          Taro.showToast({
+                            title: "保存成功",
+                            icon: "success",
+                            duration: 2000,
+                          });
+                        },
+                        fail: (error) => {
+                          console.log("保存失败", error);
+                          Taro.showToast({
+                            title: "保存失败",
+                            icon: "none",
+                            duration: 2000,
+                          });
+                        },
+                      });
+                    }
+                  });
+                }
 
-            <View id="glow">
-              <View className="circle"></View>
-              <View className="circle"></View>
-            </View>
-          </Button>
-          {/* <Button
-            className="share-btn"
-            openType="share"
-            style={{
-              background: "linear-gradient(45deg,#ff512f, #dd2476)",
-              color: "white",
-              border: "none",
-              borderRadius: "30px",
-              padding: "5px 16px",
-              fontSize: "32rpx",
-              cursor: "pointer",
-              transition: "transform 0.2s, box-shadow 0.2s",
-              width: "70%",
-
-            }}
-          >
-            分享好友
-          </Button> */}
-        </View>
+                // 用户触发广告后，显示激励视频广告
+                if (videoAd) {
+                  videoAd.show().catch(() => {
+                    // 失败重试
+                    videoAd
+                      .load()
+                      .then(() => videoAd.show())
+                      .catch((err) => {
+                        console.error("激励视频 广告显示失败", err);
+                      });
+                  });
+                }
+              }}
+              style={{ flex: 1 }}
+            >
+              观看广告
+            </Button>
+          </AtModalAction>
+        </AtModal>
       </View>
     </View>
   );

@@ -8,7 +8,7 @@ page {
 }
 .camera-box {
   position: relative;
-  height: 75%;
+  height: 70%;
   width: 100%;
 }
 .camera-box {
@@ -26,7 +26,7 @@ page {
 }
 .mask-box {
   position: absolute;
-  bottom: 25%;
+  bottom: 30%;
   left: 10px;
   &.top {
     bottom: 62%;
@@ -136,8 +136,7 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 40px;
-  margin-top: 20px;
+  padding: 0 20px;
   > view {
     width: 45%;
     text-align: center;
