@@ -29,6 +29,7 @@ const MergeCanvas = () => {
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
   const [isShowModal, setIsShowModal] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
 
   const drawCanvas = (ctx) => {
     return new Promise((resolve, reject) => {
@@ -93,113 +94,74 @@ const MergeCanvas = () => {
 
   const saveImage = async (tempFilePath) => {
     setImagePath(tempFilePath);
-
-    const userData = await Taro.cloud.callFunction({
-      name: "addUser",
-      // data: {
-      // remark: "成功使用",
-      // },
-    });
+    const save = () => {
+      Taro.saveImageToPhotosAlbum({
+        filePath: tempFilePath,
+        success: async () => {
+          await Taro.cloud.callFunction({
+            name: "addUser",
+            data: {
+              remark: "成功使用",
+            },
+          });
+          Taro.showToast({
+            title: "保存成功",
+            icon: "success",
+            duration: 2000,
+          });
+        },
+        fail: (error) => {
+          console.log("保存失败", error);
+          Taro.showToast({
+            title: "保存失败",
+            icon: "none",
+            duration: 2000,
+          });
+        },
+      });
+    };
+    // 会员直接保存 无广告
+    if (userInfo.type !== "default") {
+      save();
+      return;
+    }
     // 激励广告
-    if (userData.result.data.todayUsageCount >= 5) {
+    if (userInfo.todayUsageCount >= 5 && userInfo.type === "default") {
       setIsShowModal(true);
       return;
     }
 
-    if (wx.createInterstitialAd) {
+    if (wx.createInterstitialAd && userInfo.type === "default") {
       interstitialAd = wx.createInterstitialAd({
         adUnitId: "adunit-16f07f02a3feec0a",
       });
       interstitialAd.onLoad(() => {
-        console.log(333)
+        console.log(333);
       });
       interstitialAd.onError((err) => {
         console.error("插屏广告加载失败", err);
-        Taro.saveImageToPhotosAlbum({
-          filePath: tempFilePath,
-          success: async () => {
-            await Taro.cloud.callFunction({
-              name: "addUser",
-              data: {
-                remark: "成功使用",
-              },
-            });
-            Taro.showToast({
-              title: "保存成功",
-              icon: "success",
-              duration: 2000,
-            });
-          },
-          fail: (error) => {
-            console.log("保存失败", error);
-            Taro.showToast({
-              title: "保存失败",
-              icon: "none",
-              duration: 2000,
-            });
-          },
-        });
+        save();
       });
       interstitialAd.onClose(() => {
-        console.log(3333333)
-        Taro.saveImageToPhotosAlbum({
-          filePath: tempFilePath,
-          success: async () => {
-            await Taro.cloud.callFunction({
-              name: "addUser",
-              data: {
-                remark: "成功使用",
-              },
-            });
-            Taro.showToast({
-              title: "保存成功",
-              icon: "success",
-              duration: 2000,
-            });
-          },
-          fail: (error) => {
-            console.log("保存失败", error);
-            Taro.showToast({
-              title: "保存失败",
-              icon: "none",
-              duration: 2000,
-            });
-          },
-        });
+        save();
       });
     }
 
-    if (interstitialAd) {
+    if (interstitialAd && userInfo.type === "default") {
       interstitialAd.show().catch((err) => {
         console.error("插屏广告显示失败", err);
-        Taro.saveImageToPhotosAlbum({
-          filePath: tempFilePath,
-          success: async () => {
-            await Taro.cloud.callFunction({
-              name: "addUser",
-              data: {
-                remark: "成功使用",
-              },
-            });
-            Taro.showToast({
-              title: "保存成功",
-              icon: "success",
-              duration: 2000,
-            });
-          },
-          fail: (error) => {
-            console.log("保存失败", error);
-            Taro.showToast({
-              title: "保存失败",
-              icon: "none",
-              duration: 2000,
-            });
-          },
-        });
+        save();
       });
     }
   };
   useEffect(() => {
+    Taro.cloud.callFunction({
+      name: "addUser",
+      success: function (res) {
+        setUserInfo(res.result.data);
+      },
+    });
+
     drawImages();
   }, []);
 
@@ -244,12 +206,14 @@ const MergeCanvas = () => {
           <View className="loader"></View>
         )}
       </View>
-      <ad-custom unit-id="adunit-400b4fabebcc3e5d"></ad-custom>
+      {userInfo.type === "default" && (
+        <ad-custom unit-id="adunit-400b4fabebcc3e5d"></ad-custom>
+      )}
       <View
         className="bottom-btns"
         style={{
           padding: "0 10px",
-          marginTop: "10px",
+          marginTop: userInfo.type === "default" ? "10px" : "50px",
         }}
       >
         <Button
@@ -317,7 +281,6 @@ const MergeCanvas = () => {
                     console.error("激励视频光告加载失败", err);
                   });
                   videoAd.onClose((res) => {
-                    console.log("res: ", res);
                     if (res.isEnded === true) {
                       Taro.saveImageToPhotosAlbum({
                         filePath: imagePath,

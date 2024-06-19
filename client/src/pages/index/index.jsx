@@ -85,6 +85,7 @@ const CameraPage = () => {
   const [showAddMyApp, setAddMyAppShow] = useState(true);
   const [firstModal, setShowFirstModal] = useState(false);
   const [hideJw, setHideJw] = useState(true);
+  const [userInfo, setUserInfo] = useState({});
   var cloud = "";
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -111,7 +112,8 @@ const CameraPage = () => {
       Taro.cloud.callFunction({
         name: "addUser",
         success: function (res) {
-          console.log("addUser: ", res);
+          setUserInfo(res.result.data);
+          console.log("res.result.data: ", res.result.data);
         },
       });
     };
@@ -404,8 +406,6 @@ const CameraPage = () => {
       return;
     }
     if (camera) {
-
-
       cameraContext?.takePhoto({
         zoom: zoomLevel,
         quality: "low",
@@ -416,7 +416,7 @@ const CameraPage = () => {
                 "/pages/result/index?bg=" +
                 path.tempImagePath +
                 "&mask=" +
-                canvasImg
+                canvasImg,
             });
           }, 200);
         },
@@ -1075,7 +1075,9 @@ const CameraPage = () => {
           <Image src={AddMyApp}></Image>
         </View>
       )}
-      <ad-custom unit-id="adunit-ba74b4bc4303c143"></ad-custom>
+      {userInfo.type === "default" && (
+        <ad-custom unit-id="adunit-ba74b4bc4303c143"></ad-custom>
+      )}
       <View className="tools-bar">
         <View className="tools-bar-inner">
           <View className="xiangce">
@@ -1278,7 +1280,8 @@ const CameraPage = () => {
             {canvasConfigState.map((item, index) => {
               return (
                 <React.Fragment key={index}>
-                  {index === 1 && (
+                  {/* 会员免广告 */}
+                  {index === 1 && userInfo.type === "default" && (
                     <View className="extra-view">
                       <AdCustom
                         unitId="adunit-d0875afa048b3342"
