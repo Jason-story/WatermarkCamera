@@ -122,7 +122,7 @@ const MergeCanvas = () => {
       });
     };
     if (userInfo.times >= 60 && userInfo.type === "default") {
-      setIsShowTimesModal(true)
+      setIsShowTimesModal(true);
       return;
     }
 
@@ -136,29 +136,30 @@ const MergeCanvas = () => {
       setIsShowModal(true);
       return;
     }
+    save()
 
-    if (wx.createInterstitialAd && userInfo.type === "default") {
-      interstitialAd = wx.createInterstitialAd({
-        adUnitId: "adunit-16f07f02a3feec0a",
-      });
-      interstitialAd.onLoad(() => {
-        console.log(333);
-      });
-      interstitialAd.onError((err) => {
-        console.error("插屏广告加载失败", err);
-        save();
-      });
-      interstitialAd.onClose(() => {
-        save();
-      });
-    }
+    // if (wx.createInterstitialAd && userInfo.type === "default") {
+    //   interstitialAd = wx.createInterstitialAd({
+    //     adUnitId: "adunit-16f07f02a3feec0a",
+    //   });
+    //   interstitialAd.onLoad(() => {
+    //     console.log(333);
+    //   });
+    //   interstitialAd.onError((err) => {
+    //     console.error("插屏广告加载失败", err);
+    //     save();
+    //   });
+    //   interstitialAd.onClose(() => {
+    //     save();
+    //   });
+    // }
 
-    if (interstitialAd && userInfo.type === "default") {
-      interstitialAd.show().catch((err) => {
-        console.error("插屏广告显示失败", err);
-        save();
-      });
-    }
+    // if (interstitialAd && userInfo.type === "default") {
+    //   interstitialAd.show().catch((err) => {
+    //     console.error("插屏广告显示失败", err);
+    //     save();
+    //   });
+    // }
   };
   useEffect(() => {
     const getData = async () => {
@@ -191,6 +192,8 @@ const MergeCanvas = () => {
           position: "absolute",
           left: "-9999px",
           top: "-9999px",
+          minWidth:"100%",
+          minHeight:"50%",
           width: `${screenWidth}px`,
           height: `${(screenWidth / imageWidth) * imageHeight}px`,
         }}
@@ -199,6 +202,8 @@ const MergeCanvas = () => {
         className={!imagePath ? "hasLoading" : ""}
         style={{
           width: `${screenWidth}px`,
+          minWidth:"100%",
+          minHeight:"60vh",
           height: `${(screenWidth / imageWidth) * imageHeight}px`,
         }}
       >
@@ -344,11 +349,9 @@ const MergeCanvas = () => {
           <AtModalHeader>
             <Text>提示</Text>
           </AtModalHeader>
-          <AtModalContent style={{minHeight:"auto"}}>
-            <View >
-              <View>
-                免费额度已用完，请联系客服开通会员
-              </View>
+          <AtModalContent style={{ minHeight: "auto" }}>
+            <View>
+              <View>免费额度已用完，请联系客服开通会员</View>
             </View>
           </AtModalContent>
           <AtModalAction>

@@ -135,7 +135,6 @@ page {
   height: 8%;
   display: flex;
   justify-content: center;
-  align-items: center;
   padding: 0 20px;
   > view {
     width: 45%;
@@ -268,7 +267,7 @@ page {
 }
 .shuiyin-list {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 
@@ -279,12 +278,13 @@ page {
     margin-bottom: 40px;
   }
 }
+
 .shuiyin-item {
   position: relative;
-  width:95%;
+  width:48%;
   border-radius: 16px;
   margin-bottom: 40px;
-  height: 250px;
+  height: 200px;
   background: #aaa;
   overflow: hidden;
   .shuiyin-item-cover {
@@ -293,9 +293,6 @@ page {
     top:0;
     width:100%;
     height:100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: rgba(0,0,0,.4);
   }
   .shuiyin-item-img{
@@ -308,16 +305,19 @@ page {
 
   }
   image {
-    width: 70%;
+    width: 90%;
   }
   button {
-    width: 30%;
+    position: absolute;
+    right: 10px;
+    bottom:10px;
     display: inline-block;
-    padding: 4px 0px;
+    padding: 0px 30px;
     background-color: #ff6347; /* 橙红色背景 */
     color: #fff; /* 白色文字 */
     border: none;
     font-size: 30px;
+    line-height: 2;
   }
 }
 .input-item {
@@ -396,7 +396,7 @@ picker,.picker {
   border-radius: 80px;
   transition: 0.5s;
   height:90px;
-  width: 50%;
+  width: 100%;
   animation: gradient_301 5s ease infinite;
   border: double 8px transparent;
   background-image: linear-gradient(rgba(44, 44, 44, 0.1),rgb(44, 44, 44)),
@@ -417,7 +417,6 @@ picker,.picker {
     /* text-shadow: 0 0 2px white; */
   }
 }
-
 #container-stars {
   position: absolute;
   z-index: -1;

@@ -74,7 +74,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(2);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
@@ -786,161 +786,79 @@ const CameraPage = () => {
       // -----------------------------------------
       // -----------------------------------------
       // -----------------------------------------
-      // []
-      // [
-      //   {
-      //     path: [
-      //       // 背景
+      [
+        {
+          path: [
+            // 背景
+            {
+              draw: (ctx, rectConfig) => {
+                const { width, height, color, text } = rectConfig;
 
-      //       {
-      //         draw: (ctx, rectConfig) => {
-      //           const { width, height, color } = rectConfig;
+                // 设置矩形的颜色
+                ctx.setFillStyle(color);
 
-      //           // 设置矩形的颜色
-      //           ctx.setFillStyle(color);
+                // 绘制一个带10px圆角的指定宽高和颜色的矩形
+                const radius = 10; // 圆角半径
+                ctx.beginPath();
+                ctx.moveTo(radius, 0);
+                ctx.lineTo(width - radius, 0);
+                ctx.arcTo(width, 0, width, radius, radius);
+                ctx.lineTo(width, height - radius);
+                ctx.arcTo(width, height, width - radius, height, radius);
+                ctx.lineTo(radius, height);
+                ctx.arcTo(0, height, 0, height - radius, radius);
+                ctx.lineTo(0, radius);
+                ctx.arcTo(0, 0, radius, 0, radius);
+                ctx.closePath();
+                ctx.fill();
 
-      //           // 绘制一个带5px圆角的指定宽高和颜色的矩形
-      //           const radius = 5; // 圆角半径
-      //           ctx.beginPath();
-      //           ctx.moveTo(10 + radius, 0);
-      //           ctx.lineTo(10 + width - radius, 0);
-      //           ctx.arcTo(10 + width, 0, 10 + width, radius, radius);
-      //           ctx.lineTo(10 + width, height - radius);
-      //           ctx.arcTo(
-      //             10 + width,
-      //             height,
-      //             10 + width - radius,
-      //             height,
-      //             radius
-      //           );
-      //           ctx.lineTo(10 + radius, height);
-      //           ctx.arcTo(10, height, 10, height - radius, radius);
-      //           ctx.lineTo(10, radius);
-      //           ctx.arcTo(10, 0, 10 + radius, 0, radius);
-      //           ctx.closePath();
-      //           ctx.fill();
-      //           // 设置黄色矩形背景
-      //           ctx.setFillStyle("yellow");
-      //           ctx.fillRect(13, 3, 50, 33);
+                // 绘制顶部带圆角的蓝色背景
+                ctx.setFillStyle("rgb(10, 55, 132)");
+                ctx.beginPath();
+                ctx.moveTo(radius, 0);
+                ctx.lineTo(width - radius, 0);
+                ctx.arcTo(width, 0, width, radius, radius);
+                ctx.lineTo(width, 40);
+                ctx.lineTo(0, 40);
+                ctx.lineTo(0, radius);
+                ctx.arcTo(0, 0, radius, 0, radius);
+                ctx.closePath();
+                ctx.fill();
 
-      //           // 写入"打卡"文字
-      //           ctx.setFillStyle("black");
-      //           ctx.setFontSize(18);
-      //           ctx.fillText("打卡", 20, 28);
-      //         },
-      //         args: [
-      //           {
-      //             width: 150,
-      //             height: 40,
-      //             color: "white",
-      //           },
-      //         ],
-      //       },
-      //       // {
-      //       //   draw: (ctx, backgroundConfig) => {
-      //       //     const { color, rect } = backgroundConfig;
-      //       //     ctx.setFillStyle(color);
-      //       //     ctx.fillRect(...rect);
-      //       //   },
-      //       //   args: [{ color: "rgba(0, 0, 0, 0)", rect: [0, 0, 330, 120] }],
-      //       // },
-      //       // 时间
-      //       {
-      //         draw: (ctx, textConfig) => {
-      //           const { fontSize, color, text, position } = textConfig;
-      //           ctx.setFontSize(fontSize);
-      //           ctx.setFillStyle(color);
-      //           ctx.fillText(text, ...position);
-      //         },
-      //         args: [
-      //           {
-      //             fontSize: 24,
-      //             color: "#1895e6",
-      //             text: `${hours}:${minutes}`,
-      //             position: [82, 30],
-      //           },
-      //         ],
-      //       },
-      //       // 日期
-      //       {
-      //         draw: (ctx, config) => {
-      //           const { fontSize, color, text, position } = config;
-      //           ctx.setFontSize(fontSize);
-      //           ctx.setFillStyle(color);
-      //           ctx.fillText(text, ...position);
-      //         },
-      //         args: [
-      //           {
-      //             fontSize: 16,
-      //             color: "white",
-      //             text: `${year}年${month}月${day}日 ${weekly}`,
-      //             position: [22, 92],
-      //           },
-      //         ],
-      //       },
-      //       // 地址
-      //       {
-      //         draw: (ctx, locationConfig) => {
-      //           const { fontSize, color, text, position } = locationConfig;
-      //           ctx.setFontSize(fontSize);
-      //           ctx.setFillStyle(color);
-      //           ctx.fillText(text, ...position);
-      //         },
-      //         args: [
-      //           {
-      //             fontSize: 16,
-      //             color: "white",
-      //             text: locationName,
-      //             position: [22, 65],
-      //           },
-      //         ],
-      //       },
-      //       // 经纬度
-      //       {
-      //         draw: (ctx, coordinateConfig) => {
-      //           const { fontSize, color, text, position } = coordinateConfig;
-      //           ctx.setFontSize(fontSize);
-      //           ctx.setFillStyle(color);
-      //           ctx.fillText(text, ...position);
-      //         },
-      //         args: [
-      //           {
-      //             fontSize: 16,
-      //             color: "white",
-      //             text:
-      //               "经纬度: " +
-      //               (latitude??.toFixed(4) + ", " + longitude??.toFixed(4)),
-      //             position: [10, 115],
-      //           },
-      //         ],
-      //       },
-      //       // 黄色线
-      //       {
-      //         draw: (ctx, lineConfig) => {
-      //           const { lineWidth, color, start, end } = lineConfig;
-      //           ctx.setLineWidth(lineWidth);
-      //           ctx.setStrokeStyle(color);
-      //           ctx.beginPath();
-      //           ctx.moveTo(...start);
-      //           ctx.lineTo(...end);
-      //           ctx.stroke();
-      //         },
+                // 在蓝色背景上绘制黄色小圆点
+                ctx.setFillStyle("rgb(246, 196, 44)");
+                const centerX = 30;
+                const centerY = 20; // 蓝色背景高度的一半
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 6, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
 
-      //         args: [
-      //           {
-      //             lineWidth: 3,
-      //             color: "yellow",
-      //             start: [14, 50],
-      //             end: [14, 95],
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //     img: Shuiyin2,
-      //     width: 330,
-      //     height: 200,
-      //   },
-      // ],
+                // 在蓝色背景中居中显示文字
+                ctx.setFillStyle("white");
+                ctx.font = "bolder 16px sans-serif";
+                const textWidth = ctx.measureText(text).width;
+                const textX = (width - textWidth) / 2;
+                const textY = 25; // 文字居中显示
+                ctx.fillText(text, textX, textY);
+              },
+              args: [
+                {
+                  width: 250,
+                  height: locationName.length > 16 ? 180 : 180,
+                  color: "rgba(121, 121, 122,.6)",
+                  text: "字数补丁字数补丁字", // 替换为需要显示的文字
+                },
+              ],
+            }
+
+
+          ],
+          img: Shuiyin2,
+          width: 280,
+          height: locationName.length > 16 ? 180 : 150,
+        },
+      ],
     ];
     const ctx = Taro.createCanvasContext("fishCanvas");
 
@@ -1076,7 +994,7 @@ const CameraPage = () => {
         </View>
       )}
       {userInfo.type === "default" && (
-        <ad-custom unit-id="adunit-ba74b4bc4303c143"></ad-custom>
+        <ad-custom unit-id="adunit-ba74b4bc4303c143" style={{width:'100%'}}></ad-custom>
       )}
       <View className="tools-bar">
         <View className="tools-bar-inner">
@@ -1158,7 +1076,7 @@ const CameraPage = () => {
         </View>
       </View>
       <View className="bottom-btns">
-        <Button
+        {/* <Button
           className="share-btn"
           onClick={() => {
             wx.navigateToMiniProgram({
@@ -1180,7 +1098,7 @@ const CameraPage = () => {
           }}
         >
           抖音去水印
-        </Button>
+        </Button> */}
         <Button openType="share" className="share-btn" type="button">
           <Text> 分享好友</Text>
           <View id="container-stars">
@@ -1286,14 +1204,7 @@ const CameraPage = () => {
               return (
                 <React.Fragment key={index}>
                   {/* 会员免广告 */}
-                  {index === 1 && userInfo.type === "default" && (
-                    <View className="extra-view">
-                      <AdCustom
-                        unitId="adunit-d0875afa048b3342"
-                        style={{ width: "90%!important" }}
-                      />
-                    </View>
-                  )}
+
                   <View
                     className="shuiyin-item"
                     onClick={() => {
@@ -1316,6 +1227,14 @@ const CameraPage = () => {
                       </View>
                     )}
                   </View>
+                  {index === 1 && userInfo.type === "default" && (
+                    <View className="extra-view">
+                      <AdCustom
+                        unitId="adunit-d0875afa048b3342"
+                        style={{ width: "90%!important" }}
+                      />
+                    </View>
+                  )}
                 </React.Fragment>
               );
             })}

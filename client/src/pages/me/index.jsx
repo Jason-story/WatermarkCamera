@@ -30,6 +30,17 @@ const UserInfo = ({
   return (
     <View className="user-info">
       <View className="user-details">
+      <View className="user-item">
+          <Text className="label">我的等级</Text>
+          <Text
+            className="value"
+          >
+            {userType === "default" && "普通用户"}
+            {userType === "month" && "包月会员"}
+            {userType === "buyout" && "终身会员"}
+            {userType === "customize_month" && "定制包月会员"}
+          </Text>
+        </View>
         <View className="user-item">
           <Text className="label">我的ID</Text>
           <Text
