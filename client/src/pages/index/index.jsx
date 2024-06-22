@@ -37,9 +37,8 @@ import KefuIcon from "../../images/kefu.png";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import Shuiyin1 from "../../images/shuiyin-1.png";
 import Shuiyin2 from "../../images/shuiyin-2.png";
+import Shuiyin3 from "../../images/shuiyin-3.png";
 import AddMyApp from "../../images/add-my-app.png";
-
-// import canvasConfig from "./canvasConfig";
 import "./index.scss";
 
 const now = new Date();
@@ -63,9 +62,9 @@ const CameraPage = () => {
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
   const [vipModal, setVipModal] = useState(false);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [weather, setWeather] = useState(null);
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [weather, setWeather] = useState({ text: "", temperature: "" });
   const [canvasImg, setCanvasImg] = useState("");
   const [year, setYear] = useState(yearD);
   const [month, setMonth] = useState(monthD);
@@ -86,6 +85,7 @@ const CameraPage = () => {
   const [firstModal, setShowFirstModal] = useState(false);
   const [hideJw, setHideJw] = useState(true);
   const [userInfo, setUserInfo] = useState({});
+  const [title, setTitle] = useState("工程记录");
   var cloud = "";
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -169,7 +169,7 @@ const CameraPage = () => {
   useEffect(() => {
     allAuth && permissions.userLocation && !city && getLocation();
     longitude && latitude && fetchWeather(longitude, latitude);
-  }, [allAuth, permissions.userLocation, city, longitude, latitude]);
+  }, [allAuth, permissions, city, longitude, latitude]);
 
   const getLocation = () => {
     if (!permissions.userLocation) return;
@@ -177,7 +177,6 @@ const CameraPage = () => {
       type: "gcj02",
       isHighAccuracy: true,
       success: (res) => {
-        console.log("res: ", res);
         setLatitude(res.latitude);
         setLongitude(res.longitude);
         reverseGeocode(res.latitude, res.longitude);
@@ -303,17 +302,17 @@ const CameraPage = () => {
             setPermissions({
               [scope.split(".")[1]]: true,
             });
-            await Taro.cloud.callFunction({
-              name: "addUser",
-            });
+            // await Taro.cloud.callFunction({
+            //   name: "addUser",
+            // });
           } catch (error) {
             console.error(`${scope} 权限被拒绝`, error);
             setPermissions({
               [scope.split(".")[1]]: false,
             });
-            await Taro.cloud.callFunction({
-              name: "addUser",
-            });
+            // await Taro.cloud.callFunction({
+            //   name: "addUser",
+            // });
           }
         }
       } catch (error) {
@@ -327,9 +326,15 @@ const CameraPage = () => {
 
   useEffect(() => {
     const context = createCameraContext();
+    checkPermissions();
     setCameraContext(context);
     getAuth();
-  }, [allAuth, permissions]);
+  }, [
+    allAuth,
+    permissions.camera,
+    permissions.userLocation,
+    permissions.writePhotosAlbum,
+  ]);
 
   const getAuth = () => {
     Taro.getSetting().then((res) => {
@@ -397,6 +402,19 @@ const CameraPage = () => {
   };
 
   const takePhoto = async (camera = true, path) => {
+    // Taro.saveImageToPhotosAlbum({
+    //   filePath: canvasImg,
+    //   success: async () => {
+
+    //     Taro.showToast({
+    //       title: "保存成ww功",
+    //       icon: "success",
+    //       duration: 2000,
+    //     });
+    //   },
+    // });
+    // return
+
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -407,7 +425,7 @@ const CameraPage = () => {
     if (camera) {
       cameraContext?.takePhoto({
         zoom: zoomLevel,
-        quality: userInfo.type === "default" ? "low" :"original",
+        quality: userInfo.type === "default" ? "low" : "original",
         success: (path) => {
           setTimeout(() => {
             Taro.navigateTo({
@@ -458,6 +476,7 @@ const CameraPage = () => {
       [
         {
           path: [
+            // 背景
             {
               draw: (ctx, backgroundConfig) => {
                 const { color, rect } = backgroundConfig;
@@ -467,7 +486,7 @@ const CameraPage = () => {
               args: [
                 {
                   color: "rgba(0, 0, 0, 0)",
-                  rect: [0, 0, 330, 120],
+                  rect: [0, 0, 280.5, 102], // 330 * 0.85, 120 * 0.85
                 },
               ],
             },
@@ -481,10 +500,10 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  fontSize: 28,
+                  fontSize: 23.8, // 28 * 0.85
                   color: "white",
                   text: `${hours}:${minutes}`,
-                  position: [0, 40],
+                  position: [0, 34], // 40 * 0.85
                 },
               ],
             },
@@ -498,10 +517,10 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  fontSize: 18,
+                  fontSize: 15.3, // 18 * 0.85
                   color: "white",
                   text: `${year}年${month}月${day}日`,
-                  position: [88, 20],
+                  position: [74.8, 17], // 88 * 0.85, 20 * 0.85
                 },
               ],
             },
@@ -515,16 +534,10 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  fontSize: 18,
+                  fontSize: 15.3, // 18 * 0.85
                   color: "white",
-                  text:
-                    weekly +
-                    " " +
-                    weather?.text +
-                    " " +
-                    weather?.temperature +
-                    "℃",
-                  position: [88, 50],
+                  text: `${weekly} ${weather?.text} ${weather?.temperature}℃`,
+                  position: [74.8, 42.5], // 88 * 0.85, 50 * 0.85
                 },
               ],
             },
@@ -542,15 +555,15 @@ const CameraPage = () => {
 
                 ctx.fillText(firstLine, ...position);
                 if (secondLine) {
-                  ctx.fillText(secondLine, position[0], position[1] + 25); // 15是行高，可以根据需要调整
+                  ctx.fillText(secondLine, position[0], position[1] + 21.25); // 25 * 0.85
                 }
               },
               args: [
                 {
-                  fontSize: 16,
+                  fontSize: 13.6, // 16 * 0.85
                   color: "white",
                   text: locationName,
-                  position: [0, 80],
+                  position: [0, 68], // 80 * 0.85
                 },
               ],
             },
@@ -559,7 +572,7 @@ const CameraPage = () => {
               draw: (ctx, coordinateConfig) => {
                 let { fontSize, color, text, position } = coordinateConfig;
                 if (locationName.length > 16) {
-                  position = [position[0], position[1] + 25];
+                  position = [position[0], position[1] + 21.25]; // 25 * 0.85
                 }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
@@ -567,17 +580,18 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  fontSize: 16,
+                  fontSize: 13.6, // 16 * 0.85
                   color: "white",
                   text:
                     hideJw === true
                       ? "经纬度: " +
                         (latitude?.toFixed(5) + ", " + longitude?.toFixed(5))
                       : "",
-                  position: [0, 105],
+                  position: [0, 89.25], // 105 * 0.85
                 },
               ],
             },
+            // 黄色线
             {
               draw: (ctx, lineConfig) => {
                 const { lineWidth, color, start, end } = lineConfig;
@@ -590,18 +604,17 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  lineWidth: 4,
+                  lineWidth: 3.4, // 4 * 0.85
                   color: "yellow",
-                  start: [82, 0],
-                  end: [82, 55],
+                  start: [69.7, 0], // 82 * 0.85
+                  end: [69.7, 46.75], // 55 * 0.85
                 },
               ],
             },
           ],
           img: Shuiyin1,
-          width: 280,
-          // height: 110,
-          height: locationName.length > 16 ? 140 : 110,
+          width: 238, // 280 * 0.85
+          height: locationName.length > 16 ? 119 : 93.5, // 140 * 0.85, 110 * 0.85
         },
       ],
       [
@@ -615,39 +628,39 @@ const CameraPage = () => {
                 // 设置矩形的颜色
                 ctx.setFillStyle(color);
 
-                // 绘制一个带5px圆角的指定宽高和颜色的矩形
-                const radius = 5; // 圆角半径
+                // 绘制一个带4.25px圆角的指定宽高和颜色的矩形
+                const radius = 4.25; // 5 * 0.85 圆角半径
                 ctx.beginPath();
-                ctx.moveTo(10 + radius, 0);
-                ctx.lineTo(10 + width - radius, 0);
-                ctx.arcTo(10 + width, 0, 10 + width, radius, radius);
-                ctx.lineTo(10 + width, height - radius);
+                ctx.moveTo(8.5 + radius, 0); // 10 * 0.85
+                ctx.lineTo(8.5 + width - radius, 0);
+                ctx.arcTo(8.5 + width, 0, 8.5 + width, radius, radius);
+                ctx.lineTo(8.5 + width, height - radius);
                 ctx.arcTo(
-                  10 + width,
+                  8.5 + width,
                   height,
-                  10 + width - radius,
+                  8.5 + width - radius,
                   height,
                   radius
                 );
-                ctx.lineTo(10 + radius, height);
-                ctx.arcTo(10, height, 10, height - radius, radius);
-                ctx.lineTo(10, radius);
-                ctx.arcTo(10, 0, 10 + radius, 0, radius);
+                ctx.lineTo(8.5 + radius, height);
+                ctx.arcTo(8.5, height, 8.5, height - radius, radius);
+                ctx.lineTo(8.5, radius);
+                ctx.arcTo(8.5, 0, 8.5 + radius, 0, radius);
                 ctx.closePath();
                 ctx.fill();
                 // 设置黄色矩形背景
                 ctx.setFillStyle("yellow");
-                ctx.fillRect(13, 3, 50, 33);
+                ctx.fillRect(11.05, 2.55, 42.5, 28.05); // 13 * 0.85, 3 * 0.85, 50 * 0.85, 33 * 0.85
 
                 // 写入"打卡"文字
                 ctx.setFillStyle("black");
-                ctx.setFontSize(18);
-                ctx.fillText("打卡", 20, 28);
+                ctx.setFontSize(15.3); // 18 * 0.85
+                ctx.fillText("打卡", 17, 23.8); // 20 * 0.85, 28 * 0.85
               },
               args: [
                 {
-                  width: 150,
-                  height: 40,
+                  width: 127.5, // 150 * 0.85
+                  height: 34, // 40 * 0.85
                   color: "white",
                 },
               ],
@@ -662,10 +675,10 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  fontSize: 24,
+                  fontSize: 20.4, // 24 * 0.85
                   color: "#1895e6",
                   text: `${hours}:${minutes}`,
-                  position: [82, 30],
+                  position: [69.7, 25.5], // 82 * 0.85, 30 * 0.85
                 },
               ],
             },
@@ -674,7 +687,7 @@ const CameraPage = () => {
               draw: (ctx, config) => {
                 let { fontSize, color, text, position } = config;
                 if (locationName.length > 16) {
-                  position = [position[0], position[1] + 20];
+                  position = [position[0], position[1] + 17]; // 20 * 0.85
                 }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
@@ -682,10 +695,10 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  fontSize: 16,
+                  fontSize: 13.6, // 16 * 0.85
                   color: "white",
                   text: `${year}年${month}月${day}日 ${weekly}`,
-                  position: [22, 92],
+                  position: [18.7, 78.2], // 22 * 0.85, 92 * 0.85
                 },
               ],
             },
@@ -703,15 +716,15 @@ const CameraPage = () => {
 
                 ctx.fillText(firstLine, ...position);
                 if (secondLine) {
-                  ctx.fillText(secondLine, position[0], position[1] + 25); // 15是行高，可以根据需要调整
+                  ctx.fillText(secondLine, position[0], position[1] + 21.25); // 25 * 0.85
                 }
               },
               args: [
                 {
-                  fontSize: 16,
+                  fontSize: 13.6, // 16 * 0.85
                   color: "white",
                   text: locationName,
-                  position: [22, 65],
+                  position: [18.7, 55.25], // 22 * 0.85, 65 * 0.85
                 },
               ],
             },
@@ -720,7 +733,7 @@ const CameraPage = () => {
               draw: (ctx, coordinateConfig) => {
                 let { fontSize, color, text, position } = coordinateConfig;
                 if (locationName.length > 16) {
-                  position = [position[0], position[1] + 27];
+                  position = [position[0], position[1] + 22.95]; // 27 * 0.85
                 }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
@@ -728,14 +741,14 @@ const CameraPage = () => {
               },
               args: [
                 {
-                  fontSize: 16,
+                  fontSize: 13.6, // 16 * 0.85
                   color: "white",
                   text:
                     hideJw === true
                       ? "经纬度: " +
                         (latitude?.toFixed(5) + ", " + longitude?.toFixed(5))
                       : "",
-                  position: [10, 115],
+                  position: [8.5, 97.75], // 10 * 0.85, 115 * 0.85
                 },
               ],
             },
@@ -748,25 +761,24 @@ const CameraPage = () => {
                 ctx.beginPath();
                 ctx.moveTo(...start);
                 if (locationName.length > 16) {
-                  end = [end[0], end[1] + 20];
+                  end = [end[0], end[1] + 17]; // 20 * 0.85
                 }
                 ctx.lineTo(...end);
                 ctx.stroke();
               },
-
               args: [
                 {
-                  lineWidth: 3,
+                  lineWidth: 2.55, // 3 * 0.85
                   color: "yellow",
-                  start: [14, 50],
-                  end: [14, 95],
+                  start: [11.9, 42.5], // 14 * 0.85, 50 * 0.85
+                  end: [11.9, 80.75], // 14 * 0.85, 95 * 0.85
                 },
               ],
             },
           ],
           img: Shuiyin2,
-          width: 280,
-          height: locationName.length > 16 ? 150 : 120,
+          width: 238, // 280 * 0.85
+          height: locationName.length > 16 ? 127.5 : 102, // 150 * 0.85, 120 * 0.85
         },
       ],
       // -----------------------------------------
@@ -797,8 +809,8 @@ const CameraPage = () => {
                 // 设置矩形的颜色
                 ctx.setFillStyle(color);
 
-                // 绘制一个带10px圆角的指定宽高和颜色的矩形
-                const radius = 10; // 圆角半径
+                // 绘制一个带7.5px圆角的指定宽高和颜色的矩形
+                const radius = 7.5; // 10 * 0.75 圆角半径
                 ctx.beginPath();
                 ctx.moveTo(radius, 0);
                 ctx.lineTo(width - radius, 0);
@@ -818,8 +830,8 @@ const CameraPage = () => {
                 ctx.moveTo(radius, 0);
                 ctx.lineTo(width - radius, 0);
                 ctx.arcTo(width, 0, width, radius, radius);
-                ctx.lineTo(width, 40);
-                ctx.lineTo(0, 40);
+                ctx.lineTo(width, 30); // 40 * 0.75
+                ctx.lineTo(0, 30); // 40 * 0.75
                 ctx.lineTo(0, radius);
                 ctx.arcTo(0, 0, radius, 0, radius);
                 ctx.closePath();
@@ -827,36 +839,108 @@ const CameraPage = () => {
 
                 // 在蓝色背景上绘制黄色小圆点
                 ctx.setFillStyle("rgb(246, 196, 44)");
-                const centerX = 30;
-                const centerY = 20; // 蓝色背景高度的一半
+                const centerX = 15; // 20 * 0.75
+                const centerY = 15; // 20 * 0.75 蓝色背景高度的一半
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, 6, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY, 3, 0, Math.PI * 2); // 4 * 0.75
                 ctx.closePath();
                 ctx.fill();
 
                 // 在蓝色背景中居中显示文字
                 ctx.setFillStyle("white");
-                ctx.font = "bolder 16px sans-serif";
+                ctx.font = "bolder 13.5px sans-serif"; // 18 * 0.75
                 const textWidth = ctx.measureText(text).width;
-                const textX = (width - textWidth) / 2;
-                const textY = 25; // 文字居中显示
+                const textX = (width - textWidth + 7.5) / 2; // 10 * 0.75
+                const textY = 21.75; // 29 * 0.75 文字居中显示
                 ctx.fillText(text, textX, textY);
               },
               args: [
                 {
-                  width: 250,
-                  height: locationName.length > 16 ? 180 : 180,
-                  color: "rgba(121, 121, 122,.6)",
-                  text: "字数补丁字数补丁字", // 替换为需要显示的文字
+                  width: 187.5, // 250 * 0.75
+                  height: locationName.length > 16 ? 135 : 100, // 180 * 0.75
+                  color: "rgba(121, 121, 122, .8)",
+                  text: title, // 替换为需要显示的文字
                 },
               ],
-            }
+            },
+            // 时间
+            {
+              draw: (ctx, config) => {
+                let { fontSize, color, text, position } = config;
+                if (locationName.length > 16) {
+                  position = [position[0], position[1] + 15]; // 20 * 0.75
+                }
+                ctx.setFontSize(fontSize);
+                ctx.setFillStyle(color);
+                ctx.fillText(text, ...position);
+              },
+              args: [
+                {
+                  fontSize: 13.5, // 18 * 0.75
+                  color: "#000",
+                  text: `时   间：${year}.${month}.${day}  ${hours}:${minutes}`,
+                  position: [11.25, 48.75], // 15 * 0.75, 65 * 0.75
+                },
+              ],
+            },
+            // 天气
+            {
+              draw: (ctx, weatherConfig) => {
+                const { fontSize, color, text, position } = weatherConfig;
+                ctx.setFontSize(fontSize);
+                ctx.setFillStyle(color);
+                ctx.fillText(text, ...position);
+              },
+              args: [
+                {
+                  fontSize: 13.5, // 18 * 0.75
+                  color: "#000",
+                  text:
+                    "天   气：" +
+                    weather?.text +
+                    " " +
+                    weather?.temperature +
+                    "℃",
+                  position: [11.25, 67.5], // 15 * 0.75, 90 * 0.75
+                },
+              ],
+            },
+            // 地址
+            {
+              draw: (ctx, locationConfig) => {
+                const { fontSize, color, text, position, positionSecond } =
+                  locationConfig;
+                ctx.setFontSize(fontSize);
+                ctx.setFillStyle(color);
 
+                const maxLength = 9;
+                const firstLine = text.slice(0, maxLength);
+                const secondLine =
+                  text.length > maxLength ? text.slice(maxLength) : "";
 
+                ctx.fillText("地   点：" + firstLine, ...position);
+                if (secondLine) {
+                  ctx.fillText(
+                    secondLine,
+                    positionSecond[0],
+                    positionSecond[1] + 18.75
+                  ); // 25 * 0.75
+                }
+              },
+              args: [
+                {
+                  fontSize: 13.5, // 18 * 0.75
+                  color: "#000",
+                  text: locationName,
+                  position: [11.25, 86.25], // 15 * 0.75, 115 * 0.75
+                  positionSecond: [60, 86.25], // 80 * 0.75, 115 * 0.75
+                },
+              ],
+            },
           ],
-          img: Shuiyin2,
-          width: 280,
-          height: locationName.length > 16 ? 180 : 150,
+          img: Shuiyin3,
+          width: 190, // 280 * 0.75
+          height: locationName.length > 16 ? 135 : 110, // 180 * 0.75
         },
       ],
     ];
@@ -874,6 +958,7 @@ const CameraPage = () => {
           canvasId: "fishCanvas",
           success: (res) => {
             setCanvasImg(res.tempFilePath);
+
             // 这里可以将图片路径保存或用于展示
           },
           fail: (err) => {
@@ -890,6 +975,7 @@ const CameraPage = () => {
     weather && minutes && hours && year && month && day && drawMask();
   }, [
     locationName,
+    title,
     weather,
     latitude,
     longitude,
@@ -994,7 +1080,10 @@ const CameraPage = () => {
         </View>
       )}
       {userInfo.type === "default" && (
-        <ad-custom unit-id="adunit-ba74b4bc4303c143" style={{width:'100%'}}></ad-custom>
+        <ad-custom
+          unit-id="adunit-ba74b4bc4303c143"
+          style={{ width: "100%" }}
+        ></ad-custom>
       )}
       <View className="tools-bar">
         <View className="tools-bar-inner">
@@ -1053,7 +1142,7 @@ const CameraPage = () => {
           <View className="xiangce kefu">
             <Button
               // openType="contact"
-              onClick={()=>{
+              onClick={() => {
                 Taro.navigateTo({
                   url: "/pages/me/index",
                 });
@@ -1279,10 +1368,24 @@ const CameraPage = () => {
                   <Input
                     className="input"
                     value={locationName}
-                    maxlength={30}
+                    maxlength={9}
                     clear={true}
                     onInput={(e) => {
                       debounce(setLocationName(e.detail.value), 100);
+                    }}
+                  ></Input>
+                </View>
+              </AtCard>
+              <AtCard title="标题">
+                <View className="picker">
+                  <Text>标题： </Text>
+                  <Input
+                    className="input"
+                    value={title}
+                    maxlength={18}
+                    clear={true}
+                    onInput={(e) => {
+                      debounce(setTitle(e.detail.value), 100);
                     }}
                   ></Input>
                 </View>
