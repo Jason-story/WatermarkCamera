@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Ad,Image, Text, Button } from "@tarojs/components";
+import { View, Image,Ad, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import Head from "../../images/head.jpg";
 import "./index.scss";
@@ -48,41 +48,30 @@ const UserInfo = ({
   return (
     <View className="user-info">
       <View className="user-details">
-        <View className="user-item">
-          <Text className="label">我的等级</Text>
-          <Text className="value">
-            {userType === "default" && "普通用户"}
-            {userType === "month" && "包月会员"}
-            {userType === "buyout" && "终身会员"}
-            {userType === "customize_month" && "定制包月会员"}
-          </Text>
+        <View style={{marginBottom:'30px'}}>会员有以下三种，可以根据自身需要选择</View>
+        <View>
+          <Text style={{ fontWeight: "bold" }}>普通会员</Text>
+          ，每月10元，包括以下特权:{" "}
         </View>
-        {userType !== "default" && (
-          <View className="user-item">
-            <Text className="label">会员到期时间</Text>
-            <Text className="value">{formatDate(endTime)}</Text>
-          </View>
-        )}
-
-        <View className="user-item">
-          <Text className="label">我的ID</Text>
-          <Text
-            className="value"
-            onClick={() => {
-              onCopyText(userId);
-            }}
-          >
-            {userId || "xxx"}
-          </Text>
+        <View>• 去掉除封面广告之外的一切广告</View>
+        <View>• 生成高清水印图片</View>
+        <View>• 每天、每月不限量生成水印图片</View>
+      </View>
+      <View className="user-details" style={{ marginTop: "20px" }}>
+        <View>
+          <Text style={{ fontWeight: "bold" }}>高级会员</Text>，
+          一次性付费300元，永久使用，包括普通会员的所有权益以及单独定制一款水印(1:1完美复刻，解决您的考勤打卡难题)
         </View>
-        <View className="user-item">
-          <Text className="label">额度</Text>
-          <Text className="value">
-            {userType !== "default" ? "不限量" : (totalQuota || "0") + "/50"}
-          </Text>
+      </View>
+      <View className="user-details" style={{ marginTop: "20px" }}>
+        <View>
+          <Text style={{ fontWeight: "bold" }}>单张购买</Text>，每张1元，可以在免费额度用尽之后选择购买。
         </View>
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
+        <View style={{marginBottom:'10px'}}>
+        开通会员请联系客服
+        </View>
         <Button
           openType="contact"
           style={{
@@ -103,8 +92,7 @@ const UserInfo = ({
           联系客服
         </Button>
       </View>
-
-      <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>
+      <Ad unit-id="adunit-079549954a0a9386"></Ad>
     </View>
   );
 };
@@ -175,17 +163,7 @@ const Index = () => {
     });
   };
 
-  useEffect(() => {
-    Taro.cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        setData(res.result.data);
-      },
-    });
-
-    checkAuthorization();
-  }, []);
-  console.log("data: ", data);
+  useEffect(() => {}, []);
 
   return (
     <View className="index">

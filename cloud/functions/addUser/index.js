@@ -55,6 +55,10 @@ exports.main = async (event, context) => {
 
                 // 更新 times 字段
                 updateData.times = _.inc(1);
+                console.log('userData: ', userData);
+                if (userData.vip_count > 0) {
+                    updateData.vip_count = userData.vip_count - 1;
+                }
             }
 
             // 如果记录存在，则更新该记录
@@ -145,6 +149,10 @@ exports.main = async (event, context) => {
 
                     // 更新 times 字段
                     updateData.times = _.inc(1);
+                    console.log('userData: ', userData);
+                    if (userData.vip_count > 0) {
+                        updateData.vip_count = userData.vip_count - 1;
+                    }
                 }
 
                 // 如果记录存在，则更新该记录

@@ -121,6 +121,14 @@ const MergeCanvas = () => {
         },
       });
     };
+    if(userInfo.vip_count === 0){
+      Taro.showToast({
+        title: "你的会员额度已经用完，请联系客服购买",
+        icon: "none",
+        duration: 5000,
+      });
+      return;
+    }
     if (userInfo.times >= 60 && userInfo.type === "default") {
       setIsShowTimesModal(true);
       return;

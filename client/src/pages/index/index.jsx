@@ -61,7 +61,7 @@ const CameraPage = () => {
   const [allAuth, setAllAuth] = useState(false);
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
-  const [vipModal, setVipModal] = useState(false);
+  // const [vipModal, setVipModal] = useState(false);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [weather, setWeather] = useState({ text: "", temperature: "" });
@@ -86,6 +86,8 @@ const CameraPage = () => {
   const [hideJw, setHideJw] = useState(true);
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
+  const [vipClosedModal, setVipClosedModal] = useState(false);
+
   var cloud = "";
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -113,6 +115,16 @@ const CameraPage = () => {
         name: "addUser",
         success: function (res) {
           setUserInfo(res.result.data);
+          if (res.result.data.end_time) {
+            Taro.getStorage({ key: "hasVipClosedModalShow" })
+              .then(() => {})
+              .catch(() => {
+                if (Date.now() > res.result.data.end_time) {
+                  setVipClosedModal(true);
+                  Taro.setStorage({ key: "hasVipClosedModalShow", data: true });
+                }
+              });
+          }
         },
       });
     };
@@ -239,6 +251,7 @@ const CameraPage = () => {
         // 拼接市以下的地址信息，不包括门牌号
         const detailedAddress = `${addr}`;
         setLocationName(detailedAddress);
+        // setLocationName("东园宾馆(教育路店)");
       },
       fail: (err) => {
         console.error("Failed to reverse geocode:", err);
@@ -453,9 +466,9 @@ const CameraPage = () => {
       imageUrl: ShareImg,
     };
   });
-  const vipModalCLick = () => {
-    setVipModal(!vipModal);
-  };
+  // const vipModalCLick = () => {
+  //   setVipModal(!vipModal);
+  // };
   const selectImg = () => {
     if (!allAuth) {
       Taro.showToast({
@@ -782,22 +795,6 @@ const CameraPage = () => {
         },
       ],
       // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
-      // -----------------------------------------
       [
         {
           path: [
@@ -848,7 +845,7 @@ const CameraPage = () => {
 
                 // 在蓝色背景中居中显示文字
                 ctx.setFillStyle("white");
-                ctx.font = "bolder 13.5px sans-serif"; // 18 * 0.75
+                ctx.setFontSize(15);
                 const textWidth = ctx.measureText(text).width;
                 const textX = (width - textWidth + 7.5) / 2; // 10 * 0.75
                 const textY = 21.75; // 29 * 0.75 文字居中显示
@@ -857,7 +854,7 @@ const CameraPage = () => {
               args: [
                 {
                   width: 187.5, // 250 * 0.75
-                  height: locationName.length > 16 ? 135 : 100, // 180 * 0.75
+                  height: locationName.length > 9 ? 120 : 100, // 180 * 0.75
                   color: "rgba(121, 121, 122, .8)",
                   text: title, // 替换为需要显示的文字
                 },
@@ -867,9 +864,6 @@ const CameraPage = () => {
             {
               draw: (ctx, config) => {
                 let { fontSize, color, text, position } = config;
-                if (locationName.length > 16) {
-                  position = [position[0], position[1] + 15]; // 20 * 0.75
-                }
                 ctx.setFontSize(fontSize);
                 ctx.setFillStyle(color);
                 ctx.fillText(text, ...position);
@@ -940,7 +934,7 @@ const CameraPage = () => {
           ],
           img: Shuiyin3,
           width: 190, // 280 * 0.75
-          height: locationName.length > 16 ? 135 : 110, // 180 * 0.75
+          height: locationName.length > 9 ? 130 : 110, // 180 * 0.75
         },
       ],
     ];
@@ -1122,7 +1116,10 @@ const CameraPage = () => {
           <View className="xiangce kefu vip">
             <Button
               onClick={() => {
-                setVipModal(!vipModal);
+                Taro.navigateTo({
+                  url:'/pages/vip/index'
+                })
+                // setVipModal(!vipModal);
               }}
               style={{
                 background: "none",
@@ -1137,7 +1134,7 @@ const CameraPage = () => {
             >
               <Image src={VipImg} className="xiangceIcon"></Image>
             </Button>
-            <Text>定制</Text>
+            <Text>会员</Text>
           </View>
           <View className="xiangce kefu">
             <Button
@@ -1230,27 +1227,29 @@ const CameraPage = () => {
           )}
         </View>
       )}
-      <AtModal isOpened={vipModal} closeOnClickOverlay={false}>
+
+      <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
         <AtModalHeader>
-          <Text style={{ color: "#ffaa00" }}>高级功能</Text>
+          <Text style={{ color: "#ffaa00" }}>提示</Text>
         </AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
-            <View>
-              • 定制您专属的水印样式，1:1完美复刻，解决您的考勤打卡难题
+            <View className="txt1">
+              您的会员已到期,如需要继续使用请联系客服重新开通
             </View>
-            <View>• 无广告（封面广告除外）</View>
-            <View>• 高清图片</View>
-            <View>• 无限生成水印图片</View>
-            <View className="txt1">详细信息请咨询客服</View>
           </View>
         </AtModalContent>
         <AtModalAction>
-          <Button onClick={vipModalCLick} style={{ flex: 1 }}>
+          <Button
+            onClick={() => {
+              setVipClosedModal(false);
+            }}
+            style={{ flex: 1 }}
+          >
             关闭
           </Button>
           <Button openType="contact" style={{ flex: 1 }}>
-            咨询客服
+            重新开通
           </Button>
         </AtModalAction>
       </AtModal>
@@ -1368,7 +1367,7 @@ const CameraPage = () => {
                   <Input
                     className="input"
                     value={locationName}
-                    maxlength={9}
+                    maxlength={30}
                     clear={true}
                     onInput={(e) => {
                       debounce(setLocationName(e.detail.value), 100);
@@ -1382,7 +1381,7 @@ const CameraPage = () => {
                   <Input
                     className="input"
                     value={title}
-                    maxlength={18}
+                    maxlength={8}
                     clear={true}
                     onInput={(e) => {
                       debounce(setTitle(e.detail.value), 100);
