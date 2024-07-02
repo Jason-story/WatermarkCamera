@@ -121,7 +121,7 @@ const MergeCanvas = () => {
         },
       });
     };
-    if(userInfo.vip_count === 0){
+    if (userInfo.vip_count === 0) {
       Taro.showToast({
         title: "你的会员额度已经用完，请联系客服购买",
         icon: "none",
@@ -129,7 +129,7 @@ const MergeCanvas = () => {
       });
       return;
     }
-    if (userInfo.times >= 60 && userInfo.type === "default") {
+    if (userInfo.times >= 30 && userInfo.type === "default") {
       setIsShowTimesModal(true);
       return;
     }
@@ -144,7 +144,7 @@ const MergeCanvas = () => {
       setIsShowModal(true);
       return;
     }
-    save()
+    save();
 
     // if (wx.createInterstitialAd && userInfo.type === "default") {
     //   interstitialAd = wx.createInterstitialAd({
@@ -200,8 +200,8 @@ const MergeCanvas = () => {
           position: "absolute",
           left: "-9999px",
           top: "-9999px",
-          minWidth:"100%",
-          minHeight:"50%",
+          minWidth: "100%",
+          minHeight: "50%",
           width: `${screenWidth}px`,
           height: `${(screenWidth / imageWidth) * imageHeight}px`,
         }}
@@ -210,21 +210,24 @@ const MergeCanvas = () => {
         className={!imagePath ? "hasLoading" : ""}
         style={{
           width: `${screenWidth}px`,
-          minWidth:"100%",
-          minHeight:"60vh",
+          minWidth: "100%",
+          minHeight: "60vh",
           height: `${(screenWidth / imageWidth) * imageHeight}px`,
         }}
       >
         {imagePath ? (
-          <Image
-            className="result-img"
-            mode="scaleToFill"
-            src={imagePath}
-            style={{
-              width: `100%`,
-              height: `100%`,
-            }}
-          />
+          <View className="result-img-box">
+            <View className="watermark">可修改水印相机</View>
+            <Image
+              className="result-img"
+              mode="scaleToFill"
+              src={imagePath}
+              style={{
+                width: `100%`,
+                height: `100%`,
+              }}
+            />
+          </View>
         ) : (
           <View className="loader"></View>
         )}

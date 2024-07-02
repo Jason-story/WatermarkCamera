@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Ad,Image, Text, Button } from "@tarojs/components";
+import { View, Ad, Image, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import Head from "../../images/head.jpg";
 import "./index.scss";
@@ -78,7 +78,7 @@ const UserInfo = ({
         <View className="user-item">
           <Text className="label">额度</Text>
           <Text className="value">
-            {userType !== "default" ? "不限量" : (totalQuota || "0") + "/50"}
+            {userType !== "default" ? "不限量" : (totalQuota || "0") + "/30"}
           </Text>
         </View>
       </View>
@@ -103,8 +103,9 @@ const UserInfo = ({
           联系客服
         </Button>
       </View>
-
-      <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>
+      {userType === "default" && (
+        <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>
+      )}
     </View>
   );
 };

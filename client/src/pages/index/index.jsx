@@ -1117,7 +1117,7 @@ const CameraPage = () => {
             <Button
               onClick={() => {
                 Taro.navigateTo({
-                  url:'/pages/vip/index'
+                  url:'/pages/vip/index?type='+userInfo.type
                 })
                 // setVipModal(!vipModal);
               }}

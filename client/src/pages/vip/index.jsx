@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Image,Ad, Text, Button } from "@tarojs/components";
+import { View, Image, Ad, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import Head from "../../images/head.jpg";
 import "./index.scss";
@@ -12,7 +12,8 @@ const UserInfo = ({
   endTime,
   onChooseAvatar,
   userType,
-}) => {
+  }) => {
+  console.log('userType: ', userType);
   const onCopyText = (text) => {
     Taro.setClipboardData({
       data: text,
@@ -48,7 +49,9 @@ const UserInfo = ({
   return (
     <View className="user-info">
       <View className="user-details">
-        <View style={{marginBottom:'30px'}}>会员有以下三种，可以根据自身需要选择</View>
+        <View style={{ marginBottom: "30px" }}>
+          会员有以下三种，可以根据自身需要选择
+        </View>
         <View>
           <Text style={{ fontWeight: "bold" }}>普通会员</Text>
           ，每月10元，包括以下特权:{" "}
@@ -65,13 +68,12 @@ const UserInfo = ({
       </View>
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
-          <Text style={{ fontWeight: "bold" }}>单张购买</Text>，每张1元，可以在免费额度用尽之后选择购买。
+          <Text style={{ fontWeight: "bold" }}>单张购买</Text>
+          ，每张1元，可以在免费额度用尽之后选择购买。
         </View>
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
-        <View style={{marginBottom:'10px'}}>
-        开通会员请联系客服
-        </View>
+        <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>
         <Button
           openType="contact"
           style={{
@@ -92,12 +94,16 @@ const UserInfo = ({
           联系客服
         </Button>
       </View>
-      <Ad unit-id="adunit-079549954a0a9386"></Ad>
+      {userType === "default" && (
+        <Ad unit-id="adunit-079549954a0a9386"></Ad>
+      )}
     </View>
   );
 };
 
 const Index = () => {
+  const userType = Taro.getCurrentInstance().router.params.type; // 第一张图片的本地路径
+
   const [userInfo, setUserInfo] = useState({
     avatar: Head,
     nickname: "",
@@ -174,7 +180,7 @@ const Index = () => {
         totalQuota={data.todayUsageCount}
         userId={data.openid}
         onChooseAvatar={onChooseAvatar}
-        userType={Date.now() > data.end_time ? "default" : data.type}
+        userType={userType}
         endTime={data.end_time}
       />
     </View>
