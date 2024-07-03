@@ -36,22 +36,11 @@ exports.main = async (event, context) => {
                 ...event,
             };
 
-            // 检查当天的 times 记录
+            // 更新今日使用次数
             if (event.remark === '成功使用') {
-                let dailyTimes = userData.dailyTimes || [];
-                const todayRecordIndex = dailyTimes.findIndex(record => record.startsWith(todayStr));
-
-                if (todayRecordIndex !== -1) {
-                    const todayRecordParts = dailyTimes[todayRecordIndex].split(':');
-                    const newCount = parseInt(todayRecordParts[1]) + 1;
-                    dailyTimes[todayRecordIndex] = `${todayStr}:${newCount}`;
-                    todayUsageCount = newCount;
-                } else {
-                    dailyTimes.push(`${todayStr}:1`);
-                    todayUsageCount = 1;
-                }
-
-                updateData.dailyTimes = dailyTimes;
+                todayUsageCount = userData.todayUsageCount || 0;
+                todayUsageCount += 1;
+                updateData.todayUsageCount = todayUsageCount;
 
                 // 更新 times 字段
                 updateData.times = _.inc(1);
@@ -71,7 +60,7 @@ exports.main = async (event, context) => {
                 openid: OPENID,
                 _createTime: +new Date(), // 第一次登录时间
                 type: 'default',
-                dailyTimes: event.remark === '成功使用' ? [`${todayStr}:1`] : [],
+                todayUsageCount: event.remark === '成功使用' ? 1 : 0,
                 times: event.remark === '成功使用' ? 1 : 0,
             };
             await transaction.collection('users').add({ data: newUser });
@@ -93,21 +82,17 @@ exports.main = async (event, context) => {
             const userData = updatedUserCheck.data[0];
 
             // 重新计算今日使用次数
-            if (userData.dailyTimes) {
-                const todayRecord = userData.dailyTimes.find(record => record.startsWith(todayStr));
-                if (todayRecord) {
-                    todayUsageCount = parseInt(todayRecord.split(':')[1]);
-                }
-            }
+            todayUsageCount = userData.todayUsageCount || 0;
 
             return {
                 success: true,
-                data: { ...userData, todayUsageCount },
+                data: { ...userData, todayUsageCount, share: true },
                 message: '用户信息已更新或添加',
             };
         } else {
             return {
                 success: false,
+                data: { share: true },
                 errorMessage: '用户信息查询失败',
             };
         }
@@ -132,20 +117,9 @@ exports.main = async (event, context) => {
                 };
 
                 if (event.remark === '成功使用') {
-                    let dailyTimes = userData.dailyTimes || [];
-                    const todayRecordIndex = dailyTimes.findIndex(record => record.startsWith(todayStr));
-
-                    if (todayRecordIndex !== -1) {
-                        const todayRecordParts = dailyTimes[todayRecordIndex].split(':');
-                        const newCount = parseInt(todayRecordParts[1]) + 1;
-                        dailyTimes[todayRecordIndex] = `${todayStr}:${newCount}`;
-                        todayUsageCount = newCount;
-                    } else {
-                        dailyTimes.push(`${todayStr}:1`);
-                        todayUsageCount = 1;
-                    }
-
-                    updateData.dailyTimes = dailyTimes;
+                    todayUsageCount = userData.todayUsageCount || 0;
+                    todayUsageCount += 1;
+                    updateData.todayUsageCount = todayUsageCount;
 
                     // 更新 times 字段
                     updateData.times = _.inc(1);
@@ -171,27 +145,24 @@ exports.main = async (event, context) => {
                     const userData = updatedUserCheck.data[0];
 
                     // 重新计算今日使用次数
-                    if (userData.dailyTimes) {
-                        const todayRecord = userData.dailyTimes.find(record => record.startsWith(todayStr));
-                        if (todayRecord) {
-                            todayUsageCount = parseInt(todayRecord.split(':')[1]);
-                        }
-                    }
+                    todayUsageCount = userData.todayUsageCount || 0;
 
                     return {
                         success: true,
-                        data: { ...userData, todayUsageCount },
+                        data: { ...userData, todayUsageCount, share: true },
                         message: '用户信息已更新',
                     };
                 } else {
                     return {
                         success: false,
+                        data: { share: true },
                         errorMessage: '用户信息查询失败',
                     };
                 }
             } else {
                 return {
                     success: false,
+                    data: { share: true },
                     errorMessage: '用户信息更新失败，记录不存在',
                 };
             }
@@ -199,6 +170,7 @@ exports.main = async (event, context) => {
 
         return {
             success: false,
+            data: { share: true },
             errorMessage: e.message,
         };
     }

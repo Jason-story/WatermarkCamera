@@ -1186,7 +1186,7 @@ const CameraPage = () => {
           抖音去水印
         </Button> */}
         <Button openType="share" className="share-btn" type="button">
-          <Text> 分享好友</Text>
+          <Text> 分享群聊</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>

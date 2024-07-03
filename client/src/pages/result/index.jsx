@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
+import { useDidShow } from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
 import {
   AtButton,
@@ -31,6 +32,7 @@ const MergeCanvas = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isShowTimesModal, setIsShowTimesModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [isShare, setShare] = useState(false);
 
   const drawCanvas = (ctx) => {
     return new Promise((resolve, reject) => {
@@ -39,6 +41,15 @@ const MergeCanvas = () => {
       });
     });
   };
+
+  useDidShow(() => {
+    debugger;
+    if (isShare === true) {
+      setTimeout(() => {
+        saveImage(imagePath);
+      }, 1000);
+    }
+  });
 
   const drawImages = async () => {
     try {
@@ -81,11 +92,21 @@ const MergeCanvas = () => {
             quality: userInfo.type === "default" ? 0.5 : 1, // 设置图片质量为30%
             canvasId: "mergeCanvas",
           });
+          setImagePath(tempFilePath);
+          if (userInfo.todayUsageCount >= 3 && userInfo.type === "default") {
+            setIsShowModal(true);
+            return;
+          }
           saveImage(tempFilePath);
         } catch (error) {
           console.error("保存图片失败:", error);
         }
       }, 300); // 延迟100毫秒
+      setImagePath(tempFilePath);
+      if (userInfo.todayUsageCount >= 3 && userInfo.type === "default") {
+        setIsShowModal(true);
+        return;
+      }
       saveImage(tempFilePath);
     } catch (err) {
       // console.error("绘制图片出错:", error);
@@ -140,7 +161,11 @@ const MergeCanvas = () => {
       return;
     }
     // 激励广告
-    if (userInfo.todayUsageCount >= 5 && userInfo.type === "default") {
+    if (
+      userInfo.todayUsageCount >= 3 &&
+      userInfo.type === "default" &&
+      isShare === false
+    ) {
       setIsShowModal(true);
       return;
     }
@@ -265,7 +290,7 @@ const MergeCanvas = () => {
         </Button>
 
         <Button openType="share" className="share-btn" type="button">
-          <Text> 分享好友</Text>
+          <Text> 分享群聊</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>
@@ -281,10 +306,17 @@ const MergeCanvas = () => {
           </AtModalHeader>
           <AtModalContent>
             <View className="modal-list">
-              <View>
-                {" "}
-                您今日已使用5次，需要观看广告之后才可保存，或者联系客服开通会员免广告。
-              </View>
+              {userInfo.share ? (
+                <View>
+                  {" "}
+                  您今日已使用3次，需要分享到群聊才可保存，或者联系客服开通会员。
+                </View>
+              ) : (
+                <View>
+                  {" "}
+                  您今日已使用3次，需要观看广告之后才可保存，或者联系客服开通会员免广告。
+                </View>
+              )}
             </View>
           </AtModalContent>
           <AtModalAction>
@@ -296,64 +328,78 @@ const MergeCanvas = () => {
             >
               关闭
             </Button>
-            <Button
-              onClick={() => {
-                if (wx.createRewardedVideoAd) {
-                  videoAd = wx.createRewardedVideoAd({
-                    adUnitId: "adunit-8e7c0d51dd273cd1",
-                  });
-                  videoAd.onLoad(() => {});
-                  videoAd.onError((err) => {
-                    console.error("激励视频光告加载失败", err);
-                  });
-                  videoAd.onClose((res) => {
-                    if (res.isEnded === true) {
-                      Taro.saveImageToPhotosAlbum({
-                        filePath: imagePath,
-                        success: async () => {
-                          setIsShowModal(false);
-                          await Taro.cloud.callFunction({
-                            name: "addUser",
-                            data: {
-                              remark: "成功使用",
-                            },
-                          });
-                          Taro.showToast({
-                            title: "保存成功",
-                            icon: "success",
-                            duration: 2000,
-                          });
-                        },
-                        fail: (error) => {
-                          console.log("保存失败", error);
-                          Taro.showToast({
-                            title: "保存失败",
-                            icon: "none",
-                            duration: 2000,
-                          });
-                        },
-                      });
-                    }
-                  });
-                }
+            {userInfo.share ? (
+              <Button
+                openType="share"
+                style={{ flex: 1 }}
+                type="button"
+                onClick={() => {
+                  setIsShowModal(false);
+                  setShare(true);
+                }}
+              >
+                <Text>分享群聊</Text>
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  if (wx.createRewardedVideoAd) {
+                    videoAd = wx.createRewardedVideoAd({
+                      adUnitId: "adunit-8e7c0d51dd273cd1",
+                    });
+                    videoAd.onLoad(() => {});
+                    videoAd.onError((err) => {
+                      console.error("激励视频光告加载失败", err);
+                    });
+                    videoAd.onClose((res) => {
+                      if (res.isEnded === true) {
+                        Taro.saveImageToPhotosAlbum({
+                          filePath: imagePath,
+                          success: async () => {
+                            setIsShowModal(false);
+                            await Taro.cloud.callFunction({
+                              name: "addUser",
+                              data: {
+                                remark: "成功使用",
+                              },
+                            });
+                            Taro.showToast({
+                              title: "保存成功",
+                              icon: "success",
+                              duration: 2000,
+                            });
+                          },
+                          fail: (error) => {
+                            console.log("保存失败", error);
+                            Taro.showToast({
+                              title: "保存失败",
+                              icon: "none",
+                              duration: 2000,
+                            });
+                          },
+                        });
+                      }
+                    });
+                  }
 
-                // 用户触发广告后，显示激励视频广告
-                if (videoAd) {
-                  videoAd.show().catch(() => {
-                    // 失败重试
-                    videoAd
-                      .load()
-                      .then(() => videoAd.show())
-                      .catch((err) => {
-                        console.error("激励视频 广告显示失败", err);
-                      });
-                  });
-                }
-              }}
-              style={{ flex: 1 }}
-            >
-              观看广告
-            </Button>
+                  // 用户触发广告后，显示激励视频广告
+                  if (videoAd) {
+                    videoAd.show().catch(() => {
+                      // 失败重试
+                      videoAd
+                        .load()
+                        .then(() => videoAd.show())
+                        .catch((err) => {
+                          console.error("激励视频 广告显示失败", err);
+                        });
+                    });
+                  }
+                }}
+                style={{ flex: 1 }}
+              >
+                观看广告
+              </Button>
+            )}
           </AtModalAction>
         </AtModal>
         <AtModal isOpened={isShowTimesModal} closeOnClickOverlay={false}>
