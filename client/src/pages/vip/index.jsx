@@ -12,8 +12,8 @@ const UserInfo = ({
   endTime,
   onChooseAvatar,
   userType,
-  }) => {
-  console.log('userType: ', userType);
+}) => {
+  console.log("userType: ", userType);
   const onCopyText = (text) => {
     Taro.setClipboardData({
       data: text,
@@ -63,7 +63,7 @@ const UserInfo = ({
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
           <Text style={{ fontWeight: "bold" }}>高级会员</Text>，
-          一次性付费300元，永久使用，包括普通会员的所有权益以及单独定制一款水印(1:1完美复刻，解决您的考勤打卡难题)
+          一次性付费300元，永久使用，包括普通会员的所有权益以及单独定制一款水印(1:1完美复刻，解决您的考勤打卡难题，另外推荐一个定制用户返现50元)
         </View>
       </View>
       <View className="user-details" style={{ marginTop: "20px" }}>
@@ -94,9 +94,7 @@ const UserInfo = ({
           联系客服
         </Button>
       </View>
-      {userType === "default" && (
-        <Ad unit-id="adunit-079549954a0a9386"></Ad>
-      )}
+      {userType === "default" && <Ad unit-id="adunit-079549954a0a9386"></Ad>}
     </View>
   );
 };
@@ -177,7 +175,7 @@ const Index = () => {
         avatar={userInfo.avatar}
         nickname={userInfo.nickname}
         freeQuota={userInfo.freeQuota}
-        totalQuota={data.todayUsageCount}
+        totalQuota={data.times}
         userId={data.openid}
         onChooseAvatar={onChooseAvatar}
         userType={userType}

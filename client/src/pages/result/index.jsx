@@ -43,11 +43,10 @@ const MergeCanvas = () => {
   };
 
   useDidShow(() => {
-    debugger;
     if (isShare === true) {
       setTimeout(() => {
         saveImage(imagePath);
-      }, 1000);
+      }, 400);
     }
   });
 

@@ -115,7 +115,7 @@ const Index = () => {
     avatar: Head,
     nickname: "",
     freeQuota: 5,
-    totalQuota: "50",
+    totalQuota: "30",
     userId: "12345678",
   });
   const [data, setData] = useState({});
@@ -186,7 +186,6 @@ const Index = () => {
 
     checkAuthorization();
   }, []);
-  console.log("data: ", data);
 
   return (
     <View className="index">
@@ -194,7 +193,7 @@ const Index = () => {
         avatar={userInfo.avatar}
         nickname={userInfo.nickname}
         freeQuota={userInfo.freeQuota}
-        totalQuota={data.todayUsageCount}
+        totalQuota={data.times}
         userId={data.openid}
         onChooseAvatar={onChooseAvatar}
         userType={Date.now() > data.end_time ? "default" : data.type}
