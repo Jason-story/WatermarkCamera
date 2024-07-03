@@ -377,8 +377,8 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                width: 200, // 250 * 0.75
-                height: locationName.length > 9 ? 130 : 110, // 180 * 0.75
+                width: 190, // 250 * 0.75
+                height: locationName.length > 9 ? 120 : 105, // 180 * 0.75
                 color: "rgba(121, 121, 122, .8)",
                 text: title, // 替换为需要显示的文字
               },
@@ -457,8 +457,8 @@ const generateCanvasConfig = ({
           },
         ],
         img: Shuiyin3,
-        width: 200, // 280 * 0.75
-        height: locationName.length > 9 ? 130 : 110, // 180 * 0.75
+        width: 190, // 280 * 0.75
+        height: locationName.length > 9 ? 120 : 105, // 180 * 0.75
       },
     ],
   ];
