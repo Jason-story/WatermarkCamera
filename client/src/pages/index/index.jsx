@@ -40,7 +40,8 @@ import Shuiyin2 from "../../images/shuiyin-2.png";
 import Shuiyin3 from "../../images/shuiyin-3.png";
 import AddMyApp from "../../images/add-my-app.png";
 import "./index.scss";
-import generateCanvasConfig from "./generateConfig"
+import generateCanvasConfig from "./generateConfig";
+import dingzhi from "./dz";
 
 const now = new Date();
 const yearD = now.getFullYear();
@@ -494,8 +495,8 @@ const CameraPage = () => {
       day,
       weekly,
       weather,
-      locationName ,
-      latitude ,
+      locationName,
+      latitude,
       longitude,
       hideJw,
       title,
@@ -503,6 +504,29 @@ const CameraPage = () => {
       Shuiyin2,
       Shuiyin3,
     });
+
+    if (userInfo.hasDingZhi || userInfo.hasDingZhi === 0) {
+      canvasConfig.unshift(
+        dingzhi({
+          hours,
+          minutes,
+          year,
+          month,
+          day,
+          weekly,
+          weather,
+          locationName,
+          latitude,
+          longitude,
+          hideJw,
+          title,
+          Shuiyin1,
+          Shuiyin2,
+          Shuiyin3,
+        })[userInfo.hasDingZhi]
+      );
+      setCurrentShuiyinIndex(0);
+    }
 
     const ctx = Taro.createCanvasContext("fishCanvas");
     setCanvasConfigState(canvasConfig);
