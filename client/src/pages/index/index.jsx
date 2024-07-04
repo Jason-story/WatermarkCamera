@@ -471,6 +471,11 @@ const CameraPage = () => {
   // const vipModalCLick = () => {
   //   setVipModal(!vipModal);
   // };
+  useEffect(() => {
+    if (userInfo.hasDingZhi || userInfo.hasDingZhi === 0) {
+      setCurrentShuiyinIndex(userInfo.hasDingZhi);
+    }
+  }, [userInfo.hasDingZhi]);
   const selectImg = () => {
     if (!allAuth) {
       Taro.showToast({
@@ -525,7 +530,6 @@ const CameraPage = () => {
           Shuiyin3,
         })[userInfo.hasDingZhi]
       );
-      setCurrentShuiyinIndex(0);
     }
 
     const ctx = Taro.createCanvasContext("fishCanvas");
@@ -649,6 +653,36 @@ const CameraPage = () => {
                 <Image src={shanguangdengImg}></Image>
               )}
             </View>
+          </View>
+        )}
+        {allAuth && (
+          <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
+            <Canvas
+              canvas-id="fishCanvas"
+              className={canvasImg ? "hideCanvas" : ""}
+              style={{
+                width:
+                  canvasConfigState.length > 0 &&
+                  canvasConfigState[currentShuiyinIndex][0].width + "px",
+                height:
+                  canvasConfigState.length > 0 &&
+                  canvasConfigState[currentShuiyinIndex][0].height + "px",
+              }}
+            />
+            {canvasImg && (
+              <Image
+                src={canvasImg}
+                style={{
+                  width:
+                    canvasConfigState.length > 0 &&
+                    canvasConfigState[currentShuiyinIndex][0].width + "px",
+                  height:
+                    canvasConfigState.length > 0 &&
+                    canvasConfigState[currentShuiyinIndex][0].height + "px",
+                  display: "block",
+                }}
+              ></Image>
+            )}
           </View>
         )}
       </View>
@@ -786,36 +820,6 @@ const CameraPage = () => {
           </View>
         </Button>
       </View>
-      <View></View>
-      {allAuth && (
-        <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
-          <Canvas
-            canvas-id="fishCanvas"
-            className={canvasImg ? "hideCanvas" : ""}
-            style={{
-              width:
-                canvasConfigState.length > 0 &&
-                canvasConfigState[currentShuiyinIndex][0].width + "px",
-              height:
-                canvasConfigState.length > 0 &&
-                canvasConfigState[currentShuiyinIndex][0].height + "px",
-            }}
-          />
-          {canvasImg && (
-            <Image
-              src={canvasImg}
-              style={{
-                width:
-                  canvasConfigState.length > 0 &&
-                  canvasConfigState[currentShuiyinIndex][0].width + "px",
-                height:
-                  canvasConfigState.length > 0 &&
-                  canvasConfigState[currentShuiyinIndex][0].height + "px",
-              }}
-            ></Image>
-          )}
-        </View>
-      )}
 
       <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
         <AtModalHeader>
