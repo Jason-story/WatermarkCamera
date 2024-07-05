@@ -6,6 +6,7 @@ page {
   width: 100%;
   height: 100%;
 }
+
 .camera-box {
   position: relative;
   height: 70%;
@@ -14,6 +15,7 @@ page {
 .camera-box {
   position: relative;
 }
+
 .camera {
   height: 100%;
   display: block; /* 确保相机组件显示为块级元素 */
@@ -195,7 +197,7 @@ page {
 .modal-list {
   view {
     margin-bottom: 10px;
-    color:"#535351"
+    color: "#535351";
   }
 }
 .txt1 {
@@ -239,24 +241,24 @@ page {
   width: 70rpx;
   height: 70rpx;
 }
-.xiangce,.shuiyin{
+.xiangce,
+.shuiyin {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
   font-size: 30px;
-  text{
+  text {
     margin-top: 10px;
   }
 }
-.kefu{
-    button::after {
-      border: none;
+.kefu {
+  button::after {
+    border: none;
   }
 }
 .vip {
   margin-left: 30%;
-
 }
 .xiangce {
   margin-right: 20%;
@@ -270,10 +272,9 @@ page {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-
 }
-.extra-view{
-  ad-custom{
+.extra-view {
+  ad-custom {
     width: 95% !important;
     margin-bottom: 40px;
   }
@@ -281,7 +282,7 @@ page {
 
 .shuiyin-item {
   position: relative;
-  width:48%;
+  width: 48%;
   border-radius: 16px;
   margin-bottom: 40px;
   height: 200px;
@@ -289,20 +290,19 @@ page {
   overflow: hidden;
   .shuiyin-item-cover {
     position: absolute;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background-color: rgba(0,0,0,.4);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
   }
-  .shuiyin-item-img{
+  .shuiyin-item-img {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px 0;
     height: 100%;
     box-sizing: border-box;
-
   }
   image {
     width: 90%;
@@ -310,7 +310,7 @@ page {
   button {
     position: absolute;
     right: 10px;
-    bottom:10px;
+    bottom: 10px;
     display: inline-block;
     padding: 0px 30px;
     background-color: #ff6347; /* 橙红色背景 */
@@ -322,18 +322,19 @@ page {
 }
 .input-item {
   width: 100%;
-  padding:10px 0px;
+  padding: 10px 0px;
 }
-.input-title{
+.input-title {
   font-size: 26px;
   color: #333;
   margin-bottom: 10px;
   font-weight: bold;
 }
-picker,.picker {
+picker,
+.picker {
   height: 60px;
   line-height: 60px;
-  text{
+  text {
     flex-shrink: 0;
   }
 }
@@ -357,17 +358,16 @@ picker,.picker {
   width: 90%;
 }
 
-.tips{
+.tips {
   color: #333;
   margin-bottom: 30px;
   display: block;
   &.red {
-    margin-bottom: 0px!important;
-    color: #FF6666;
+    margin-bottom: 0px !important;
+    color: #ff6666;
   }
 }
-.add-my-app{
-
+.add-my-app {
   right: 30px;
   top: 200px;
   // margin: 10px 30px 0 0;
@@ -379,11 +379,10 @@ picker,.picker {
     display: block;
   }
 }
-.yinsiModal{
-  min-height: 100px!important;
+.yinsiModal {
+  min-height: 100px !important;
   font-size: 30px !important;
 }
-
 
 .share-btn {
   display: flex;
@@ -395,11 +394,11 @@ picker,.picker {
   backdrop-filter: blur(10px);
   border-radius: 80px;
   transition: 0.5s;
-  height:90px;
+  height: 90px;
   width: 100%;
   animation: gradient_301 5s ease infinite;
   border: double 8px transparent;
-  background-image: linear-gradient(rgba(44, 44, 44, 0.1),rgb(44, 44, 44)),
+  background-image: linear-gradient(rgba(44, 44, 44, 0.1), rgb(44, 44, 44)),
     linear-gradient(
       137.48deg,
       #ff512f 10%,

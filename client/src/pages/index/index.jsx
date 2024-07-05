@@ -468,14 +468,31 @@ const CameraPage = () => {
       imageUrl: ShareImg,
     };
   });
-  // const vipModalCLick = () => {
-  //   setVipModal(!vipModal);
-  // };
   useEffect(() => {
     if (userInfo.hasDingZhi || userInfo.hasDingZhi === 0) {
       setCurrentShuiyinIndex(userInfo.hasDingZhi);
+      setTimeout(() => {
+        setLocationName(userInfo.dingZhiLoca || "");
+      }, 1500);
     }
   }, [userInfo.hasDingZhi]);
+  // useEffect(() => {
+  //   wx.loadFontFace({
+  //     family: "myFont",
+  //     global: true,
+  //     scopes: ["webview", "native"],
+  //     source:
+  //       'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/SourceHanSerifCN-Heavy-4.otf")',
+  //     success: (res) => {
+  //       console.log("Font loaded successfully:", res);
+  //       drawMask();
+  //     },
+  //     fail: (err) => {
+  //       console.error("Font load failed:", err);
+  //     },
+  //   });
+  // }, []);
+
   const selectImg = () => {
     if (!allAuth) {
       Taro.showToast({
