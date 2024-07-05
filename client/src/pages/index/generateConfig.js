@@ -26,7 +26,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, backgroundConfig) => {
               const { color, rect } = backgroundConfig;
-              ctx.setFillStyle(color);
+              ctx.fillStyle = color;
               ctx.fillRect(...rect);
             },
             args: [
@@ -39,8 +39,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -55,8 +55,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -71,8 +71,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -87,8 +87,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
 
               const maxLength = 16;
               const firstLine = text.slice(0, maxLength);
@@ -115,8 +115,8 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 21.25];
               }
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -134,8 +134,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, lineConfig) => {
               const { lineWidth, color, start, end } = lineConfig;
-              ctx.setLineWidth(lineWidth);
-              ctx.setStrokeStyle(color);
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = color;
               ctx.beginPath();
               ctx.moveTo(...start);
               ctx.lineTo(...end);
@@ -167,7 +167,7 @@ const generateCanvasConfig = ({
             draw: (ctx, rectConfig) => {
               const { width, height, color } = rectConfig;
 
-              ctx.setFillStyle(color);
+              ctx.fillStyle = color;
 
               const radius = 4.25;
               ctx.beginPath();
@@ -189,11 +189,11 @@ const generateCanvasConfig = ({
               ctx.closePath();
               ctx.fill();
 
-              ctx.setFillStyle("yellow");
+              ctx.fillStyle = "yellow";
               ctx.fillRect(11.05, 2.55, 42.5, 28.05);
 
-              ctx.setFillStyle("black");
-              ctx.setFontSize(15.3);
+              ctx.fillStyle = "black";
+              ctx.font = "15.3px sans-serif";
               ctx.fillText("打卡", 17, 23.8);
             },
             args: [
@@ -207,8 +207,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -226,8 +226,8 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 17];
               }
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -242,8 +242,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
 
               const maxLength = 16;
               const firstLine = text.slice(0, maxLength);
@@ -270,8 +270,8 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 22.95];
               }
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -289,8 +289,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, lineConfig) => {
               let { lineWidth, color, start, end } = lineConfig;
-              ctx.setLineWidth(lineWidth);
-              ctx.setStrokeStyle(color);
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = color;
               ctx.beginPath();
               ctx.moveTo(...start);
               if (locationName.length > 16) {
@@ -328,7 +328,7 @@ const generateCanvasConfig = ({
               const { width, height, color, text } = rectConfig;
 
               // 设置矩形的颜色
-              ctx.setFillStyle(color);
+              ctx.fillStyle = color;
 
               // 绘制一个带7.5px圆角的指定宽高和颜色的矩形
               const radius = 7.5; // 10 * 0.75 圆角半径
@@ -346,7 +346,7 @@ const generateCanvasConfig = ({
               ctx.fill();
 
               // 绘制顶部带圆角的蓝色背景
-              ctx.setFillStyle("rgb(10, 55, 132)");
+              ctx.fillStyle = "rgb(10, 55, 132)";
               ctx.beginPath();
               ctx.moveTo(radius, 0);
               ctx.lineTo(width - radius, 0);
@@ -359,7 +359,7 @@ const generateCanvasConfig = ({
               ctx.fill();
 
               // 在蓝色背景上绘制黄色小圆点
-              ctx.setFillStyle("rgb(246, 196, 44)");
+              ctx.fillStyle = "rgb(246, 196, 44)";
               const centerX = 15; // 20 * 0.75
               const centerY = 15; // 20 * 0.75 蓝色背景高度的一半
               ctx.beginPath();
@@ -368,8 +368,8 @@ const generateCanvasConfig = ({
               ctx.fill();
 
               // 在蓝色背景中居中显示文字
-              ctx.setFillStyle("white");
-              ctx.setFontSize(15);
+              ctx.fillStyle = "white";
+              ctx.font = "15px sans-serif";
               const textWidth = ctx.measureText(text).width;
               const textX = (width - textWidth + 7.5) / 2; // 10 * 0.75
               const textY = 21.75; // 29 * 0.75 文字居中显示
@@ -388,8 +388,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               let { fontSize, color, text, position } = config;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -405,8 +405,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
@@ -428,8 +428,8 @@ const generateCanvasConfig = ({
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position, positionSecond } =
                 locationConfig;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
 
               const maxLength = 9;
               const firstLine = text.slice(0, maxLength);

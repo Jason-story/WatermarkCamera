@@ -19,7 +19,6 @@ const generateCanvasConfig = ({
   wx.getSystemInfo({
     success: function (res) {
       width = res.screenWidth;
-      console.log("res.screenWidth: ", res.screenWidth);
     },
   });
 
@@ -31,7 +30,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `normal 200 ${fontSize}px Arial Light`;
+              ctx.font = `normal ${fontSize}px ArialLight`;
               ctx.fillStyle = color;
               // 获取文本宽度
               const textWidth = ctx.measureText(text).width;
@@ -39,6 +38,7 @@ const generateCanvasConfig = ({
               // 计算居中位置
               const canvasWidth = width - 20; // 假设你知道 canvas 的宽度
               const xPosition = (canvasWidth - textWidth) / 2;
+              console.log("xPosition: ", xPosition);
               const yPosition = position[1]; // 保持 y 位置不变
 
               // 绘制文本
@@ -58,8 +58,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              ctx.setFontSize(fontSize);
-              ctx.setFillStyle(color);
+              ctx.font = `500 ${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
 
               const textWidth = ctx.measureText(text).width;
 
@@ -73,54 +73,37 @@ const generateCanvasConfig = ({
               {
                 fontSize: 15.3,
                 color: "white",
-                text: `${year}.${month}.${day} ${weekly} 📍 ${locationName}`,
+                text: `${year}.${month}.${day}  ${weekly} 📍 ${locationName}`,
                 position: [0, 100],
               },
             ],
           },
-          // 星期
-          // {
-          //   draw: (ctx, weatherConfig) => {
-          //     const { fontSize, color, text, position } = weatherConfig;
-          //     ctx.setFontSize(fontSize);
-          //     ctx.setFillStyle(color);
-          //     ctx.fillText(text, ...position);
-          //   },
-          //   args: [
-          //     {
-          //       fontSize: 15.3,
-          //       color: "white",
-          //       text: `${weekly}`,
-          //       position: [74.8, 42.5],
-          //     },
-          //   ],
-          // },
-          // 地址
-          // {
-          //   draw: (ctx, locationConfig) => {
-          //     const { fontSize, color, text, position } = locationConfig;
-          //     ctx.setFontSize(fontSize);
-          //     ctx.setFillStyle(color);
+          // 水印相机
+          {
+            draw: (ctx, config) => {
+              const { fontSize, color, text, position } = config;
+              ctx.font = `500 ${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
 
-          //     const maxLength = 16;
-          //     const firstLine = text.slice(0, maxLength);
-          //     const secondLine =
-          //       text.length > maxLength ? text.slice(maxLength) : "";
+              const textWidth = ctx.measureText(text).width;
 
-          //     ctx.fillText(firstLine, ...position);
-          //     if (secondLine) {
-          //       ctx.fillText(secondLine, position[0], position[1] + 21.25);
-          //     }
-          //   },
-          //   args: [
-          //     {
-          //       fontSize: 13.6,
-          //       color: "white",
-          //       text: locationName,
-          //       position: [0, 68],
-          //     },
-          //   ],
-          // },
+              // 计算右下角位置
+              const canvasWidth = width - 40; // 假设你知道 canvas 的宽度
+              const xPosition = canvasWidth - textWidth ;
+              const yPosition = position[1] + 40; // 将 y 位置向下偏移 20px
+              ctx.globalAlpha = 0.7; // 设置文字透明度为 0.5，略带虚化效果
+              ctx.fillText(text, xPosition, yPosition);
+              ctx.globalAlpha = 1; // 恢复默认透明度
+            },
+            args: [
+              {
+                fontSize: 15.3,
+                color: "rgba(255, 255, 255, 0.8)", // 使用带透明度的白色作为文字颜色
+                text: `水印相机`,
+                position: [0, 100],
+              },
+            ],
+          },
         ],
         img: Shuiyin1,
         width: width - 20,

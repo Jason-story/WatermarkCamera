@@ -89,6 +89,7 @@ const CameraPage = () => {
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
+  const [screenWidth, setScreenWidth] = useState("");
 
   var cloud = "";
   // 根据年月日计算星期几的函数
@@ -106,6 +107,7 @@ const CameraPage = () => {
     const weekday = date.getDay(); // 获取星期几的数字表示，0代表星期日，1代表星期一，依此类推
     return weekDays[weekday];
   }
+
 
   useEffect(() => {
     const init = async () => {
@@ -130,6 +132,12 @@ const CameraPage = () => {
         },
       });
     };
+    wx.getSystemInfo({
+      success: function (res) {
+        setScreenWidth(res.screenWidth); // 输出屏幕宽度
+        console.log('res.screenWidth: ', res.screenWidth);
+      },
+    });
     init();
   }, []);
 
@@ -473,25 +481,26 @@ const CameraPage = () => {
       setCurrentShuiyinIndex(userInfo.hasDingZhi);
       setTimeout(() => {
         setLocationName(userInfo.dingZhiLoca || "");
+        drawMask();
       }, 1500);
     }
   }, [userInfo.hasDingZhi]);
-  // useEffect(() => {
-  //   wx.loadFontFace({
-  //     family: "myFont",
-  //     global: true,
-  //     scopes: ["webview", "native"],
-  //     source:
-  //       'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/SourceHanSerifCN-Heavy-4.otf")',
-  //     success: (res) => {
-  //       console.log("Font loaded successfully:", res);
-  //       drawMask();
-  //     },
-  //     fail: (err) => {
-  //       console.error("Font load failed:", err);
-  //     },
-  //   });
-  // }, []);
+  useEffect(() => {
+    wx.loadFontFace({
+      family: "ArialLight",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/ARIALLGT.TTF")',
+      success: (res) => {
+        console.log("Font loaded successfully:", res);
+        drawMask();
+      },
+      fail: (err) => {
+        console.error("Font load failed:", err);
+      },
+    });
+  }, []);
 
   const selectImg = () => {
     if (!allAuth) {
@@ -548,29 +557,61 @@ const CameraPage = () => {
         })[userInfo.hasDingZhi]
       );
     }
+    const query = Taro.createSelectorQuery();
+    query
+      .select("#fishCanvas")
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        if (res && res[0]) {
+          const canvas = res[0].node;
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const dpr = wx.getSystemInfoSync().pixelRatio;
+          // 设置canvas宽高
+          canvas.width = res[0].width * dpr;
+          canvas.height = res[0].height * dpr;
 
-    const ctx = Taro.createCanvasContext("fishCanvas");
-    setCanvasConfigState(canvasConfig);
-    canvasConfig[currentShuiyinIndex][0].path.forEach((item, index) => {
-      const { draw, args } = item;
-      draw(ctx, ...args);
-    });
+          ctx.scale(dpr, dpr);
 
-    ctx.draw(false, () => {
-      setTimeout(() => {
-        Taro.canvasToTempFilePath({
-          canvasId: "fishCanvas",
-          success: (res) => {
-            setCanvasImg(res.tempFilePath);
+          setCanvasConfigState(canvasConfig);
+          canvasConfig[currentShuiyinIndex][0].path.forEach((item, index) => {
+            const { draw, args } = item;
+            draw(ctx, ...args);
+          });
 
-            // 这里可以将图片路径保存或用于展示
-          },
-          fail: (err) => {
-            console.error("转换图片失败：", err);
-          },
-        });
-      }, 300); // 延迟执行以确保绘制完成
-    });
+          // 等待绘制完成后获取图像数据
+          setTimeout(() => {
+            const imageData = canvas.toDataURL("image/png"); // 获取 base64 数据
+            const base64Data = imageData.replace(
+              /^data:image\/\w+;base64,/,
+              ""
+            ); // 去掉前缀
+
+            // 将 base64 数据转换为二进制数据
+            const binaryData = wx.base64ToArrayBuffer(base64Data);
+
+            // 生成唯一的文件名
+            const uniqueFileName = `${Date.now()}.png`;
+            const tempFilePath = `${wx.env.USER_DATA_PATH}/${uniqueFileName}`;
+
+            // 写入文件系统生成临时文件路径
+            const fsm = wx.getFileSystemManager();
+            fsm.writeFile({
+              filePath: tempFilePath,
+              data: binaryData,
+              encoding: "binary",
+              success: () => {
+                // 在这里可以使用临时文件路径
+                setCanvasImg(tempFilePath);
+                console.log("tempFilePath: ", tempFilePath);
+              },
+              fail: (err) => {
+                console.error("写入文件失败：", err);
+              },
+            });
+          }, 300); // 延迟执行以确保绘制完成
+        }
+      });
   };
   useEffect(() => {
     drawMask();
@@ -612,7 +653,10 @@ const CameraPage = () => {
   // console.log("canvasConfigState[currentShuiyinIndex][0]: ", canvasConfigState);
   return (
     <View className="container">
-      <View className="camera-box">
+      <View
+        className="camera-box"
+        style={{ height: (screenWidth / 3) * 4 + "px" }}
+      >
         {permissions.camera && (
           <Camera
             className="camera"
@@ -675,7 +719,8 @@ const CameraPage = () => {
         {allAuth && (
           <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
             <Canvas
-              canvas-id="fishCanvas"
+              id="fishCanvas"
+              type="2d"
               className={canvasImg ? "hideCanvas" : ""}
               style={{
                 width:
