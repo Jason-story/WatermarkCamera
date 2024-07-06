@@ -38,6 +38,7 @@ import ShuiyinIcon from "../../images/shuiyin.png";
 import Shuiyin1 from "../../images/shuiyin-1.png";
 import Shuiyin2 from "../../images/shuiyin-2.png";
 import Shuiyin3 from "../../images/shuiyin-3.png";
+import Shuiyin4 from "../../images/shuiyin-4.png";
 import AddMyApp from "../../images/add-my-app.png";
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
@@ -108,7 +109,6 @@ const CameraPage = () => {
     return weekDays[weekday];
   }
 
-
   useEffect(() => {
     const init = async () => {
       await Taro.cloud.init({
@@ -135,7 +135,7 @@ const CameraPage = () => {
     wx.getSystemInfo({
       success: function (res) {
         setScreenWidth(res.screenWidth); // 输出屏幕宽度
-        console.log('res.screenWidth: ', res.screenWidth);
+        console.log("res.screenWidth: ", res.screenWidth);
       },
     });
     init();
@@ -477,7 +477,7 @@ const CameraPage = () => {
     };
   });
   useEffect(() => {
-    if (userInfo.hasDingZhi || userInfo.hasDingZhi === 0) {
+    if (userInfo.type === 'buyout' && (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)) {
       setCurrentShuiyinIndex(userInfo.hasDingZhi);
       setTimeout(() => {
         setLocationName(userInfo.dingZhiLoca || "");
@@ -487,11 +487,25 @@ const CameraPage = () => {
   }, [userInfo.hasDingZhi]);
   useEffect(() => {
     wx.loadFontFace({
-      family: "ArialLight",
+      family: "Pragmatica",
       global: true,
       scopes: ["webview", "native"],
       source:
-        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/ARIALLGT.TTF")',
+        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
+      success: (res) => {
+        console.log("Font loaded successfully:", res);
+        drawMask();
+      },
+      fail: (err) => {
+        console.error("Font load failed:", err);
+      },
+    });
+    wx.loadFontFace({
+      family: "PragmaticaBold",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
       success: (res) => {
         console.log("Font loaded successfully:", res);
         drawMask();
@@ -536,27 +550,7 @@ const CameraPage = () => {
       Shuiyin3,
     });
 
-    if (userInfo.hasDingZhi || userInfo.hasDingZhi === 0) {
-      canvasConfig.unshift(
-        dingzhi({
-          hours,
-          minutes,
-          year,
-          month,
-          day,
-          weekly,
-          weather,
-          locationName,
-          latitude,
-          longitude,
-          hideJw,
-          title,
-          Shuiyin1,
-          Shuiyin2,
-          Shuiyin3,
-        })[userInfo.hasDingZhi]
-      );
-    }
+
     const query = Taro.createSelectorQuery();
     query
       .select("#fishCanvas")
@@ -572,6 +566,33 @@ const CameraPage = () => {
           canvas.height = res[0].height * dpr;
 
           ctx.scale(dpr, dpr);
+          if (
+            userInfo.type === "buyout" &&
+            (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)
+          ) {
+            canvasConfig.unshift(
+              dingzhi({
+                hours,
+                minutes,
+                year,
+                month,
+                day,
+                weekly,
+                weather,
+                locationName,
+                latitude,
+                longitude,
+                hideJw,
+                title,
+                Shuiyin1,
+                Shuiyin2,
+                Shuiyin3,
+                Shuiyin4,
+                dpr,
+                canvas
+              })[userInfo.hasDingZhi]
+            );
+          }
 
           setCanvasConfigState(canvasConfig);
           canvasConfig[currentShuiyinIndex][0].path.forEach((item, index) => {
@@ -603,7 +624,7 @@ const CameraPage = () => {
               success: () => {
                 // 在这里可以使用临时文件路径
                 setCanvasImg(tempFilePath);
-                console.log("tempFilePath: ", tempFilePath);
+                // console.log("tempFilePath: ", tempFilePath);
               },
               fail: (err) => {
                 console.error("写入文件失败：", err);
@@ -721,7 +742,7 @@ const CameraPage = () => {
             <Canvas
               id="fishCanvas"
               type="2d"
-              className={canvasImg ? "hideCanvas" : ""}
+              // className={canvasImg ? "hideCanvas" : ""}
               style={{
                 width:
                   canvasConfigState.length > 0 &&
@@ -734,6 +755,8 @@ const CameraPage = () => {
             {canvasImg && (
               <Image
                 src={canvasImg}
+              className={canvasImg ? "hideCanvas" : ""}
+
                 style={{
                   width:
                     canvasConfigState.length > 0 &&
@@ -741,7 +764,7 @@ const CameraPage = () => {
                   height:
                     canvasConfigState.length > 0 &&
                     canvasConfigState[currentShuiyinIndex][0].height + "px",
-                  display: "block",
+                  // display: "block",
                 }}
               ></Image>
             )}

@@ -91,6 +91,7 @@ const MergeCanvas = () => {
             quality: userInfo.type === "default" ? 0.5 : 1, // 设置图片质量为30%
             canvasId: "mergeCanvas",
           });
+          console.log(111111,userInfo.type === "default" ? 0.5 : 1)
           setImagePath(tempFilePath);
           if (userInfo.todayUsageCount >= 3 && userInfo.type === "default") {
             setIsShowModal(true);
