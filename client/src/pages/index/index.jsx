@@ -12,7 +12,7 @@ import {
   Ad,
   AdCustom,
 } from "@tarojs/components";
-
+import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import {
   AtButton,
@@ -91,6 +91,7 @@ const CameraPage = () => {
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
+  const [isShowDD, setIsShowDD] = useState(false);
 
   var cloud = "";
   // 根据年月日计算星期几的函数
@@ -113,6 +114,13 @@ const CameraPage = () => {
     const init = async () => {
       await Taro.cloud.init({
         env: "sy-4gecj2zw90583b8b",
+      });
+      // 是否滚动DD字幕
+      Taro.cloud.callFunction({
+        name: "getDD",
+        success: function (res) {
+          setIsShowDD(res.result.data.open);
+        },
       });
 
       Taro.cloud.callFunction({
@@ -477,7 +485,10 @@ const CameraPage = () => {
     };
   });
   useEffect(() => {
-    if (userInfo.type === 'buyout' && (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)) {
+    if (
+      userInfo.type === "buyout" &&
+      (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)
+    ) {
       setCurrentShuiyinIndex(userInfo.hasDingZhi);
       setTimeout(() => {
         setLocationName(userInfo.dingZhiLoca || "");
@@ -550,7 +561,6 @@ const CameraPage = () => {
       Shuiyin3,
     });
 
-
     const query = Taro.createSelectorQuery();
     query
       .select("#fishCanvas")
@@ -589,7 +599,7 @@ const CameraPage = () => {
                 Shuiyin3,
                 Shuiyin4,
                 dpr,
-                canvas
+                canvas,
               })[userInfo.hasDingZhi]
             );
           }
@@ -739,6 +749,12 @@ const CameraPage = () => {
         )}
         {allAuth && (
           <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
+            {isShowDD && (
+              <Marquee
+                text="DD打卡可以联系客服，支持修改定位和扫脸等功能"
+                speed={10}
+              />
+            )}
             <Canvas
               id="fishCanvas"
               type="2d"
@@ -755,8 +771,7 @@ const CameraPage = () => {
             {canvasImg && (
               <Image
                 src={canvasImg}
-              className={canvasImg ? "hideCanvas" : ""}
-
+                className={canvasImg ? "hideCanvas" : ""}
                 style={{
                   width:
                     canvasConfigState.length > 0 &&

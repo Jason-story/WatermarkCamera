@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Image, Ad, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
+
 import Head from "../../images/head.jpg";
 import "./index.scss";
 const UserInfo = ({
@@ -13,7 +14,15 @@ const UserInfo = ({
   onChooseAvatar,
   userType,
 }) => {
-  console.log("userType: ", userType);
+  const [showDD, setIsShowDD] = useState(false);
+
+  Taro.cloud.callFunction({
+    name: "getDD",
+    success: function (res) {
+      setIsShowDD(res.result.data.open);
+    },
+  });
+
   const onCopyText = (text) => {
     Taro.setClipboardData({
       data: text,
@@ -66,11 +75,11 @@ const UserInfo = ({
           一次性付费300元，永久使用，包括普通会员的所有权益以及单独定制一款水印(1:1完美复刻，解决您的考勤打卡难题，另外推荐一个定制用户返现50元)
         </View>
       </View>
-      <View className="user-details" style={{ marginTop: "20px" }}>
-        <View>
-          <Text style={{ fontWeight: "bold" }}>单张购买</Text>
-          ，每张1元，可以在免费额度用尽之后选择购买。
-        </View>
+      <View
+        className="user-details"
+        style={{ marginTop: "20px", fontWeight: "bold" }}
+      >
+        DD打卡可以联系客服，支持修改定位和扫脸等功能
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
         <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>
