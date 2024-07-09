@@ -20,6 +20,7 @@ import restart from "../../images/restart.png";
 
 const screenWidth = Taro.getSystemInfoSync().screenWidth;
 let interstitialAd = null;
+const inviteId = Taro.getCurrentInstance().router.params.id;
 
 const MergeCanvas = () => {
   Taro.getCurrentInstance().router.params;
@@ -91,9 +92,11 @@ const MergeCanvas = () => {
             quality: userInfo.type === "default" ? 0.5 : 1, // 设置图片质量为30%
             canvasId: "mergeCanvas",
           });
-          console.log(111111,userInfo.type === "default" ? 0.5 : 1)
           setImagePath(tempFilePath);
-          if (userInfo.todayUsageCount >= 3 && userInfo.type === "default") {
+          if (
+            userInfo.todayUsageCount >= 3 + (userInfo.invite_count || 0) &&
+            userInfo.type === "default"
+          ) {
             setIsShowModal(true);
             return;
           }
@@ -103,7 +106,10 @@ const MergeCanvas = () => {
         }
       }, 300); // 延迟100毫秒
       setImagePath(tempFilePath);
-      if (userInfo.todayUsageCount >= 3 && userInfo.type === "default") {
+      if (
+        userInfo.todayUsageCount >= 3 + (userInfo.invite_count || 0) &&
+        userInfo.type === "default"
+      ) {
         setIsShowModal(true);
         return;
       }
@@ -124,6 +130,12 @@ const MergeCanvas = () => {
             name: "addUser",
             data: {
               remark: "成功使用",
+            },
+          });
+          await Taro.cloud.callFunction({
+            name: "invite",
+            data: {
+              invite_id: inviteId,
             },
           });
           Taro.showToast({
@@ -150,7 +162,10 @@ const MergeCanvas = () => {
       });
       return;
     }
-    if (userInfo.times >= 30 && userInfo.type === "default") {
+    if (
+      userInfo.times >= 30 + (userInfo.invite_count || 0) &&
+      userInfo.type === "default"
+    ) {
       setIsShowTimesModal(true);
       return;
     }
@@ -162,7 +177,7 @@ const MergeCanvas = () => {
     }
     // 激励广告
     if (
-      userInfo.todayUsageCount >= 3 &&
+      userInfo.todayUsageCount >= 3 + (userInfo.invite_count || 0) &&
       userInfo.type === "default" &&
       isShare === false
     ) {
@@ -212,7 +227,7 @@ const MergeCanvas = () => {
   Taro.useShareAppMessage((res) => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
-      path: "/pages/index/index",
+      path: "/pages/index/index?id=" + userInfo.openid,
       imageUrl: ShareImg,
     };
   });
@@ -268,6 +283,26 @@ const MergeCanvas = () => {
         }}
       >
         <Button
+          openType="share"
+          className="share-btn"
+          type="button"
+          style={{
+            width: "90%",
+            height: "46px",
+            marginBottom: "10px",
+          }}
+        >
+          <Text>邀好友得次数</Text>
+          <View id="container-stars">
+            <View id="stars"></View>
+          </View>
+
+          <View id="glow">
+            <View className="circle"></View>
+            <View className="circle"></View>
+          </View>
+        </Button>
+        <Button
           className="share-btn"
           onClick={() => {
             Taro.navigateBack({
@@ -283,23 +318,38 @@ const MergeCanvas = () => {
             fontSize: "32rpx",
             cursor: "pointer",
             transition: "transform 0.2s, box-shadow 0.2s",
-            marginRight: "10px",
+            width: "90%",
+            height: "46px",
           }}
         >
           重新拍摄
         </Button>
-
-        <Button openType="share" className="share-btn" type="button">
-          <Text> 分享群聊</Text>
-          <View id="container-stars">
-            <View id="stars"></View>
-          </View>
-
-          <View id="glow">
-            <View className="circle"></View>
-            <View className="circle"></View>
-          </View>
+        <Button
+          className="share-btn"
+          onClick={() => {
+            wx.navigateToMiniProgram({
+              appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+              path: "pages/index/index",
+            });
+          }}
+          style={{
+            background: "linear-gradient(45deg, #ff512f, #dd2476)",
+            color: "white",
+            border: "none",
+            borderRadius: "30px",
+            padding: "5px 16px",
+            fontSize: "32rpx",
+            cursor: "pointer",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            marginBottom: "10px",
+            width: "90%",
+            height: "46px",
+            marginTop: "10px",
+          }}
+        >
+          抖音去水印
         </Button>
+
         <AtModal isOpened={isShowModal} closeOnClickOverlay={false}>
           <AtModalHeader>
             <Text>提示</Text>
@@ -309,7 +359,10 @@ const MergeCanvas = () => {
               {userInfo.share ? (
                 <View>
                   {" "}
-                  您今日已使用3次，需要分享到群聊才可保存，或者联系客服开通会员。
+                  您今日已使用3次，需要邀请好友才可继续使用，或者联系客服开通会员。
+                  <View style={{ marginTop: "10px" }}>
+                    邀请好友成功使用1次，赠送您2次(同一好友每日最多赠送4次)
+                  </View>
                 </View>
               ) : (
                 <View>
@@ -338,7 +391,7 @@ const MergeCanvas = () => {
                   setShare(true);
                 }}
               >
-                <Text>分享群聊</Text>
+                <Text>邀好友得次数</Text>
               </Button>
             ) : (
               <Button

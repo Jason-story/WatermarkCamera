@@ -51,7 +51,6 @@ const dayD = String(now.getDate()).padStart(2, "0");
 const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
 const secondsD = String(now.getSeconds()).padStart(2, "0");
-
 const maxDate = new Date("2030-01-01");
 
 // const date = `${year}年${month}月${day}日`;
@@ -76,7 +75,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(2);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
@@ -480,7 +479,7 @@ const CameraPage = () => {
   Taro.useShareAppMessage((res) => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
-      path: "/pages/index/index",
+      path: "/pages/index/index?id=" + userInfo.openid,
       imageUrl: ShareImg,
     };
   });
@@ -688,6 +687,12 @@ const CameraPage = () => {
         className="camera-box"
         style={{ height: (screenWidth / 3) * 4 + "px" }}
       >
+        {isShowDD && (
+          <Marquee
+            text="DD打卡可以联系客服，支持修改定位和扫脸等功能"
+            speed={10}
+          />
+        )}
         {permissions.camera && (
           <Camera
             className="camera"
@@ -749,12 +754,6 @@ const CameraPage = () => {
         )}
         {allAuth && (
           <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
-            {isShowDD && (
-              <Marquee
-                text="DD打卡可以联系客服，支持修改定位和扫脸等功能"
-                speed={10}
-              />
-            )}
             <Canvas
               id="fishCanvas"
               type="2d"
@@ -885,31 +884,8 @@ const CameraPage = () => {
         </View>
       </View>
       <View className="bottom-btns">
-        {/* <Button
-          className="share-btn"
-          onClick={() => {
-            wx.navigateToMiniProgram({
-              appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-              path: "pages/index/index",
-            });
-          }}
-          style={{
-            background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
-            color: "white",
-            border: "none",
-            borderRadius: "25px",
-            marginLeft: "0",
-            fontSize: "30rpx",
-            cursor: "pointer",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            width: "50%",
-            margin: "0 5px 0 0",
-          }}
-        >
-          抖音去水印
-        </Button> */}
         <Button openType="share" className="share-btn" type="button">
-          <Text> 分享群聊</Text>
+          <Text>邀好友得次数</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>

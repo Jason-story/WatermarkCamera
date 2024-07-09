@@ -2,14 +2,18 @@ import React, { useState, useEffect } from "react";
 import { View, Ad, Image, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import Head from "../../images/head.jpg";
+import ShareImg from "../../images/logo.jpg";
+
 import "./index.scss";
 const UserInfo = ({
   avatar,
   nickname,
   freeQuota,
   totalQuota,
+  inviteCount,
   userId,
   endTime,
+  todayCount,
   onChooseAvatar,
   userType,
 }) => {
@@ -76,10 +80,29 @@ const UserInfo = ({
           </Text>
         </View>
         <View className="user-item">
-          <Text className="label">额度</Text>
+          <Text className="label">今日使用次数</Text>
           <Text className="value">
-            {userType !== "default" ? "不限量" : (totalQuota || "0") + "/30"}
+            {todayCount}
           </Text>
+        </View>
+        <View className="user-item">
+          <Text className="label">邀请赠送次数</Text>
+          <Text className="value">
+            {inviteCount}
+          </Text>
+        </View>
+        <View className="user-item">
+          <Text className="label">总额度</Text>
+          <Text className="value">
+            {userType !== "default"
+              ? "不限量"
+              : (totalQuota || "0") + ("/" + (30 + (inviteCount || 0)))}
+          </Text>
+        </View>
+        <View
+          style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
+        >
+          邀请好友成功使用1次，赠送您2次(同一好友每日最多赠送4次)
         </View>
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
@@ -103,9 +126,7 @@ const UserInfo = ({
           联系客服
         </Button>
       </View>
-      {userType === "default" && (
-        <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>
-      )}
+      {userType === "default" && <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>}
     </View>
   );
 };
@@ -180,13 +201,20 @@ const Index = () => {
     Taro.cloud.callFunction({
       name: "addUser",
       success: function (res) {
+        console.log("res: ", res);
         setData(res.result.data);
       },
     });
 
     checkAuthorization();
   }, []);
-
+  Taro.useShareAppMessage((res) => {
+    return {
+      title: "分享你一款可修改时间、位置的水印相机",
+      path: "/pages/index/index?id=" + userInfo.openid,
+      imageUrl: ShareImg,
+    };
+  });
   return (
     <View className="index">
       <UserInfo
@@ -194,6 +222,8 @@ const Index = () => {
         nickname={userInfo.nickname}
         freeQuota={userInfo.freeQuota}
         totalQuota={data.times}
+        inviteCount={data.invite_count}
+        todayCount={data.todayUsageCount}
         userId={data.openid}
         onChooseAvatar={onChooseAvatar}
         userType={Date.now() > data.end_time ? "default" : data.type}

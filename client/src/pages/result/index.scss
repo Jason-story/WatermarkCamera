@@ -17,7 +17,7 @@
   position: absolute;
   font-size: 80px;
   font-weight: bold;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.4);
   transform: rotate(-45deg);
   text-align: center;
   width:100%;
@@ -29,8 +29,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: column;
   > view {
-    // height: 100;
     flex: 1;
   }
 }

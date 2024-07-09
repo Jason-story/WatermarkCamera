@@ -1,12 +1,17 @@
 .marquee-container {
   overflow: hidden;
+  position: absolute;
+  width:100vw;
+  left: 0;
+  top: 10px;
+  z-index: 99999;
 }
 
 .marquee-text {
   white-space: nowrap;
   animation: marquee-animation linear 10s infinite;
-  margin-bottom: 120px;
-  color:#fff
+  color: #fff;
+  overflow: hidden;
 }
 
 @keyframes marquee-animation {

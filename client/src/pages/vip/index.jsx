@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Image, Ad, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
+import ShareImg from "../../images/logo.jpg";
 
 import Head from "../../images/head.jpg";
 import "./index.scss";
@@ -59,7 +60,7 @@ const UserInfo = ({
     <View className="user-info">
       <View className="user-details">
         <View style={{ marginBottom: "30px" }}>
-          会员有以下两种，可以根据自身需要选择
+          会员有以下两种
         </View>
         <View>
           <Text style={{ fontWeight: "bold" }}>普通会员</Text>
@@ -178,7 +179,13 @@ const Index = () => {
   };
 
   useEffect(() => {}, []);
-
+  Taro.useShareAppMessage((res) => {
+    return {
+      title: "分享你一款可修改时间、位置的水印相机",
+      path: "/pages/index/index?id=" + userInfo.openid,
+      imageUrl: ShareImg,
+    };
+  });
   return (
     <View className="index">
       <UserInfo
