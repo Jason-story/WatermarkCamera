@@ -1,13 +1,20 @@
 .marquee-container {
   overflow: hidden;
-  width: 100%;
-  white-space: nowrap;
-  margin-bottom: 100px;
-  width: 100%;
-  color:#fff
 }
 
 .marquee-text {
-  display: inline-block;
   white-space: nowrap;
+  animation: marquee-animation linear 10s infinite;
+  margin-bottom: 120px;
+  color:#fff
+}
+
+@keyframes marquee-animation {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
 }

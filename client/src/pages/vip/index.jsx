@@ -59,7 +59,7 @@ const UserInfo = ({
     <View className="user-info">
       <View className="user-details">
         <View style={{ marginBottom: "30px" }}>
-          会员有以下三种，可以根据自身需要选择
+          会员有以下两种，可以根据自身需要选择
         </View>
         <View>
           <Text style={{ fontWeight: "bold" }}>普通会员</Text>
@@ -72,7 +72,8 @@ const UserInfo = ({
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
           <Text style={{ fontWeight: "bold" }}>高级会员</Text>，
-          一次性付费300元，永久使用，包括普通会员的所有权益以及单独定制一款水印(1:1完美复刻，解决您的考勤打卡难题，另外推荐一个定制用户返现50元)
+          每月20元，
+          包括普通会员的所有权益以及解锁所有会员水印
         </View>
       </View>
       <View

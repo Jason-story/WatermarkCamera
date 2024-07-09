@@ -484,47 +484,47 @@ const CameraPage = () => {
       imageUrl: ShareImg,
     };
   });
+  // useEffect(() => {
+  //   if (
+  //     userInfo.type === "buyout" &&
+  //     (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)
+  //   ) {
+  //     setCurrentShuiyinIndex(userInfo.hasDingZhi);
+  //     setTimeout(() => {
+  //       setLocationName(userInfo.dingZhiLoca || "");
+  //       drawMask();
+  //     }, 1500);
+  //   }
+  // }, [userInfo.hasDingZhi]);
   useEffect(() => {
-    if (
-      userInfo.type === "buyout" &&
-      (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)
-    ) {
-      setCurrentShuiyinIndex(userInfo.hasDingZhi);
-      setTimeout(() => {
-        setLocationName(userInfo.dingZhiLoca || "");
-        drawMask();
-      }, 1500);
-    }
-  }, [userInfo.hasDingZhi]);
-  useEffect(() => {
-    wx.loadFontFace({
-      family: "Pragmatica",
-      global: true,
-      scopes: ["webview", "native"],
-      source:
-        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
-      success: (res) => {
-        console.log("Font loaded successfully:", res);
-        drawMask();
-      },
-      fail: (err) => {
-        console.error("Font load failed:", err);
-      },
-    });
-    wx.loadFontFace({
-      family: "PragmaticaBold",
-      global: true,
-      scopes: ["webview", "native"],
-      source:
-        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
-      success: (res) => {
-        console.log("Font loaded successfully:", res);
-        drawMask();
-      },
-      fail: (err) => {
-        console.error("Font load failed:", err);
-      },
-    });
+    // wx.loadFontFace({
+    //   family: "Pragmatica",
+    //   global: true,
+    //   scopes: ["webview", "native"],
+    //   source:
+    //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
+    //   success: (res) => {
+    //     console.log("Font loaded successfully:", res);
+    //     drawMask();
+    //   },
+    //   fail: (err) => {
+    //     console.error("Font load failed:", err);
+    //   },
+    // });
+    // wx.loadFontFace({
+    //   family: "PragmaticaBold",
+    //   global: true,
+    //   scopes: ["webview", "native"],
+    //   source:
+    //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
+    //   success: (res) => {
+    //     console.log("Font loaded successfully:", res);
+    //     drawMask();
+    //   },
+    //   fail: (err) => {
+    //     console.error("Font load failed:", err);
+    //   },
+    // });
   }, []);
 
   const selectImg = () => {
