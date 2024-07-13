@@ -16,6 +16,82 @@ const generateCanvasConfig = ({
   Shuiyin3,
 }) => {
   return [
+    // [
+    //   {
+    //     path: [
+    //       {
+    //         draw: (ctx, textConfig) => {
+    //           const { fontSize, color, text, position } = textConfig;
+
+    //           // 设置字体
+    //           ctx.font = `${fontSize}px sans-serif`;
+
+    //           // 测量文本宽度
+    //           const hours = text.split(':')[0];
+    //           const minutes = text.split(':')[1];
+    //           const hoursWidth = ctx.measureText(hours).width;
+    //           const colonWidth = ctx.measureText(':').width;
+    //           const minutesWidth = ctx.measureText(minutes).width;
+
+    //           const totalWidth = hoursWidth + colonWidth + minutesWidth;
+
+    //           // 计算居中位置
+    //           const offsetX = (ctx.canvas.width - totalWidth) / 2;
+    //           const [x, y] = position;
+
+    //           // 绘制小时部分
+    //           ctx.fillStyle = color;
+    //           ctx.fillText(hours, offsetX, y);
+
+    //           // 绘制冒号部分
+    //           ctx.fillStyle = 'yellow';
+    //           ctx.fillText(':', offsetX + hoursWidth, y);
+
+    //           // 绘制分钟部分
+    //           ctx.fillStyle = color;
+    //           ctx.fillText(minutes, offsetX + hoursWidth + colonWidth, y);
+    //         },
+    //         args: [
+    //           {
+    //             fontSize: 20.4,
+    //             color: "#1895e6",
+    //             text: `${hours}:${minutes}`,
+    //             position: [0, 24], // Y 位置有效，X 位置将会被代码调整
+    //           },
+    //         ],
+    //       },
+
+    //       {
+    //         draw: (ctx, locationConfig) => {
+    //           const { fontSize, color, text, position } = locationConfig;
+    //           ctx.font = `${fontSize}px sans-serif`;
+    //           ctx.fillStyle = color;
+
+    //           const maxLength = 16;
+    //           const firstLine = text.slice(0, maxLength);
+    //           const secondLine =
+    //             text.length > maxLength ? text.slice(maxLength) : "";
+
+    //           ctx.fillText(firstLine, ...position);
+    //           if (secondLine) {
+    //             ctx.fillText(secondLine, position[0], position[1] + 21.25);
+    //           }
+    //         },
+    //         args: [
+    //           {
+    //             fontSize: 13.6,
+    //             color: "white",
+    //             text: locationName,
+    //             position: [18.7, 55.25],
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //     img: Shuiyin2,
+    //     width: 255,
+    //     height: locationName.length > 16 ? 129 : 102,
+    //   },
+    // ],
     // 1111111111111111111111111111111111111111
     // 1111111111111111111111111111111111111111
     // 1111111111111111111111111111111111111111

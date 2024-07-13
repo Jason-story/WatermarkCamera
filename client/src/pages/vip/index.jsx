@@ -59,22 +59,26 @@ const UserInfo = ({
   return (
     <View className="user-info">
       <View className="user-details">
-        <View style={{ marginBottom: "30px" }}>
-          会员有以下两种
-        </View>
         <View>
           <Text style={{ fontWeight: "bold" }}>普通会员</Text>
           ，每月10元，包括以下特权:{" "}
         </View>
-        <View>• 去掉除封面广告之外的一切广告</View>
-        <View>• 生成高清水印图片</View>
         <View>• 每天、每月不限量生成水印图片</View>
+        <View>• 生成高清水印图片</View>
+        <View>• 去掉除封面广告之外的一切广告</View>
       </View>
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
           <Text style={{ fontWeight: "bold" }}>高级会员</Text>，
           每月20元，
           包括普通会员的所有权益以及解锁所有会员水印
+        </View>
+      </View>
+      <View className="user-details" style={{ marginTop: "20px" }}>
+        <View>
+          <Text style={{ fontWeight: "bold" }}>超级会员</Text>，
+          一次性188元，
+          永久使用，包括普通会员的所有权益以及解锁所有会员水印
         </View>
       </View>
       <View

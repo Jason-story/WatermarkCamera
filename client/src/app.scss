@@ -1,13 +1,16 @@
-page{
+page {
   font-size: 15pt;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
-.at-float-layout__container{
-  min-height: 60%!important;
+.at-float-layout__container {
+  min-height: 60% !important;
 }
-.at-card__header-title{
-  font-weight: bolder!important;
+.at-card__header-title {
+  font-weight: bolder !important;
   // color:#ff6666!important
 }
-.result .at-modal__content{
+.result .at-modal__content {
   min-height: auto;
 }

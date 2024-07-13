@@ -43,18 +43,18 @@ const MergeCanvas = () => {
     });
   };
 
-  useDidShow(() => {
-    if (isShare === true) {
-      setTimeout(() => {
-        saveImage(imagePath);
-      }, 400);
-    }
-  });
+  // useDidShow(() => {
+  //   if (isShare === true) {
+  //     setTimeout(() => {
+  //       saveImage(imagePath);
+  //     }, 400);
+  //   }
+  // });
 
+  const dpr = Taro.getSystemInfoSync().pixelRatio;
   const drawImages = async () => {
     try {
       // 获取第一张图片的信息
-      const dpr = Taro.getSystemInfoSync().pixelRatio;
       const ctx = Taro.createCanvasContext("mergeCanvas");
 
       const info1 = await Taro.getImageInfo({
@@ -64,7 +64,7 @@ const MergeCanvas = () => {
       const img1Width = info1.width;
       const img1Height = info1.height;
       setImageWidth(img1Width);
-      setImageHeight(img1Height);
+      setImageHeight(img1Height / dpr);
 
       const info2 = await Taro.getImageInfo({
         src: secondImagePath,
@@ -73,15 +73,14 @@ const MergeCanvas = () => {
       const img2Path = info2.path;
       const img2Width = info2.width;
       const img2Height = info2.height;
-      const canvasHeight = (screenWidth / img1Width) * img1Height;
       // 设置画布大小
-      ctx.width = screenWidth;
-      ctx.height = canvasHeight;
-      ctx.drawImage(img1Path, 0, 0, screenWidth, canvasHeight);
+      ctx.width = screenWidth * dpr;
+      ctx.height = img1Height * dpr;
+      ctx.drawImage(img1Path, 0, 0, screenWidth, img1Height);
       // 绘制第二张图片在左下角
       const x = 10;
-      const y = canvasHeight - img2Height / dpr - 10;
-      ctx.drawImage(img2Path, x, y, img2Width / dpr, img2Height / dpr);
+      const y = img1Height - img2Height - 10;
+      ctx.drawImage(img2Path, x, y, img2Width / dpr, img2Height);
 
       await drawCanvas(ctx);
 
@@ -89,8 +88,12 @@ const MergeCanvas = () => {
         try {
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
-            quality: userInfo.type === "default" ? 0.5 : 1, // 设置图片质量为30%
+            quality: userInfo.type === "default" ? 0.1 : 1, // 设置图片质量为30%
             canvasId: "mergeCanvas",
+            width: screenWidth,
+            height: img1Height,
+            destWidth: screenWidth * dpr,
+            destHeight: img1Height,
           });
           setImagePath(tempFilePath);
           if (
@@ -242,17 +245,17 @@ const MergeCanvas = () => {
           top: "-9999px",
           minWidth: "100%",
           minHeight: "50%",
-          width: `${screenWidth}px`,
-          height: `${(screenWidth / imageWidth) * imageHeight}px`,
+          width: `${screenWidth * dpr}px`,
+          height: `${imageHeight * dpr}px`,
         }}
       />
       <View
         className={!imagePath ? "hasLoading" : ""}
         style={{
-          width: `${screenWidth}px`,
+          width: `100%`,
           minWidth: "100%",
           minHeight: "60vh",
-          height: `${(screenWidth / imageWidth) * imageHeight}px`,
+          height: `${imageHeight}px`,
         }}
       >
         {imagePath ? (
@@ -361,7 +364,7 @@ const MergeCanvas = () => {
                   {" "}
                   您今日已使用3次，需要邀请好友才可继续使用，或者联系客服开通会员。
                   <View style={{ marginTop: "10px" }}>
-                    邀请好友成功使用1次，赠送您2次(同一好友每日最多赠送4次)
+                    邀请好友<Text style={{color:"#ff4d4f"}}>成功拍照</Text>1次，赠送您2次(同一好友每日最多赠送4次)
                   </View>
                 </View>
               ) : (

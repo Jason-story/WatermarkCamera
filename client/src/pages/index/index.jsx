@@ -142,7 +142,6 @@ const CameraPage = () => {
     wx.getSystemInfo({
       success: function (res) {
         setScreenWidth(res.screenWidth); // 输出屏幕宽度
-        console.log("res.screenWidth: ", res.screenWidth);
       },
     });
     init();
@@ -201,6 +200,7 @@ const CameraPage = () => {
   }, [allAuth, permissions, city, longitude, latitude]);
 
   const getLocation = () => {
+    if (latitude) return;
     if (!permissions.userLocation) return;
     Taro.getLocation({
       type: "gcj02",
@@ -246,6 +246,9 @@ const CameraPage = () => {
     };
   }
   const reverseGeocode = (lat, lng) => {
+    // if (city) {
+    //   return;
+    // }
     const qqmapsdk = new QQMapWX({
       key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
     });
@@ -255,6 +258,7 @@ const CameraPage = () => {
         longitude: lng,
       },
       success: (res) => {
+        console.log("res: ", res);
         const addressComponent = res.result.formatted_addresses;
         const addr = addressComponent.recommend;
         const city = res.result.address_component.city;

@@ -36,15 +36,21 @@ exports.main = async (event, context) => {
                 ...event,
             };
 
+            // 检查上次记录日期是否与今天相同
+            if (userData.lastUsageDate !== todayStr) {
+                updateData.todayUsageCount = 0; // 重置今日使用次数
+                updateData.lastUsageDate = todayStr; // 更新上次记录日期
+            } else {
+                updateData.todayUsageCount = userData.todayUsageCount || 0;
+            }
+
             // 更新今日使用次数
             if (event.remark === '成功使用') {
-                todayUsageCount = userData.todayUsageCount || 0;
-                todayUsageCount += 1;
+                todayUsageCount = updateData.todayUsageCount + 1;
                 updateData.todayUsageCount = todayUsageCount;
 
                 // 更新 times 字段
                 updateData.times = _.inc(1);
-                console.log('userData: ', userData);
                 if (userData.vip_count > 0) {
                     updateData.vip_count = userData.vip_count - 1;
                 }
@@ -62,6 +68,7 @@ exports.main = async (event, context) => {
                 type: 'default',
                 todayUsageCount: event.remark === '成功使用' ? 1 : 0,
                 times: event.remark === '成功使用' ? 1 : 0,
+                lastUsageDate: todayStr, // 记录上次使用日期
             };
             await transaction.collection('users').add({ data: newUser });
             await transaction.commit();
@@ -116,14 +123,20 @@ exports.main = async (event, context) => {
                     ...event,
                 };
 
+                // 检查上次记录日期是否与今天相同
+                if (userData.lastUsageDate !== todayStr) {
+                    updateData.todayUsageCount = 0; // 重置今日使用次数
+                    updateData.lastUsageDate = todayStr; // 更新上次记录日期
+                } else {
+                    updateData.todayUsageCount = userData.todayUsageCount || 0;
+                }
+
                 if (event.remark === '成功使用') {
-                    todayUsageCount = userData.todayUsageCount || 0;
-                    todayUsageCount += 1;
+                    todayUsageCount = updateData.todayUsageCount + 1;
                     updateData.todayUsageCount = todayUsageCount;
 
                     // 更新 times 字段
                     updateData.times = _.inc(1);
-                    console.log('userData: ', userData);
                     if (userData.vip_count > 0) {
                         updateData.vip_count = userData.vip_count - 1;
                     }
