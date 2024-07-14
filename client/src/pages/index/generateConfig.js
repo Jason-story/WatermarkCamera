@@ -97,6 +97,149 @@ const generateCanvasConfig = ({
     // 1111111111111111111111111111111111111111
     // 1111111111111111111111111111111111111111
 
+    // 22222222222222222222222222222222
+    // 22222222222222222222222222222222
+    // 22222222222222222222222222222222
+    // 22222222222222222222222222222222
+    [
+      {
+        path: [
+          {
+            draw: (ctx, backgroundConfig) => {
+              const { color, rect } = backgroundConfig;
+              ctx.fillStyle = color;
+              ctx.fillRect(...rect);
+            },
+            args: [
+              {
+                color: "rgba(0, 0, 0, 0)",
+                rect: [0, 0, 280.5, 102],
+              },
+            ],
+          },
+          {
+            draw: (ctx, textConfig) => {
+              const { fontSize, color, text, position } = textConfig;
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
+              ctx.fillText(text, ...position);
+            },
+            args: [
+              {
+                fontSize: 23.8,
+                color: "white",
+                text: `${hours}:${minutes}`,
+                position: [0, 34],
+              },
+            ],
+          },
+          {
+            draw: (ctx, config) => {
+              const { fontSize, color, text, position } = config;
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
+              ctx.fillText(text, ...position);
+            },
+            args: [
+              {
+                fontSize: 15.3,
+                color: "white",
+                text: `${year}年${month}月${day}日`,
+                position: [74.8, 17],
+              },
+            ],
+          },
+          {
+            draw: (ctx, weatherConfig) => {
+              const { fontSize, color, text, position } = weatherConfig;
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
+              ctx.fillText(text, ...position);
+            },
+            args: [
+              {
+                fontSize: 15.3,
+                color: "white",
+                text: `${weekly} ${weather?.text} ${weather?.temperature}℃`,
+                position: [74.8, 42.5],
+              },
+            ],
+          },
+          {
+            draw: (ctx, locationConfig) => {
+              const { fontSize, color, text, position } = locationConfig;
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
+
+              const maxLength = 16;
+              const firstLine = text.slice(0, maxLength);
+              const secondLine =
+                text.length > maxLength ? text.slice(maxLength) : "";
+
+              ctx.fillText(firstLine, ...position);
+              if (secondLine) {
+                ctx.fillText(secondLine, position[0], position[1] + 21.25);
+              }
+            },
+            args: [
+              {
+                fontSize: 13.6,
+                color: "white",
+                text: locationName,
+                position: [0, 68],
+              },
+            ],
+          },
+          {
+            draw: (ctx, coordinateConfig) => {
+              let { fontSize, color, text, position } = coordinateConfig;
+              if (locationName.length > 16) {
+                position = [position[0], position[1] + 21.25];
+              }
+              ctx.font = `${fontSize}px sans-serif`;
+              ctx.fillStyle = color;
+              ctx.fillText(text, ...position);
+            },
+            args: [
+              {
+                fontSize: 13.6,
+                color: "white",
+                text: hideJw
+                  ? "经纬度: " +
+                    ((latitude * 1)?.toFixed(5) +
+                      ", " +
+                      (longitude * 1)?.toFixed(5))
+                  : "",
+                position: [0, 89.25],
+              },
+            ],
+          },
+
+          {
+            draw: (ctx, lineConfig) => {
+              const { lineWidth, color, start, end } = lineConfig;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = color;
+              ctx.beginPath();
+              ctx.moveTo(...start);
+              ctx.lineTo(...end);
+              ctx.stroke();
+            },
+            args: [
+              {
+                lineWidth: 3.4,
+                color: "yellow",
+                start: [69.7, 0],
+                end: [69.7, 46.75],
+              },
+            ],
+          },
+        ],
+        img: Shuiyin1,
+        width: 238,
+        height: locationName.length > 16 ? 119 : 100,
+      },
+    ],
     [
       {
         path: [
@@ -217,7 +360,9 @@ const generateCanvasConfig = ({
                 color: "white",
                 text: hideJw
                   ? "经纬度: " +
-                    (latitude?.toFixed(5) + ", " + longitude?.toFixed(5))
+                    ((latitude * 1)?.toFixed(5) +
+                      ", " +
+                      (longitude * 1)?.toFixed(5))
                   : "",
                 position: [8.5, 97.75],
               },
@@ -251,147 +396,6 @@ const generateCanvasConfig = ({
         height: locationName.length > 16 ? 129 : 102,
       },
     ],
-    // 22222222222222222222222222222222
-    // 22222222222222222222222222222222
-    // 22222222222222222222222222222222
-    // 22222222222222222222222222222222
-    [
-      {
-        path: [
-          {
-            draw: (ctx, backgroundConfig) => {
-              const { color, rect } = backgroundConfig;
-              ctx.fillStyle = color;
-              ctx.fillRect(...rect);
-            },
-            args: [
-              {
-                color: "rgba(0, 0, 0, 0)",
-                rect: [0, 0, 280.5, 102],
-              },
-            ],
-          },
-          {
-            draw: (ctx, textConfig) => {
-              const { fontSize, color, text, position } = textConfig;
-              ctx.font = `${fontSize}px sans-serif`;
-              ctx.fillStyle = color;
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 23.8,
-                color: "white",
-                text: `${hours}:${minutes}`,
-                position: [0, 34],
-              },
-            ],
-          },
-          {
-            draw: (ctx, config) => {
-              const { fontSize, color, text, position } = config;
-              ctx.font = `${fontSize}px sans-serif`;
-              ctx.fillStyle = color;
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 15.3,
-                color: "white",
-                text: `${year}年${month}月${day}日`,
-                position: [74.8, 17],
-              },
-            ],
-          },
-          {
-            draw: (ctx, weatherConfig) => {
-              const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `${fontSize}px sans-serif`;
-              ctx.fillStyle = color;
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 15.3,
-                color: "white",
-                text: `${weekly} ${weather?.text} ${weather?.temperature}℃`,
-                position: [74.8, 42.5],
-              },
-            ],
-          },
-          {
-            draw: (ctx, locationConfig) => {
-              const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `${fontSize}px sans-serif`;
-              ctx.fillStyle = color;
-
-              const maxLength = 16;
-              const firstLine = text.slice(0, maxLength);
-              const secondLine =
-                text.length > maxLength ? text.slice(maxLength) : "";
-
-              ctx.fillText(firstLine, ...position);
-              if (secondLine) {
-                ctx.fillText(secondLine, position[0], position[1] + 21.25);
-              }
-            },
-            args: [
-              {
-                fontSize: 13.6,
-                color: "white",
-                text: locationName,
-                position: [0, 68],
-              },
-            ],
-          },
-          {
-            draw: (ctx, coordinateConfig) => {
-              let { fontSize, color, text, position } = coordinateConfig;
-              if (locationName.length > 16) {
-                position = [position[0], position[1] + 21.25];
-              }
-              ctx.font = `${fontSize}px sans-serif`;
-              ctx.fillStyle = color;
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 13.6,
-                color: "white",
-                text: hideJw
-                  ? "经纬度: " +
-                    (latitude?.toFixed(5) + ", " + longitude?.toFixed(5))
-                  : "",
-                position: [0, 89.25],
-              },
-            ],
-          },
-          {
-            draw: (ctx, lineConfig) => {
-              const { lineWidth, color, start, end } = lineConfig;
-              ctx.lineWidth = lineWidth;
-              ctx.strokeStyle = color;
-              ctx.beginPath();
-              ctx.moveTo(...start);
-              ctx.lineTo(...end);
-              ctx.stroke();
-            },
-            args: [
-              {
-                lineWidth: 3.4,
-                color: "yellow",
-                start: [69.7, 0],
-                end: [69.7, 46.75],
-              },
-            ],
-          },
-        ],
-        img: Shuiyin1,
-        width: 238,
-        height: locationName.length > 16 ? 119 : 100,
-      },
-    ],
-
     // 333333333333333333333333333333333333333333333333
     // 333333333333333333333333333333333333333333333333
     // 333333333333333333333333333333333333333333333333

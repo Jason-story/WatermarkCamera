@@ -15,9 +15,10 @@ exports.main = async (event, context) => {
 
     const transaction = await db.startTransaction();
 
-    // 获取当天的日期
-    const today = new Date();
+    const offset = 8 * 60 * 60 * 1000; // 北京时间比UTC时间快8小时
+    const today = new Date(Date.now() + offset); // 当前UTC时间加上偏移量
     const todayStr = today.toISOString().split('T')[0]; // 格式化为 YYYY-MM-DD
+
     let todayUsageCount = 0;
 
     try {
@@ -33,7 +34,7 @@ exports.main = async (event, context) => {
             const userData = userCheck.data[0];
             const updateData = {
                 _updateTime: +new Date(), // 最近登录时间
-                ...event,
+                ...event
             };
 
             // 检查上次记录日期是否与今天相同
@@ -68,7 +69,7 @@ exports.main = async (event, context) => {
                 type: 'default',
                 todayUsageCount: event.remark === '成功使用' ? 1 : 0,
                 times: event.remark === '成功使用' ? 1 : 0,
-                lastUsageDate: todayStr, // 记录上次使用日期
+                lastUsageDate: todayStr // 记录上次使用日期
             };
             await transaction.collection('users').add({ data: newUser });
             await transaction.commit();
@@ -94,20 +95,20 @@ exports.main = async (event, context) => {
             return {
                 success: true,
                 data: { ...userData, todayUsageCount, share: true },
-                message: '用户信息已更新或添加',
+                message: '用户信息已更新或添加'
             };
         } else {
             return {
                 success: false,
                 data: { share: true },
-                errorMessage: '用户信息查询失败',
+                errorMessage: '用户信息查询失败'
             };
         }
     } catch (e) {
         await transaction.rollback();
 
         // 处理唯一索引冲突错误
-        if (e.message.includes("duplicate key error")) {
+        if (e.message.includes('duplicate key error')) {
             // 处理唯一索引冲突错误，进行更新操作
             const userCheck = await db
                 .collection('users')
@@ -120,7 +121,7 @@ exports.main = async (event, context) => {
                 const userData = userCheck.data[0];
                 const updateData = {
                     _updateTime: +new Date(), // 最近登录时间
-                    ...event,
+                    ...event
                 };
 
                 // 检查上次记录日期是否与今天相同
@@ -163,20 +164,20 @@ exports.main = async (event, context) => {
                     return {
                         success: true,
                         data: { ...userData, todayUsageCount, share: true },
-                        message: '用户信息已更新',
+                        message: '用户信息已更新'
                     };
                 } else {
                     return {
                         success: false,
                         data: { share: true },
-                        errorMessage: '用户信息查询失败',
+                        errorMessage: '用户信息查询失败'
                     };
                 }
             } else {
                 return {
                     success: false,
                     data: { share: true },
-                    errorMessage: '用户信息更新失败，记录不存在',
+                    errorMessage: '用户信息更新失败，记录不存在'
                 };
             }
         }
@@ -184,7 +185,7 @@ exports.main = async (event, context) => {
         return {
             success: false,
             data: { share: true },
-            errorMessage: e.message,
+            errorMessage: e.message
         };
     }
 };

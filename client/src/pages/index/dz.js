@@ -145,7 +145,7 @@ const generateCanvasConfig = ({
                     const canvasHeight = canvas.height / dpr;
 
                     // 计算图片绘制的坐标，使其位于右下角
-                    const x = canvasWidth - imgWidth ;
+                    const x = canvasWidth - imgWidth;
                     const y = canvasHeight - imgHeight + 14;
                     ctx.drawImage(img, x, y, imgWidth, imgHeight);
                   };
@@ -171,6 +171,8 @@ const generateCanvasConfig = ({
         img: Shuiyin4,
         width: width - 20,
         height: 140,
+        position: "center",
+        vip: true,
       },
     ],
   ];

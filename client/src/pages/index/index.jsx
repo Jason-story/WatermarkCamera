@@ -308,6 +308,7 @@ const CameraPage = () => {
   }, []);
 
   useDidShow(() => {
+
     checkPermissions();
     getAuth();
   });
@@ -467,7 +468,9 @@ const CameraPage = () => {
                 "/pages/result/index?bg=" +
                 path.tempImagePath +
                 "&mask=" +
-                canvasImg,
+                canvasImg +
+                "&position=" +
+                canvasConfigState[currentShuiyinIndex]?.[0]?.position,
             });
           }, 200);
         },
@@ -579,33 +582,28 @@ const CameraPage = () => {
           canvas.height = res[0].height * dpr;
 
           ctx.scale(dpr, dpr);
-          if (
-            userInfo.type === "buyout" &&
-            (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)
-          ) {
-            canvasConfig.unshift(
-              dingzhi({
-                hours,
-                minutes,
-                year,
-                month,
-                day,
-                weekly,
-                weather,
-                locationName,
-                latitude,
-                longitude,
-                hideJw,
-                title,
-                Shuiyin1,
-                Shuiyin2,
-                Shuiyin3,
-                Shuiyin4,
-                dpr,
-                canvas,
-              })[userInfo.hasDingZhi]
-            );
-          }
+          // canvasConfig.push(
+          //   dingzhi({
+          //     hours,
+          //     minutes,
+          //     year,
+          //     month,
+          //     day,
+          //     weekly,
+          //     weather,
+          //     locationName,
+          //     latitude,
+          //     longitude,
+          //     hideJw,
+          //     title,
+          //     Shuiyin1,
+          //     Shuiyin2,
+          //     Shuiyin3,
+          //     Shuiyin4,
+          //     dpr,
+          //     canvas,
+          //   })[userInfo.hasDingZhi]
+          // );
 
           setCanvasConfigState(canvasConfig);
           canvasConfig[currentShuiyinIndex][0].path.forEach((item, index) => {
@@ -651,7 +649,7 @@ const CameraPage = () => {
     drawMask();
   }, [hideJw]);
   useEffect(() => {
-    weather && minutes && hours && year && month && day && drawMask();
+    drawMask();
   }, [
     locationName,
     title,
@@ -1072,6 +1070,36 @@ const CameraPage = () => {
                       setHideJw(e.detail.value);
                     }}
                   />
+                </View>
+              </AtCard>
+              <AtCard title="经度">
+                <View className="picker">
+                  <Text>经度： </Text>
+                  <Input
+                    className="input"
+                    value={longitude}
+                    maxlength={14}
+                    clear={true}
+                    type="number"
+                    onInput={(e) => {
+                      debounce(setLongitude(e.detail.value), 100);
+                    }}
+                  ></Input>
+                </View>
+              </AtCard>
+              <AtCard title="纬度">
+                <View className="picker">
+                  <Text>纬度： </Text>
+                  <Input
+                    className="input"
+                    value={latitude}
+                    type="number"
+                    maxlength={14}
+                    clear={true}
+                    onInput={(e) => {
+                      debounce(setLatitude(e.detail.value), 100);
+                    }}
+                  ></Input>
                 </View>
               </AtCard>
             </View>

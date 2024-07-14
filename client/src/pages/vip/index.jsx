@@ -85,7 +85,7 @@ const UserInfo = ({
         className="user-details"
         style={{ marginTop: "20px", fontWeight: "bold" }}
       >
-        DD打卡可以联系客服，支持修改定位和扫脸等功能
+        定制水印需求可以咨询客服
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
         <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>

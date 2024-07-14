@@ -26,6 +26,9 @@ const MergeCanvas = () => {
   Taro.getCurrentInstance().router.params;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
+  const position = Taro.getCurrentInstance().router.params.position;
+
+  console.log("position: ", position);
 
   const [imagePath, setImagePath] = useState("");
   const [imageWidth, setImageWidth] = useState(0);
@@ -64,23 +67,35 @@ const MergeCanvas = () => {
       const img1Width = info1.width;
       const img1Height = info1.height;
       setImageWidth(img1Width);
-      setImageHeight(img1Height / dpr);
+      setImageHeight(img1Height);
 
+      console.log("img1Width: ", img1Width);
       const info2 = await Taro.getImageInfo({
         src: secondImagePath,
       });
 
       const img2Path = info2.path;
-      const img2Width = info2.width;
-      const img2Height = info2.height;
+      let img2Width = info2.width;
+      let img2Height = info2.height;
+
+      if (img1Width < 1000) {
+        img2Width = img2Width / 1.7;
+        img2Height = img2Height / 1.7;
+      } else if (img1Width > 2160) {
+        img2Width = img2Width * 1.3;
+        img2Height = img2Height * 1.3;
+      } else {
+        img2Width = img2Width / 1.4;
+        img2Height = img2Height / 1.4;
+      }
       // 设置画布大小
-      ctx.width = screenWidth * dpr;
+      ctx.width = img1Width * dpr;
       ctx.height = img1Height * dpr;
-      ctx.drawImage(img1Path, 0, 0, screenWidth, img1Height);
+      ctx.drawImage(img1Path, 0, 0, img1Width, img1Height);
       // 绘制第二张图片在左下角
       const x = 10;
       const y = img1Height - img2Height - 10;
-      ctx.drawImage(img2Path, x, y, img2Width / dpr, img2Height);
+      ctx.drawImage(img2Path, x, y, img2Width, img2Height);
 
       await drawCanvas(ctx);
 
@@ -88,12 +103,14 @@ const MergeCanvas = () => {
         try {
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
-            quality: userInfo.type === "default" ? 0.1 : 1, // 设置图片质量为30%
+            quality: userInfo.type === "default" ? 0.3 : 1, // 设置图片质量为30%
             canvasId: "mergeCanvas",
-            width: screenWidth,
+            width: img1Width,
             height: img1Height,
-            destWidth: screenWidth * dpr,
-            destHeight: img1Height,
+            destWidth:
+              userInfo.type !== "default" ? img1Width * dpr : img1Width / 1.7,
+            destHeight:
+              userInfo.type !== "default" ? img1Height * dpr : img1Height / 1.7,
           });
           setImagePath(tempFilePath);
           if (
@@ -189,28 +206,7 @@ const MergeCanvas = () => {
     }
     save();
 
-    // if (wx.createInterstitialAd && userInfo.type === "default") {
-    //   interstitialAd = wx.createInterstitialAd({
-    //     adUnitId: "adunit-16f07f02a3feec0a",
-    //   });
-    //   interstitialAd.onLoad(() => {
-    //     console.log(333);
-    //   });
-    //   interstitialAd.onError((err) => {
-    //     console.error("插屏广告加载失败", err);
-    //     save();
-    //   });
-    //   interstitialAd.onClose(() => {
-    //     save();
-    //   });
-    // }
 
-    // if (interstitialAd && userInfo.type === "default") {
-    //   interstitialAd.show().catch((err) => {
-    //     console.error("插屏广告显示失败", err);
-    //     save();
-    //   });
-    // }
   };
   useEffect(() => {
     const getData = async () => {
@@ -245,7 +241,7 @@ const MergeCanvas = () => {
           top: "-9999px",
           minWidth: "100%",
           minHeight: "50%",
-          width: `${screenWidth * dpr}px`,
+          width: `${imageWidth * dpr}px`,
           height: `${imageHeight * dpr}px`,
         }}
       />
@@ -255,7 +251,6 @@ const MergeCanvas = () => {
           width: `100%`,
           minWidth: "100%",
           minHeight: "60vh",
-          height: `${imageHeight}px`,
         }}
       >
         {imagePath ? (
@@ -266,8 +261,9 @@ const MergeCanvas = () => {
               mode="scaleToFill"
               src={imagePath}
               style={{
-                width: `100%`,
-                height: `100%`,
+                width: `${screenWidth}px`,
+                display: "block",
+                height: `${(screenWidth / imageWidth) * imageHeight}px`,
               }}
             />
           </View>
@@ -364,7 +360,8 @@ const MergeCanvas = () => {
                   {" "}
                   您今日已使用3次，需要邀请好友才可继续使用，或者联系客服开通会员。
                   <View style={{ marginTop: "10px" }}>
-                    邀请好友<Text style={{color:"#ff4d4f"}}>成功拍照</Text>1次，赠送您2次(同一好友每日最多赠送4次)
+                    邀请好友<Text style={{ color: "#ff4d4f" }}>成功拍照</Text>
+                    1次，赠送您2次(同一好友每日最多赠送4次)
                   </View>
                 </View>
               ) : (

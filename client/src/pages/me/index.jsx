@@ -89,11 +89,11 @@ const UserInfo = ({
           <Text className="value">{todayCount}</Text>
         </View>
         <View className="user-item">
-          <Text className="label">邀请赠送次数</Text>
+          <Text className="label">邀请赠送总次数</Text>
           <Text className="value">{inviteCount}</Text>
         </View>
         <View className="user-item">
-          <Text className="label">总额度</Text>
+          <Text className="label">已使用总额度</Text>
           <Text className="value">
             {userType !== "default"
               ? "不限量"
