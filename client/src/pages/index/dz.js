@@ -127,46 +127,46 @@ const generateCanvasConfig = ({
           },
 
           // 水印相机
-          {
-            draw: (ctx, config) => {
-              const { fontSize, color, text, position } = config;
-              // 绘制图片
-              Taro.getImageInfo({
-                src: "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/shuiyinxiangji.png", // 替换为你的图片路径
-                success: (imgInfo) => {
-                  const img = canvas.createImage();
-                  img.src = imgInfo.path;
-                  img.onload = () => {
-                    const imgWidth = imgInfo.width / dpr + 5;
-                    const imgHeight = imgInfo.height / dpr + 5;
+          // {
+          //   draw: (ctx, config) => {
+          //     const { fontSize, color, text, position } = config;
+          //     // 绘制图片
+          //     Taro.getImageInfo({
+          //       src: "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/shuiyinxiangji.png", // 替换为你的图片路径
+          //       success: (imgInfo) => {
+          //         const img = canvas.createImage();
+          //         img.src = imgInfo.path;
+          //         img.onload = () => {
+          //           const imgWidth = imgInfo.width / dpr + 5;
+          //           const imgHeight = imgInfo.height / dpr + 5;
 
-                    // 获取画布的宽高
-                    const canvasWidth = canvas.width / dpr;
-                    const canvasHeight = canvas.height / dpr;
+          //           // 获取画布的宽高
+          //           const canvasWidth = canvas.width / dpr;
+          //           const canvasHeight = canvas.height / dpr;
 
-                    // 计算图片绘制的坐标，使其位于右下角
-                    const x = canvasWidth - imgWidth;
-                    const y = canvasHeight - imgHeight + 14;
-                    ctx.drawImage(img, x, y, imgWidth, imgHeight);
-                  };
-                  img.onerror = (err) => {
-                    console.error("图片加载失败", err);
-                  };
-                },
-                fail: (err) => {
-                  console.error("获取图片信息失败", err);
-                },
-              });
-            },
-            args: [
-              {
-                fontSize: 15.3,
-                color: "rgba(255, 255, 255, 0.8)", // 使用带透明度的白色作为文字颜色
-                text: `水印相机`,
-                position: [0, 103],
-              },
-            ],
-          },
+          //           // 计算图片绘制的坐标，使其位于右下角
+          //           const x = canvasWidth - imgWidth;
+          //           const y = canvasHeight - imgHeight + 14;
+          //           ctx.drawImage(img, x, y, imgWidth, imgHeight);
+          //         };
+          //         img.onerror = (err) => {
+          //           console.error("图片加载失败", err);
+          //         };
+          //       },
+          //       fail: (err) => {
+          //         console.error("获取图片信息失败", err);
+          //       },
+          //     });
+          //   },
+          //   args: [
+          //     {
+          //       fontSize: 15.3,
+          //       color: "rgba(255, 255, 255, 0.8)", // 使用带透明度的白色作为文字颜色
+          //       text: `水印相机`,
+          //       position: [0, 103],
+          //     },
+          //   ],
+          // },
         ],
         img: Shuiyin4,
         width: width - 20,

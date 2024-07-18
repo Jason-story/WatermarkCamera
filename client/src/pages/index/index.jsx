@@ -75,7 +75,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(3);
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
@@ -635,38 +635,34 @@ const CameraPage = () => {
           ctx.save();
           ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+
           const dpr = wx.getSystemInfoSync().pixelRatio;
+           const canvasConfigDz = dingzhi({
+      hours,
+      minutes,
+      year,
+      month,
+      day,
+      weekly,
+      weather,
+      locationName,
+      latitude,
+      longitude,
+      hideJw,
+      title,
+      Shuiyin1,
+      Shuiyin2,
+      Shuiyin3,
+      Shuiyin4,
+      dpr,
+      canvas,
+    });
+    canvasConfig.push(canvasConfigDz[0]);
           // 设置canvas宽高
           canvas.width = res[0].width * dpr;
           canvas.height = res[0].height * dpr;
 
           ctx.scale(dpr, dpr);
-
-          if (userInfo.hasDingZhi + "") {
-            canvasConfig.push(
-              dingzhi({
-                hours,
-                minutes,
-                year,
-                month,
-                day,
-                weekly,
-                weather,
-                locationName,
-                latitude,
-                longitude,
-                hideJw,
-                title,
-                Shuiyin1,
-                Shuiyin2,
-                Shuiyin3,
-                Shuiyin4,
-                dpr,
-                canvas,
-              })[userInfo.hasDingZhi]
-            );
-          }
-
           setCanvasConfigState(canvasConfig);
           canvasConfig[currentShuiyinIndex][0]?.path.forEach((item, index) => {
             const { draw, args } = item;
