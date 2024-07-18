@@ -1,8 +1,12 @@
 export default {
-  pages: ["pages/index/index", "pages/result/index","pages/vip/index","pages/me/index"],
-  "requiredPrivateInfos": [
-    "getLocation"
+  pages: [
+    "pages/index/index",
+    "pages/result/index",
+    "pages/vip/index",
+    "pages/me/index",
+    "pages/img/index",
   ],
+  requiredPrivateInfos: ["getLocation"],
   permission: {
     "scope.userLocation": {
       desc: "你的位置信息将用于小程序位置接口的效果展示",

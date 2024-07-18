@@ -28,8 +28,6 @@ const MergeCanvas = () => {
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
   const position = Taro.getCurrentInstance().router.params.position;
 
-  console.log("position: ", position);
-
   const [imagePath, setImagePath] = useState("");
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
@@ -93,8 +91,13 @@ const MergeCanvas = () => {
       ctx.height = img1Height * dpr;
       ctx.drawImage(img1Path, 0, 0, img1Width, img1Height);
       // 绘制第二张图片在左下角
-      const x = 10;
-      const y = img1Height - img2Height - 10;
+      let x = 10;
+      let y = img1Height - img2Height - 10;
+
+      if (position === "center") {
+        // 计算第二张图片的居中位置
+        x = (img1Width - img2Width) / 2 + 10;
+      }
       ctx.drawImage(img2Path, x, y, img2Width, img2Height);
 
       await drawCanvas(ctx);
@@ -103,7 +106,7 @@ const MergeCanvas = () => {
         try {
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
-            quality: userInfo.type === "default" ? 0.3 : 1, // 设置图片质量为30%
+            quality: userInfo.type === "default" ? 0.5 : 1, // 设置图片质量为30%
             canvasId: "mergeCanvas",
             width: img1Width,
             height: img1Height,
@@ -205,8 +208,6 @@ const MergeCanvas = () => {
       return;
     }
     save();
-
-
   };
   useEffect(() => {
     const getData = async () => {

@@ -67,17 +67,29 @@ const UserInfo = ({
         <View>• 生成高清水印图片</View>
         <View>• 去掉除封面广告之外的一切广告</View>
       </View>
+
+      <View style={{ marginTop: "20px", width: "100%" }}>
+        <Button
+          type="primary"
+          size="mini"
+          onClick={() => {
+            Taro.navigateTo({
+              url: "/pages/img/index",
+            });
+          }}
+        >
+          图片对比
+        </Button>
+      </View>
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
-          <Text style={{ fontWeight: "bold" }}>高级会员</Text>，
-          每月20元，
+          <Text style={{ fontWeight: "bold" }}>高级会员</Text>， 每月20元，
           包括普通会员的所有权益以及解锁所有会员水印
         </View>
       </View>
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
-          <Text style={{ fontWeight: "bold" }}>超级会员</Text>，
-          一次性188元，
+          <Text style={{ fontWeight: "bold" }}>超级会员</Text>， 一次性188元，
           永久使用，包括普通会员的所有权益以及解锁所有会员水印
         </View>
       </View>

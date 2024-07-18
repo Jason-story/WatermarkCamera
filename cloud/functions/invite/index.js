@@ -34,7 +34,8 @@ exports.main = async (event, context) => {
             .where({
                 invite_id: invite_id,
                 openid: OPENID,
-                timestamp: _.gte(today).and(_.lte(endOfDay))
+                timestamp: _.gte(today).and(_.lte(endOfDay)),
+                _createTime: +new Date()
             })
             .count();
 
@@ -77,7 +78,8 @@ exports.main = async (event, context) => {
             data: {
                 invite_id: invite_id,
                 openid: OPENID,
-                timestamp: new Date()
+                timestamp: new Date(),
+                _createTime: +new Date()
             }
         });
 

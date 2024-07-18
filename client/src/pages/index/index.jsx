@@ -258,7 +258,6 @@ const CameraPage = () => {
         longitude: lng,
       },
       success: (res) => {
-        console.log("res: ", res);
         const addressComponent = res.result.formatted_addresses;
         const addr = addressComponent.recommend;
         const city = res.result.address_component.city;
@@ -285,30 +284,71 @@ const CameraPage = () => {
     // 在页面中定义插屏广告
 
     // 在页面onLoad回调事件中创建插屏广告实例
-    if (wx.createInterstitialAd) {
-      interstitialAd = wx.createInterstitialAd({
-        adUnitId: "adunit-39ab5f712a4521b4",
-      });
-      interstitialAd.onLoad(() => {});
-      interstitialAd.onError((err) => {
-        console.error("插屏广告加载失败", err);
-      });
-      interstitialAd.onClose(() => {});
-    }
+    if (userInfo.type === "default") {
+      if (wx.createInterstitialAd) {
+        interstitialAd = wx.createInterstitialAd({
+          adUnitId: "adunit-39ab5f712a4521b4",
+        });
+        interstitialAd.onLoad(() => {});
+        interstitialAd.onError((err) => {
+          console.error("插屏广告加载失败", err);
+        });
+        interstitialAd.onClose(() => {});
+      }
 
-    // 在适合的场景显示插屏广告
-    if (interstitialAd) {
-      interstitialAd.show().catch((err) => {
-        console.error("插屏广告显示失败", err);
-      });
+      // 在适合的场景显示插屏广告
+      if (interstitialAd) {
+        interstitialAd.show().catch((err) => {
+          console.error("插屏广告显示失败", err);
+        });
+      }
     }
-
     checkPermissions();
     requestPermission();
   }, []);
+  useEffect(() => {
+    if (allAuth && userInfo.type === "default") {
+      if (wx.createInterstitialAd) {
+        interstitialAd = wx.createInterstitialAd({
+          adUnitId: "adunit-39ab5f712a4521b4",
+        });
+        interstitialAd.onLoad(() => {});
+        interstitialAd.onError((err) => {
+          console.error("插屏广告加载失败", err);
+        });
+        interstitialAd.onClose(() => {});
+      }
 
+      // 在适合的场景显示插屏广告
+      if (interstitialAd) {
+        interstitialAd.show().catch((err) => {
+          console.error("插屏广告显示失败", err);
+        });
+      }
+    }
+  }, [userInfo.type, allAuth]);
   useDidShow(() => {
+    if (userInfo.type === "default") {
+      if (wx.createInterstitialAd) {
+        interstitialAd = wx.createInterstitialAd({
+          adUnitId: "adunit-39ab5f712a4521b4",
+        });
+        interstitialAd.onLoad(() => {});
+        interstitialAd.onError((err) => {
+          console.error("插屏广告加载失败", err);
+        });
+        interstitialAd.onClose(() => {});
+      }
 
+      // 在适合的场景显示插屏广告
+      if (interstitialAd) {
+        interstitialAd.show().catch((err) => {
+          console.error("插屏广告显示失败", err);
+        });
+      }
+    }
+  });
+  useDidShow(() => {
     checkPermissions();
     getAuth();
   });
@@ -544,7 +584,24 @@ const CameraPage = () => {
     Taro.chooseImage({
       count: 1,
       success: function (res) {
-        takePhoto(false, res.tempFilePaths[0]);
+        const filePath = res.tempFilePaths[0];
+
+        Taro.getFileInfo({
+          filePath: filePath,
+          success: function (info) {
+            const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
+
+            if (fileSizeInMB > 1) {
+              Taro.showModal({
+                title: "提示",
+                content: "图片体积过大，请重新选择",
+                showCancel: false,
+              });
+            } else {
+              takePhoto(false, filePath);
+            }
+          },
+        });
       },
     });
   };
@@ -575,6 +632,8 @@ const CameraPage = () => {
         if (res && res[0]) {
           const canvas = res[0].node;
           const ctx = canvas.getContext("2d");
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           const dpr = wx.getSystemInfoSync().pixelRatio;
           // 设置canvas宽高
@@ -582,35 +641,38 @@ const CameraPage = () => {
           canvas.height = res[0].height * dpr;
 
           ctx.scale(dpr, dpr);
-          // canvasConfig.push(
-          //   dingzhi({
-          //     hours,
-          //     minutes,
-          //     year,
-          //     month,
-          //     day,
-          //     weekly,
-          //     weather,
-          //     locationName,
-          //     latitude,
-          //     longitude,
-          //     hideJw,
-          //     title,
-          //     Shuiyin1,
-          //     Shuiyin2,
-          //     Shuiyin3,
-          //     Shuiyin4,
-          //     dpr,
-          //     canvas,
-          //   })[userInfo.hasDingZhi]
-          // );
+
+          if (userInfo.hasDingZhi + "") {
+            canvasConfig.push(
+              dingzhi({
+                hours,
+                minutes,
+                year,
+                month,
+                day,
+                weekly,
+                weather,
+                locationName,
+                latitude,
+                longitude,
+                hideJw,
+                title,
+                Shuiyin1,
+                Shuiyin2,
+                Shuiyin3,
+                Shuiyin4,
+                dpr,
+                canvas,
+              })[userInfo.hasDingZhi]
+            );
+          }
 
           setCanvasConfigState(canvasConfig);
-          canvasConfig[currentShuiyinIndex][0].path.forEach((item, index) => {
+          canvasConfig[currentShuiyinIndex][0]?.path.forEach((item, index) => {
             const { draw, args } = item;
             draw(ctx, ...args);
           });
-
+          ctx.restore();
           // 等待绘制完成后获取图像数据
           setTimeout(() => {
             const imageData = canvas.toDataURL("image/png"); // 获取 base64 数据
@@ -645,18 +707,21 @@ const CameraPage = () => {
         }
       });
   };
-  useEffect(() => {
-    drawMask();
-  }, [hideJw]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     drawMask();
+  //   }, 5000);
+  // }, [locationName]);
   useEffect(() => {
     drawMask();
   }, [
-    locationName,
     title,
     weather,
+    hideJw,
     latitude,
     longitude,
     minutes,
+    locationName,
     hours,
     year,
     month,
