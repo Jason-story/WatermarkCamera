@@ -121,7 +121,15 @@ const UserInfo = ({
           联系客服
         </Button>
       </View>
-      {userType === "default" && <Ad unit-id="adunit-079549954a0a9386"></Ad>}
+      {userType === "default" && (
+        // 若在开发者工具中无法预览广告，请切换开发者工具中的基础库版本
+        // wxml文件
+        <ad
+          unit-id="adunit-a6a297a8f2347f9d"
+          ad-type="video"
+          ad-theme="white"
+        ></ad>
+      )}
     </View>
   );
 };

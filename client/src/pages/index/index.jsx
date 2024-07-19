@@ -752,7 +752,7 @@ const CameraPage = () => {
       >
         {isShowDD && (
           <Marquee
-            text="会员特惠，每月最低5元"
+            text="会员特惠，每月5元"
             speed={10}
           />
         )}
@@ -1048,10 +1048,12 @@ const CameraPage = () => {
                     )}
                   </View>
                   {index === 1 && userInfo.type === "default" && (
-                    <View className="extra-view">
+                    <View className="extra-view"
+                    style={{ width: "100%!important" }}
+                    >
                       <AdCustom
                         unitId="adunit-d0875afa048b3342"
-                        style={{ width: "90%!important" }}
+                        style={{ width: "100%!important" }}
                       />
                     </View>
                   )}
