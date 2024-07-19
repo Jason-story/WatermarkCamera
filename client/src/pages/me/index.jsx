@@ -82,7 +82,7 @@ const UserInfo = ({
 
         <View className="user-item">
           <Text className="label">每日免费使用次数</Text>
-          <Text className="value">{userType !== "default" ? "不限量" : 3}</Text>
+          <Text className="value">{userType !== "default" ? "不限量" : 2}</Text>
         </View>
         <View className="user-item">
           <Text className="label">今日使用次数</Text>
@@ -97,7 +97,7 @@ const UserInfo = ({
           <Text className="value">
             {userType !== "default"
               ? "不限量"
-              : (totalQuota || "0") + ("/" + (30 + (inviteCount || 0)))}
+              : (totalQuota || "0") + ("/" + (10 + (inviteCount || 0)))}
           </Text>
         </View>
         <View

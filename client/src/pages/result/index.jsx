@@ -67,7 +67,6 @@ const MergeCanvas = () => {
       setImageWidth(img1Width);
       setImageHeight(img1Height);
 
-      console.log("img1Width: ", img1Width);
       const info2 = await Taro.getImageInfo({
         src: secondImagePath,
       });
@@ -117,7 +116,7 @@ const MergeCanvas = () => {
           });
           setImagePath(tempFilePath);
           if (
-            userInfo.todayUsageCount >= 3 + (userInfo.invite_count || 0) &&
+            userInfo.todayUsageCount >= 2 + (userInfo.invite_count || 0) &&
             userInfo.type === "default"
           ) {
             setIsShowModal(true);
@@ -130,7 +129,7 @@ const MergeCanvas = () => {
       }, 300); // 延迟100毫秒
       setImagePath(tempFilePath);
       if (
-        userInfo.todayUsageCount >= 3 + (userInfo.invite_count || 0) &&
+        userInfo.todayUsageCount >= 2 + (userInfo.invite_count || 0) &&
         userInfo.type === "default"
       ) {
         setIsShowModal(true);
@@ -186,7 +185,7 @@ const MergeCanvas = () => {
       return;
     }
     if (
-      userInfo.times >= 30 + (userInfo.invite_count || 0) &&
+      userInfo.times >= 10 + (userInfo.invite_count || 0) &&
       userInfo.type === "default"
     ) {
       setIsShowTimesModal(true);
@@ -200,7 +199,7 @@ const MergeCanvas = () => {
     }
     // 激励广告
     if (
-      userInfo.todayUsageCount >= 3 + (userInfo.invite_count || 0) &&
+      userInfo.todayUsageCount >= 2 + (userInfo.invite_count || 0) &&
       userInfo.type === "default" &&
       isShare === false
     ) {
@@ -359,7 +358,7 @@ const MergeCanvas = () => {
               {userInfo.share ? (
                 <View>
                   {" "}
-                  您今日已使用3次，需要邀请好友才可继续使用，或者联系客服开通会员。
+                  您今日已免费使用2次，需要邀请好友才可继续使用，或者联系客服开通会员。
                   <View style={{ marginTop: "10px" }}>
                     邀请好友<Text style={{ color: "#ff4d4f" }}>成功拍照</Text>
                     1次，赠送您2次(同一好友每日最多赠送4次)
@@ -368,7 +367,7 @@ const MergeCanvas = () => {
               ) : (
                 <View>
                   {" "}
-                  您今日已使用3次，需要观看广告之后才可保存，或者联系客服开通会员免广告。
+                  您今日已使用2次，需要观看广告之后才可保存，或者联系客服开通会员免广告。
                 </View>
               )}
             </View>

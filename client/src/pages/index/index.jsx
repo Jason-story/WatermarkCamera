@@ -752,7 +752,7 @@ const CameraPage = () => {
       >
         {isShowDD && (
           <Marquee
-            text="DD打卡可以联系客服，支持修改定位和扫脸等功能"
+            text="会员特惠，每月最低5元"
             speed={10}
           />
         )}
@@ -858,12 +858,12 @@ const CameraPage = () => {
           <Image src={AddMyApp}></Image>
         </View>
       )}
-      {userInfo.type === "default" && (
+      {/* {userInfo.type === "default" && (
         <ad-custom
           unit-id="adunit-ba74b4bc4303c143"
           style={{ width: "100%" }}
         ></ad-custom>
-      )}
+      )} */}
       <View className="tools-bar">
         <View className="tools-bar-inner">
           <View className="xiangce">
