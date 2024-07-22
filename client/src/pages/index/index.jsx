@@ -948,7 +948,7 @@ const CameraPage = () => {
       </View>
       <View className="bottom-btns">
         <Button openType="share" className="share-btn" type="button">
-          <Text>邀好友得次数</Text>
+          <Text>分享群聊</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>

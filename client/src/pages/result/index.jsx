@@ -115,10 +115,7 @@ const MergeCanvas = () => {
               userInfo.type !== "default" ? img1Height * dpr : img1Height / 1.7,
           });
           setImagePath(tempFilePath);
-          if (
-            userInfo.todayUsageCount >= 2 + (userInfo.invite_count || 0) &&
-            userInfo.type === "default"
-          ) {
+          if (userInfo.todayUsageCount >= 2 && userInfo.type === "default") {
             setIsShowModal(true);
             return;
           }
@@ -128,10 +125,7 @@ const MergeCanvas = () => {
         }
       }, 300); // 延迟100毫秒
       setImagePath(tempFilePath);
-      if (
-        userInfo.todayUsageCount >= 2 + (userInfo.invite_count || 0) &&
-        userInfo.type === "default"
-      ) {
+      if (userInfo.todayUsageCount >= 2 && userInfo.type === "default") {
         setIsShowModal(true);
         return;
       }
@@ -154,12 +148,12 @@ const MergeCanvas = () => {
               remark: "成功使用",
             },
           });
-          await Taro.cloud.callFunction({
-            name: "invite",
-            data: {
-              invite_id: inviteId,
-            },
-          });
+          // await Taro.cloud.callFunction({
+          //   name: "invite",
+          //   data: {
+          //     invite_id: inviteId,
+          //   },
+          // });
           Taro.showToast({
             title: "保存成功",
             icon: "success",
@@ -184,10 +178,7 @@ const MergeCanvas = () => {
       });
       return;
     }
-    if (
-      userInfo.times >= 10 + (userInfo.invite_count || 0) &&
-      userInfo.type === "default"
-    ) {
+    if (userInfo.times >= 10 && userInfo.type === "default") {
       setIsShowTimesModal(true);
       return;
     }
@@ -199,7 +190,7 @@ const MergeCanvas = () => {
     }
     // 激励广告
     if (
-      userInfo.todayUsageCount >= 2 + (userInfo.invite_count || 0) &&
+      userInfo.todayUsageCount >= 2 &&
       userInfo.type === "default" &&
       isShare === false
     ) {
@@ -291,7 +282,7 @@ const MergeCanvas = () => {
             marginBottom: "10px",
           }}
         >
-          <Text>邀好友得次数</Text>
+          <Text>分享群聊</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>
@@ -355,21 +346,13 @@ const MergeCanvas = () => {
           </AtModalHeader>
           <AtModalContent>
             <View className="modal-list">
-              {userInfo.share ? (
-                <View>
-                  {" "}
-                  您今日已免费使用2次，需要邀请好友才可继续使用，或者联系客服开通会员。
-                  <View style={{ marginTop: "10px" }}>
+              <View>
+                您今日已免费次数用完，请联系客服开通会员。
+                {/* <View style={{ marginTop: "10px" }}>
                     邀请好友<Text style={{ color: "#ff4d4f" }}>成功拍照</Text>
                     1次，赠送您2次(同一好友每日最多赠送4次)
-                  </View>
-                </View>
-              ) : (
-                <View>
-                  {" "}
-                  您今日已使用2次，需要观看广告之后才可保存，或者联系客服开通会员免广告。
-                </View>
-              )}
+                  </View> */}
+              </View>
             </View>
           </AtModalContent>
           <AtModalAction>
@@ -381,78 +364,9 @@ const MergeCanvas = () => {
             >
               关闭
             </Button>
-            {userInfo.share ? (
-              <Button
-                openType="share"
-                style={{ flex: 1 }}
-                type="button"
-                onClick={() => {
-                  setIsShowModal(false);
-                  setShare(true);
-                }}
-              >
-                <Text>邀好友得次数</Text>
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  if (wx.createRewardedVideoAd) {
-                    videoAd = wx.createRewardedVideoAd({
-                      adUnitId: "adunit-8e7c0d51dd273cd1",
-                    });
-                    videoAd.onLoad(() => {});
-                    videoAd.onError((err) => {
-                      console.error("激励视频光告加载失败", err);
-                    });
-                    videoAd.onClose((res) => {
-                      if (res.isEnded === true) {
-                        Taro.saveImageToPhotosAlbum({
-                          filePath: imagePath,
-                          success: async () => {
-                            setIsShowModal(false);
-                            await Taro.cloud.callFunction({
-                              name: "addUser",
-                              data: {
-                                remark: "成功使用",
-                              },
-                            });
-                            Taro.showToast({
-                              title: "保存成功",
-                              icon: "success",
-                              duration: 2000,
-                            });
-                          },
-                          fail: (error) => {
-                            console.log("保存失败", error);
-                            Taro.showToast({
-                              title: "保存失败",
-                              icon: "none",
-                              duration: 2000,
-                            });
-                          },
-                        });
-                      }
-                    });
-                  }
-
-                  // 用户触发广告后，显示激励视频广告
-                  if (videoAd) {
-                    videoAd.show().catch(() => {
-                      // 失败重试
-                      videoAd
-                        .load()
-                        .then(() => videoAd.show())
-                        .catch((err) => {
-                          console.error("激励视频 广告显示失败", err);
-                        });
-                    });
-                  }
-                }}
-                style={{ flex: 1 }}
-              >
-                观看广告
-              </Button>
-            )}
+            <Button openType="contact" style={{ flex: 1 }} type="button">
+              <Text>联系客服</Text>
+            </Button>
           </AtModalAction>
         </AtModal>
         <AtModal isOpened={isShowTimesModal} closeOnClickOverlay={false}>

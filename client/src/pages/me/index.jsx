@@ -88,10 +88,10 @@ const UserInfo = ({
           <Text className="label">今日使用次数</Text>
           <Text className="value">{todayCount}</Text>
         </View>
-        <View className="user-item">
+        {/* <View className="user-item">
           <Text className="label">邀请赠送总次数</Text>
           <Text className="value">{inviteCount}</Text>
-        </View>
+        </View> */}
         <View className="user-item">
           <Text className="label">已使用总额度</Text>
           <Text className="value">
@@ -100,11 +100,11 @@ const UserInfo = ({
               : (totalQuota || "0") + ("/" + (10 + (inviteCount || 0)))}
           </Text>
         </View>
-        <View
+        {/* <View
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >
           邀请好友<Text style={{color:"#ff4d4f"}}>成功拍照</Text>1次，赠送您2次(同一好友每日最多赠送4次)
-        </View>
+        </View> */}
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
         <Button
