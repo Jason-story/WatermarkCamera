@@ -79,7 +79,7 @@ const MergeCanvas = () => {
 
       // 计算 img2 的新尺寸
       let img2Width =
-        position === "center" ? canvasWidth * 0.85 : info2.width * dpr * 0.85;
+        position === "center" ? canvasWidth * 0.8 : info2.width * dpr * 0.8;
       let img2Height = img2Width * (info2.height / info2.width);
 
       // 计算 img2 的位置
