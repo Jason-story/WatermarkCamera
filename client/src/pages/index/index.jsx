@@ -90,7 +90,6 @@ const CameraPage = () => {
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
-  const [isShowDD, setIsShowDD] = useState(false);
 
   var cloud = "";
   // 根据年月日计算星期几的函数
@@ -114,13 +113,7 @@ const CameraPage = () => {
       await Taro.cloud.init({
         env: "sy-4gecj2zw90583b8b",
       });
-      // 是否滚动DD字幕
-      Taro.cloud.callFunction({
-        name: "getDD",
-        success: function (res) {
-          setIsShowDD(res.result.data.open);
-        },
-      });
+
 
       Taro.cloud.callFunction({
         name: "addUser",
@@ -637,27 +630,27 @@ const CameraPage = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
           const dpr = wx.getSystemInfoSync().pixelRatio;
-           const canvasConfigDz = dingzhi({
-      hours,
-      minutes,
-      year,
-      month,
-      day,
-      weekly,
-      weather,
-      locationName,
-      latitude,
-      longitude,
-      hideJw,
-      title,
-      Shuiyin1,
-      Shuiyin2,
-      Shuiyin3,
-      Shuiyin4,
-      dpr,
-      canvas,
-    });
-    canvasConfig.push(canvasConfigDz[0]);
+          const canvasConfigDz = dingzhi({
+            hours,
+            minutes,
+            year,
+            month,
+            day,
+            weekly,
+            weather,
+            locationName,
+            latitude,
+            longitude,
+            hideJw,
+            title,
+            Shuiyin1,
+            Shuiyin2,
+            Shuiyin3,
+            Shuiyin4,
+            dpr,
+            canvas,
+          });
+          canvasConfig.push(canvasConfigDz[0]);
           // 设置canvas宽高
           canvas.width = res[0].width * dpr;
           canvas.height = res[0].height * dpr;
@@ -750,12 +743,7 @@ const CameraPage = () => {
         className="camera-box"
         style={{ height: (screenWidth / 3) * 4 + "px" }}
       >
-        {isShowDD && (
-          <Marquee
-            text="会员特惠，每月5元"
-            speed={10}
-          />
-        )}
+        <Marquee/>
         {permissions.camera && (
           <Camera
             className="camera"
@@ -1048,8 +1036,9 @@ const CameraPage = () => {
                     )}
                   </View>
                   {index === 1 && userInfo.type === "default" && (
-                    <View className="extra-view"
-                    style={{ width: "100%!important" }}
+                    <View
+                      className="extra-view"
+                      style={{ width: "100%!important" }}
                     >
                       <AdCustom
                         unitId="adunit-d0875afa048b3342"

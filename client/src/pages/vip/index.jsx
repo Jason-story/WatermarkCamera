@@ -5,13 +5,13 @@ import ShareImg from "../../images/logo.jpg";
 
 import Head from "../../images/head.jpg";
 import "./index.scss";
-const UserInfo = ({ userType,price }) => {
+const UserInfo = ({ userType, price }) => {
   return (
     <View className="user-info">
       <View className="user-details">
         <View>
           <Text style={{ fontWeight: "bold" }}>普通会员</Text>
-          ，每月{price.month}元，包括以下特权:{" "}
+          ，每月<Text style={{color:'rgb(233, 60, 70)'}}>{price.month}</Text>元，包括以下特权:{" "}
         </View>
         <View>• 每天、每月不限量生成水印图片</View>
         <View>• 生成高清水印图片</View>
@@ -33,14 +33,14 @@ const UserInfo = ({ userType,price }) => {
       </View>
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
-          <Text style={{ fontWeight: "bold" }}>高级会员</Text>， 每月{price.svip}元，
-          包括普通会员的所有权益以及解锁所有会员水印
+          <Text style={{ fontWeight: "bold" }}>高级会员</Text>， 每月
+          <Text style={{color:'rgb(233, 60, 70)'}}>{price.svip}</Text>元， 包括普通会员的所有权益以及解锁所有会员水印
         </View>
       </View>
       <View className="user-details" style={{ marginTop: "20px" }}>
         <View>
-          <Text style={{ fontWeight: "bold" }}>超级会员</Text>， 一次性{price.never}元，
-          永久使用，包括普通会员的所有权益以及解锁所有会员水印
+          <Text style={{ fontWeight: "bold" }}>超级会员</Text>， 一次性
+          <Text style={{color:'rgb(233, 60, 70)'}}>{price.never}</Text>元， 永久使用，包括普通会员的所有权益以及解锁所有会员水印
         </View>
       </View>
       <View
