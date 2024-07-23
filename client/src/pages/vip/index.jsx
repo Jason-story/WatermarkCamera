@@ -10,15 +10,13 @@ const UserInfo = ({ userType, price }) => {
     <View className="user-info">
       <View className="user-details">
         <View>
-          <Text style={{ fontWeight: "bold" }}>普通会员</Text>
-          ，每月<Text style={{color:'rgb(233, 60, 70)'}}>{price.month}</Text>元，包括以下特权:{" "}
+          <Text style={{ fontWeight: "bold" }}>会员权益</Text>
         </View>
         <View>• 每天、每月不限量生成水印图片</View>
         <View>• 生成高清水印图片</View>
         <View>• 去掉除封面广告之外的一切广告</View>
       </View>
-
-      <View style={{ marginTop: "20px", width: "100%" }}>
+      <View style={{ marginTop: "20px", marginBottom: "20px", width: "100%" }}>
         <Button
           type="primary"
           size="mini"
@@ -28,29 +26,84 @@ const UserInfo = ({ userType, price }) => {
             });
           }}
         >
-          图片对比
+          高清图片对比
         </Button>
       </View>
-      <View className="user-details" style={{ marginTop: "20px" }}>
-        <View>
-          <Text style={{ fontWeight: "bold" }}>高级会员</Text>， 每月
-          <Text style={{color:'rgb(233, 60, 70)'}}>{price.svip}</Text>元， 包括普通会员的所有权益以及解锁所有会员水印
+      {price.show === false ? (
+        ""
+      ) : (
+        <View
+        style={{ width: "100%", }}>
+          <View className="user-details">
+            <View>
+              <Text>一天会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price["1day"]}</Text>元
+            </View>
+          </View>
+          <View className="user-details">
+            <View>
+              <Text>三天会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price["3days"]}</Text>元
+            </View>
+          </View><View className="user-details">
+            <View>
+              <Text>包月会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.month}</Text>元
+            </View>
+          </View>
+          <View className="user-details">
+            <View>
+              <Text>双月会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>
+                {price.twoMonth}
+              </Text>
+              元
+            </View>
+          </View>
+          <View className="user-details">
+            <View>
+              <Text>三月会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>
+                {price.threeMonth}
+              </Text>
+              元
+            </View>
+          </View>
+          <View className="user-details">
+            <View>
+              <Text>半年会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>
+                {price.halfYearMonth}
+              </Text>
+              元
+            </View>
+          </View>
+          <View className="user-details">
+            <View>
+              <Text>包年会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.year}</Text>元
+            </View>
+          </View>
+          <View className="user-details">
+            <View>
+              <Text>永久会员</Text>，
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.never}</Text>元
+            </View>
+          </View>
+          <View
+            className="user-details"
+            style={{ marginTop: "20px", fontWeight: "bold" }}
+          >
+            需要定制水印可以咨询客服
+          </View>
         </View>
-      </View>
-      <View className="user-details" style={{ marginTop: "20px" }}>
-        <View>
-          <Text style={{ fontWeight: "bold" }}>超级会员</Text>， 一次性
-          <Text style={{color:'rgb(233, 60, 70)'}}>{price.never}</Text>元， 永久使用，包括普通会员的所有权益以及解锁所有会员水印
-        </View>
-      </View>
-      <View
-        className="user-details"
-        style={{ marginTop: "20px", fontWeight: "bold" }}
-      >
-        定制水印需求可以咨询客服
-      </View>
+      )}
       <View style={{ width: "100%", marginTop: "50px" }}>
-        <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>
+        {price.show === false ? (
+          ""
+        ) : (
+          <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>
+        )}
         <Button
           openType="contact"
           style={{

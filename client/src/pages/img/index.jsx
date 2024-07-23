@@ -3,9 +3,24 @@ import { View, Image } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./index.scss";
 
+// 生成带时间戳的 URL 的函数
+function getTimestampedImageUrl(baseUrl) {
+  // 获取当前时间戳
+  const now = new Date();
+  // 向下取整到最近的 3 分钟
+  const timestamp =
+    Math.floor(now.getTime() / (3 * 60 * 1000)) * (3 * 60 * 1000);
+  // 将时间戳添加到 URL
+  return `${baseUrl}?t=${timestamp}`;
+}
+
 const ImageCompare = ({
-  beforeImage = "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/2871721203290_.pic.jpg",
-  afterImage = "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/2881721203291_.pic_hd.jpg",
+  beforeImage = getTimestampedImageUrl(
+    "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/2871721203290_.pic.jpg"
+  ),
+  afterImage = getTimestampedImageUrl(
+    "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/2881721203291_.pic_hd.jpg"
+  ),
 }) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [containerWidth, setContainerWidth] = useState(0);

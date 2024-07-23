@@ -114,7 +114,6 @@ const CameraPage = () => {
         env: "sy-4gecj2zw90583b8b",
       });
 
-
       Taro.cloud.callFunction({
         name: "addUser",
         success: function (res) {
@@ -511,7 +510,13 @@ const CameraPage = () => {
       });
     } else {
       Taro.navigateTo({
-        url: "/pages/result/index?bg=" + path + "&mask=" + canvasImg,
+        url:
+          "/pages/result/index?bg=" +
+          path +
+          "&mask=" +
+          canvasImg +
+          "&position=" +
+          canvasConfigState[currentShuiyinIndex]?.[0]?.position,
       });
     }
   };
@@ -743,7 +748,7 @@ const CameraPage = () => {
         className="camera-box"
         style={{ height: (screenWidth / 3) * 4 + "px" }}
       >
-        <Marquee/>
+        <Marquee />
         {permissions.camera && (
           <Camera
             className="camera"

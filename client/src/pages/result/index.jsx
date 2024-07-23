@@ -27,6 +27,7 @@ const MergeCanvas = () => {
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
   const position = Taro.getCurrentInstance().router.params.position;
+  console.log("position: ", position);
 
   const [imagePath, setImagePath] = useState("");
   const [imageWidth, setImageWidth] = useState(0);
@@ -55,65 +56,65 @@ const MergeCanvas = () => {
   const dpr = Taro.getSystemInfoSync().pixelRatio;
   const drawImages = async () => {
     try {
-      // 获取第一张图片的信息
       const ctx = Taro.createCanvasContext("mergeCanvas");
 
-      const info1 = await Taro.getImageInfo({
-        src: firstImagePath,
-      });
-      const img1Path = info1.path;
+      const info1 = await Taro.getImageInfo({ src: firstImagePath });
       const img1Width = info1.width;
       const img1Height = info1.height;
       setImageWidth(img1Width);
       setImageHeight(img1Height);
 
-      const info2 = await Taro.getImageInfo({
-        src: secondImagePath,
-      });
+      const info2 = await Taro.getImageInfo({ src: secondImagePath });
 
-      const img2Path = info2.path;
-      let img2Width = info2.width;
-      let img2Height = info2.height;
+      // 设置画布大小，使用物理像素
+      const canvasWidth = img1Width * dpr;
+      const canvasHeight = img1Height * dpr;
 
-      if (img1Width < 1000) {
-        img2Width = img2Width / 1.7;
-        img2Height = img2Height / 1.7;
-      } else if (img1Width > 2160) {
-        img2Width = img2Width * 1.3;
-        img2Height = img2Height * 1.3;
-      } else {
-        img2Width = img2Width / 1.4;
-        img2Height = img2Height / 1.4;
-      }
-      // 设置画布大小
-      ctx.width = img1Width * dpr;
-      ctx.height = img1Height * dpr;
-      ctx.drawImage(img1Path, 0, 0, img1Width, img1Height);
-      // 绘制第二张图片在左下角
-      let x = 10;
-      let y = img1Height - img2Height - 10;
+      // 设置画布尺寸
+      ctx.width = canvasWidth;
+      ctx.height = canvasHeight;
 
-      if (position === "center") {
-        // 计算第二张图片的居中位置
-        x = (img1Width - img2Width) / 2 + 10;
-      }
-      ctx.drawImage(img2Path, x, y, img2Width, img2Height);
+      // 绘制第一张图片，缩放以填满画布
+      ctx.drawImage(info1.path, 0, 0, canvasWidth, canvasHeight);
+
+      // 计算 img2 的新尺寸
+      let img2Width =
+        position === "center" ? canvasWidth * 0.85 : info2.width * dpr * 0.85;
+      let img2Height = img2Width * (info2.height / info2.width);
+
+      // 计算 img2 的位置
+      let x = position === "center" ? (canvasWidth - img2Width) / 2 : 10 * dpr;
+      let y = canvasHeight - img2Height - 10 * dpr;
+
+      // 绘制第二张图片
+      ctx.drawImage(info2.path, x, y, img2Width, img2Height);
+
+      console.log("Canvas dimensions:", canvasWidth, canvasHeight);
+      console.log("img1 dimensions:", img1Width, img1Height);
+      console.log("img2 dimensions:", img2Width, img2Height);
+      console.log("img2 position:", x, y);
 
       await drawCanvas(ctx);
 
       setTimeout(async () => {
         try {
+          // 根据用户类型决定是否需要额外的缩放
+          const scaleFactor = userInfo.type === "default" ? 1 / 1.7 : 1;
+          const finalWidth = Math.round(canvasWidth * scaleFactor);
+          const finalHeight = Math.round(canvasHeight * scaleFactor);
+
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
-            quality: userInfo.type === "default" ? 0.5 : 1, // 设置图片质量为30%
+            quality: userInfo.type === "default" ? 0.5 : 1,
             canvasId: "mergeCanvas",
-            width: img1Width,
-            height: img1Height,
-            destWidth:
-              userInfo.type !== "default" ? img1Width * dpr : img1Width / 1.7,
-            destHeight:
-              userInfo.type !== "default" ? img1Height * dpr : img1Height / 1.7,
+            width: canvasWidth,
+            height: canvasHeight,
+            destWidth: finalWidth,
+            destHeight: finalHeight,
           });
+
+          console.log("Final image dimensions:", finalWidth, finalHeight);
+
           setImagePath(tempFilePath);
           if (userInfo.todayUsageCount >= 2 && userInfo.type === "default") {
             setIsShowModal(true);
@@ -123,15 +124,9 @@ const MergeCanvas = () => {
         } catch (error) {
           console.error("保存图片失败:", error);
         }
-      }, 300); // 延迟100毫秒
-      setImagePath(tempFilePath);
-      if (userInfo.todayUsageCount >= 2 && userInfo.type === "default") {
-        setIsShowModal(true);
-        return;
-      }
-      saveImage(tempFilePath);
+      }, 300);
     } catch (err) {
-      // console.error("绘制图片出错:", error);
+      console.error("绘制图片出错:", err);
     }
   };
   let videoAd = null;

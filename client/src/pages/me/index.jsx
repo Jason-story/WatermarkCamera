@@ -48,18 +48,24 @@ const UserInfo = ({
     // 拼接成 YYYY-MM-DD 格式
     return `${year}-${month}-${day}`;
   }
-
+  const config = {
+    default: "普通用户",
+    month: "包月会员",
+    "1day": "一天会员",
+    "3days": "三天会员",
+    twoMonth: "双月会员",
+    threeMonth: "三月会员",
+    halfYearMonth: "半年会员",
+    halfYearMonth: "半年会员",
+    year: "包年会员",
+    never: "永久会员",
+  };
   return (
     <View className="user-info">
       <View className="user-details">
         <View className="user-item">
           <Text className="label">我的等级</Text>
-          <Text className="value">
-            {userType === "default" && "普通用户"}
-            {userType === "month" && "包月会员"}
-            {userType === "buyout" && "终身会员"}
-            {userType === "customize_month" && "定制包月会员"}
-          </Text>
+          <Text className="value">{config[userType]}</Text>
         </View>
         {userType !== "default" && (
           <View className="user-item">
@@ -68,16 +74,19 @@ const UserInfo = ({
           </View>
         )}
 
-        <View className="user-item">
-          <Text className="label">我的ID</Text>
-          <Text
-            className="value"
-            onClick={() => {
-              onCopyText(userId);
-            }}
+        <View
+          className="user-item"
+          onClick={() => {
+            onCopyText(userId);
+          }}
+        >
+          <View
+            className="label"
+            style={{ display: "flex", flexDirection: "column" }}
           >
-            {userId || "xxx"}
-          </Text>
+            我的ID <View style={{ fontSize: "12px" }}>(点击复制)</View>
+          </View>
+          <Text className="value">{userId || "xxx"}</Text>
         </View>
 
         <View className="user-item">
@@ -104,6 +113,11 @@ const UserInfo = ({
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >
           邀请好友<Text style={{color:"#ff4d4f"}}>成功拍照</Text>1次，赠送您2次(同一好友每日最多赠送4次)
+        </View> */}
+        {/* <View
+          style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
+        >
+          点击ID即可复制
         </View> */}
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
