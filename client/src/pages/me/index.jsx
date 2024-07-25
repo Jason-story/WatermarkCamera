@@ -56,7 +56,6 @@ const UserInfo = ({
     twoMonth: "双月会员",
     threeMonth: "三月会员",
     halfYearMonth: "半年会员",
-    halfYearMonth: "半年会员",
     year: "包年会员",
     never: "永久会员",
   };

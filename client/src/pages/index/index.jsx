@@ -592,7 +592,7 @@ const CameraPage = () => {
             if (fileSizeInMB > 1) {
               Taro.showModal({
                 title: "提示",
-                content: "图片体积过大，请重新选择",
+                content: "图片体积过大，请重新选择,不要用原图",
                 showCancel: false,
               });
             } else {
@@ -633,7 +633,11 @@ const CameraPage = () => {
           ctx.save();
           ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+          // 首先重置所有可能的阴影属性
+          ctx.shadowColor = "rgba(0,0,0,0)";
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
           const dpr = wx.getSystemInfoSync().pixelRatio;
           const canvasConfigDz = dingzhi({
             hours,
