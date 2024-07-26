@@ -1,6 +1,6 @@
 // src/pages/merge/index.jsx
 import React, { useEffect, useState } from "react";
-import { View, Button, Image, Canvas,Text } from "@tarojs/components";
+import { View, Button, Image, Canvas, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useDidShow } from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
@@ -49,6 +49,7 @@ const MergeCanvas = () => {
   const drawImages = async () => {
     try {
       console.log("开始绘制图片");
+
       // 使用 Promise.all 并行获取图片信息
       const [info1, info2] = await Promise.all([
         Taro.getImageInfo({ src: firstImagePath }),
@@ -63,89 +64,57 @@ const MergeCanvas = () => {
       console.log("设置图片尺寸:", { img1Width, img1Height });
 
       // 根据用户类型预先计算最终尺寸
-      const finalWidth = userInfo.type === "default" ? img1Width : img1Width / 2;
-      const finalHeight = userInfo.type === "default" ? img1Height : img1Height / 2;
+      const finalWidth =
+        userInfo.type === "default" ? img1Width : Math.floor(img1Width / 2);
+      const finalHeight =
+        userInfo.type === "default" ? img1Height : Math.floor(img1Height / 2);
       console.log("计算最终尺寸:", { finalWidth, finalHeight });
 
       // 获取 Canvas 对象和上下文
       console.log("开始获取Canvas对象和上下文");
-      const { canvas, ctx } = await new Promise((resolve) => {
-        Taro.createSelectorQuery()
-          .select("#mergeCanvas")
-          .fields({ node: true, size: true })
-          .exec((res) => {
-            console.log("Canvas查询结果:", res);
-            if (res && res[0] && res[0].node) {
-              const canvas = res[0].node;
-              const ctx = canvas.getContext("2d");
-              const dpr = Taro.getSystemInfoSync().pixelRatio;
-              canvas.width = finalWidth * dpr;
-              canvas.height = finalHeight * dpr;
-              ctx.scale(dpr, dpr);
-              console.log("Canvas对象和上下文获取成功");
-              resolve({ canvas, ctx });
-            } else {
-              console.error("未找到Canvas元素");
-            }
-          });
-      });
+      const { canvas, ctx } = await getCanvasContext(finalWidth, finalHeight);
 
       // 绘制第一张图片
       console.log("开始绘制第一张图片");
-      await new Promise((resolve, reject) => {
-        const img = canvas.createImage();
-        img.onload = () => {
-          ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
-          console.log("第一张图片绘制完成");
-          resolve();
-        };
-        img.onerror = (err) => {
-          console.error("第一张图片加载失败:", err);
-          reject(err);
-        };
-        img.src = info1.path;
-      });
+      await drawImageOnCanvas(
+        canvas,
+        ctx,
+        info1.path,
+        0,
+        0,
+        finalWidth,
+        finalHeight
+      );
 
       // 计算 img2 的新尺寸和位置
-      const img2Width = position === "center" ? finalWidth * 0.75 : info2.width * 0.35;
-      const img2Height = img2Width * (info2.height / info2.width);
-      const x = position === "center" ? (finalWidth - img2Width) / 2 : 10;
+      const img2Width =
+        position === "center"
+          ? Math.floor(finalWidth * 0.75)
+          : Math.floor(info2.width * 0.35);
+      const img2Height = Math.floor(img2Width * (info2.height / info2.width));
+      const x =
+        position === "center" ? Math.floor((finalWidth - img2Width) / 2) : 10;
       const y = finalHeight - img2Height - 10;
       console.log("计算第二张图片参数:", { img2Width, img2Height, x, y });
 
       // 绘制第二张图片
       console.log("开始绘制第二张图片");
-      await new Promise((resolve, reject) => {
-        const img = canvas.createImage();
-        img.onload = () => {
-          ctx.drawImage(img, x, y, img2Width, img2Height);
-          console.log("第二张图片绘制完成");
-          resolve();
-        };
-        img.onerror = (err) => {
-          console.error("第二张图片加载失败:", err);
-          reject(err);
-        };
-        img.src = info2.path;
-      });
+      await drawImageOnCanvas(
+        canvas,
+        ctx,
+        info2.path,
+        x,
+        y,
+        img2Width,
+        img2Height
+      );
 
       // 将 canvas 转换为图片
       console.log("开始将Canvas转换为图片");
-      const tempFilePath = await new Promise((resolve, reject) => {
-        Taro.canvasToTempFilePath({
-          canvas: canvas,
-          fileType: "jpg",
-          quality: userInfo.type === "default" ? 0.3 : 1,
-          success: (res) => {
-            console.log("Canvas转换为图片成功:", res.tempFilePath);
-            resolve(res.tempFilePath);
-          },
-          fail: (error) => {
-            console.error("Canvas转换为图片失败:", error);
-            reject(error);
-          },
-        });
-      });
+      const tempFilePath = await canvasToTempFilePath(
+        canvas,
+        userInfo.type === "default" ? 0.3 : 1
+      );
 
       setImagePath(tempFilePath);
       console.log("设置图片路径:", tempFilePath);
@@ -159,7 +128,56 @@ const MergeCanvas = () => {
       saveImage(tempFilePath);
     } catch (err) {
       console.error("绘制图片出错:", err);
+      // 在这里添加错误处理逻辑，例如显示错误消息给用户
     }
+  };
+
+  // 辅助函数：获取Canvas上下文
+  const getCanvasContext = (width, height) => {
+    return new Promise((resolve, reject) => {
+      Taro.createSelectorQuery()
+        .select("#mergeCanvas")
+        .fields({ node: true, size: true })
+        .exec((res) => {
+          if (res && res[0] && res[0].node) {
+            const canvas = res[0].node;
+            const ctx = canvas.getContext("2d");
+            const dpr = Taro.getSystemInfoSync().pixelRatio;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.scale(dpr, dpr);
+            resolve({ canvas, ctx });
+          } else {
+            reject(new Error("未找到Canvas元素"));
+          }
+        });
+    });
+  };
+
+  // 辅助函数：在Canvas上绘制图片
+  const drawImageOnCanvas = (canvas, ctx, src, x, y, width, height) => {
+    return new Promise((resolve, reject) => {
+      const img = canvas.createImage();
+      img.onload = () => {
+        ctx.drawImage(img, x, y, width, height);
+        resolve();
+      };
+      img.onerror = reject;
+      img.src = src;
+    });
+  };
+
+  // 辅助函数：将Canvas转换为临时文件路径
+  const canvasToTempFilePath = (canvas, quality) => {
+    return new Promise((resolve, reject) => {
+      Taro.canvasToTempFilePath({
+        canvas: canvas,
+        fileType: "jpg",
+        quality: quality,
+        success: (res) => resolve(res.tempFilePath),
+        fail: reject,
+      });
+    });
   };
   // ________________________________
   const saveImage = async (tempFilePath) => {
