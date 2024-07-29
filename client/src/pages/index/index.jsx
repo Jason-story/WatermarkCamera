@@ -84,7 +84,6 @@ const CameraPage = () => {
   const [showToast, setToast] = useState(false);
   const [weekly, setWeekly] = useState(getWeekday(year, month, day));
   const [showAddMyApp, setAddMyAppShow] = useState(true);
-  const [firstModal, setShowFirstModal] = useState(false);
   const [hideJw, setHideJw] = useState(true);
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
@@ -730,21 +729,21 @@ const CameraPage = () => {
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
   };
-  useEffect(() => {
-    if (allAuth) {
-      Taro.getStorage({ key: "hasVisited" })
-        .then(() => {
-          // 用户已经访问过小程序，不显示弹窗
-          setShowFirstModal(false);
-        })
-        .catch(() => {
-          // 用户第一次访问小程序，显示弹窗
-          setShowFirstModal(true);
-          // 设置标志位，表示用户已经访问过小程序
-          Taro.setStorage({ key: "hasVisited", data: true });
-        });
-    }
-  }, [allAuth]);
+  // useEffect(() => {
+  //   if (allAuth) {
+  //     Taro.getStorage({ key: "hasVisited" })
+  //       .then(() => {
+  //         // 用户已经访问过小程序，不显示弹窗
+  //         setShowFirstModal(false);
+  //       })
+  //       .catch(() => {
+  //         // 用户第一次访问小程序，显示弹窗
+  //         setShowFirstModal(true);
+  //         // 设置标志位，表示用户已经访问过小程序
+  //         Taro.setStorage({ key: "hasVisited", data: true });
+  //       });
+  //   }
+  // }, [allAuth]);
   // console.log("canvasConfigState[currentShuiyinIndex][0]: ", canvasConfigState);
   return (
     <View className="container">
@@ -982,7 +981,7 @@ const CameraPage = () => {
           </Button>
         </AtModalAction>
       </AtModal>
-      <AtModal isOpened={firstModal} closeOnClickOverlay={false}>
+      {/* <AtModal isOpened={firstModal} closeOnClickOverlay={false}>
         <AtModalHeader>隐私通知</AtModalHeader>
         <AtModalContent className="yinsiModal">
           <View
@@ -1005,7 +1004,7 @@ const CameraPage = () => {
             关闭
           </Button>{" "}
         </AtModalAction>
-      </AtModal>
+      </AtModal> */}
 
       <AtFloatLayout
         isOpened={showFloatLayout}
