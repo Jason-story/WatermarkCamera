@@ -116,7 +116,7 @@ page {
   align-items: center;
 }
 .tools-bar {
-  height: 12%;
+  height: 11%;
   display: flex;
   align-items: center;
   position: relative;
@@ -158,11 +158,12 @@ page {
   justify-content: center;
   align-items: center;
   z-index: 2;
+  margin-top: -8rpx;
 }
 
 .camera-button {
-  width: 140px;
-  height: 140px;
+  width: 120px;
+  height: 120px;
   border: 2px solid #000; // 外边细线
   border-radius: 50%; // 外圆
   display: flex;
@@ -171,8 +172,8 @@ page {
 }
 
 .camera-button-inner {
-  width: 130px;
-  height: 130px;
+  width: 110px;
+  height: 110px;
   background-color: #000; // 内部实心圆
   border-radius: 50%; // 内圆
 }
@@ -189,6 +190,15 @@ page {
     height: 40px;
     margin-left: 10px;
   }
+}
+.shantui-btns {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  font-size: 26px;
+  padding-left: 40px;
+  height: 50px;
+  margin-top: -10px;
 }
 
 .vip-btn image {

@@ -2,68 +2,90 @@ const cloud = require('wx-server-sdk');
 const Jimp = require('jimp');
 
 cloud.init();
-let checkResult = '';
+
+// Helper function to convert file content to buffer and check size
+
+// Optimized security check function
+async function securityCheck(fileContent) {
+    try {
+        const buffer = await Buffer.from(fileContent);
+         // 检查文件大小
+        //  const maxFileSize = 1 * 1024 * 1024; // 5MB
+        // if (buffer.length > maxFileSize) {
+        //     throw new Error('图片过大，请重新选择');
+        // }
+        const secCheckResult = await cloud.openapi.security.imgSecCheck({
+            media: {
+                contentType: 'image/jpg',
+                value: buffer
+            }
+        });
+
+        if (secCheckResult.errCode !== 0) {
+            throw new Error(secCheckResult);
+        }
+    } catch (secError) {
+        // console.log('secCheckResult: ', secCheckResult);
+        throw new Error('图片不合规，请重新选择图片');
+    }
+}
+
 exports.main = async (event, context) => {
     const { firstImageFileID, secondImageFileID, position, userInfo } = event;
 
     try {
-        // 下载图片
+        // Download images
         const [firstImageRes, secondImageRes] = await Promise.all([
             cloud.downloadFile({ fileID: firstImageFileID }),
             cloud.downloadFile({ fileID: secondImageFileID })
         ]);
-        // checkResult = await cloud.openapi.security.imgSecCheck({
-        //     media: {
-        //         contentType: 'image/jpeg',
-        //         value: Buffer.from(firstImageRes.fileContent)
-        //     }
-        // });
-        // if (checkResult.errCode !== 0) {
-        //     return { message: '图片不合规' };
-        // }
-        // 使用 Jimp 读取图片
+
+        // Perform security check on both images
+        await Promise.all([securityCheck(firstImageRes.fileContent)]);
+
+        // Read images with Jimp
         const [firstImage, secondImage] = await Promise.all([
             Jimp.read(firstImageRes.fileContent),
             Jimp.read(secondImageRes.fileContent)
         ]);
 
-        // 获取第一张图片的尺寸
+        // Get dimensions of the first image
         const canvasWidth = firstImage.getWidth();
         const canvasHeight = firstImage.getHeight();
 
-        // 调整第二张图片的大小
+        // Resize the second image
         let img2Width = position === 'center' ? canvasWidth * 0.8 : secondImage.getWidth() * 0.8;
         let img2Height = img2Width * (secondImage.getHeight() / secondImage.getWidth());
         secondImage.resize(img2Width, img2Height);
 
-        // 计算第二张图片的位置
+        // Calculate position for the second image
         let x = position === 'center' ? (canvasWidth - img2Width) / 2 : 10;
         let y = canvasHeight - img2Height - 10;
 
-        // 合并图片
+        // Composite images
         firstImage.composite(secondImage, x, y);
 
-        // 根据用户类型决定是否需要额外的缩放
+        // Scale factor based on user type
         const scaleFactor = userInfo.type === 'default' ? 1 / 1.7 : 1;
         const finalWidth = Math.round(canvasWidth * scaleFactor);
         const finalHeight = Math.round(canvasHeight * scaleFactor);
 
-        // 调整图片大小和质量
+        // Resize and adjust quality
         firstImage.resize(finalWidth, finalHeight);
         if (userInfo.type === 'default') {
-            firstImage.quality(50); // 设置 JPEG 质量为 50
+            firstImage.quality(50);
         }
 
-        // 将图片转换为 buffer
+        // Convert to buffer
         const buffer = await firstImage.getBufferAsync(Jimp.MIME_JPEG);
 
-        // 上传到云存储
+        // Upload to cloud storage
         const uploadResult = await cloud.uploadFile({
             cloudPath: `merged_images/${Date.now()}.jpg`,
             fileContent: buffer
         });
 
-        // 删除临时上传的原始图片
+        // Delete temporary original images
         await cloud.deleteFile({
             fileList: [firstImageFileID, secondImageFileID]
         });

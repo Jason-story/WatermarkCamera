@@ -85,6 +85,7 @@ const CameraPage = () => {
   const [weekly, setWeekly] = useState(getWeekday(year, month, day));
   const [showAddMyApp, setAddMyAppShow] = useState(true);
   const [hideJw, setHideJw] = useState(true);
+  const [shantuiSwitch, setShantuiSwitch] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
@@ -488,10 +489,16 @@ const CameraPage = () => {
       });
       return;
     }
+    // 相机
     if (camera) {
       cameraContext?.takePhoto({
         zoom: zoomLevel,
-        quality: userInfo.type === "default" ? "low" : "original",
+        quality:
+          userInfo.type === "default"
+            ? "low"
+            : shantuiSwitch
+            ? "normal"
+            : "original",
         success: (path) => {
           setTimeout(() => {
             Taro.navigateTo({
@@ -500,6 +507,8 @@ const CameraPage = () => {
                 path.tempImagePath +
                 "&mask=" +
                 canvasImg +
+                "&serverCanvas=" +
+                shantuiSwitch +
                 "&position=" +
                 canvasConfigState[currentShuiyinIndex]?.[0]?.position,
             });
@@ -508,12 +517,15 @@ const CameraPage = () => {
         fail: (error) => {},
       });
     } else {
+      // 相册
       Taro.navigateTo({
         url:
           "/pages/result/index?bg=" +
           path +
           "&mask=" +
           canvasImg +
+          "&serverCanvas=" +
+          shantuiSwitch +
           "&position=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.position,
       });
@@ -591,7 +603,7 @@ const CameraPage = () => {
             if (fileSizeInMB > 1) {
               Taro.showModal({
                 title: "提示",
-                content: "图片体积过大，请重新选择,不要用原图",
+                content: "图片体积过大，请重新选择",
                 showCancel: false,
               });
             } else {
@@ -942,6 +954,18 @@ const CameraPage = () => {
           </View>
         </View>
       </View>
+
+      <View className="shantui-btns">
+        <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
+        <Switch
+          checked={shantuiSwitch}
+          style={{ transform: "scale(0.7)" }}
+          onChange={(e) => {
+            setShantuiSwitch(e.detail.value);
+          }}
+        />
+      </View>
+
       <View className="bottom-btns">
         <Button openType="share" className="share-btn" type="button">
           <Text>分享群聊</Text>
