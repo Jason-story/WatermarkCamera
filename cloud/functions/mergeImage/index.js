@@ -54,7 +54,7 @@ exports.main = async (event, context) => {
         const canvasHeight = firstImage.getHeight();
 
         // Resize the second image
-        let img2Width = position === 'center' ? canvasWidth * 0.8 : secondImage.getWidth() * 0.8;
+        let img2Width = position === 'center' ? canvasWidth * 0.95 : secondImage.getWidth() * 0.95;
         let img2Height = img2Width * (secondImage.getHeight() / secondImage.getWidth());
         secondImage.resize(img2Width, img2Height);
 

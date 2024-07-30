@@ -35,6 +35,28 @@ const MergeCanvas = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [isShare, setShare] = useState(false);
+  const [loadingText, setLoadingText] = useState("图片检测中. . .");
+  const texts = ["图片检测中. . .", "图片生成中. . .", "图片下载中. . ."];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => {
+        if (prevIndex < texts.length - 1) {
+          return prevIndex + 1;
+        } else {
+          clearInterval(interval);
+          return 2; // Reset to '图片检测中'
+        }
+      });
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setLoadingText(texts[index]);
+  }, [index]);
 
   const drawCanvas = (ctx) => {
     return new Promise((resolve, reject) => {
@@ -257,7 +279,7 @@ const MergeCanvas = () => {
 
       // 计算 img2 的新尺寸
       let img2Width =
-        position === "center" ? canvasWidth * 0.8 : info2.width * dpr * 0.8;
+        position === "center" ? canvasWidth * 0.95 : info2.width * dpr * 0.8;
       let img2Height = img2Width * (info2.height / info2.width);
 
       // 计算 img2 的位置
@@ -407,7 +429,16 @@ const MergeCanvas = () => {
             />
           </View>
         ) : (
-          <View className="loader"></View>
+          <View
+            style={{
+              textAlign: "center",
+              color: "#17233f",
+              fontSize: "14px",
+            }}
+          >
+            <View className="loader"></View>
+            <Text>{loadingText}</Text>
+          </View>
         )}
       </View>
       {userInfo.type === "default" && (
