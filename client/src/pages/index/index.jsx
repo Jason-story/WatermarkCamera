@@ -967,6 +967,29 @@ const CameraPage = () => {
       </View>
 
       <View className="bottom-btns">
+        <Button
+          className="share-btn"
+          onClick={() => {
+            Taro.navigateTo({
+              url: "/pages/meituan/index",
+            });
+          }}
+          style={{
+            background: "linear-gradient(45deg, #ff512f, #dd2476)",
+            color: "white",
+            border: "none",
+            borderRadius: "30px",
+            padding: "5px 16px",
+            fontSize: "32rpx",
+            cursor: "pointer",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            marginBottom: "10px",
+            height: "46px",
+            marginTop: "10px",
+          }}
+        >
+          电费、话费、滴滴、美团红包
+        </Button>
         <Button openType="share" className="share-btn" type="button">
           <Text>分享群聊</Text>
           <View id="container-stars">
@@ -1005,31 +1028,6 @@ const CameraPage = () => {
           </Button>
         </AtModalAction>
       </AtModal>
-      {/* <AtModal isOpened={firstModal} closeOnClickOverlay={false}>
-        <AtModalHeader>隐私通知</AtModalHeader>
-        <AtModalContent className="yinsiModal">
-          <View
-            className="modal-list"
-            style={{
-              height: "70px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            小程序不会上传您的照片，不会有任何隐私问题，请您放心使用
-          </View>
-        </AtModalContent>
-        <AtModalAction>
-          <Button
-            onClick={() => {
-              setShowFirstModal(false);
-            }}
-          >
-            关闭
-          </Button>{" "}
-        </AtModalAction>
-      </AtModal> */}
-
       <AtFloatLayout
         isOpened={showFloatLayout}
         title="水印选择、修改"

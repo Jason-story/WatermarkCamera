@@ -1,0 +1,44 @@
+.qr-code-page {
+  padding: 20px;
+
+  .title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .qr-code-container {
+    display: flex;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+
+  .qr-code-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 50%;
+    margin-bottom: 60px;
+
+    .qr-code-name {
+      font-size: 30px;
+      margin-right: 10px;
+    }
+
+    .qr-code-image {
+      margin-right: 10px;
+    }
+
+    .save-button {
+      font-size: 26px;
+    }
+  }
+
+  .instruction {
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+  }
+}
