@@ -497,29 +497,29 @@ const CameraPage = () => {
     if (camera) {
       // 上传时间位置 保存
 
-        Taro.cloud.callFunction({
-          name: "updateSavedConfig",
-          data: {
-            saveConfig: {
-              isSaved: isShuiyinSaved,
-              currentShuiyinIndex,
-              hours,
-              minutes,
-              year,
-              month,
-              day,
-              weekly,
-              weather,
-              locationName,
-              latitude,
-              longitude,
-            },
+      Taro.cloud.callFunction({
+        name: "updateSavedConfig",
+        data: {
+          saveConfig: {
+            isSaved: isShuiyinSaved,
+            currentShuiyinIndex,
+            hours,
+            minutes,
+            year,
+            month,
+            day,
+            weekly,
+            weather,
+            locationName,
+            latitude,
+            longitude,
           },
-          success: function (res) {
-            console.log("res: ", res);
-            console.log("保存成功 ");
-          },
-        });
+        },
+        success: function (res) {
+          console.log("res: ", res);
+          console.log("保存成功 ");
+        },
+      });
 
       cameraContext?.takePhoto({
         zoom: zoomLevel,
@@ -583,6 +583,7 @@ const CameraPage = () => {
   // }, [userInfo.hasDingZhi]);
   // 判断是否使用服务端保存的数据生成图片
   useEffect(() => {
+    console.log("userInfo: ", userInfo);
     if (userInfo?.saveConfig?.isSaved) {
       const {
         currentShuiyinIndex,
@@ -596,11 +597,7 @@ const CameraPage = () => {
         locationName,
         latitude,
         longitude,
-        isSaved,
       } = userInfo.saveConfig;
-      saveChange(userInfo?.saveConfig?.isSaved);
-      console.log('userInfo?.saveConfig?.isSaved: ', userInfo?.saveConfig?.isSaved);
-
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
         setHours(hours);
@@ -615,7 +612,8 @@ const CameraPage = () => {
         setLongitude(longitude);
       }, 1000);
     }
-  }, [userInfo, isUseServerData]);
+    saveChange(userInfo?.saveConfig?.isSaved);
+  }, [userInfo.type, isUseServerData]);
   let isUseServerData = "";
   // 检测本地和服务端数据是否一致 不一致则用服务端数据
   useEffect(() => {
