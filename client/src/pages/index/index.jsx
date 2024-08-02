@@ -86,7 +86,7 @@ const CameraPage = () => {
   const [showAddMyApp, setAddMyAppShow] = useState(true);
   const [hideJw, setHideJw] = useState(true);
   const [shantuiSwitch, setShantuiSwitch] = useState(false);
-  const [isShuiyinSaved, saveChange] = useState(false);
+  const [isShuiyinSaved, saveChange] = useState(true);
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
@@ -1048,7 +1048,7 @@ const CameraPage = () => {
         </View>
         <Switch
           disabled={!locationName}
-          checked={userInfo?.saveConfig?.isSaved}
+          checked={isShuiyinSaved}
           style={{ transform: "scale(0.7)" }}
           onChange={(e) => {
             saveChange(e.detail.value);
