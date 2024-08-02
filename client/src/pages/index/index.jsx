@@ -86,11 +86,12 @@ const CameraPage = () => {
   const [showAddMyApp, setAddMyAppShow] = useState(true);
   const [hideJw, setHideJw] = useState(true);
   const [shantuiSwitch, setShantuiSwitch] = useState(false);
+  const [isShuiyinSaved, saveChange] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
-
+  const savedChange = {};
   var cloud = "";
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -490,7 +491,36 @@ const CameraPage = () => {
       return;
     }
     // 相机
+    console.log("isShuiyinSaved: ", isShuiyinSaved);
+    console.log("currentShuiyinIndex: ", currentShuiyinIndex);
+    console.log("camera: ", camera);
     if (camera) {
+      // 上传时间位置 保存
+
+        Taro.cloud.callFunction({
+          name: "updateSavedConfig",
+          data: {
+            saveConfig: {
+              isSaved: isShuiyinSaved,
+              currentShuiyinIndex,
+              hours,
+              minutes,
+              year,
+              month,
+              day,
+              weekly,
+              weather,
+              locationName,
+              latitude,
+              longitude,
+            },
+          },
+          success: function (res) {
+            console.log("res: ", res);
+            console.log("保存成功 ");
+          },
+        });
+
       cameraContext?.takePhoto({
         zoom: zoomLevel,
         quality:
@@ -551,36 +581,83 @@ const CameraPage = () => {
   //     }, 1500);
   //   }
   // }, [userInfo.hasDingZhi]);
+  // 判断是否使用服务端保存的数据生成图片
   useEffect(() => {
-    // wx.loadFontFace({
-    //   family: "Pragmatica",
-    //   global: true,
-    //   scopes: ["webview", "native"],
-    //   source:
-    //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
-    //   success: (res) => {
-    //     console.log("Font loaded successfully:", res);
-    //     drawMask();
-    //   },
-    //   fail: (err) => {
-    //     console.error("Font load failed:", err);
-    //   },
-    // });
-    // wx.loadFontFace({
-    //   family: "PragmaticaBold",
-    //   global: true,
-    //   scopes: ["webview", "native"],
-    //   source:
-    //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
-    //   success: (res) => {
-    //     console.log("Font loaded successfully:", res);
-    //     drawMask();
-    //   },
-    //   fail: (err) => {
-    //     console.error("Font load failed:", err);
-    //   },
-    // });
-  }, []);
+    if (userInfo?.saveConfig?.isSaved) {
+      const {
+        currentShuiyinIndex,
+        hours,
+        minutes,
+        year,
+        month,
+        day,
+        weekly,
+        weather,
+        locationName,
+        latitude,
+        longitude,
+        isSaved,
+      } = userInfo.saveConfig;
+      saveChange(userInfo?.saveConfig?.isSaved);
+      console.log('userInfo?.saveConfig?.isSaved: ', userInfo?.saveConfig?.isSaved);
+
+      setTimeout(() => {
+        setCurrentShuiyinIndex(currentShuiyinIndex);
+        setHours(hours);
+        setMinutes(minutes);
+        setYear(year);
+        setMonth(month);
+        setDay(day);
+        setWeekly(weekly);
+        setWeather(weather);
+        setLocationName(locationName);
+        setLatitude(latitude);
+        setLongitude(longitude);
+      }, 1000);
+    }
+  }, [userInfo, isUseServerData]);
+  let isUseServerData = "";
+  // 检测本地和服务端数据是否一致 不一致则用服务端数据
+  useEffect(() => {
+    if (userInfo?.saveConfig?.isSaved && !edit) {
+      if (locationName !== userInfo.saveConfig.locationName) {
+        setTimeout(() => {
+          setLocationName(userInfo.saveConfig.locationName);
+          isUseServerData = true;
+        }, 1000);
+      }
+    }
+  }, [locationName]);
+  // useEffect(() => {
+  // wx.loadFontFace({
+  //   family: "Pragmatica",
+  //   global: true,
+  //   scopes: ["webview", "native"],
+  //   source:
+  //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
+  //   success: (res) => {
+  //     console.log("Font loaded successfully:", res);
+  //     drawMask();
+  //   },
+  //   fail: (err) => {
+  //     console.error("Font load failed:", err);
+  //   },
+  // });
+  // wx.loadFontFace({
+  //   family: "PragmaticaBold",
+  //   global: true,
+  //   scopes: ["webview", "native"],
+  //   source:
+  //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
+  //   success: (res) => {
+  //     console.log("Font loaded successfully:", res);
+  //     drawMask();
+  //   },
+  //   fail: (err) => {
+  //     console.error("Font load failed:", err);
+  //   },
+  // });
+  // }, []);
 
   const selectImg = () => {
     if (!allAuth) {
@@ -962,6 +1039,19 @@ const CameraPage = () => {
           style={{ transform: "scale(0.7)" }}
           onChange={(e) => {
             setShantuiSwitch(e.detail.value);
+          }}
+        />
+      </View>
+      <View className="shantui-btns">
+        <View style={{ marginRight: "10px" }}>
+          保存时间、位置等数据，下次使用时无需再次修改
+        </View>
+        <Switch
+          disabled={!locationName}
+          checked={userInfo?.saveConfig?.isSaved}
+          style={{ transform: "scale(0.7)" }}
+          onChange={(e) => {
+            saveChange(e.detail.value);
           }}
         />
       </View>

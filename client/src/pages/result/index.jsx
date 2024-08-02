@@ -40,19 +40,16 @@ const MergeCanvas = () => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(
-      () => {
-        setIndex((prevIndex) => {
-          if (prevIndex < texts.length - 1) {
-            return prevIndex + 1;
-          } else {
-            clearInterval(interval);
-            return 2; // Reset to '图片检测中'
-          }
-        });
-      },
-      serverCanvas ? 3000 : 1500
-    );
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => {
+        if (prevIndex < texts.length - 1) {
+          return prevIndex + 1;
+        } else {
+          clearInterval(interval);
+          return 2; // Reset to '图片检测中'
+        }
+      });
+    },  serverCanvas ? 3000 : 1500);
 
     return () => clearInterval(interval);
   }, []);
