@@ -503,12 +503,6 @@ const CameraPage = () => {
           saveConfig: {
             isSaved: isShuiyinSaved,
             currentShuiyinIndex,
-            hours,
-            minutes,
-            year,
-            month,
-            day,
-            weekly,
             weather,
             locationName,
             latitude,
@@ -587,12 +581,6 @@ const CameraPage = () => {
     if (userInfo?.saveConfig?.isSaved) {
       const {
         currentShuiyinIndex,
-        hours,
-        minutes,
-        year,
-        month,
-        day,
-        weekly,
         weather,
         locationName,
         latitude,
@@ -600,12 +588,6 @@ const CameraPage = () => {
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
-        setHours(hours);
-        setMinutes(minutes);
-        setYear(year);
-        setMonth(month);
-        setDay(day);
-        setWeekly(weekly);
         setWeather(weather);
         setLocationName(locationName);
         setLatitude(latitude);
@@ -1042,7 +1024,7 @@ const CameraPage = () => {
       </View>
       <View className="shantui-btns">
         <View style={{ marginRight: "10px" }}>
-          保存时间、位置等数据，下次使用时无需再次修改
+          保存位置等数据，下次使用时无需再次修改
         </View>
         <Switch
           disabled={!locationName}
