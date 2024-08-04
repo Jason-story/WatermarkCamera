@@ -39,7 +39,11 @@ import Shuiyin1 from "../../images/shuiyin-1.png";
 import Shuiyin2 from "../../images/shuiyin-2.png";
 import Shuiyin3 from "../../images/shuiyin-3.png";
 import Shuiyin4 from "../../images/shuiyin-4.png";
+import Shuiyin5 from "../../images/shuiyin-5.png";
 import AddMyApp from "../../images/add-my-app.png";
+import Hongbaoicon from "../../images/hongbao.png";
+
+
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
@@ -75,7 +79,8 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(3);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(4);
+
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
@@ -491,9 +496,6 @@ const CameraPage = () => {
       return;
     }
     // 相机
-    console.log("isShuiyinSaved: ", isShuiyinSaved);
-    console.log("currentShuiyinIndex: ", currentShuiyinIndex);
-    console.log("camera: ", camera);
     if (camera) {
       // 上传时间位置 保存
 
@@ -514,7 +516,7 @@ const CameraPage = () => {
           console.log("保存成功 ");
         },
       });
-
+      console.log("canvasImg: ", canvasImg);
       cameraContext?.takePhoto({
         zoom: zoomLevel,
         quality:
@@ -577,7 +579,6 @@ const CameraPage = () => {
   // }, [userInfo.hasDingZhi]);
   // 判断是否使用服务端保存的数据生成图片
   useEffect(() => {
-    console.log("userInfo: ", userInfo);
     if (userInfo?.saveConfig?.isSaved) {
       const {
         currentShuiyinIndex,
@@ -688,6 +689,7 @@ const CameraPage = () => {
       Shuiyin1,
       Shuiyin2,
       Shuiyin3,
+      Shuiyin5,
     });
 
     const query = Taro.createSelectorQuery();
@@ -724,20 +726,22 @@ const CameraPage = () => {
             Shuiyin2,
             Shuiyin3,
             Shuiyin4,
+            Shuiyin5,
             dpr,
             canvas,
           });
-          canvasConfig.push(canvasConfigDz[0]);
+          canvasConfig.push(...canvasConfigDz);
           // 设置canvas宽高
           canvas.width = res[0].width * dpr;
           canvas.height = res[0].height * dpr;
-
           ctx.scale(dpr, dpr);
           setCanvasConfigState(canvasConfig);
-          canvasConfig[currentShuiyinIndex][0]?.path.forEach((item, index) => {
-            const { draw, args } = item;
-            draw(ctx, ...args);
-          });
+          canvasConfig[currentShuiyinIndex]?.[0]?.path.forEach(
+            (item, index) => {
+              const { draw, args } = item;
+              draw(ctx, ...args);
+            }
+          );
           ctx.restore();
           // 等待绘制完成后获取图像数据
           setTimeout(() => {
@@ -813,7 +817,7 @@ const CameraPage = () => {
   //       });
   //   }
   // }, [allAuth]);
-  // console.log("canvasConfigState[currentShuiyinIndex][0]: ", canvasConfigState);
+  // console.log("canvasConfigState[currentShuiyinIndex]?.[0]: ", canvasConfigState);
   return (
     <View className="container">
       <View
@@ -862,6 +866,16 @@ const CameraPage = () => {
 
         {allAuth && (
           <View className="camera-btns">
+            <View className="red-envelope-container">
+              <Image
+                className="red-envelope-image"
+                src={Hongbaoicon} // 替换为您的实际图片URL
+                onClick={() => {
+                  Taro.navigateTo({ url: "/pages/meituan/index" });
+                }}
+              />
+            </View>
+
             <View className="zoom-box">
               <View className="zoom-text" onClick={zoomClick}>
                 {zoomLevel}
@@ -889,10 +903,10 @@ const CameraPage = () => {
               style={{
                 width:
                   canvasConfigState.length > 0 &&
-                  canvasConfigState[currentShuiyinIndex][0].width + "px",
+                  canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
                 height:
                   canvasConfigState.length > 0 &&
-                  canvasConfigState[currentShuiyinIndex][0].height + "px",
+                  canvasConfigState[currentShuiyinIndex]?.[0].height + "px",
               }}
             />
             {canvasImg && (
@@ -902,10 +916,10 @@ const CameraPage = () => {
                 style={{
                   width:
                     canvasConfigState.length > 0 &&
-                    canvasConfigState[currentShuiyinIndex][0].width + "px",
+                    canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
                   height:
                     canvasConfigState.length > 0 &&
-                    canvasConfigState[currentShuiyinIndex][0].height + "px",
+                    canvasConfigState[currentShuiyinIndex]?.[0].height + "px",
                   // display: "block",
                 }}
               ></Image>
@@ -1041,7 +1055,7 @@ const CameraPage = () => {
           className="share-btn"
           onClick={() => {
             Taro.navigateTo({
-              url: "/pages/meituan/index",
+              url: "/pages/vip/index",
             });
           }}
           style={{
@@ -1058,7 +1072,8 @@ const CameraPage = () => {
             marginTop: "10px",
           }}
         >
-          电费、话费、滴滴、美团红包
+          开通会员
+          {/* 电费、话费、滴滴、美团红包 */}
         </Button>
         <Button openType="share" className="share-btn" type="button">
           <Text>分享群聊</Text>

@@ -545,3 +545,27 @@ picker,
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
   }
 }
+
+/* RedEnvelope.scss */
+.red-envelope-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.red-envelope-image {
+  width: 80px; // 调整为您图片的实际宽度
+  height: 80px; // 调整为您图片的实际高度
+  animation: bounce 0.5s infinite alternate;
+  cursor: pointer;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-10px) scale(1.1);
+  }
+}

@@ -100,14 +100,14 @@ const UserInfo = ({
           <Text className="label">邀请赠送总次数</Text>
           <Text className="value">{inviteCount}</Text>
         </View> */}
-        <View className="user-item">
+        {/* <View className="user-item">
           <Text className="label">已使用总额度</Text>
           <Text className="value">
             {userType !== "default"
               ? "不限量"
               : (totalQuota || "0") + ("/" + (10 + (inviteCount || 0)))}
           </Text>
-        </View>
+        </View> */}
         {/* <View
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >

@@ -5,10 +5,12 @@ import ShareImg from "../../images/logo.jpg";
 
 import Head from "../../images/head.jpg";
 import "./index.scss";
-const UserInfo = ({ userType, price }) => {
+const UserInfo = ({ userType, price = { show: false } }) => {
+console.log('price.show: ', price.show);
+
   return (
     <View className="user-info">
-      <View className="user-details" style={{marginBottom:'40px'}}>
+      <View className="user-details" style={{ marginBottom: "40px" }}>
         <View>
           <Text style={{ fontWeight: "bold" }}>会员权益</Text>
         </View>
@@ -30,23 +32,27 @@ const UserInfo = ({ userType, price }) => {
         </Button>
       </View> */}
 
-      {price.show === false ? (
+      {!price.show  ? (
         ""
       ) : (
-        <View
-        style={{ width: "100%", }}>
+        <View style={{ width: "100%" }}>
           <View className="user-details">
             <View>
               <Text>一天会员</Text>，
-              <Text style={{ color: "rgb(233, 60, 70)" }}>{price["1day"]}</Text>元
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price["1day"]}</Text>
+              元
             </View>
           </View>
           <View className="user-details">
             <View>
               <Text>三天会员</Text>，
-              <Text style={{ color: "rgb(233, 60, 70)" }}>{price["3days"]}</Text>元
+              <Text style={{ color: "rgb(233, 60, 70)" }}>
+                {price["3days"]}
+              </Text>
+              元
             </View>
-          </View><View className="user-details">
+          </View>
+          <View className="user-details">
             <View>
               <Text>包月会员</Text>，
               <Text style={{ color: "rgb(233, 60, 70)" }}>{price.month}</Text>元
@@ -100,7 +106,7 @@ const UserInfo = ({ userType, price }) => {
         </View>
       )}
       <View style={{ width: "100%", marginTop: "50px" }}>
-        {price.show === false ? (
+        {!price.show ? (
           ""
         ) : (
           <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>
@@ -122,7 +128,7 @@ const UserInfo = ({ userType, price }) => {
           type="default"
           className="guide-btn"
         >
-          联系客服
+          开通会员
         </Button>
       </View>
       {userType === "default" && (
