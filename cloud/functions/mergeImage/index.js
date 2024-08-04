@@ -3,15 +3,17 @@ const Jimp = require('jimp');
 
 cloud.init({
     env: cloud.DYNAMIC_CURRENT_ENV
-  });
+});
 
 // Helper function to convert file content to buffer and check size
-
+// 获取数据库引用
+const db = cloud.database();
+const _ = db.command;
 // Optimized security check function
 async function securityCheck(fileContent) {
     try {
         const buffer = await Buffer.from(fileContent);
-         // 检查文件大小
+        // 检查文件大小
         //  const maxFileSize = 1 * 1024 * 1024; // 5MB
         // if (buffer.length > maxFileSize) {
         //     throw new Error('图片过大，请重新选择');
@@ -22,19 +24,26 @@ async function securityCheck(fileContent) {
                 value: buffer
             }
         });
-
+        console.log('secCheckResult: ', secCheckResult);
         if (secCheckResult.errCode !== 0) {
             throw new Error(secCheckResult);
         }
     } catch (secError) {
-        // console.log('secCheckResult: ', secCheckResult);
+        console.log('secError: ', secError);
         throw new Error('图片不合规，请重新选择图片');
     }
 }
 
 exports.main = async (event, context) => {
     const { firstImageFileID, secondImageFileID, position, userInfo } = event;
-
+    const transaction = await db.startTransaction();
+    const isCheckData = await transaction.collection('isCheck').limit(1).get();
+    let isCheck = false;
+    if (isCheckData.data.length > 0) {
+        // 获取第一条记录
+        isCheck = isCheckData.data[0].check;
+        console.log('isCheck: ', isCheck);
+    }
     try {
         // Download images
         const [firstImageRes, secondImageRes] = await Promise.all([
@@ -42,8 +51,11 @@ exports.main = async (event, context) => {
             cloud.downloadFile({ fileID: secondImageFileID })
         ]);
 
-        // Perform security check on both images
-        await Promise.all([securityCheck(firstImageRes.fileContent)]);
+        if (isCheck) {
+            console.log('isCheck222: ', isCheck);
+            // Perform security check on both images
+            await Promise.all([securityCheck(firstImageRes.fileContent)]);
+        }
 
         // Read images with Jimp
         const [firstImage, secondImage] = await Promise.all([

@@ -8,7 +8,7 @@ import "./index.scss";
 const UserInfo = ({ userType, price }) => {
   return (
     <View className="user-info">
-      <View className="user-details">
+      <View className="user-details" style={{marginBottom:'40px'}}>
         <View>
           <Text style={{ fontWeight: "bold" }}>会员权益</Text>
         </View>
@@ -16,7 +16,7 @@ const UserInfo = ({ userType, price }) => {
         <View>• 生成高清水印图片</View>
         <View>• 去掉除封面广告之外的一切广告</View>
       </View>
-      <View style={{ marginTop: "20px", marginBottom: "20px", width: "100%" }}>
+      {/* <View style={{ marginTop: "20px", marginBottom: "20px", width: "100%" }}>
         <Button
           type="primary"
           size="mini"
@@ -28,7 +28,8 @@ const UserInfo = ({ userType, price }) => {
         >
           高清图片对比
         </Button>
-      </View>
+      </View> */}
+
       {price.show === false ? (
         ""
       ) : (
