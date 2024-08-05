@@ -45,9 +45,9 @@ const MergeCanvas = () => {
     const getInfo = async () => {
       const img2Info = await Taro.getImageInfo({ src: secondImagePath });
       const imgInfo = await Taro.getImageInfo({ src: firstImagePath });
-      console.log('imgInfo: ', imgInfo);
+      console.log("imgInfo: ", imgInfo);
       setImg2Info(img2Info);
-      setImgInfo(imgInfo)
+      setImgInfo(imgInfo);
     };
     getInfo();
 
@@ -230,7 +230,7 @@ const MergeCanvas = () => {
             );
             setImageHeight(height);
             setImageWidth(width);
-            console.log('width: ', width);
+            console.log("width: ", width);
             handleMergedImage(fileID, res.result.data);
           } else {
             console.log("客户端 ");
@@ -421,28 +421,28 @@ const MergeCanvas = () => {
             <Text>{loadingText}</Text>
           </View>
         )}
-          <View className="watermark">可修改水印相机</View>
-          <Image
-            className="result-img"
-            mode="scaleToFill"
-            src={firstImagePath}
-            style={{
-              width: `${screenWidth}px`,
-              display: "block",
-              height: `100%`,
-              minHeight:'50vh'
-            }}
-          />
-          <Image
-            className="result-img2"
-            mode="scaleToFill"
-            src={secondImagePath}
-            style={{
-              width: `${img2Info?.width / dpr}px`,
-              display: "block",
-              height: `${img2Info?.height / dpr}px`,
-            }}
-          />
+        <View className="watermark">可修改水印相机</View>
+        <Image
+          className="result-img"
+          mode="scaleToFill"
+          src={firstImagePath}
+          style={{
+            width: `${screenWidth}px`,
+            display: "block",
+            height: `100%`,
+            minHeight: "50vh",
+          }}
+        />
+        <Image
+          className="result-img2"
+          mode="scaleToFill"
+          src={secondImagePath}
+          style={{
+            width: `${img2Info?.width / dpr}px`,
+            display: "block",
+            height: `${img2Info?.height / dpr}px`,
+          }}
+        />
       </View>
       {userInfo.type === "default" && (
         <ad-custom unit-id="adunit-400b4fabebcc3e5d"></ad-custom>
@@ -454,7 +454,7 @@ const MergeCanvas = () => {
           marginTop: userInfo.type === "default" ? "10px" : "50px",
         }}
       >
-        <Button
+        {/* <Button
           className="share-btn"
           type="button"
           onClick={() => {
@@ -468,7 +468,7 @@ const MergeCanvas = () => {
             marginBottom: "10px",
           }}
         >
-          <Text>图片不清晰？</Text>
+          <Text>次数用尽</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>
@@ -477,30 +477,8 @@ const MergeCanvas = () => {
             <View className="circle"></View>
             <View className="circle"></View>
           </View>
-        </Button>
-        <Button
-          className="share-btn"
-          onClick={() => {
-            Taro.navigateBack({
-              delta: 1, // delta 参数表示需要返回的页面数，默认为1
-            });
-          }}
-          style={{
-            background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
-            color: "white",
-            border: "none",
-            borderRadius: "30px",
-            padding: "5px 16px",
-            fontSize: "32rpx",
-            cursor: "pointer",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            width: "90%",
-            height: "46px",
-          }}
-        >
-          重新拍摄
-        </Button>
-        <Button
+        </Button> */}
+          <Button
           className="share-btn"
           onClick={() => {
             wx.navigateToMiniProgram({
@@ -525,6 +503,29 @@ const MergeCanvas = () => {
         >
           抖音去水印
         </Button>
+        <Button
+          className="share-btn"
+          onClick={() => {
+            Taro.navigateBack({
+              delta: 1, // delta 参数表示需要返回的页面数，默认为1
+            });
+          }}
+          style={{
+            background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
+            color: "white",
+            border: "none",
+            borderRadius: "30px",
+            padding: "5px 16px",
+            fontSize: "32rpx",
+            cursor: "pointer",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            width: "90%",
+            height: "46px",
+          }}
+        >
+          重新拍摄
+        </Button>
+
 
         <AtModal isOpened={isShowModal} closeOnClickOverlay={false}>
           <AtModalHeader>
@@ -532,8 +533,10 @@ const MergeCanvas = () => {
           </AtModalHeader>
           <AtModalContent>
             <View className="modal-list">
-              <View>
-                您免费次数用完，请联系客服开通会员，会员为收费服务，请知悉。
+              <View style={{lineHeight:1.6}}>
+                您免费次数用完，请联系客服开通会员，会员为
+                <Text style={{ color: "red" }}>收费服务</Text>
+                ，请先查看会员价格后再联系客服。请知悉!!!
               </View>
               <Button
                 style={{
