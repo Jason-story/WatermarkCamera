@@ -11,7 +11,7 @@
 }
 .result-img-box {
   position: relative;
-  height: 100%;
+  min-height: 60vh;
 }
 .watermark {
   position: absolute;
@@ -20,7 +20,7 @@
   color: rgba(255, 255, 255, 0.4);
   transform: rotate(-45deg);
   text-align: center;
-  width:100%;
+  width: 100%;
   top: 50%;
   left: 50%;
   transform: translateX(-50%);
@@ -81,7 +81,21 @@
     /* text-shadow: 0 0 2px white; */
   }
 }
-
+.loading-wrap {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  text{
+    color:#ff6ec4;
+  }
+}
+.result-img2 {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}
 #container-stars {
   position: absolute;
   z-index: -1;
@@ -217,7 +231,7 @@
     var(--_g) 0 100%;
   background-size: 40% 40%;
   animation: l38 0.5s infinite;
-  margin:0 auto;
+  margin: 0 auto;
   margin-bottom: 20px;
 }
 @keyframes l38 {

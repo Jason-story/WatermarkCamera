@@ -66,9 +66,10 @@ exports.main = async (event, context) => {
         // Get dimensions of the first image
         const canvasWidth = firstImage.getWidth();
         const canvasHeight = firstImage.getHeight();
+        const scaleFactor = 1;
 
         // Resize the second image
-        let img2Width = position === 'center' ? canvasWidth * 0.95 : secondImage.getWidth() * 0.8;
+        let img2Width = position === 'center' ? canvasWidth * scaleFactor * 0.95 : (canvasWidth * scaleFactor) / 2.5;
         let img2Height = img2Width * (secondImage.getHeight() / secondImage.getWidth());
         secondImage.resize(img2Width, img2Height);
 
@@ -80,7 +81,6 @@ exports.main = async (event, context) => {
         firstImage.composite(secondImage, x, y);
 
         // Scale factor based on user type
-        const scaleFactor = userInfo.type === 'default' ? 1 / 1.7 : 1;
         const finalWidth = Math.round(canvasWidth * scaleFactor);
         const finalHeight = Math.round(canvasHeight * scaleFactor);
 
@@ -108,6 +108,9 @@ exports.main = async (event, context) => {
             success: true,
             fileID: uploadResult.fileID,
             width: finalWidth,
+            canvasWidth,
+            img2Width,
+            sss: img2Width * scaleFactor,
             height: finalHeight
         };
     } catch (error) {

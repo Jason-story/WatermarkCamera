@@ -32,6 +32,8 @@ const MergeCanvas = () => {
   const [imagePath, setImagePath] = useState("");
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
+  const [img2Info, setImg2Info] = useState({});
+  const [imgInfo, setImgInfo] = useState({});
   const [isShowModal, setIsShowModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [isShare, setShare] = useState(false);
@@ -40,16 +42,28 @@ const MergeCanvas = () => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prevIndex) => {
-        if (prevIndex < texts.length - 1) {
-          return prevIndex + 1;
-        } else {
-          clearInterval(interval);
-          return 2; // Reset to '图片检测中'
-        }
-      });
-    },  serverCanvas ? 3000 : 1500);
+    const getInfo = async () => {
+      const img2Info = await Taro.getImageInfo({ src: secondImagePath });
+      const imgInfo = await Taro.getImageInfo({ src: firstImagePath });
+      console.log('imgInfo: ', imgInfo);
+      setImg2Info(img2Info);
+      setImgInfo(imgInfo)
+    };
+    getInfo();
+
+    const interval = setInterval(
+      () => {
+        setIndex((prevIndex) => {
+          if (prevIndex < texts.length - 1) {
+            return prevIndex + 1;
+          } else {
+            clearInterval(interval);
+            return 2; // Reset to '图片检测中'
+          }
+        });
+      },
+      serverCanvas ? 3000 : 1500
+    );
 
     return () => clearInterval(interval);
   }, []);
@@ -90,6 +104,8 @@ const MergeCanvas = () => {
       ]);
 
       // 调用云函数
+      const deleteStartTime = Date.now();
+
       const res = await wx.cloud.callFunction({
         name: "mergeImage",
         data: {
@@ -99,7 +115,7 @@ const MergeCanvas = () => {
           userInfo,
         },
       });
-      console.log("res: ", res);
+      console.log("res:222 ", res);
 
       if (res.result.success) {
         return res.result;
@@ -116,35 +132,47 @@ const MergeCanvas = () => {
     }
   }
 
-  const saveImage = async (tempFilePath, userInfo) => {
-    setImagePath(tempFilePath);
-    console.log("userInfo: ", userInfo);
+  const saveImage = async (fileID, userInfo) => {
+    // setImagePath(fileID);
     if (userInfo.todayUsageCount >= 2 && userInfo.type === "default") {
       setIsShowModal(true);
       return;
     }
     const save = () => {
-      Taro.saveImageToPhotosAlbum({
-        filePath: tempFilePath,
-        success: async () => {
-          await Taro.cloud.callFunction({
-            name: "addUser",
-            data: {
-              remark: "成功使用",
+      // 下载云存储中的图片
+      wx.cloud.downloadFile({
+        fileID: fileID, // 替换为你要下载的图片文件ID
+        success: (res) => {
+          Taro.saveImageToPhotosAlbum({
+            filePath: res.tempFilePath,
+            success: async () => {
+              await Taro.cloud.callFunction({
+                name: "addUser",
+                data: {
+                  remark: "成功使用",
+                },
+              });
+              Taro.showToast({
+                title: "保存成功",
+                icon: "success",
+                duration: 2000,
+              });
+            },
+            fail: (error) => {
+              console.log("保存失败", error);
+              Taro.showToast({
+                title: "保存失败",
+                icon: "none",
+                duration: 2000,
+              });
             },
           });
-          Taro.showToast({
-            title: "保存成功",
-            icon: "success",
-            duration: 2000,
-          });
         },
-        fail: (error) => {
-          console.log("保存失败", error);
-          Taro.showToast({
-            title: "保存失败",
+        fail: (err) => {
+          console.error(err);
+          wx.showToast({
+            title: "下载失败",
             icon: "none",
-            duration: 2000,
           });
         },
       });
@@ -180,39 +208,8 @@ const MergeCanvas = () => {
   };
   // 假设这个函数在成功合并图片后被调用
   async function handleMergedImage(mergedImageFileID, info) {
-    try {
-      const imageInfo = await wx.cloud.getTempFileURL({
-        fileList: [mergedImageFileID],
-      });
-
-      if (
-        imageInfo.fileList &&
-        imageInfo.fileList[0] &&
-        imageInfo.fileList[0].tempFileURL
-      ) {
-        const tempFilePath = imageInfo.fileList[0].tempFileURL;
-
-        // 下载图片
-        const downloadRes = await new Promise((resolve, reject) => {
-          wx.downloadFile({
-            url: tempFilePath,
-            success: resolve,
-            fail: reject,
-          });
-        });
-
-        if (downloadRes.statusCode === 200) {
-          setImagePath(downloadRes.tempFilePath);
-          saveImage(downloadRes.tempFilePath, info);
-        } else {
-          throw new Error("下载图片失败");
-        }
-      } else {
-        throw new Error("获取图片地址失败");
-      }
-    } catch (error) {
-      console.error("保存图片失败:", error);
-    }
+    setImagePath(mergedImageFileID);
+    saveImage(mergedImageFileID, info);
   }
 
   useEffect(() => {
@@ -224,6 +221,7 @@ const MergeCanvas = () => {
 
           // 服务端合成图片
           if (serverCanvas === "true") {
+            console.log("服务端 ");
             const { fileID, width, height } = await mergeImages(
               firstImagePath,
               secondImagePath,
@@ -232,8 +230,11 @@ const MergeCanvas = () => {
             );
             setImageHeight(height);
             setImageWidth(width);
+            console.log('width: ', width);
             handleMergedImage(fileID, res.result.data);
           } else {
+            console.log("客户端 ");
+
             // 本地生成
             drawImages(res.result.data);
           }
@@ -254,7 +255,6 @@ const MergeCanvas = () => {
 
   const dpr = Taro.getSystemInfoSync().pixelRatio;
   const drawImages = async (userInfo) => {
-    console.log("客户端合成: ");
     try {
       const ctx = Taro.createCanvasContext("mergeCanvas");
 
@@ -262,6 +262,7 @@ const MergeCanvas = () => {
       const img1Width = info1.width;
       const img1Height = info1.height;
       setImageWidth(img1Width);
+      console.log("img1Width: ", img1Width);
       setImageHeight(img1Height);
 
       const info2 = await Taro.getImageInfo({ src: secondImagePath });
@@ -289,23 +290,17 @@ const MergeCanvas = () => {
       // 绘制第二张图片
       ctx.drawImage(info2.path, x, y, img2Width, img2Height);
 
-      console.log("Canvas dimensions:", canvasWidth, canvasHeight);
-      console.log("img1 dimensions:", img1Width, img1Height);
-      console.log("img2 dimensions:", img2Width, img2Height);
-      console.log("img2 position:", x, y);
-
       await drawCanvas(ctx);
 
       setTimeout(async () => {
         try {
           // 根据用户类型决定是否需要额外的缩放
-          const scaleFactor = userInfo.type === "default" ? 1 / 1.7 : 1;
-          const finalWidth = Math.round(canvasWidth * scaleFactor);
-          const finalHeight = Math.round(canvasHeight * scaleFactor);
+          const finalWidth = Math.round(canvasWidth);
+          const finalHeight = Math.round(canvasHeight);
 
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
-            quality: userInfo.type === "default" ? 0.5 : 1,
+            quality: 1,
             canvasId: "mergeCanvas",
             width: canvasWidth,
             height: canvasHeight,
@@ -406,40 +401,48 @@ const MergeCanvas = () => {
           height: `${imageHeight * dpr}px`,
         }}
       />
+
       <View
-        className={!imagePath ? "hasLoading" : ""}
+        className="result-img-box"
         style={{
-          width: `100%`,
-          minWidth: "100%",
-          minHeight: "60vh",
+          height: `${(screenWidth / imgInfo.width) * imgInfo.height}px`,
         }}
       >
-        {imagePath ? (
-          <View className="result-img-box">
-            <View className="watermark">可修改水印相机</View>
-            <Image
-              className="result-img"
-              mode="scaleToFill"
-              src={imagePath}
-              style={{
-                width: `${screenWidth}px`,
-                display: "block",
-                height: `${(screenWidth / imageWidth) * imageHeight}px`,
-              }}
-            />
-          </View>
-        ) : (
+        {!imagePath && (
           <View
             style={{
               textAlign: "center",
               color: "#17233f",
               fontSize: "14px",
             }}
+            className="loading-wrap"
           >
             <View className="loader"></View>
             <Text>{loadingText}</Text>
           </View>
         )}
+          <View className="watermark">可修改水印相机</View>
+          <Image
+            className="result-img"
+            mode="scaleToFill"
+            src={firstImagePath}
+            style={{
+              width: `${screenWidth}px`,
+              display: "block",
+              height: `100%`,
+              minHeight:'50vh'
+            }}
+          />
+          <Image
+            className="result-img2"
+            mode="scaleToFill"
+            src={secondImagePath}
+            style={{
+              width: `${img2Info?.width / dpr}px`,
+              display: "block",
+              height: `${img2Info?.height / dpr}px`,
+            }}
+          />
       </View>
       {userInfo.type === "default" && (
         <ad-custom unit-id="adunit-400b4fabebcc3e5d"></ad-custom>

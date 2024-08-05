@@ -43,7 +43,6 @@ import Shuiyin5 from "../../images/shuiyin-5.png";
 import AddMyApp from "../../images/add-my-app.png";
 import Hongbaoicon from "../../images/hongbao.png";
 
-
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
@@ -474,7 +473,7 @@ const CameraPage = () => {
     });
   };
 
-  const takePhoto = async (camera = true, path) => {
+  const takePhoto = async (camera = true, path, serverCanvas) => {
     // Taro.saveImageToPhotosAlbum({
     //   filePath: canvasImg,
     //   success: async () => {
@@ -522,7 +521,7 @@ const CameraPage = () => {
         quality:
           userInfo.type === "default"
             ? "low"
-            : shantuiSwitch
+            : shantuiSwitch || serverCanvas
             ? "normal"
             : "original",
         success: (path) => {
@@ -534,7 +533,7 @@ const CameraPage = () => {
                 "&mask=" +
                 canvasImg +
                 "&serverCanvas=" +
-                shantuiSwitch +
+                (shantuiSwitch || serverCanvas) +
                 "&position=" +
                 canvasConfigState[currentShuiyinIndex]?.[0]?.position,
             });
@@ -544,6 +543,8 @@ const CameraPage = () => {
       });
     } else {
       // 相册
+      console.log("shantuiSwitch: ", shantuiSwitch);
+      console.log("serverCanvas: ", serverCanvas);
       Taro.navigateTo({
         url:
           "/pages/result/index?bg=" +
@@ -551,7 +552,7 @@ const CameraPage = () => {
           "&mask=" +
           canvasImg +
           "&serverCanvas=" +
-          shantuiSwitch +
+          (shantuiSwitch || serverCanvas) +
           "&position=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.position,
       });
@@ -655,15 +656,17 @@ const CameraPage = () => {
 
         Taro.getFileInfo({
           filePath: filePath,
-          success: function (info) {
+          success: async function (info) {
             const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
-            if (fileSizeInMB > 1) {
+            if (fileSizeInMB > 3) {
               Taro.showModal({
                 title: "提示",
                 content: "图片体积过大，请重新选择",
                 showCancel: false,
               });
+            } else if (fileSizeInMB > 1 && fileSizeInMB < 3) {
+              takePhoto(false, filePath, true);
             } else {
               takePhoto(false, filePath);
             }
@@ -672,6 +675,7 @@ const CameraPage = () => {
       },
     });
   };
+
   const drawMask = () => {
     const canvasConfig = generateCanvasConfig({
       hours,
@@ -777,11 +781,15 @@ const CameraPage = () => {
         }
       });
   };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     drawMask();
-  //   }, 5000);
-  // }, [locationName]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLocationName((prevName) => prevName + " ");
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     drawMask();
   }, [
