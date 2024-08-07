@@ -14,8 +14,9 @@ console.log('price.show: ', price.show);
         <View>
           <Text style={{ fontWeight: "bold" }}>会员权益</Text>
         </View>
-        <View>• 每天、每月不限量生成水印图片</View>
-        <View>• 生成高清水印图片</View>
+        <View>• 无限使用次数</View>
+        <View>• 高清水印图片</View>
+        <View>• 客服支持</View>
         <View>• 去掉除封面广告之外的一切广告</View>
       </View>
       {/* <View style={{ marginTop: "20px", marginBottom: "20px", width: "100%" }}>

@@ -66,10 +66,9 @@ exports.main = async (event, context) => {
         // Get dimensions of the first image
         const canvasWidth = firstImage.getWidth();
         const canvasHeight = firstImage.getHeight();
-        const scaleFactor = 1;
 
         // Resize the second image
-        let img2Width = position === 'center' ? canvasWidth * scaleFactor * 0.95 : (canvasWidth * scaleFactor) * scale;
+        let img2Width = canvasWidth * scale;
         let img2Height = img2Width * (secondImage.getHeight() / secondImage.getWidth());
         secondImage.resize(img2Width, img2Height);
 
@@ -81,8 +80,8 @@ exports.main = async (event, context) => {
         firstImage.composite(secondImage, x, y);
 
         // Scale factor based on user type
-        const finalWidth = Math.round(canvasWidth * scaleFactor);
-        const finalHeight = Math.round(canvasHeight * scaleFactor);
+        const finalWidth = Math.round(canvasWidth);
+        const finalHeight = Math.round(canvasHeight);
 
         // Resize and adjust quality
         firstImage.resize(finalWidth, finalHeight);

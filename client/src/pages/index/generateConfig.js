@@ -153,6 +153,8 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin1,
         width: 238,
+        scale:0.5,
+
         height: locationName.length > 16 ? 119 : 100,
       },
     ],
@@ -309,6 +311,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin2,
         width: 255,
+        scale:0.5,
         height: locationName.length > 16 ? 129 : 102,
       },
     ],
@@ -455,6 +458,7 @@ const generateCanvasConfig = ({
           },
         ],
         img: Shuiyin3,
+        scale:0.4,
         width: 190, // 280 * 0.75
         height: locationName.length > 9 ? 120 : 105, // 180 * 0.75
       },

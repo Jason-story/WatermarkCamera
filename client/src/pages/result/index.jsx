@@ -27,6 +27,7 @@ const MergeCanvas = () => {
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
   const position = Taro.getCurrentInstance().router.params.position;
+  const scale = Taro.getCurrentInstance().router.params.scale || 0.5;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
 
   const [imagePath, setImagePath] = useState("");
@@ -37,6 +38,7 @@ const MergeCanvas = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [isShare, setShare] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("图片检测中. . .");
   const texts = ["图片检测中. . .", "图片生成中. . .", "图片下载中. . ."];
   const [index, setIndex] = useState(0);
@@ -45,7 +47,6 @@ const MergeCanvas = () => {
     const getInfo = async () => {
       const img2Info = await Taro.getImageInfo({ src: secondImagePath });
       const imgInfo = await Taro.getImageInfo({ src: firstImagePath });
-      console.log("imgInfo: ", imgInfo);
       setImg2Info(img2Info);
       setImgInfo(imgInfo);
     };
@@ -112,10 +113,10 @@ const MergeCanvas = () => {
           firstImageFileID,
           secondImageFileID,
           position,
+          scale,
           userInfo,
         },
       });
-      console.log("res:222 ", res);
 
       if (res.result.success) {
         return res.result;
@@ -134,10 +135,7 @@ const MergeCanvas = () => {
 
   const saveImage = async (fileID, userInfo) => {
     // setImagePath(fileID);
-    if (userInfo.todayUsageCount >= 2 && userInfo.type === "default") {
-      setIsShowModal(true);
-      return;
-    }
+
     const save = () => {
       // 下载云存储中的图片
       wx.cloud.downloadFile({
@@ -185,10 +183,6 @@ const MergeCanvas = () => {
       });
       return;
     }
-    if (userInfo.times >= 10 && userInfo.type === "default") {
-      setIsShowModal(true);
-      return;
-    }
 
     // 会员直接保存 无广告
     if (userInfo.type !== "default") {
@@ -196,20 +190,20 @@ const MergeCanvas = () => {
       return;
     }
     // 激励广告
-    if (
-      userInfo.todayUsageCount >= 2 &&
-      userInfo.type === "default" &&
-      isShare === false
-    ) {
-      setIsShowModal(true);
-      return;
-    }
+    // if (
+    //   userInfo.todayUsageCount >= 2 &&
+    //   userInfo.type === "default" &&
+    //   isShare === false
+    // ) {
+    //   setIsShowModal(true);
+    //   return;
+    // }
     save();
   };
   // 假设这个函数在成功合并图片后被调用
   async function handleMergedImage(mergedImageFileID, info) {
-    setImagePath(mergedImageFileID);
-    saveImage(mergedImageFileID, info);
+    await saveImage(mergedImageFileID, info);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -217,8 +211,17 @@ const MergeCanvas = () => {
       await Taro.cloud.callFunction({
         name: "addUser",
         success: async function (res) {
-          await setUserInfo(res.result.data);
+          // 免费次数用尽
+          if (
+            res.result.data.times >= 2 &&
+            res.result.data.type === "default"
+          ) {
+            setIsShowModal(true);
+            setLoading(false)
+            return;
+          }
 
+          await setUserInfo(res.result.data);
           // 服务端合成图片
           if (serverCanvas === "true") {
             console.log("服务端 ");
@@ -262,7 +265,6 @@ const MergeCanvas = () => {
       const img1Width = info1.width;
       const img1Height = info1.height;
       setImageWidth(img1Width);
-      console.log("img1Width: ", img1Width);
       setImageHeight(img1Height);
 
       const info2 = await Taro.getImageInfo({ src: secondImagePath });
@@ -279,8 +281,7 @@ const MergeCanvas = () => {
       ctx.drawImage(info1.path, 0, 0, canvasWidth, canvasHeight);
 
       // 计算 img2 的新尺寸
-      let img2Width =
-        position === "center" ? canvasWidth * 0.95 : info2.width * dpr * 0.8;
+      let img2Width = canvasWidth * scale;
       let img2Height = img2Width * (info2.height / info2.width);
 
       // 计算 img2 的位置
@@ -308,11 +309,9 @@ const MergeCanvas = () => {
             destHeight: finalHeight,
           });
 
-          setImagePath(tempFilePath);
-          if (userInfo.todayUsageCount >= 2 && userInfo.type === "default") {
-            setIsShowModal(true);
-            return;
-          }
+          // setImagePath(tempFilePath);
+          setLoading(false)
+
           clientCanvasSaveImage(tempFilePath);
         } catch (error) {
           console.error("保存图片失败:", error);
@@ -323,7 +322,8 @@ const MergeCanvas = () => {
     }
   };
   const clientCanvasSaveImage = async (tempFilePath) => {
-    setImagePath(tempFilePath);
+    // setImagePath(tempFilePath);
+    setLoading(false)
     const save = () => {
       Taro.saveImageToPhotosAlbum({
         filePath: tempFilePath,
@@ -364,10 +364,6 @@ const MergeCanvas = () => {
       });
       return;
     }
-    if (userInfo.times >= 10 && userInfo.type === "default") {
-      setIsShowModal(true);
-      return;
-    }
 
     // 会员直接保存 无广告
     if (userInfo.type !== "default") {
@@ -375,14 +371,14 @@ const MergeCanvas = () => {
       return;
     }
     // 激励广告
-    if (
-      userInfo.todayUsageCount >= 2 &&
-      userInfo.type === "default" &&
-      isShare === false
-    ) {
-      setIsShowModal(true);
-      return;
-    }
+    // if (
+    //   userInfo.todayUsageCount >= 2 &&
+    //   userInfo.type === "default" &&
+    //   isShare === false
+    // ) {
+    //   setIsShowModal(true);
+    //   return;
+    // }
     save();
   };
 
@@ -408,7 +404,7 @@ const MergeCanvas = () => {
           height: `${(screenWidth / imgInfo.width) * imgInfo.height}px`,
         }}
       >
-        {!imagePath && (
+        {(loading) && (
           <View
             style={{
               textAlign: "center",
@@ -478,7 +474,7 @@ const MergeCanvas = () => {
             <View className="circle"></View>
           </View>
         </Button> */}
-          <Button
+        <Button
           className="share-btn"
           onClick={() => {
             wx.navigateToMiniProgram({
@@ -526,14 +522,13 @@ const MergeCanvas = () => {
           重新拍摄
         </Button>
 
-
         <AtModal isOpened={isShowModal} closeOnClickOverlay={false}>
           <AtModalHeader>
             <Text>提示</Text>
           </AtModalHeader>
           <AtModalContent>
             <View className="modal-list">
-              <View style={{lineHeight:1.6}}>
+              <View style={{ lineHeight: 1.6 }}>
                 您免费次数用完，请联系客服开通会员，会员为
                 <Text style={{ color: "red" }}>收费服务</Text>
                 ，请先查看会员价格后再联系客服。请知悉!!!
@@ -558,7 +553,7 @@ const MergeCanvas = () => {
                   });
                 }}
               >
-                会员页面
+                会员定价
               </Button>
             </View>
           </AtModalContent>
@@ -572,7 +567,7 @@ const MergeCanvas = () => {
               关闭
             </Button>
             <Button openType="contact" style={{ flex: 1 }} type="button">
-              <Text>联系客服</Text>
+              <Text>开通会员</Text>
             </Button>
           </AtModalAction>
         </AtModal>

@@ -46,6 +46,7 @@ import Hongbaoicon from "../../images/hongbao.png";
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
+console.log('wx.getAccountInfoSync().miniProgram: ', wx.getAccountInfoSync().miniProgram);
 
 const now = new Date();
 const yearD = now.getFullYear();
@@ -78,7 +79,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(4);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(3);
 
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
@@ -535,7 +536,9 @@ const CameraPage = () => {
                 "&serverCanvas=" +
                 (shantuiSwitch || serverCanvas) +
                 "&position=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.position,
+                canvasConfigState[currentShuiyinIndex]?.[0]?.position +
+                "&scale=" +
+                canvasConfigState[currentShuiyinIndex]?.[0]?.scale,
             });
           }, 200);
         },
@@ -543,8 +546,6 @@ const CameraPage = () => {
       });
     } else {
       // 相册
-      console.log("shantuiSwitch: ", shantuiSwitch);
-      console.log("serverCanvas: ", serverCanvas);
       Taro.navigateTo({
         url:
           "/pages/result/index?bg=" +
@@ -554,7 +555,9 @@ const CameraPage = () => {
           "&serverCanvas=" +
           (shantuiSwitch || serverCanvas) +
           "&position=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.position,
+          canvasConfigState[currentShuiyinIndex]?.[0]?.position +
+          "&scale=" +
+          canvasConfigState[currentShuiyinIndex]?.[0]?.scale,
       });
     }
   };
@@ -738,14 +741,26 @@ const CameraPage = () => {
           // 设置canvas宽高
           canvas.width = res[0].width * dpr;
           canvas.height = res[0].height * dpr;
+          // 设置边框样式
+
           ctx.scale(dpr, dpr);
           setCanvasConfigState(canvasConfig);
+
+          if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 1 / dpr; // 确保边框宽度为1像素，考虑设备像素比
+          }
           canvasConfig[currentShuiyinIndex]?.[0]?.path.forEach(
             (item, index) => {
               const { draw, args } = item;
               draw(ctx, ...args);
             }
           );
+          if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
+            // 绘制边框
+            ctx.strokeRect(0, 0, canvas.width - 2, canvas.height);
+          }
+
           ctx.restore();
           // 等待绘制完成后获取图像数据
           setTimeout(() => {
