@@ -35,7 +35,7 @@ async function securityCheck(fileContent) {
 }
 
 exports.main = async (event, context) => {
-    const { firstImageFileID, secondImageFileID, position, userInfo } = event;
+    const { firstImageFileID, secondImageFileID, position, scale = 0.5, userInfo } = event;
     const transaction = await db.startTransaction();
     const isCheckData = await transaction.collection('isCheck').limit(1).get();
     let isCheck = false;
@@ -69,7 +69,7 @@ exports.main = async (event, context) => {
         const scaleFactor = 1;
 
         // Resize the second image
-        let img2Width = position === 'center' ? canvasWidth * scaleFactor * 0.95 : (canvasWidth * scaleFactor) / 2.5;
+        let img2Width = position === 'center' ? canvasWidth * scaleFactor * 0.95 : (canvasWidth * scaleFactor) * scale;
         let img2Height = img2Width * (secondImage.getHeight() / secondImage.getWidth());
         secondImage.resize(img2Width, img2Height);
 
@@ -110,7 +110,6 @@ exports.main = async (event, context) => {
             width: finalWidth,
             canvasWidth,
             img2Width,
-            sss: img2Width * scaleFactor,
             height: finalHeight
         };
     } catch (error) {
