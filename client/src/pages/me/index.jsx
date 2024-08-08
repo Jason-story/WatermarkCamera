@@ -94,7 +94,7 @@ const UserInfo = ({
         </View>
         <View className="user-item">
           <Text className="label">已使用次数</Text>
-          <Text className="value">{todayCount}</Text>
+          <Text className="value">{totalQuota}</Text>
         </View>
         {/* <View className="user-item">
           <Text className="label">邀请赠送总次数</Text>

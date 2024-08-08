@@ -889,7 +889,7 @@ const CameraPage = () => {
 
         {allAuth && (
           <View className="camera-btns">
-            <View className="red-envelope-container">
+            {/* <View className="red-envelope-container">
               <Image
                 className="red-envelope-image"
                 src={Hongbaoicon} // 替换为您的实际图片URL
@@ -897,7 +897,7 @@ const CameraPage = () => {
                   Taro.navigateTo({ url: "/pages/meituan/index" });
                 }}
               />
-            </View>
+            </View> */}
 
             <View className="zoom-box">
               <View className="zoom-text" onClick={zoomClick}>
@@ -1074,7 +1074,7 @@ const CameraPage = () => {
       </View>
 
       <View className="bottom-btns">
-        <Button
+        {/* <Button
           className="share-btn"
           onClick={() => {
             Taro.navigateTo({
@@ -1096,10 +1096,9 @@ const CameraPage = () => {
           }}
         >
           开通会员
-          {/* 电费、话费、滴滴、美团红包 */}
-        </Button>
+        </Button> */}
         <Button openType="share" className="share-btn" type="button">
-          <Text>分享群聊</Text>
+          <Text>分享好友</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>
