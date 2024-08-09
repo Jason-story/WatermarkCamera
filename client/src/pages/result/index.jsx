@@ -29,6 +29,7 @@ const MergeCanvas = () => {
   const position = Taro.getCurrentInstance().router.params.position;
   const scale = Taro.getCurrentInstance().router.params.scale || 0.5;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
+  const isVip = Taro.getCurrentInstance().router.params.vip;
 
   const [imagePath, setImagePath] = useState("");
   const [imageWidth, setImageWidth] = useState(0);
@@ -213,11 +214,12 @@ const MergeCanvas = () => {
         success: async function (res) {
           // 免费次数用尽
           if (
-            res.result.data.times >= 2 &&
-            res.result.data.type === "default"
+            (res.result.data.times >= 2 &&
+              res.result.data.type === "default") ||
+            (res.result.data.type === "default" && isVip === "true")
           ) {
             setIsShowModal(true);
-            setLoading(false)
+            setLoading(false);
             return;
           }
 
@@ -310,7 +312,7 @@ const MergeCanvas = () => {
           });
 
           // setImagePath(tempFilePath);
-          setLoading(false)
+          setLoading(false);
 
           clientCanvasSaveImage(tempFilePath);
         } catch (error) {
@@ -323,7 +325,7 @@ const MergeCanvas = () => {
   };
   const clientCanvasSaveImage = async (tempFilePath) => {
     // setImagePath(tempFilePath);
-    setLoading(false)
+    setLoading(false);
     const save = () => {
       Taro.saveImageToPhotosAlbum({
         filePath: tempFilePath,
@@ -404,7 +406,7 @@ const MergeCanvas = () => {
           height: `${(screenWidth / imgInfo.width) * imgInfo.height}px`,
         }}
       >
-        {(loading) && (
+        {loading && (
           <View
             style={{
               textAlign: "center",
@@ -529,7 +531,8 @@ const MergeCanvas = () => {
           <AtModalContent>
             <View className="modal-list">
               <View style={{ lineHeight: 1.6 }}>
-                您免费次数用完，请联系客服开通会员，会员为
+                {isVip === "true" ? "该水印为会员专属" : "您免费次数用完"}
+                ，请联系客服开通会员，会员为
                 <Text style={{ color: "red" }}>收费服务</Text>
                 ，请先查看会员价格后再联系客服。请知悉!!!
               </View>

@@ -304,6 +304,7 @@ const generateCanvasConfig = ({
         img: Shuiyin5,
         width: 255,
         scale: 0.5,
+        vip:true,
         height: (locationName, hideJw) => {
           const baseHeight = 99; // 减小20px
           const lineHeight = 21.25;

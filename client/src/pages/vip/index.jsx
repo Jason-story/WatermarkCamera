@@ -6,19 +6,25 @@ import ShareImg from "../../images/logo.jpg";
 import Head from "../../images/head.jpg";
 import "./index.scss";
 const UserInfo = ({ userType, price = { show: false } }) => {
-console.log('price.show: ', price.show);
+  console.log("price.show: ", price.show);
 
   return (
     <View className="user-info">
-      <View className="user-details" style={{ marginBottom: "40px" }}>
-        <View>
-          <Text style={{ fontWeight: "bold" }}>会员权益</Text>
+      {price.show === true ? (
+        <View className="user-details" style={{ marginBottom: "40px" }}>
+          <View>
+            <Text style={{ fontWeight: "bold" }}>会员权益</Text>
+          </View>
+          <View>• 无限使用次数</View>
+          <View>• 解锁会员专属水印</View>
+          <View>• 高清水印图片</View>
+          <View>• 去掉除封面广告之外的一切广告</View>
+          <View>• 客服支持</View>
         </View>
-        <View>• 无限使用次数</View>
-        <View>• 高清水印图片</View>
-        <View>• 客服支持</View>
-        <View>• 去掉除封面广告之外的一切广告</View>
-      </View>
+      ) : (
+        "暂无"
+      )}
+
       {/* <View style={{ marginTop: "20px", marginBottom: "20px", width: "100%" }}>
         <Button
           type="primary"
@@ -33,104 +39,99 @@ console.log('price.show: ', price.show);
         </Button>
       </View> */}
 
-      {!price.show  ? (
+      {!price.showPrice ? (
         ""
       ) : (
         <View style={{ width: "100%" }}>
           <View className="user-details">
             <View>
-              <Text>一天会员</Text>，
+              <Text>一天会员</Text>
               <Text style={{ color: "rgb(233, 60, 70)" }}>{price["1day"]}</Text>
-              元
+              元，平均每天 {price["1day"]}.00 元
             </View>
           </View>
           <View className="user-details">
             <View>
-              <Text>三天会员</Text>，
+              <Text>三天会员</Text>
               <Text style={{ color: "rgb(233, 60, 70)" }}>
                 {price["3days"]}
               </Text>
-              元
+              元，平均每天 {(price["3days"] / 3).toFixed(2)} 元
             </View>
           </View>
           <View className="user-details">
             <View>
-              <Text>包月会员</Text>，
-              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.month}</Text>元
+              <Text>包月会员</Text>
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.month}</Text>
+              元，平均每天 {(price.month / 30).toFixed(2)} 元
             </View>
           </View>
+
           <View className="user-details">
             <View>
-              <Text>双月会员</Text>，
-              <Text style={{ color: "rgb(233, 60, 70)" }}>
-                {price.twoMonth}
-              </Text>
-              元
-            </View>
-          </View>
-          <View className="user-details">
-            <View>
-              <Text>三月会员</Text>，
+              <Text>三月会员</Text>
               <Text style={{ color: "rgb(233, 60, 70)" }}>
                 {price.threeMonth}
               </Text>
-              元
+              元，平均每天 {(price.threeMonth / 90).toFixed(2)} 元
             </View>
           </View>
           <View className="user-details">
             <View>
-              <Text>半年会员</Text>，
+              <Text>半年会员</Text>
               <Text style={{ color: "rgb(233, 60, 70)" }}>
                 {price.halfYearMonth}
               </Text>
-              元
+              元，平均每天 {(price.halfYearMonth / 180).toFixed(2)} 元
             </View>
           </View>
           <View className="user-details">
             <View>
-              <Text>包年会员</Text>，
-              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.year}</Text>元
+              <Text>一年会员</Text>
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.year}</Text>
+              元，平均每天 {(price.year / 360).toFixed(2)} 元
             </View>
           </View>
           <View className="user-details">
             <View>
-              <Text>永久会员</Text>，
-              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.never}</Text>元
+              <Text>永久会员</Text>
+              <Text style={{ color: "rgb(233, 60, 70)" }}>{price.never}</Text>元，平均每天 0.00000001 元
             </View>
           </View>
+
           <View
             className="user-details"
             style={{ marginTop: "20px", fontWeight: "bold" }}
           >
-            需要定制水印可以咨询客服
+            P图、定制水印可以咨询客服
           </View>
         </View>
       )}
       <View style={{ width: "100%", marginTop: "50px" }}>
-        {!price.show ? (
-          ""
-        ) : (
-          <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>
+        {price.show && (
+          <View>
+            <View style={{ marginBottom: "10px" }}>开通会员请联系客服</View>
+            <Button
+              openType="contact"
+              style={{
+                background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
+                color: "white",
+                border: "none",
+                borderRadius: "25px",
+                padding: "0 20px",
+                fontSize: "30rpx",
+                cursor: "pointer",
+                boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                marginBottom: "20px",
+              }}
+              type="default"
+              className="guide-btn"
+            >
+              开通会员
+            </Button>
+          </View>
         )}
-        <Button
-          openType="contact"
-          style={{
-            background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
-            color: "white",
-            border: "none",
-            borderRadius: "25px",
-            padding: "0 20px",
-            fontSize: "30rpx",
-            cursor: "pointer",
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            marginBottom: "20px",
-          }}
-          type="default"
-          className="guide-btn"
-        >
-          开通会员
-        </Button>
       </View>
       {userType === "default" && (
         // 若在开发者工具中无法预览广告，请切换开发者工具中的基础库版本

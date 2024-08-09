@@ -32,6 +32,7 @@ import VipImg from "../../images/vip.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
+import VipArrow from "../../images/vip-arrow.png";
 import XiangceIcon from "../../images/xiangce.png";
 import KefuIcon from "../../images/kefu.png";
 import ShuiyinIcon from "../../images/shuiyin.png";
@@ -46,7 +47,10 @@ import Hongbaoicon from "../../images/hongbao.png";
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
-console.log('wx.getAccountInfoSync().miniProgram: ', wx.getAccountInfoSync().miniProgram);
+console.log(
+  "wx.getAccountInfoSync().miniProgram: ",
+  wx.getAccountInfoSync().miniProgram
+);
 
 const now = new Date();
 const yearD = now.getFullYear();
@@ -538,7 +542,9 @@ const CameraPage = () => {
                 "&position=" +
                 canvasConfigState[currentShuiyinIndex]?.[0]?.position +
                 "&scale=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.scale,
+                canvasConfigState[currentShuiyinIndex]?.[0]?.scale +
+                "&vip=" +
+                canvasConfigState[currentShuiyinIndex]?.[0]?.vip,
             });
           }, 200);
         },
@@ -557,7 +563,9 @@ const CameraPage = () => {
           "&position=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.position +
           "&scale=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.scale,
+          canvasConfigState[currentShuiyinIndex]?.[0]?.scale +
+          "&vip=" +
+          canvasConfigState[currentShuiyinIndex]?.[0]?.vip,
       });
     }
   };
@@ -613,36 +621,36 @@ const CameraPage = () => {
       }
     }
   }, [locationName]);
-  // useEffect(() => {
-  // wx.loadFontFace({
-  //   family: "Pragmatica",
-  //   global: true,
-  //   scopes: ["webview", "native"],
-  //   source:
-  //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
-  //   success: (res) => {
-  //     console.log("Font loaded successfully:", res);
-  //     drawMask();
-  //   },
-  //   fail: (err) => {
-  //     console.error("Font load failed:", err);
-  //   },
-  // });
-  // wx.loadFontFace({
-  //   family: "PragmaticaBold",
-  //   global: true,
-  //   scopes: ["webview", "native"],
-  //   source:
-  //     'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
-  //   success: (res) => {
-  //     console.log("Font loaded successfully:", res);
-  //     drawMask();
-  //   },
-  //   fail: (err) => {
-  //     console.error("Font load failed:", err);
-  //   },
-  // });
-  // }, []);
+  useEffect(() => {
+    wx.loadFontFace({
+      family: "Pragmatica",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
+      success: (res) => {
+        console.log("Font loaded successfully:", res);
+        drawMask();
+      },
+      fail: (err) => {
+        console.error("Font load failed:", err);
+      },
+    });
+    wx.loadFontFace({
+      family: "PragmaticaBold",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
+      success: (res) => {
+        console.log("Font loaded successfully:", res);
+        drawMask();
+      },
+      fail: (err) => {
+        console.error("Font load failed:", err);
+      },
+    });
+  }, []);
 
   const selectImg = () => {
     if (!allAuth) {
@@ -1149,7 +1157,6 @@ const CameraPage = () => {
               return (
                 <React.Fragment key={index}>
                   {/* 会员免广告 */}
-
                   <View
                     className="shuiyin-item"
                     onClick={() => {
@@ -1157,6 +1164,13 @@ const CameraPage = () => {
                     }}
                   >
                     <View className="shuiyin-item-img">
+                      {item[0].vip && (
+                        <Image
+                          mode="aspectFit"
+                          className="vip-arrow"
+                          src={VipArrow}
+                        ></Image>
+                      )}
                       <Image mode="aspectFit" src={item[0].img}></Image>
                     </View>
                     {currentShuiyinIndex === index && (

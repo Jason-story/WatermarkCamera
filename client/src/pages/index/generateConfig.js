@@ -36,13 +36,13 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `${fontSize}px PragmaticaBold`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
               {
-                fontSize: 23.8,
+                fontSize: 25,
                 color: "white",
                 text: `${hours}:${minutes}`,
                 position: [0, 34],
@@ -52,7 +52,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `${fontSize}px Pragmatica`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -68,7 +68,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `${fontSize}px Pragmatica`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -84,7 +84,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `${fontSize}px Pragmatica`;
               ctx.fillStyle = color;
 
               const maxLength = 16;
@@ -112,7 +112,7 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 21.25];
               }
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `${fontSize}px Pragmatica`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -144,7 +144,7 @@ const generateCanvasConfig = ({
             args: [
               {
                 lineWidth: 3.4,
-                color: "yellow",
+                color: "#fec52e",
                 start: [69.7, 0],
                 end: [69.7, 46.75],
               },

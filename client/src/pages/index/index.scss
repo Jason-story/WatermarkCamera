@@ -312,9 +312,17 @@ page {
     padding: 20px 0;
     height: 100%;
     box-sizing: border-box;
+    position: relative;
   }
   image {
     width: 90%;
+  }
+  .vip-arrow {
+    width: 90px;
+    height: 90px;
+    position: absolute;
+    right: -5px;
+    top: 0;
   }
   button {
     position: absolute;
