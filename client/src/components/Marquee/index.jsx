@@ -16,14 +16,14 @@ const Marquee = ({}) => {
     Taro.cloud.callFunction({
       name: "getDD",
       success: function (res) {
-        setText(res.result.data.text);
+        setText(res.result.data);
       },
     });
   }, []);
 
   return (
     <View className="marquee-container">
-      <View className="marquee-text">{text}</View>
+      {text.open && <View className="marquee-text">{text.text}</View>}
     </View>
   );
 };
