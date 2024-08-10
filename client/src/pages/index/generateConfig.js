@@ -375,7 +375,7 @@ const generateCanvasConfig = ({
                 height:  () => {
                   const baseHeight = 100; // 减小20px
                   const lineHeight = 20;
-                  const maxLines = 4;
+                  const maxLines = 3;
                   const charsPerLine = 15;
 
                   const getLocationLines = (text) => {
@@ -481,7 +481,7 @@ const generateCanvasConfig = ({
         height: (locationName) => {
           const baseHeight = 100; // 减小20px
           const lineHeight = 20;
-          const maxLines = 4;
+          const maxLines = 3;
           const charsPerLine = 15;
 
           const getLocationLines = (text) => {
