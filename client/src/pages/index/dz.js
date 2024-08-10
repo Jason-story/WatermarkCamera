@@ -69,7 +69,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              const maxLocationLength = 12;
+              const maxLocationLength = 14;
               const canvasWidth = width - 20; // Assuming you know the canvas width
 
               // Split text
@@ -166,7 +166,7 @@ const generateCanvasConfig = ({
 
                     // 计算图片绘制的坐标，使其位于右下角
                     const x = canvasWidth - imgWidth;
-                    const y = canvasHeight - imgHeight + 14;
+                    const y = canvasHeight - imgHeight + 20;
                     ctx.drawImage(img, x, y, imgWidth, imgHeight);
                   };
                   img.onerror = (err) => {
@@ -192,6 +192,7 @@ const generateCanvasConfig = ({
         width: width - 20,
         height: 140,
         scale: 0.95,
+        name:'定制-水印相机',
         position: "center",
         vip: true,
       },
@@ -202,7 +203,6 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, rectConfig) => {
               const { width } = rectConfig;
-              const baseHeight = 99; // 减小20px
               const imgHeight = 34;
               const lineHeight = 21.25;
               const maxLines = 3;
@@ -225,11 +225,6 @@ const generateCanvasConfig = ({
               };
 
               const locationLines = getLocationLines(locationName);
-              let canvasHeight = baseHeight + (locationLines - 1) * lineHeight;
-              if (!hideJw) {
-                canvasHeight += lineHeight + 5;
-              }
-
               Taro.getImageInfo({
                 src: "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/icon1.png",
                 success: (imgInfo) => {
@@ -274,16 +269,7 @@ const generateCanvasConfig = ({
                     ctx.lineTo(11.9, dateY);
                     ctx.stroke();
 
-                    // 绘制经纬度（如果不隐藏）
-                    if (hideJw) {
-                      const coordinateY = dateY + lineHeight + 5;
-                      const coordinateText =
-                        "经纬度: " +
-                        ((latitude * 1)?.toFixed(5) +
-                          ", " +
-                          (longitude * 1)?.toFixed(5));
-                      ctx.fillText(coordinateText, 18.7, coordinateY);
-                    }
+
                   };
                   img.onerror = (err) => {
                     console.error("Background image loading failed", err);
@@ -303,10 +289,11 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin5,
         width: 255,
-        scale: 0.5,
+        scale: 0.55,
+        name:'定制-今日水印相机-打卡',
         vip:true,
         height: (locationName, hideJw) => {
-          const baseHeight = 99; // 减小20px
+          const baseHeight = 100; // 减小20px
           const lineHeight = 21.25;
           const maxLines = 3;
           const charsPerLine = 15;
@@ -329,7 +316,6 @@ const generateCanvasConfig = ({
 
           const lines = getLocationLines(locationName);
           let height = baseHeight + (lines - 1) * lineHeight;
-          if (hideJw) height += lineHeight + 5;
           return height;
         },
       },

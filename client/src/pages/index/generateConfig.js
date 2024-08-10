@@ -36,7 +36,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `${fontSize}px PragmaticaBold`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -52,39 +52,39 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              ctx.font = `${fontSize}px Pragmatica`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
               {
-                fontSize: 15.3,
+                fontSize: 14,
                 color: "white",
                 text: `${year}年${month}月${day}日`,
-                position: [74.8, 17],
+                position: [82, 19],
               },
             ],
           },
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `${fontSize}px Pragmatica`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
               {
-                fontSize: 15.3,
+                fontSize: 14,
                 color: "white",
                 text: `${weekly} ${weather?.text} ${weather?.temperature}℃`,
-                position: [74.8, 42.5],
+                position: [82, 42],
               },
             ],
           },
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `${fontSize}px Pragmatica`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
 
               const maxLength = 16;
@@ -112,7 +112,7 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 21.25];
               }
-              ctx.font = `${fontSize}px Pragmatica`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -143,10 +143,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                lineWidth: 3.4,
+                lineWidth: 2.5,
                 color: "#fec52e",
-                start: [69.7, 0],
-                end: [69.7, 46.75],
+                start: [74, 5],
+                end: [74, 44],
               },
             ],
           },
@@ -154,7 +154,7 @@ const generateCanvasConfig = ({
         img: Shuiyin1,
         width: 238,
         scale:0.5,
-
+        name:'免费-时间天气-1',
         height: locationName.length > 16 ? 119 : 100,
       },
     ],
@@ -187,12 +187,12 @@ const generateCanvasConfig = ({
               ctx.closePath();
               ctx.fill();
 
-              ctx.fillStyle = "yellow";
+              ctx.fillStyle = "#fec52e";
               ctx.fillRect(11.05, 2.55, 42.5, 28.05);
 
               ctx.fillStyle = "black";
-              ctx.font = "15.3px sans-serif";
-              ctx.fillText("打卡", 17, 23.8);
+              ctx.font = "15.3px fzlt";
+              ctx.fillText("打卡", 17, 23);
             },
             args: [
               {
@@ -205,16 +205,16 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
             args: [
               {
-                fontSize: 20.4,
+                fontSize: 22,
                 color: "#1895e6",
                 text: `${hours}:${minutes}`,
-                position: [69.7, 24],
+                position: [65, 25],
               },
             ],
           },
@@ -224,7 +224,7 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 17];
               }
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -240,7 +240,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
 
               const maxLength = 16;
@@ -268,7 +268,7 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 22.95];
               }
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -282,7 +282,7 @@ const generateCanvasConfig = ({
                       ", " +
                       (longitude * 1)?.toFixed(5))
                   : "",
-                position: [8.5, 97.75],
+                position: [8.5, 100],
               },
             ],
           },
@@ -302,7 +302,7 @@ const generateCanvasConfig = ({
             args: [
               {
                 lineWidth: 2.55,
-                color: "yellow",
+                color: "#fec52e",
                 start: [11.9, 42.5],
                 end: [11.9, 80.75],
               },
@@ -312,6 +312,8 @@ const generateCanvasConfig = ({
         img: Shuiyin2,
         width: 255,
         scale:0.5,
+        name:'免费-打卡-2',
+
         height: locationName.length > 16 ? 129 : 102,
       },
     ],
@@ -370,7 +372,7 @@ const generateCanvasConfig = ({
 
               // 在蓝色背景中居中显示文字
               ctx.fillStyle = "white";
-              ctx.font = "15px sans-serif";
+              ctx.font = "15px fzlt";
               const textWidth = ctx.measureText(text).width;
               const textX = (width - textWidth + 7.5) / 2; // 10 * 0.75
               const textY = 21.75; // 29 * 0.75 文字居中显示
@@ -389,7 +391,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               let { fontSize, color, text, position } = config;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -406,7 +408,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -429,7 +431,7 @@ const generateCanvasConfig = ({
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position, positionSecond } =
                 locationConfig;
-              ctx.font = `${fontSize}px sans-serif`;
+              ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
 
               const maxLength = 9;
@@ -459,6 +461,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin3,
         scale:0.4,
+        name:'免费-工程记录-3',
         width: 190, // 280 * 0.75
         height: locationName.length > 9 ? 120 : 105, // 180 * 0.75
       },

@@ -83,7 +83,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(3);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
 
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
@@ -516,8 +516,13 @@ const CameraPage = () => {
           },
         },
         success: function (res) {
-          console.log("res: ", res);
           console.log("保存成功 ");
+        },
+      });
+      Taro.cloud.callFunction({
+        name: "useLogs",
+        data: {
+          type: canvasConfigState[currentShuiyinIndex]?.[0]?.name,
         },
       });
       console.log("canvasImg: ", canvasImg);
@@ -623,32 +628,15 @@ const CameraPage = () => {
   }, [locationName]);
   useEffect(() => {
     wx.loadFontFace({
-      family: "Pragmatica",
+      family: "fzlt",
       global: true,
       scopes: ["webview", "native"],
       source:
-        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Light.otf")',
+        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fzlt.ttf")',
       success: (res) => {
-        console.log("Font loaded successfully:", res);
         drawMask();
       },
-      fail: (err) => {
-        console.error("Font load failed:", err);
-      },
-    });
-    wx.loadFontFace({
-      family: "PragmaticaBold",
-      global: true,
-      scopes: ["webview", "native"],
-      source:
-        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fonnts.com-Pragmatica_Ext_Book.otf")',
-      success: (res) => {
-        console.log("Font loaded successfully:", res);
-        drawMask();
-      },
-      fail: (err) => {
-        console.error("Font load failed:", err);
-      },
+      fail: (err) => {},
     });
   }, []);
 
@@ -688,25 +676,6 @@ const CameraPage = () => {
   };
 
   const drawMask = () => {
-    const canvasConfig = generateCanvasConfig({
-      hours,
-      minutes,
-      year,
-      month,
-      day,
-      weekly,
-      weather,
-      locationName,
-      latitude,
-      longitude,
-      hideJw,
-      title,
-      Shuiyin1,
-      Shuiyin2,
-      Shuiyin3,
-      Shuiyin5,
-    });
-
     const query = Taro.createSelectorQuery();
     query
       .select("#fishCanvas")
@@ -724,7 +693,8 @@ const CameraPage = () => {
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;
           const dpr = wx.getSystemInfoSync().pixelRatio;
-          const canvasConfigDz = dingzhi({
+
+          const canvasConfig = dingzhi({
             hours,
             minutes,
             year,
@@ -745,6 +715,25 @@ const CameraPage = () => {
             dpr,
             canvas,
           });
+
+          const canvasConfigDz = generateCanvasConfig({
+            hours,
+            minutes,
+            year,
+            month,
+            day,
+            weekly,
+            weather,
+            locationName,
+            latitude,
+            longitude,
+            hideJw,
+            title,
+            Shuiyin1,
+            Shuiyin2,
+            Shuiyin3,
+            Shuiyin5,
+          });
           canvasConfig.push(...canvasConfigDz);
           // 设置canvas宽高
           canvas.width = res[0].width * dpr;
@@ -754,53 +743,58 @@ const CameraPage = () => {
           ctx.scale(dpr, dpr);
           setCanvasConfigState(canvasConfig);
 
-          if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-            ctx.strokeStyle = "black";
-            ctx.lineWidth = 1 / dpr; // 确保边框宽度为1像素，考虑设备像素比
+          // if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
+          //   ctx.strokeStyle = "black";
+          //   ctx.lineWidth = 1 / dpr; // 确保边框宽度为1像素，考虑设备像素比
+          // }
+          try {
+            canvasConfig[currentShuiyinIndex]?.[0]?.path.forEach(
+              (item, index) => {
+                const { draw, args } = item;
+                draw(ctx, ...args);
+              }
+            );
+
+            // if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
+            //   // 绘制边框
+            //   ctx.strokeRect(0, 0, canvas.width - 2, canvas.height);
+            // }
+
+            ctx.restore();
+            // 等待绘制完成后获取图像数据
+            setTimeout(() => {
+              const imageData = canvas.toDataURL("image/png"); // 获取 base64 数据
+              const base64Data = imageData.replace(
+                /^data:image\/\w+;base64,/,
+                ""
+              ); // 去掉前缀
+
+              // 将 base64 数据转换为二进制数据
+              const binaryData = wx.base64ToArrayBuffer(base64Data);
+
+              // 生成唯一的文件名
+              const uniqueFileName = `${Date.now()}.png`;
+              const tempFilePath = `${wx.env.USER_DATA_PATH}/${uniqueFileName}`;
+
+              // 写入文件系统生成临时文件路径
+              const fsm = wx.getFileSystemManager();
+              fsm.writeFile({
+                filePath: tempFilePath,
+                data: binaryData,
+                encoding: "binary",
+                success: () => {
+                  // 在这里可以使用临时文件路径
+                  setCanvasImg(tempFilePath);
+                  // console.log("tempFilePath: ", tempFilePath);
+                },
+                fail: (err) => {
+                  console.error("写入文件失败：", err);
+                },
+              });
+            }, 300); // 延迟执行以确保绘制完成
+          } catch (error) {
+            console.log("error: ", error);
           }
-          canvasConfig[currentShuiyinIndex]?.[0]?.path.forEach(
-            (item, index) => {
-              const { draw, args } = item;
-              draw(ctx, ...args);
-            }
-          );
-          if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-            // 绘制边框
-            ctx.strokeRect(0, 0, canvas.width - 2, canvas.height);
-          }
-
-          ctx.restore();
-          // 等待绘制完成后获取图像数据
-          setTimeout(() => {
-            const imageData = canvas.toDataURL("image/png"); // 获取 base64 数据
-            const base64Data = imageData.replace(
-              /^data:image\/\w+;base64,/,
-              ""
-            ); // 去掉前缀
-
-            // 将 base64 数据转换为二进制数据
-            const binaryData = wx.base64ToArrayBuffer(base64Data);
-
-            // 生成唯一的文件名
-            const uniqueFileName = `${Date.now()}.png`;
-            const tempFilePath = `${wx.env.USER_DATA_PATH}/${uniqueFileName}`;
-
-            // 写入文件系统生成临时文件路径
-            const fsm = wx.getFileSystemManager();
-            fsm.writeFile({
-              filePath: tempFilePath,
-              data: binaryData,
-              encoding: "binary",
-              success: () => {
-                // 在这里可以使用临时文件路径
-                setCanvasImg(tempFilePath);
-                // console.log("tempFilePath: ", tempFilePath);
-              },
-              fail: (err) => {
-                console.error("写入文件失败：", err);
-              },
-            });
-          }, 300); // 延迟执行以确保绘制完成
         }
       });
   };
@@ -849,6 +843,7 @@ const CameraPage = () => {
   //   }
   // }, [allAuth]);
   // console.log("canvasConfigState[currentShuiyinIndex]?.[0]: ", canvasConfigState);
+  // console.log('canvasConfigState[currentShuiyinIndex]?.[0].height: ', typeof(canvasConfigState[currentShuiyinIndex]?.[0].height));
   return (
     <View className="container">
       <View
@@ -936,8 +931,13 @@ const CameraPage = () => {
                   canvasConfigState.length > 0 &&
                   canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
                 height:
-                  canvasConfigState.length > 0 &&
-                  canvasConfigState[currentShuiyinIndex]?.[0].height + "px",
+                  canvasConfigState[currentShuiyinIndex]?.[0].height &&
+                  typeof canvasConfigState[currentShuiyinIndex]?.[0].height ===
+                    "number"
+                    ? canvasConfigState[currentShuiyinIndex]?.[0].height + "px"
+                    : canvasConfigState[currentShuiyinIndex]?.[0].height(
+                        locationName
+                      ) + "px",
               }}
             />
             {canvasImg && (
@@ -949,9 +949,14 @@ const CameraPage = () => {
                     canvasConfigState.length > 0 &&
                     canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
                   height:
-                    canvasConfigState.length > 0 &&
-                    canvasConfigState[currentShuiyinIndex]?.[0].height + "px",
-                  // display: "block",
+                    canvasConfigState[currentShuiyinIndex]?.[0].height &&
+                    typeof canvasConfigState[currentShuiyinIndex]?.[0]
+                      .height === "number"
+                      ? canvasConfigState[currentShuiyinIndex]?.[0].height +
+                        "px"
+                      : canvasConfigState[currentShuiyinIndex]?.[0].height(
+                          locationName
+                        ) + "px",
                 }}
               ></Image>
             )}
