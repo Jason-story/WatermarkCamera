@@ -16,7 +16,6 @@ const generateCanvasConfig = ({
   Shuiyin3,
 }) => {
   return [
-
     [
       {
         path: [
@@ -94,7 +93,7 @@ const generateCanvasConfig = ({
 
               ctx.fillText(firstLine, ...position);
               if (secondLine) {
-                ctx.fillText(secondLine, position[0], position[1] + 21.25);
+                ctx.fillText(secondLine, position[0], position[1] + 19);
               }
             },
             args: [
@@ -102,7 +101,7 @@ const generateCanvasConfig = ({
                 fontSize: 13.6,
                 color: "white",
                 text: locationName,
-                position: [0, 68],
+                position: [0, 66],
               },
             ],
           },
@@ -110,7 +109,7 @@ const generateCanvasConfig = ({
             draw: (ctx, coordinateConfig) => {
               let { fontSize, color, text, position } = coordinateConfig;
               if (locationName.length > 16) {
-                position = [position[0], position[1] + 21.25];
+                position = [position[0], position[1] + 19];
               }
               ctx.font = `bold ${fontSize}px fzlt`;
               ctx.fillStyle = color;
@@ -126,7 +125,7 @@ const generateCanvasConfig = ({
                       ", " +
                       (longitude * 1)?.toFixed(5))
                   : "",
-                position: [0, 89.25],
+                position: [0, 87],
               },
             ],
           },
@@ -153,9 +152,9 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin1,
         width: 238,
-        scale:0.5,
-        name:'免费-时间天气-1',
-        height: locationName.length > 16 ? 119 : 100,
+        scale: 0.5,
+        name: "免费-时间天气-1",
+        height: locationName.length > 16 ? 110 : 100,
       },
     ],
     [
@@ -250,7 +249,7 @@ const generateCanvasConfig = ({
 
               ctx.fillText(firstLine, ...position);
               if (secondLine) {
-                ctx.fillText(secondLine, position[0], position[1] + 21.25);
+                ctx.fillText(secondLine, position[0], position[1] + 20);
               }
             },
             args: [
@@ -311,28 +310,21 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin2,
         width: 255,
-        scale:0.5,
-        name:'免费-打卡-2',
-
-        height: locationName.length > 16 ? 129 : 102,
+        scale: 0.5,
+        name: "免费-打卡-2",
+        height: locationName.length > 16 ? 125 : 105,
       },
     ],
-    // 333333333333333333333333333333333333333333333333
-    // 333333333333333333333333333333333333333333333333
-    // 333333333333333333333333333333333333333333333333
-    // 333333333333333333333333333333333333333333333333
-    // 333333333333333333333333333333333333333333333333
     [
       {
         path: [
           // 背景
           {
             draw: (ctx, rectConfig) => {
-              const { width, height, color, text } = rectConfig;
-
+              const { width,  color, text } = rectConfig;
+              const height = rectConfig.height();
               // 设置矩形的颜色
               ctx.fillStyle = color;
-
               // 绘制一个带7.5px圆角的指定宽高和颜色的矩形
               const radius = 7.5; // 10 * 0.75 圆角半径
               ctx.beginPath();
@@ -347,7 +339,6 @@ const generateCanvasConfig = ({
               ctx.arcTo(0, 0, radius, 0, radius);
               ctx.closePath();
               ctx.fill();
-
               // 绘制顶部带圆角的蓝色背景
               ctx.fillStyle = "rgb(10, 55, 132)";
               ctx.beginPath();
@@ -372,7 +363,7 @@ const generateCanvasConfig = ({
 
               // 在蓝色背景中居中显示文字
               ctx.fillStyle = "white";
-              ctx.font = "15px fzlt";
+              ctx.font = "bold 15px fzlt";
               const textWidth = ctx.measureText(text).width;
               const textX = (width - textWidth + 7.5) / 2; // 10 * 0.75
               const textY = 21.75; // 29 * 0.75 文字居中显示
@@ -381,7 +372,32 @@ const generateCanvasConfig = ({
             args: [
               {
                 width: 190, // 250 * 0.75
-                height: locationName.length > 9 ? 120 : 105, // 180 * 0.75
+                height:  () => {
+                  const baseHeight = 100; // 减小20px
+                  const lineHeight = 20;
+                  const maxLines = 4;
+                  const charsPerLine = 15;
+
+                  const getLocationLines = (text) => {
+                    const words = text.split("");
+                    let lines = 1;
+                    let currentLineLength = 0;
+                    for (const word of words) {
+                      if (currentLineLength + 1 > charsPerLine) {
+                        lines++;
+                        currentLineLength = 1;
+                      } else {
+                        currentLineLength++;
+                      }
+                      if (lines === maxLines) break;
+                    }
+                    return lines;
+                  };
+
+                  const lines = getLocationLines(locationName);
+                  let height = baseHeight + (lines - 1) * lineHeight + 5;
+                  return height;
+                },
                 color: "rgba(121, 121, 122, .8)",
                 text: title, // 替换为需要显示的文字
               },
@@ -391,7 +407,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               let { fontSize, color, text, position } = config;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -408,7 +424,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -429,41 +445,65 @@ const generateCanvasConfig = ({
           // 地址
           {
             draw: (ctx, locationConfig) => {
-              const { fontSize, color, text, position, positionSecond } =
-                locationConfig;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              const { fontSize, color, text, position } = locationConfig;
+              ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
 
-              const maxLength = 9;
-              const firstLine = text.slice(0, maxLength);
-              const secondLine =
-                text.length > maxLength ? text.slice(maxLength) : "";
-
-              ctx.fillText("地   点：" + firstLine, ...position);
-              if (secondLine) {
-                ctx.fillText(
-                  secondLine,
-                  positionSecond[0],
-                  positionSecond[1] + 18.75
-                ); // 25 * 0.75
+              const maxCharsPerLine = 9;
+              const lines = [];
+              for (let i = 0; i < text.length; i += maxCharsPerLine) {
+                lines.push(text.slice(i, i + maxCharsPerLine));
               }
+
+              const maxLines = 4;
+              lines.slice(0, maxLines).forEach((line, index) => {
+                ctx.fillText(
+                  index === 0 ? "地   点：" + line : line,
+                  position[0] + (index === 0 ? 0 : 48.75), // 65 * 0.75
+                  position[1] + index * (fontSize * 1.2)
+                );
+              });
             },
             args: [
               {
-                fontSize: 13.5, // 18 * 0.75
+                fontSize: 13.5,
                 color: "#000",
                 text: locationName,
-                position: [11.25, 86.25], // 15 * 0.75, 115 * 0.75
-                positionSecond: [60, 86.25], // 80 * 0.75, 115 * 0.75
+                position: [11.25, 86.25],
               },
             ],
           },
         ],
         img: Shuiyin3,
-        scale:0.4,
-        name:'免费-工程记录-3',
+        scale: 0.4,
+        name: "免费-工程记录-3",
         width: 190, // 280 * 0.75
-        height: locationName.length > 9 ? 120 : 105, // 180 * 0.75
+        height: (locationName) => {
+          const baseHeight = 100; // 减小20px
+          const lineHeight = 20;
+          const maxLines = 4;
+          const charsPerLine = 15;
+
+          const getLocationLines = (text) => {
+            const words = text.split("");
+            let lines = 1;
+            let currentLineLength = 0;
+            for (const word of words) {
+              if (currentLineLength + 1 > charsPerLine) {
+                lines++;
+                currentLineLength = 1;
+              } else {
+                currentLineLength++;
+              }
+              if (lines === maxLines) break;
+            }
+            return lines;
+          };
+
+          const lines = getLocationLines(locationName);
+          let height = baseHeight + (lines - 1) * lineHeight + 5;
+          return height;
+        },
       },
     ],
   ];
