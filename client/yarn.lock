@@ -4286,6 +4286,7 @@ __metadata:
     eslint-plugin-react: "npm:^7.8.2"
     eslint-plugin-react-hooks: "npm:^4.2.0"
     lodash: "npm:4.17.15"
+    md5: "npm:^2.3.0"
     postcss: "npm:^8.4.18"
     qqmap-wx-jssdk: "npm:^1.0.0"
     react: "npm:^18.0.0"

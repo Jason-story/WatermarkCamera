@@ -19,6 +19,7 @@ export default {
       desc: "你的相机权限将用于拍摄图片",
     },
   },
+  navigateToMiniProgramAppIdList: ["wx455af826b1e7f2df"],
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#fff",

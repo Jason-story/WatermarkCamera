@@ -45,9 +45,17 @@ const UserInfo = ({
     // 获取日期
     const day = String(date.getDate()).padStart(2, "0");
 
-    // 拼接成 YYYY-MM-DD 格式
-    return `${year}-${month}-${day}`;
+    // 获取小时
+    const hours = String(date.getHours()).padStart(2, "0");
+
+    // 获取分钟
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    // 拼接成 YYYY-MM-DD HH:MM 格式
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
+
+  // 使用示例
   const config = {
     default: "普通用户",
     month: "包月会员",
