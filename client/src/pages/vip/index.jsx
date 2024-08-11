@@ -282,7 +282,10 @@ const Index = () => {
   });
 
   const [price, setPrice] = useState(false);
+  const [loading, setLoading] = useState(false);
   useDidShow(() => {
+    if (!loading) return;
+    console.log(333);
     Taro.cloud.callFunction({
       name: "addUser",
       success: function (res) {
@@ -291,23 +294,32 @@ const Index = () => {
             title: "提示",
             content: "购买成功，请重新进入小程序",
             showCancel: false,
+            success: (res) => {
+              if (res.confirm) {
+                wx.reLaunch({
+                  url: "/pages/index/index",
+                });
+              }
+            },
           });
         }
       },
     });
   });
   useEffect(() => {
+    console.log(5555);
+    Taro.cloud.callFunction({
+      name: "addUser",
+      success: function (res) {
+        console.log("res: ", res);
+        setLoading(true);
+        setUserInfo(res.result.data);
+      },
+    });
     Taro.cloud.callFunction({
       name: "getPrice",
       success: function (res) {
         setPrice(res.result.data);
-      },
-    });
-    Taro.cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        console.log('res: ', res);
-        setUserInfo(res.result.data);
       },
     });
   }, []);
