@@ -802,7 +802,7 @@ const CameraPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLocationName((prevName) => prevName + " ");
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
