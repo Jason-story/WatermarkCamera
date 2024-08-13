@@ -43,15 +43,11 @@ import Shuiyin4 from "../../images/shuiyin-4.png";
 import Shuiyin5 from "../../images/shuiyin-5.png";
 import AddMyApp from "../../images/add-my-app.png";
 import Hongbaoicon from "../../images/hongbao.png";
+import ShuiyinLogo1 from "../../images/shuiyinxiangji.png";
 
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
-console.log(
-  "wx.getAccountInfoSync().miniProgram: ",
-  wx.getAccountInfoSync().miniProgram
-);
-
 const now = new Date();
 const yearD = now.getFullYear();
 const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
@@ -714,6 +710,7 @@ const CameraPage = () => {
             Shuiyin5,
             dpr,
             canvas,
+            ShuiyinLogo1
           });
 
           const canvasConfigDz = generateCanvasConfig({
@@ -799,13 +796,13 @@ const CameraPage = () => {
       });
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLocationName((prevName) => prevName + " ");
-    }, 3000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setLocationName((prevName) => prevName + " ");
+  //   }, 3000);
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   useEffect(() => {
     drawMask();
@@ -1130,7 +1127,7 @@ const CameraPage = () => {
         <AtModalContent>
           <View className="modal-list">
             <View className="txt1">
-              您的会员已到期,如需要继续使用请联系客服重新开通
+              您的会员已到期,继续使用请重新开通会员
             </View>
           </View>
         </AtModalContent>
