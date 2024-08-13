@@ -34,13 +34,13 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `bold ${fontSize}px Pragmatica`;
+              ctx.font = `${fontSize}px fzlt`;
 
               // 添加阴影效果
               ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-              ctx.shadowOffsetX = 2;
-              ctx.shadowOffsetY = 4;
-              ctx.shadowBlur = 4;
+              ctx.shadowOffsetX = 1;
+              ctx.shadowOffsetY = 8;
+              ctx.shadowBlur = 3;
 
               ctx.fillStyle = color;
 
@@ -73,7 +73,7 @@ const generateCanvasConfig = ({
               const canvasWidth = width - 20; // Assuming you know the canvas width
 
               // Split text
-              const parts = text.split("📍");
+              const parts = text.split("@");
               const beforeMarker = parts[0].split(weekly);
               const datePart = beforeMarker[0].trim() + "  ";
               const weeklyPart = weekly + " ";
@@ -86,7 +86,7 @@ const generateCanvasConfig = ({
               // Calculate widths
               const dateWidth = ctx.measureText(datePart).width;
               const weeklyWidth = ctx.measureText(weeklyPart).width;
-              const markerWidth = ctx.measureText("📍").width;
+              const markerWidth = 18; // Assuming the icon width is 18px
               const firstPartWidth = dateWidth + weeklyWidth + markerWidth;
 
               // Handle long location names
@@ -118,30 +118,61 @@ const generateCanvasConfig = ({
               ctx.font = `bold ${fontSize}px 黑体`;
               ctx.fillText(weeklyPart, xPosition + dateWidth, yPosition);
 
-              // Draw marker
-              ctx.font = `bold ${18}px 黑体`;
-              ctx.fillText(
-                "📍",
-                xPosition + dateWidth + weeklyWidth,
-                yPosition + 2
-              );
+              // Draw custom icon
+              Taro.getImageInfo({
+                src: "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/icon2.png",
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = imgInfo.path;
+                  img.onload = () => {
+                    const iconSize = 28; // Adjust this value as needed
+                    // 添加阴影效果
+                    ctx.shadowColor = "none";
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.shadowBlur = 0;
+                    ctx.drawImage(
+                      img,
+                      xPosition + dateWidth + weeklyWidth - 5,
+                      yPosition - iconSize + 5,
+                      iconSize,
+                      iconSize * 1.12
+                    );
 
-              // Draw location name
-              ctx.font = `bold ${fontSize}px 黑体`;
-              const locationX = xPosition + firstPartWidth + 4;
-              ctx.fillText(firstLine, locationX, yPosition);
+                    // Draw location name
+                    ctx.font = `bold ${fontSize}px 黑体`;
+                    const locationX = xPosition + firstPartWidth + 4;
+                    // 添加阴影效果
+                    ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 4;
+                    ctx.shadowBlur = 4;
+                    ctx.fillText(firstLine, locationX, yPosition);
 
-              // Draw second line if needed
-              if (secondLine) {
-                yPosition += fontSize + 4; // Add some spacing between lines
-                ctx.fillText(secondLine, locationX, yPosition);
-              }
+                    // Draw second line if needed
+                    if (secondLine) {
+                      yPosition += fontSize + 4; // Add some spacing between lines
+                      ctx.fillText(secondLine, locationX, yPosition);
+                    }
+                  };
+                },
+                fail: (err) => {
+                  console.error("Failed to load custom icon:", err);
+                  // Fallback to original text icon if image fails to load
+                  ctx.font = `bold ${18}px 黑体`;
+                  ctx.fillText(
+                    "📍",
+                    xPosition + dateWidth + weeklyWidth,
+                    yPosition + 2
+                  );
+                },
+              });
             },
             args: [
               {
                 fontSize: 14,
                 color: "white",
-                text: `${year}.${month}.${day}  ${weekly} 📍 ${locationName}`,
+                text: `${year}.${month}.${day}  ${weekly} @ ${locationName}`,
                 position: [0, 99],
               },
             ],
@@ -192,7 +223,7 @@ const generateCanvasConfig = ({
         width: width - 20,
         height: 140,
         scale: 0.95,
-        name:'定制-水印相机',
+        name: "定制-水印相机",
         position: "center",
         vip: true,
       },
@@ -268,8 +299,6 @@ const generateCanvasConfig = ({
                     ctx.moveTo(11.9, 52.5);
                     ctx.lineTo(11.9, dateY);
                     ctx.stroke();
-
-
                   };
                   img.onerror = (err) => {
                     console.error("Background image loading failed", err);
@@ -290,8 +319,8 @@ const generateCanvasConfig = ({
         img: Shuiyin5,
         width: 255,
         scale: 0.55,
-        name:'定制-今日水印相机-打卡',
-        vip:true,
+        name: "定制-今日水印相机-打卡",
+        vip: true,
         height: (locationName, hideJw) => {
           const baseHeight = 100; // 减小20px
           const lineHeight = 21.25;

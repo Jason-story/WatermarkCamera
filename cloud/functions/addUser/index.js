@@ -45,6 +45,11 @@ exports.main = async (event, context) => {
                 updateData.todayUsageCount = userData.todayUsageCount || 0;
             }
 
+            if (Date.now() > userData.end_time) {
+                updateData.type = 'default';
+                updateData.end_time = '';
+            }
+
             // 更新今日使用次数
             if (event.remark === '成功使用') {
                 todayUsageCount = updateData.todayUsageCount + 1;

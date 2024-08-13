@@ -536,28 +536,6 @@ const MergeCanvas = () => {
                 <Text style={{ color: "red" }}>收费服务</Text>
                 ，请先查看会员价格后再联系客服。请知悉!!!
               </View>
-              <Button
-                style={{
-                  background: "linear-gradient(45deg, #ff512f, #dd2476)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "30px",
-                  padding: "0",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  marginBottom: "0px",
-                  width: "100%",
-                  marginTop: "10px",
-                }}
-                onClick={() => {
-                  Taro.navigateTo({
-                    url: "/pages/vip/index",
-                  });
-                }}
-              >
-                会员定价
-              </Button>
             </View>
           </AtModalContent>
           <AtModalAction>
@@ -569,7 +547,15 @@ const MergeCanvas = () => {
             >
               关闭
             </Button>
-            <Button openType="contact" style={{ flex: 1 }} type="button">
+            <Button
+              onClick={() => {
+                Taro.navigateTo({
+                  url: "/pages/vip/index",
+                });
+              }}
+              style={{ flex: 1 }}
+              type="button"
+            >
               <Text>开通会员</Text>
             </Button>
           </AtModalAction>

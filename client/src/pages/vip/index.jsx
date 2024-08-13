@@ -18,17 +18,11 @@ const md5 = require("./md5.js");
 // const md5 = require("md5");
 
 const UserInfo = ({ userInfo, price = { show: false } }) => {
-  const [selected, setSelected] = useState("month");
+  const [selected, setSelected] = useState("halfYearMonth");
   const vipConfig = [
-    {
-      key: "1day",
-      title: "一天会员 " + price["1day"] + "元",
-      price: price["1day"],
-    },
     {
       key: "month",
       title: "包月会员 " + price["month"] + "元",
-      checked: true,
       price: price.month,
     },
     {
@@ -38,6 +32,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
     },
     {
       key: "halfYearMonth",
+      checked: true,
       title: "半年会员 " + price["halfYearMonth"] + "元",
       price: price.halfYearMonth,
     },

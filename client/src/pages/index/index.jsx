@@ -515,12 +515,7 @@ const CameraPage = () => {
           console.log("保存成功 ");
         },
       });
-      Taro.cloud.callFunction({
-        name: "useLogs",
-        data: {
-          type: canvasConfigState[currentShuiyinIndex]?.[0]?.name,
-        },
-      });
+
       console.log("canvasImg: ", canvasImg);
       cameraContext?.takePhoto({
         zoom: zoomLevel,
@@ -670,139 +665,140 @@ const CameraPage = () => {
       },
     });
   };
-
+  let rafId = "";
   const drawMask = () => {
-    const query = Taro.createSelectorQuery();
-    query
-      .select("#fishCanvas")
-      .fields({ node: true, size: true })
-      .exec((res) => {
-        if (res && res[0]) {
-          const canvas = res[0].node;
-          const ctx = canvas.getContext("2d");
-          ctx.save();
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          // 首先重置所有可能的阴影属性
-          ctx.shadowColor = "rgba(0,0,0,0)";
-          ctx.shadowBlur = 0;
-          ctx.shadowOffsetX = 0;
-          ctx.shadowOffsetY = 0;
-          const dpr = wx.getSystemInfoSync().pixelRatio;
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      const query = Taro.createSelectorQuery();
+      query
+        .select("#fishCanvas")
+        .fields({ node: true, size: true })
+        .exec((res) => {
+          if (res && res[0]) {
+            const canvas = res[0].node;
+            const ctx = canvas.getContext("2d");
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 首先重置所有可能的阴影属性
+            ctx.shadowColor = "rgba(0,0,0,0)";
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            const dpr = wx.getSystemInfoSync().pixelRatio;
 
-          const canvasConfig = dingzhi({
-            hours,
-            minutes,
-            year,
-            month,
-            day,
-            weekly,
-            weather,
-            locationName,
-            latitude,
-            longitude,
-            hideJw,
-            title,
-            Shuiyin1,
-            Shuiyin2,
-            Shuiyin3,
-            Shuiyin4,
-            Shuiyin5,
-            dpr,
-            canvas,
-            ShuiyinLogo1
-          });
+            const canvasConfig = dingzhi({
+              hours,
+              minutes,
+              year,
+              month,
+              day,
+              weekly,
+              weather,
+              locationName,
+              latitude,
+              longitude,
+              hideJw,
+              title,
+              Shuiyin1,
+              Shuiyin2,
+              Shuiyin3,
+              Shuiyin4,
+              Shuiyin5,
+              dpr,
+              canvas,
+              ShuiyinLogo1,
+            });
 
-          const canvasConfigDz = generateCanvasConfig({
-            hours,
-            minutes,
-            year,
-            month,
-            day,
-            weekly,
-            weather,
-            locationName,
-            latitude,
-            longitude,
-            hideJw,
-            title,
-            Shuiyin1,
-            Shuiyin2,
-            Shuiyin3,
-            Shuiyin5,
-          });
-          canvasConfig.push(...canvasConfigDz);
-          // 设置canvas宽高
-          canvas.width = res[0].width * dpr;
-          canvas.height = res[0].height * dpr;
-          // 设置边框样式
+            const canvasConfigDz = generateCanvasConfig({
+              hours,
+              minutes,
+              year,
+              month,
+              day,
+              weekly,
+              weather,
+              locationName,
+              latitude,
+              longitude,
+              hideJw,
+              title,
+              Shuiyin1,
+              Shuiyin2,
+              Shuiyin3,
+              Shuiyin5,
+            });
+            canvasConfig.push(...canvasConfigDz);
+            // 设置canvas宽高
+            canvas.width = res[0].width * dpr;
+            canvas.height = res[0].height * dpr;
+            // 设置边框样式
 
-          ctx.scale(dpr, dpr);
-          setCanvasConfigState(canvasConfig);
-
-          // if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-          //   ctx.strokeStyle = "black";
-          //   ctx.lineWidth = 1 / dpr; // 确保边框宽度为1像素，考虑设备像素比
-          // }
-          try {
-            canvasConfig[currentShuiyinIndex]?.[0]?.path.forEach(
-              (item, index) => {
-                const { draw, args } = item;
-                draw(ctx, ...args);
-              }
-            );
+            ctx.scale(dpr, dpr);
+            setCanvasConfigState(canvasConfig);
 
             // if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-            //   // 绘制边框
-            //   ctx.strokeRect(0, 0, canvas.width - 2, canvas.height);
+            //   ctx.strokeStyle = "black";
+            //   ctx.lineWidth = 1 / dpr; // 确保边框宽度为1像素，考虑设备像素比
             // }
+            try {
+              canvasConfig[currentShuiyinIndex]?.[0]?.path.forEach(
+                (item, index) => {
+                  const { draw, args } = item;
+                  draw(ctx, ...args);
+                }
+              );
 
-            ctx.restore();
-            // 等待绘制完成后获取图像数据
-            setTimeout(() => {
-              const imageData = canvas.toDataURL("image/png"); // 获取 base64 数据
-              const base64Data = imageData.replace(
-                /^data:image\/\w+;base64,/,
-                ""
-              ); // 去掉前缀
+              // if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
+              //   // 绘制边框
+              //   ctx.strokeRect(0, 0, canvas.width - 2, canvas.height);
+              // }
 
-              // 将 base64 数据转换为二进制数据
-              const binaryData = wx.base64ToArrayBuffer(base64Data);
+              ctx.restore();
+              // 等待绘制完成后获取图像数据
+              setTimeout(() => {
+                const imageData = canvas.toDataURL("image/png"); // 获取 base64 数据
+                const base64Data = imageData.replace(
+                  /^data:image\/\w+;base64,/,
+                  ""
+                ); // 去掉前缀
 
-              // 生成唯一的文件名
-              const uniqueFileName = `${Date.now()}.png`;
-              const tempFilePath = `${wx.env.USER_DATA_PATH}/${uniqueFileName}`;
+                // 将 base64 数据转换为二进制数据
+                const binaryData = wx.base64ToArrayBuffer(base64Data);
 
-              // 写入文件系统生成临时文件路径
-              const fsm = wx.getFileSystemManager();
-              fsm.writeFile({
-                filePath: tempFilePath,
-                data: binaryData,
-                encoding: "binary",
-                success: () => {
-                  // 在这里可以使用临时文件路径
-                  setCanvasImg(tempFilePath);
-                  // console.log("tempFilePath: ", tempFilePath);
-                },
-                fail: (err) => {
-                  console.error("写入文件失败：", err);
-                },
-              });
-            }, 300); // 延迟执行以确保绘制完成
-          } catch (error) {
-            console.log("error: ", error);
+                // 生成唯一的文件名
+                const uniqueFileName = `${Date.now()}.png`;
+                const tempFilePath = `${wx.env.USER_DATA_PATH}/${uniqueFileName}`;
+
+                // 写入文件系统生成临时文件路径
+                const fsm = wx.getFileSystemManager();
+                fsm.writeFile({
+                  filePath: tempFilePath,
+                  data: binaryData,
+                  encoding: "binary",
+                  success: () => {
+                    // 在这里可以使用临时文件路径
+                    setCanvasImg(tempFilePath);
+                    // console.log("tempFilePath: ", tempFilePath);
+                  },
+                  fail: (err) => {
+                    console.error("写入文件失败：", err);
+                  },
+                });
+              }, 300); // 延迟执行以确保绘制完成
+            } catch (error) {
+              console.log("error: ", error);
+            }
           }
-        }
-      });
+        });
+    });
   };
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setLocationName((prevName) => prevName + " ");
-  //   }, 3000);
-
-  //   return () => clearTimeout(timer);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      setLocationName((prevName) => " " + prevName + " ");
+    }, 3000);
+  }, []);
 
   useEffect(() => {
     drawMask();
@@ -1126,9 +1122,7 @@ const CameraPage = () => {
         </AtModalHeader>
         <AtModalContent>
           <View className="modal-list">
-            <View className="txt1">
-              您的会员已到期,继续使用请重新开通会员
-            </View>
+            <View className="txt1">您的会员已到期,继续使用请重新开通会员</View>
           </View>
         </AtModalContent>
         <AtModalAction>
