@@ -98,7 +98,9 @@ const UserInfo = ({
 
         <View className="user-item">
           <Text className="label">免费使用次数</Text>
-          <Text className="value">{userType !== "default" ? "不限量" : "共2次"}</Text>
+          <Text className="value">
+            {userType !== "default" ? "不限量" : "共2次"}
+          </Text>
         </View>
         <View className="user-item">
           <Text className="label">已使用次数</Text>
@@ -129,7 +131,11 @@ const UserInfo = ({
       </View>
       <View style={{ width: "100%", marginTop: "50px" }}>
         <Button
-          openType="contact"
+          onClick={() => {
+            Taro.navigateTo({
+              url: "/pages/vip/index",
+            });
+          }}
           style={{
             background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
             color: "white",
@@ -145,7 +151,7 @@ const UserInfo = ({
           type="default"
           className="guide-btn"
         >
-          联系客服
+          会员
         </Button>
       </View>
       {userType === "default" && <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>}
@@ -223,7 +229,6 @@ const Index = () => {
     Taro.cloud.callFunction({
       name: "addUser",
       success: function (res) {
-        console.log("res: ", res);
         setData(res.result.data);
       },
     });
