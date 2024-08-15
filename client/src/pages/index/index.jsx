@@ -623,7 +623,7 @@ const CameraPage = () => {
       global: true,
       scopes: ["webview", "native"],
       source:
-        'url("https://fonts-1326883150.cos.ap-beijing.myqcloud.com/fzlt.ttf")',
+        'url("https://files-1326662896.cos.ap-beijing.myqcloud.com/fzlt.ttf")',
       success: (res) => {
         drawMask();
       },

@@ -16,10 +16,10 @@ function getTimestampedImageUrl(baseUrl) {
 
 const ImageCompare = ({
   beforeImage = getTimestampedImageUrl(
-    "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/2871721203290_.pic.jpg"
+    "https://files-1326662896.cos.ap-beijing.myqcloud.com/2871721203290_.pic.jpg"
   ),
   afterImage = getTimestampedImageUrl(
-    "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/2881721203291_.pic_hd.jpg"
+    "https://files-1326662896.cos.ap-beijing.myqcloud.com/2881721203291_.pic_hd.jpg"
   ),
 }) => {
   const [sliderPosition, setSliderPosition] = useState(50);

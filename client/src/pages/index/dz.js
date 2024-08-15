@@ -120,7 +120,7 @@ const generateCanvasConfig = ({
 
               // Draw custom icon
               Taro.getImageInfo({
-                src: "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/icon2.png",
+                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/icon2.png",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
@@ -183,7 +183,7 @@ const generateCanvasConfig = ({
               const { fontSize, color, text, position } = config;
               // 绘制图片
               Taro.getImageInfo({
-                src: "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/shuiyinxiangji.png", // 替换为你的图片路径
+                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/shuiyinxiangji.png", // 替换为你的图片路径
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
@@ -257,7 +257,7 @@ const generateCanvasConfig = ({
 
               const locationLines = getLocationLines(locationName);
               Taro.getImageInfo({
-                src: "https://fonts-1326883150.cos.ap-beijing.myqcloud.com/icon1.png",
+                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/icon1.png",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
