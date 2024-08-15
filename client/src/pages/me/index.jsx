@@ -5,6 +5,27 @@ import Head from "../../images/head.jpg";
 import ShareImg from "../../images/logo.jpg";
 
 import "./index.scss";
+
+import { appConfigs } from "../../appConfig.js";
+
+let cloud = "";
+const appid = Taro.getAccountInfoSync().miniProgram.appId;
+const getCloud = async () => {
+  const config = appConfigs[appid] || appConfigs.defaultApp;
+  if (config.type === "shared") {
+    cloud = await new Taro.cloud.Cloud({
+      resourceAppid: config.resourceAppid,
+      resourceEnv: config.resourceEnv,
+    });
+    await cloud.init();
+  } else {
+    cloud = await Taro.cloud.init({
+      env: config.env,
+    });
+  }
+  return cloud;
+};
+
 const UserInfo = ({
   avatar,
   nickname,
@@ -14,7 +35,6 @@ const UserInfo = ({
   userId,
   endTime,
   todayCount,
-  onChooseAvatar,
   userType,
 }) => {
   const onCopyText = (text) => {
@@ -169,71 +189,18 @@ const Index = () => {
   });
   const [data, setData] = useState({});
 
-  const getUserProfile = () => {
-    Taro.getUserProfile({
-      desc: "获取你的昵称、头像、地区及性别",
-      success: (res) => {
-        const { avatarUrl, nickName } = res.userInfo;
-        setUserInfo((prev) => ({
-          ...prev,
-          avatar: avatarUrl,
-          nickname: nickName,
-        }));
-      },
-      fail: (err) => {
-        console.error("获取用户信息失败:", err);
-      },
-    });
-  };
-
-  const onChooseAvatar = (e) => {
-    const { avatarUrl } = e.detail;
-    setUserInfo((prev) => ({
-      ...prev,
-      avatar: avatarUrl,
-    }));
-  };
-
-  const checkAuthorization = () => {
-    Taro.getSetting({
-      success: (res) => {
-        if (res.authSetting["scope.userInfo"]) {
-          // 已经授权，可以直接调用 getUserProfile 获取头像昵称
-          getUserProfile();
-        } else {
-          // 未授权，主动请求用户授权
-          Taro.authorize({
-            scope: "scope.userInfo",
-            success: () => {
-              getUserProfile();
-            },
-            fail: () => {
-              // 用户拒绝授权，引导用户手动授权
-              Taro.showModal({
-                title: "授权提示",
-                content:
-                  "需要获取您的用户信息以完善个人资料，请前往设置页面授权。",
-                showCancel: false,
-                success: () => {
-                  Taro.openSetting();
-                },
-              });
-            },
-          });
-        }
-      },
-    });
-  };
 
   useEffect(() => {
-    Taro.cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        setData(res.result.data);
-      },
-    });
-
-    checkAuthorization();
+    const getUser = async () => {
+      await getCloud();
+      cloud.callFunction({
+        name: "addUser",
+        success: function (res) {
+          setData(res.result.data);
+        },
+      });
+    };
+    getUser();
   }, []);
   Taro.useShareAppMessage((res) => {
     return {
@@ -252,7 +219,6 @@ const Index = () => {
         inviteCount={data.invite_count}
         todayCount={data.todayUsageCount}
         userId={data.openid}
-        onChooseAvatar={onChooseAvatar}
         userType={Date.now() > data.end_time ? "default" : data.type}
         endTime={data.end_time}
       />

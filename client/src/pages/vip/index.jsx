@@ -15,7 +15,25 @@ import ShareImg from "../../images/logo.jpg";
 import Head from "../../images/head.jpg";
 import "./index.scss";
 const md5 = require("./md5.js");
-// const md5 = require("md5");
+import { appConfigs } from "../../appConfig.js";
+
+let cloud = "";
+const appid = Taro.getAccountInfoSync().miniProgram.appId;
+const getCloud = async () => {
+  const config = appConfigs[appid] || appConfigs.defaultApp;
+  if (config.type === "shared") {
+    cloud = await new Taro.cloud.Cloud({
+      resourceAppid: config.resourceAppid,
+      resourceEnv: config.resourceEnv,
+    });
+    await cloud.init();
+  } else {
+    cloud = await Taro.cloud.init({
+      env: config.env,
+    });
+  }
+  return cloud;
+};
 
 const UserInfo = ({ userInfo, price = { show: false } }) => {
   const [selected, setSelected] = useState("halfYearMonth");
@@ -260,13 +278,13 @@ const Index = () => {
       imageUrl: ShareImg,
     };
   });
-
   const [price, setPrice] = useState(false);
   const [loading, setLoading] = useState(false);
   useDidShow(() => {
     if (!loading) return;
-    const check = () => {
-      Taro.cloud.callFunction({
+    const check = async () => {
+      await getCloud();
+      cloud.callFunction({
         name: "addUser",
         success: function (res) {
           if (res.result.data.type !== "default") {
@@ -291,21 +309,23 @@ const Index = () => {
     check();
   });
   useEffect(() => {
-    console.log(5555);
-    Taro.cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        console.log("res: ", res);
-        setLoading(true);
-        setUserInfo(res.result.data);
-      },
-    });
-    Taro.cloud.callFunction({
-      name: "getPrice",
-      success: function (res) {
-        setPrice(res.result.data);
-      },
-    });
+    const init = async () => {
+      await getCloud();
+      cloud.callFunction({
+        name: "addUser",
+        success: function (res) {
+          setLoading(true);
+          setUserInfo(res.result.data);
+        },
+      });
+      cloud.callFunction({
+        name: "getPrice",
+        success: function (res) {
+          setPrice(res.result.data);
+        },
+      });
+    };
+    init();
   }, []);
   return (
     <View className="index">

@@ -16,11 +16,31 @@ import {
   AtFloatLayout,
 } from "taro-ui";
 import "./index.scss";
-import restart from "../../images/restart.png";
+import { appConfigs } from "../../appConfig.js";
 
 const screenWidth = Taro.getSystemInfoSync().screenWidth;
 let interstitialAd = null;
 const inviteId = Taro.getCurrentInstance().router.params.id;
+
+
+let cloud = "";
+const appid = Taro.getAccountInfoSync().miniProgram.appId;
+const getCloud = async () => {
+  const config = appConfigs[appid] || appConfigs.defaultApp;
+  if (config.type === "shared") {
+    cloud = await new Taro.cloud.Cloud({
+      resourceAppid: config.resourceAppid,
+      resourceEnv: config.resourceEnv,
+    });
+    await cloud.init();
+  } else {
+    cloud = await Taro.cloud.init({
+      env: config.env,
+    });
+  }
+  return cloud;
+};
+
 
 const MergeCanvas = () => {
   Taro.getCurrentInstance().router.params;
@@ -108,7 +128,7 @@ const MergeCanvas = () => {
       // 调用云函数
       const deleteStartTime = Date.now();
 
-      const res = await wx.cloud.callFunction({
+      const res = await cloud.callFunction({
         name: "mergeImage",
         data: {
           firstImageFileID,
@@ -145,7 +165,7 @@ const MergeCanvas = () => {
           Taro.saveImageToPhotosAlbum({
             filePath: res.tempFilePath,
             success: async () => {
-              await Taro.cloud.callFunction({
+              await cloud.callFunction({
                 name: "addUser",
                 data: {
                   remark: "成功使用",
@@ -211,7 +231,8 @@ const MergeCanvas = () => {
 
   useEffect(() => {
     const getData = async () => {
-      await Taro.cloud.callFunction({
+      await getCloud()
+      await cloud.callFunction({
         name: "addUser",
         success: async function (res) {
           // 免费次数用尽
@@ -332,7 +353,7 @@ const MergeCanvas = () => {
       Taro.saveImageToPhotosAlbum({
         filePath: tempFilePath,
         success: async () => {
-          await Taro.cloud.callFunction({
+          await cloud.callFunction({
             name: "addUser",
             data: {
               remark: "成功使用",

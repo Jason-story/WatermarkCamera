@@ -30,6 +30,7 @@ import QQMapWX from "qqmap-wx-jssdk";
 import ShareImg from "../../images/logo.jpg";
 import VipImg from "../../images/vip.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
+import { appConfigs } from "../../appConfig.js";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import VipArrow from "../../images/vip-arrow.png";
@@ -57,8 +58,24 @@ const minutesD = String(now.getMinutes()).padStart(2, "0");
 const secondsD = String(now.getSeconds()).padStart(2, "0");
 const maxDate = new Date("2030-01-01");
 
-// const date = `${year}年${month}月${day}日`;
-// const time = `${hours}:${minutes}`;
+
+let cloud = "";
+const appid = Taro.getAccountInfoSync().miniProgram.appId;
+const getCloud = async () => {
+  const config = appConfigs[appid] || appConfigs.defaultApp;
+  if (config.type === "shared") {
+    cloud = await new Taro.cloud.Cloud({
+      resourceAppid: config.resourceAppid,
+      resourceEnv: config.resourceEnv,
+    });
+    await cloud.init();
+  } else {
+    cloud = await Taro.cloud.init({
+      env: config.env,
+    });
+  }
+  return cloud;
+};
 
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
@@ -115,11 +132,12 @@ const CameraPage = () => {
 
   useEffect(() => {
     const init = async () => {
-      await Taro.cloud.init({
+      await getCloud()
+      await cloud.init({
         env: "sy-4gecj2zw90583b8b",
       });
 
-      Taro.cloud.callFunction({
+      cloud.callFunction({
         name: "addUser",
         success: function (res) {
           setUserInfo(res.result.data);
@@ -505,7 +523,7 @@ const CameraPage = () => {
     if (camera) {
       // 上传时间位置 保存
 
-      Taro.cloud.callFunction({
+      cloud.callFunction({
         name: "updateSavedConfig",
         data: {
           saveConfig: {
