@@ -499,7 +499,7 @@ const MergeCanvas = () => {
             marginTop: "10px",
           }}
         >
-          抖音去水印
+          抖音、小红书取图、去水印
         </Button>
         <Button
           className="share-btn"

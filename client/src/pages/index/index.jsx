@@ -96,8 +96,7 @@ const CameraPage = () => {
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
-  const savedChange = {};
-  var cloud = "";
+  let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
     const weekDays = [
@@ -181,7 +180,11 @@ const CameraPage = () => {
       method: "GET",
       success: (res) => {
         if (res.statusCode === 200) {
-          setWeather(res.data.results[0]?.now);
+          setWeather(
+            res.data.results[0]?.now.text +
+              " " +
+              res.data.results[0]?.now.temperature
+          );
         } else {
           setError(`Error: ${res.statusCode}`);
         }
@@ -194,7 +197,10 @@ const CameraPage = () => {
   };
   useEffect(() => {
     allAuth && permissions.userLocation && !city && getLocation();
-    longitude && latitude && fetchWeather(longitude, latitude);
+    longitude &&
+      latitude &&
+      !isWeatherEdited &&
+      fetchWeather(longitude, latitude);
   }, [allAuth, permissions, city, longitude, latitude]);
 
   const getLocation = () => {
@@ -505,7 +511,6 @@ const CameraPage = () => {
           saveConfig: {
             isSaved: isShuiyinSaved,
             currentShuiyinIndex,
-            weather,
             locationName,
             latitude,
             longitude,
@@ -1078,13 +1083,24 @@ const CameraPage = () => {
           }}
         />
       </View>
+      <View className="bottom-btns" style={{marginTop:'5px'}}>
+        <Button openType="share" className="share-btn" type="button">
+          <Text>分享好友</Text>
+          <View id="container-stars">
+            <View id="stars"></View>
+          </View>
 
-      <View className="bottom-btns">
-        {/* <Button
+          <View id="glow">
+            <View className="circle"></View>
+            <View className="circle"></View>
+          </View>
+        </Button>
+         <Button
           className="share-btn"
           onClick={() => {
-            Taro.navigateTo({
-              url: "/pages/vip/index",
+            wx.navigateToMiniProgram({
+              appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+              path: "pages/index/index",
             });
           }}
           style={{
@@ -1101,18 +1117,7 @@ const CameraPage = () => {
             marginTop: "10px",
           }}
         >
-          开通会员
-        </Button> */}
-        <Button openType="share" className="share-btn" type="button">
-          <Text>分享好友</Text>
-          <View id="container-stars">
-            <View id="stars"></View>
-          </View>
-
-          <View id="glow">
-            <View className="circle"></View>
-            <View className="circle"></View>
-          </View>
+          抖音、小红书取图、去水印
         </Button>
       </View>
 
@@ -1200,12 +1205,6 @@ const CameraPage = () => {
         ) : (
           <View className="shuiyin-list">
             <View className="input-item">
-              <Text className="tips red">
-                只有点击右上角-重新进入小程序，才会恢复默认正确的时间位置等信息
-              </Text>
-              <Text className="tips">
-                星期、天气、经纬度会自动计算,无需修改
-              </Text>
               {/* <Switch checked={showInput} onChange={handleSwitchChange} /> */}
               {/* {showInput && <Input placeholder="请输入内容" />} */}
               <AtCard title="时间">
@@ -1255,6 +1254,21 @@ const CameraPage = () => {
                     clear={true}
                     onInput={(e) => {
                       debounce(setTitle(e.detail.value), 100);
+                    }}
+                  ></Input>
+                </View>
+              </AtCard>
+              <AtCard title="天气">
+                <View className="picker">
+                  <Text>天气&温度： </Text>
+                  <Input
+                    className="input"
+                    value={weather}
+                    maxlength={8}
+                    clear={true}
+                    onInput={(e) => {
+                      isWeatherEdited = true;
+                      debounce(setWeather(e.detail.value), 100);
                     }}
                   ></Input>
                 </View>

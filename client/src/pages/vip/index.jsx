@@ -158,26 +158,11 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           <View>• 解锁会员专属水印</View>
           <View>• 高清水印图片</View>
           <View>• 去掉除封面广告之外的一切广告</View>
-          <View>• 客服支持</View>
+          <View>• 客服支持（开通会员后联系客服获取微信号）</View>
         </View>
       ) : (
         "暂无"
       )}
-
-      {/* <View style={{ marginTop: "20px", marginBottom: "20px", width: "100%" }}>
-        <Button
-          type="primary"
-          size="mini"
-          onClick={() => {
-            Taro.navigateTo({
-              url: "/pages/img/index",
-            });
-          }}
-        >
-          高清图片对比
-        </Button>
-      </View> */}
-
       {!price.showPrice ? (
         ""
       ) : (
@@ -247,7 +232,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
               type="default"
               className="guide-btn"
             >
-              问题反馈
+              联系客服
             </Button>
           </View>
         )}
@@ -280,26 +265,30 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   useDidShow(() => {
     if (!loading) return;
-    console.log(333);
-    Taro.cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        if (+new Date() - res.result.data.pay_time < 10 * 1000) {
-          Taro.showModal({
-            title: "提示",
-            content: "购买成功，请重新进入小程序",
-            showCancel: false,
-            success: (res) => {
-              if (res.confirm) {
-                wx.reLaunch({
-                  url: "/pages/index/index",
-                });
-              }
-            },
-          });
-        }
-      },
-    });
+    const check = () => {
+      Taro.cloud.callFunction({
+        name: "addUser",
+        success: function (res) {
+          if (res.result.data.type !== "default") {
+            Taro.showModal({
+              title: "提示",
+              content: "购买成功，请重新进入小程序",
+              showCancel: false,
+              success: (res) => {
+                if (res.confirm) {
+                  wx.reLaunch({
+                    url: "/pages/index/index",
+                  });
+                }
+              },
+            });
+          } else {
+            setTimeout(check, 3000);
+          }
+        },
+      });
+    };
+    check();
   });
   useEffect(() => {
     console.log(5555);

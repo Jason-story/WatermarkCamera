@@ -75,7 +75,7 @@ const generateCanvasConfig = ({
               {
                 fontSize: 14,
                 color: "white",
-                text: `${weekly} ${weather?.text} ${weather?.temperature}℃`,
+                text: `${weekly} ${weather}℃`,
                 position: [82, 42],
               },
             ],
@@ -321,7 +321,7 @@ const generateCanvasConfig = ({
           // 背景
           {
             draw: (ctx, rectConfig) => {
-              const { width,  color, text } = rectConfig;
+              const { width, color, text } = rectConfig;
               const height = rectConfig.height();
               // 设置矩形的颜色
               ctx.fillStyle = color;
@@ -372,7 +372,7 @@ const generateCanvasConfig = ({
             args: [
               {
                 width: 190, // 250 * 0.75
-                height:  () => {
+                height: () => {
                   const baseHeight = 100; // 减小20px
                   const lineHeight = 20;
                   const maxLines = 3;
@@ -432,12 +432,7 @@ const generateCanvasConfig = ({
               {
                 fontSize: 13.5, // 18 * 0.75
                 color: "#000",
-                text:
-                  "天   气：" +
-                  weather?.text +
-                  " " +
-                  weather?.temperature +
-                  "℃",
+                text: "天   气：" + weather + "℃",
                 position: [11.25, 67.5], // 15 * 0.75, 90 * 0.75
               },
             ],
