@@ -151,11 +151,13 @@ const MergeCanvas = () => {
                   remark: "成功使用",
                 },
               });
-              Taro.showToast({
-                title: "保存成功",
-                icon: "success",
-                duration: 2000,
-              });
+              setTimeout(() => {
+                Taro.showToast({
+                  title: "已保存到相册",
+                  icon: "success",
+                  duration: 2000,
+                });
+              }, 1000);
             },
             fail: (error) => {
               console.log("保存失败", error);
@@ -342,11 +344,13 @@ const MergeCanvas = () => {
           //     invite_id: inviteId,
           //   },
           // });
-          Taro.showToast({
-            title: "保存成功",
-            icon: "success",
-            duration: 2000,
-          });
+          setTimeout(() => {
+            Taro.showToast({
+              title: "已保存到相册",
+              icon: "success",
+              duration: 2000,
+            });
+          }, 1000);
         },
         fail: (error) => {
           console.log("保存失败", error);

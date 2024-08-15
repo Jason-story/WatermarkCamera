@@ -198,6 +198,10 @@ const generateCanvasConfig = ({
                     // 计算图片绘制的坐标，使其位于右下角
                     const x = canvasWidth - imgWidth;
                     const y = canvasHeight - imgHeight + 16;
+                    ctx.shadowColor = "none";
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.shadowBlur = 0;
                     ctx.drawImage(img, x, y, imgWidth, imgHeight);
                   };
                   img.onerror = (err) => {
