@@ -528,7 +528,7 @@ const MergeCanvas = () => {
           重新拍摄
         </Button>
 
-        <AtModal isOpened={isShowModal} closeOnClickOverlay={false}>
+        <AtModal isOpened={isShowModal} closeOnClickOverlay={true}>
           <AtModalHeader>
             <Text>提示</Text>
           </AtModalHeader>
@@ -538,19 +538,19 @@ const MergeCanvas = () => {
                 {isVip === "true" ? "该水印为会员专属" : "您免费次数用完"}
                 ，请联系客服开通会员，会员为
                 <Text style={{ color: "red" }}>收费服务</Text>
-                ，请先查看会员价格后再联系客服。请知悉!!!
+                ，请知悉!!!
               </View>
             </View>
           </AtModalContent>
           <AtModalAction>
-            <Button
+            {/* <Button
               onClick={() => {
                 setIsShowModal(false);
               }}
               style={{ flex: 1 }}
             >
               关闭
-            </Button>
+            </Button> */}
             <Button
               onClick={() => {
                 Taro.navigateTo({
@@ -560,7 +560,7 @@ const MergeCanvas = () => {
               style={{ flex: 1 }}
               type="button"
             >
-              <Text>开通会员</Text>
+              <Text>查看会员权益</Text>
             </Button>
           </AtModalAction>
         </AtModal>
