@@ -366,7 +366,10 @@ const CameraPage = () => {
         interstitialAd.onError((err) => {
           console.error("插屏广告加载失败", err);
         });
-        interstitialAd.onClose(() => {});
+        interstitialAd.onClose(() => {
+          setAddAnimate(true);
+
+        });
       }
 
       // 在适合的场景显示插屏广告
