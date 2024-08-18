@@ -577,3 +577,53 @@ picker,
     transform: translateY(-10px) scale(1.1);
   }
 }
+@keyframes jumpUp {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes jumpUp1 {
+  0% {
+    transform: translate(-50%,-50%);
+  }
+  50% {
+    transform: translate(-50%,-70%);
+
+  }
+  100% {
+    transform: translate(-50%,-50%);
+
+  }
+}
+
+.button-animate {
+  animation: jumpUp 0.5s ease-in-out;
+  animation-fill-mode: both;
+}
+
+.tools-bar-inner .button-animate:nth-child(1) {
+  animation-delay: 1.2s;
+}
+
+.tools-bar-inner .button-animate:nth-child(2) {
+  animation-delay: 1.4s;
+}
+
+.take-photo.button-animate1 {
+  animation-delay: 1.6s;
+}
+
+.tools-bar-inner:last-child .button-animate:nth-child(1) {
+  animation-delay: 1.8s;
+}
+
+.tools-bar-inner:last-child .button-animate:nth-child(2) {
+  animation-delay: 2s;
+}
