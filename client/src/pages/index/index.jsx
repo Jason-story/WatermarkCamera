@@ -113,6 +113,8 @@ const CameraPage = () => {
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
+  const [addAnimate, setAddAnimate] = useState(false);
+
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -315,7 +317,9 @@ const CameraPage = () => {
         interstitialAd.onError((err) => {
           console.error("插屏广告加载失败", err);
         });
-        interstitialAd.onClose(() => {});
+        interstitialAd.onClose(() => {
+          setAddAnimate(true);
+        });
       }
 
       // 在适合的场景显示插屏广告
@@ -338,7 +342,10 @@ const CameraPage = () => {
         interstitialAd.onError((err) => {
           console.error("插屏广告加载失败", err);
         });
-        interstitialAd.onClose(() => {});
+        interstitialAd.onClose(() => {
+          setAddAnimate(true);
+
+        });
       }
 
       // 在适合的场景显示插屏广告
@@ -858,8 +865,8 @@ const CameraPage = () => {
   //       });
   //   }
   // }, [allAuth]);
-  // console.log("canvasConfigState[currentShuiyinIndex]?.[0]: ", canvasConfigState);
-  // console.log('canvasConfigState[currentShuiyinIndex]?.[0].height: ', typeof(canvasConfigState[currentShuiyinIndex]?.[0].height));
+  console.log('addAnimate: ', addAnimate);
+
   return (
     <View className="container">
       <View
@@ -995,9 +1002,17 @@ const CameraPage = () => {
           style={{ width: "100%" }}
         ></ad-custom>
       )} */}
+      {/* JSX 结构 */}
       <View className="tools-bar">
         <View className="tools-bar-inner">
-          <View className="xiangce">
+          <View
+            className={
+              "xiangce " +
+              (userInfo.type !== "default" || addAnimate
+                ? "button-animate "
+                : "")
+            }
+          >
             <Image
               src={XiangceIcon}
               className="xiangceIcon"
@@ -1005,7 +1020,14 @@ const CameraPage = () => {
             ></Image>
             <Text>相册</Text>
           </View>
-          <View className="shuiyin">
+          <View
+            className={
+              "shuiyin " +
+              (userInfo.type !== "default" || addAnimate
+                ? "button-animate "
+                : "")
+            }
+          >
             <Image
               src={ShuiyinIcon}
               className="shuiyinIcon"
@@ -1029,13 +1051,19 @@ const CameraPage = () => {
           </View>
         </View>
         <View className="tools-bar-inner">
-          <View className="xiangce kefu vip">
+          <View
+            className={
+              "xiangce kefu vip " +
+              (userInfo.type !== "default" || addAnimate
+                ? "button-animate "
+                : "")
+            }
+          >
             <Button
               onClick={() => {
                 Taro.navigateTo({
                   url: "/pages/vip/index?type=" + userInfo.type,
                 });
-                // setVipModal(!vipModal);
               }}
               style={{
                 background: "none",
@@ -1052,9 +1080,15 @@ const CameraPage = () => {
             </Button>
             <Text>会员</Text>
           </View>
-          <View className="xiangce kefu">
+          <View
+            className={
+              "xiangce kefu " +
+              (userInfo.type !== "default" || addAnimate
+                ? "button-animate "
+                : "")
+            }
+          >
             <Button
-              // openType="contact"
               onClick={() => {
                 Taro.navigateTo({
                   url: "/pages/me/index",
@@ -1077,7 +1111,6 @@ const CameraPage = () => {
           </View>
         </View>
       </View>
-
       <View className="shantui-btns">
         <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
         <Switch
@@ -1101,7 +1134,7 @@ const CameraPage = () => {
           }}
         />
       </View>
-      <View className="bottom-btns" style={{marginTop:'5px'}}>
+      <View className="bottom-btns" style={{ marginTop: "5px" }}>
         <Button openType="share" className="share-btn" type="button">
           <Text>分享好友</Text>
           <View id="container-stars">
@@ -1113,7 +1146,7 @@ const CameraPage = () => {
             <View className="circle"></View>
           </View>
         </Button>
-         <Button
+        <Button
           className="share-btn"
           onClick={() => {
             wx.navigateToMiniProgram({
