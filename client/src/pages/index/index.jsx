@@ -97,6 +97,7 @@ const CameraPage = () => {
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
   const [addAnimate, setAddAnimate] = useState(false);
+  const [vipAnimate, setVipAnimate] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -338,6 +339,9 @@ const CameraPage = () => {
       }
     }
   }, [userInfo.type, allAuth]);
+  useEffect(()=>{
+    setVipAnimate(true)
+  },[userInfo.type])
   useDidShow(() => {
     if (userInfo.type === "default") {
       if (wx.createInterstitialAd) {
@@ -990,7 +994,7 @@ const CameraPage = () => {
           <View
             className={
               "xiangce " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
@@ -1005,7 +1009,7 @@ const CameraPage = () => {
           <View
             className={
               "shuiyin " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
@@ -1036,7 +1040,7 @@ const CameraPage = () => {
           <View
             className={
               "xiangce kefu vip " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
@@ -1065,7 +1069,7 @@ const CameraPage = () => {
           <View
             className={
               "xiangce kefu " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
