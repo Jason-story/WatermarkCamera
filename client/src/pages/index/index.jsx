@@ -114,6 +114,7 @@ const CameraPage = () => {
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
   const [addAnimate, setAddAnimate] = useState(false);
+  const [vipAnimate, setVipAnimate] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -311,7 +312,7 @@ const CameraPage = () => {
     if (userInfo.type === "default") {
       if (wx.createInterstitialAd) {
         interstitialAd = wx.createInterstitialAd({
-          adUnitId: "adunit-39ab5f712a4521b4",
+          adUnitId: "adunit-58e7bd94d036305e",
         });
         interstitialAd.onLoad(() => {});
         interstitialAd.onError((err) => {
@@ -336,7 +337,7 @@ const CameraPage = () => {
     if (allAuth && userInfo.type === "default") {
       if (wx.createInterstitialAd) {
         interstitialAd = wx.createInterstitialAd({
-          adUnitId: "adunit-39ab5f712a4521b4",
+          adUnitId: "adunit-58e7bd94d036305e",
         });
         interstitialAd.onLoad(() => {});
         interstitialAd.onError((err) => {
@@ -356,11 +357,14 @@ const CameraPage = () => {
       }
     }
   }, [userInfo.type, allAuth]);
+  useEffect(()=>{
+    setVipAnimate(true)
+  },[userInfo.type])
   useDidShow(() => {
     if (userInfo.type === "default") {
       if (wx.createInterstitialAd) {
         interstitialAd = wx.createInterstitialAd({
-          adUnitId: "adunit-39ab5f712a4521b4",
+          adUnitId: "adunit-58e7bd94d036305e",
         });
         interstitialAd.onLoad(() => {});
         interstitialAd.onError((err) => {
@@ -1011,7 +1015,7 @@ const CameraPage = () => {
           <View
             className={
               "xiangce " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
@@ -1026,7 +1030,7 @@ const CameraPage = () => {
           <View
             className={
               "shuiyin " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
@@ -1057,7 +1061,7 @@ const CameraPage = () => {
           <View
             className={
               "xiangce kefu vip " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
@@ -1086,7 +1090,7 @@ const CameraPage = () => {
           <View
             className={
               "xiangce kefu " +
-              (userInfo.type !== "default" || addAnimate
+              (vipAnimate || addAnimate
                 ? "button-animate "
                 : "")
             }
@@ -1247,7 +1251,7 @@ const CameraPage = () => {
                       style={{ width: "100%!important" }}
                     >
                       <AdCustom
-                        unitId="adunit-d0875afa048b3342"
+                        unitId="adunit-c607bfdd158f34c6"
                         style={{ width: "100%!important" }}
                       />
                     </View>
