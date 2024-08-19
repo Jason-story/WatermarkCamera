@@ -290,7 +290,7 @@ const Index = () => {
           if (res.result.data.type !== "default") {
             Taro.showModal({
               title: "提示",
-              content: "购买成功，请重新进入小程序",
+              content: "购买成功，请重新进入小程序，客服微信 Jason_sory",
               showCancel: false,
               success: (res) => {
                 if (res.confirm) {
