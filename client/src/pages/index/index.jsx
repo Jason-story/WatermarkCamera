@@ -47,7 +47,7 @@ import Shuiyin5 from "../../images/shuiyin-5.png";
 import AddMyApp from "../../images/add-my-app.png";
 import Hongbaoicon from "../../images/hongbao.png";
 import ShuiyinLogo1 from "../../images/shuiyinxiangji.png";
-
+import { appConfigs } from "../../appConfig.js";
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
@@ -140,7 +140,7 @@ const CameraPage = () => {
 
   useEffect(() => {
     const init = async () => {
-      await getCloud()
+      await getCloud();
       await cloud.init({
         env: "sy-4gecj2zw90583b8b",
       });
@@ -886,7 +886,6 @@ const CameraPage = () => {
             width: "100%",
           }}
         >
-
           <View
             className="camera-box"
             style={{ height: (screenWidth / 3) * 4 + "px" }}
@@ -1184,28 +1183,30 @@ const CameraPage = () => {
             />
           </View>
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
-            <Button
-              // openType="share"
-              onClick={() => {
-                setInviteModalShow(true);
-                // wx.navigateToMiniProgram({
-                //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-                //   path: "pages/index/index",
-                // });
-              }}
-              className="share-btn"
-              type="button"
-            >
-              <Text>邀请返现</Text>
-              <View id="container-stars">
-                <View id="stars"></View>
-              </View>
+            {price.show && (
+              <Button
+                // openType="share"
+                onClick={() => {
+                  setInviteModalShow(true);
+                  // wx.navigateToMiniProgram({
+                  //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+                  //   path: "pages/index/index",
+                  // });
+                }}
+                className="share-btn"
+                type="button"
+              >
+                <Text>邀请返现</Text>
+                <View id="container-stars">
+                  <View id="stars"></View>
+                </View>
 
-              <View id="glow">
-                <View className="circle"></View>
-                <View className="circle"></View>
-              </View>
-            </Button>
+                <View id="glow">
+                  <View className="circle"></View>
+                  <View className="circle"></View>
+                </View>
+              </Button>
+            )}
             {/* <Button
         className="share-btn"
         onClick={() => {

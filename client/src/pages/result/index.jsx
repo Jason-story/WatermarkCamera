@@ -109,7 +109,7 @@ const MergeCanvas = () => {
     const cloudPath = `${fileName}/${Date.now()}-${Math.random()
       .toString(36)
       .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
-    const res = await wx.cloud.uploadFile({
+    const res = await cloud.uploadFile({
       cloudPath,
       filePath,
     });
@@ -130,7 +130,7 @@ const MergeCanvas = () => {
 
       console.log("firstImageFileID: ", firstImageFileID);
       // 调用云函数
-      const res = await wx.cloud.callFunction({
+      const res = await cloud.callFunction({
         name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
         data: {
           firstImageFileID,
@@ -162,7 +162,7 @@ const MergeCanvas = () => {
 
     const save = () => {
       // 下载云存储中的图片
-      wx.cloud.downloadFile({
+      cloud.downloadFile({
         fileID: fileID, // 替换为你要下载的图片文件ID
         success: (res) => {
           Taro.saveImageToPhotosAlbum({
@@ -354,12 +354,13 @@ const MergeCanvas = () => {
       const cloudPath = `client/${info.openid}__${Math.random()
         .toString(36)
         .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
-      const res = await wx.cloud.uploadFile({
+      const res = await cloud.uploadFile({
         cloudPath,
         filePath,
       });
       return res.fileID;
     }
+
     setLoading(false);
     const save = () => {
       Taro.saveImageToPhotosAlbum({
