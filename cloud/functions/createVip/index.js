@@ -25,8 +25,18 @@ exports.main = async (event, context) => {
     let typeMatch = body.match(/type%3D([^%&]*)/);
     let type = typeMatch ? decodeURIComponent(typeMatch[1]) : null;
 
+    // 使用正则表达式提取 inviteId
+    let inviteIdMatch = body.match(/inviteId%3D([^%&]*)/);
+    let inviteId = inviteIdMatch ? decodeURIComponent(inviteIdMatch[1]) : null;
+
+    // 使用正则表达式提取 inviteId
+    let priceMatch = body.match(/price%3D([^%&]*)/);
+    let price = priceMatch ? decodeURIComponent(priceMatch[1]) : null;
+
     console.log('openid:', openid);
     console.log('type:', type);
+    console.log('inviteId: ', inviteId);
+    console.log('price: ', price);
 
     const transaction = await db.startTransaction();
     const config = {
@@ -55,6 +65,19 @@ exports.main = async (event, context) => {
                     end_time: endTime
                 }
             });
+        // 更新邀请来源用户信息
+        if (openid !== inviteId) {
+            await transaction
+                .collection('users')
+                .where({
+                    openid: inviteId
+                })
+                .update({
+                    data: {
+                        mone: _.inc(price * 0.2) // 使用 _.inc 来增加 mone 的值
+                    }
+                });
+        }
 
         return {
             msg: '用户信息更新成功'
