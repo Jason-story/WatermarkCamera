@@ -27,6 +27,7 @@ const getCloud = async () => {
 };
 
 const UserInfo = ({
+  userInfo,
   avatar,
   nickname,
   freeQuota,
@@ -126,6 +127,10 @@ const UserInfo = ({
           <Text className="label">已使用次数</Text>
           <Text className="value">{totalQuota}</Text>
         </View>
+        <View className="user-item">
+          <Text className="label">待提现</Text>
+          <Text className="value">{userInfo.mone || "0"}元</Text>
+        </View>
         {/* <View className="user-item">
           <Text className="label">邀请赠送总次数</Text>
           <Text className="value">{inviteCount}</Text>
@@ -152,8 +157,9 @@ const UserInfo = ({
       <View style={{ width: "100%", marginTop: "50px" }}>
         <Button
           onClick={() => {
+            const inviteId = Taro.getCurrentInstance().router.params.id || "";
             Taro.navigateTo({
-              url: "/pages/vip/index",
+              url: "/pages/vip/index?id=" + inviteId,
             });
           }}
           style={{
@@ -219,6 +225,8 @@ const Index = () => {
         inviteCount={data.invite_count}
         todayCount={data.todayUsageCount}
         userId={data.openid}
+        userInfo={data}
+        onChooseAvatar={onChooseAvatar}
         userType={Date.now() > data.end_time ? "default" : data.type}
         endTime={data.end_time}
       />

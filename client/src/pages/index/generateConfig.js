@@ -454,7 +454,7 @@ const generateCanvasConfig = ({
               lines.slice(0, maxLines).forEach((line, index) => {
                 ctx.fillText(
                   index === 0 ? "地   点：" + line : line,
-                  position[0] + (index === 0 ? 0 : 48.75), // 65 * 0.75
+                  position[0] + (index === 0 ? 0 : 52), // 65 * 0.75
                   position[1] + index * (fontSize * 1.2)
                 );
               });

@@ -50,6 +50,9 @@ const MergeCanvas = () => {
   const scale = Taro.getCurrentInstance().router.params.scale || 0.5;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
   const isVip = Taro.getCurrentInstance().router.params.vip;
+  // 图片水印 or 视频水印
+  const shuiyinTypeSelect =
+    Taro.getCurrentInstance().router.params.shuiyinTypeSelect || false;
 
   const [imagePath, setImagePath] = useState("");
   const [imageWidth, setImageWidth] = useState(0);
@@ -125,11 +128,10 @@ const MergeCanvas = () => {
         uploadImage(secondImagePath),
       ]);
 
+      console.log("firstImageFileID: ", firstImageFileID);
       // 调用云函数
-      const deleteStartTime = Date.now();
-
-      const res = await cloud.callFunction({
-        name: "mergeImage",
+      const res = await wx.cloud.callFunction({
+        name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
@@ -138,6 +140,7 @@ const MergeCanvas = () => {
           userInfo,
         },
       });
+      console.log("res: ", res);
 
       if (res.result.success) {
         return res.result;
@@ -574,8 +577,10 @@ const MergeCanvas = () => {
             </Button> */}
             <Button
               onClick={() => {
+                const inviteId =
+                  Taro.getCurrentInstance().router.params.id || "";
                 Taro.navigateTo({
-                  url: "/pages/vip/index",
+                  url: "/pages/vip/index?id=" + inviteId,
                 });
               }}
               style={{ flex: 1 }}

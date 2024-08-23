@@ -37,6 +37,9 @@ const getCloud = async () => {
 
 const UserInfo = ({ userInfo, price = { show: false } }) => {
   const [selected, setSelected] = useState("halfYearMonth");
+  const inviteId = Taro.getCurrentInstance().router.params.id || "";
+  console.log('inviteId: ', inviteId);
+
   const vipConfig = [
     {
       key: "month",
@@ -146,13 +149,20 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       time: Math.round(new Date() / 1000),
       nonce_str: getRandomNumber(),
       type: "JSAPI",
-      attach: "openid=" + userInfo.openid + "&type=" + selected,
+      attach:
+        "openid=" +
+        userInfo.openid +
+        "&type=" +
+        selected +
+        "&inviteId=" +
+        inviteId +
+        "&price=" +
+        price,
       wap_url: "https://api.xunhupay.com", //填写支付网关
     };
     let sign = wxPaySign(data, "93417b6135b9f85bf14700c4d957aa6e");
     //最后我们把签名加入进去
     data.hash = sign;
-
     //下面开始执行小程序支付
     //支付流程：小程序A 点击付款->跳转到 “迅虎支付” 小程序 -> 自动发起微信支付 ->支付成功后携带支付结果返回小程序A
 
@@ -287,7 +297,10 @@ const Index = () => {
       cloud.callFunction({
         name: "addUser",
         success: function (res) {
-          if (res.result.data.type !== "default") {
+          if (
+            res.result.data.type !== "default" &&
+            +new Date() - res.result.data.pay_time < 30000
+          ) {
             Taro.showModal({
               title: "提示",
               content: "购买成功，请重新进入小程序，客服微信 Jason_sory",

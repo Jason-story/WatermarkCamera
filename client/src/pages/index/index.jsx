@@ -8,6 +8,9 @@ import {
   Canvas,
   Switch,
   Picker,
+  RadioGroup,
+  Radio,
+  Label,
   Input,
   Ad,
   AdCustom,
@@ -30,7 +33,6 @@ import QQMapWX from "qqmap-wx-jssdk";
 import ShareImg from "../../images/logo.jpg";
 import VipImg from "../../images/vip.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
-import { appConfigs } from "../../appConfig.js";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import VipArrow from "../../images/vip-arrow.png";
@@ -58,7 +60,8 @@ const minutesD = String(now.getMinutes()).padStart(2, "0");
 const secondsD = String(now.getSeconds()).padStart(2, "0");
 const maxDate = new Date("2030-01-01");
 
-
+// const date = `${year}年${month}月${day}日`;
+// const time = `${hours}:${minutes}`;
 let cloud = "";
 const appid = Taro.getAccountInfoSync().miniProgram.appId;
 const getCloud = async () => {
@@ -76,7 +79,6 @@ const getCloud = async () => {
   }
   return cloud;
 };
-
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -97,6 +99,8 @@ const CameraPage = () => {
   const [locationName, setLocationName] = useState("");
   // 水印选择
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
+  const [price, setPrice] = useState({});
+  const [shuiyinTypeSelect, setShuiyinTypeSelected] = useState("img");
 
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
@@ -115,6 +119,7 @@ const CameraPage = () => {
   const [screenWidth, setScreenWidth] = useState("");
   const [addAnimate, setAddAnimate] = useState(false);
   const [vipAnimate, setVipAnimate] = useState(false);
+  const [inviteModalShow, setInviteModalShow] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -154,6 +159,12 @@ const CameraPage = () => {
                 }
               });
           }
+        },
+      });
+      cloud.callFunction({
+        name: "getPrice",
+        success: function (res) {
+          setPrice(res.result.data);
         },
       });
     };
@@ -345,7 +356,6 @@ const CameraPage = () => {
         });
         interstitialAd.onClose(() => {
           setAddAnimate(true);
-
         });
       }
 
@@ -357,33 +367,9 @@ const CameraPage = () => {
       }
     }
   }, [userInfo.type, allAuth]);
-  useEffect(()=>{
-    setVipAnimate(true)
-  },[userInfo.type])
-  useDidShow(() => {
-    if (userInfo.type === "default") {
-      if (wx.createInterstitialAd) {
-        interstitialAd = wx.createInterstitialAd({
-          adUnitId: "adunit-58e7bd94d036305e",
-        });
-        interstitialAd.onLoad(() => {});
-        interstitialAd.onError((err) => {
-          console.error("插屏广告加载失败", err);
-        });
-        interstitialAd.onClose(() => {
-          setAddAnimate(true);
-
-        });
-      }
-
-      // 在适合的场景显示插屏广告
-      if (interstitialAd) {
-        interstitialAd.show().catch((err) => {
-          console.error("插屏广告显示失败", err);
-        });
-      }
-    }
-  });
+  useEffect(() => {
+    setVipAnimate(true);
+  }, [userInfo.type]);
   useDidShow(() => {
     checkPermissions();
     getAuth();
@@ -490,9 +476,6 @@ const CameraPage = () => {
     });
     setSettingShow(false);
   };
-  const handleSetting = (event) => {
-    setSettingShow(!settingShow);
-  };
   const fanzhuanClick = (event) => {
     setDevicePosition((prevvalue) => {
       if (prevvalue === "back") {
@@ -502,6 +485,7 @@ const CameraPage = () => {
       }
     });
   };
+
   const shanguangClick = (event) => {
     setShanguangFlag((prevvalue) => {
       if (prevvalue === "off") {
@@ -511,21 +495,7 @@ const CameraPage = () => {
       }
     });
   };
-
   const takePhoto = async (camera = true, path, serverCanvas) => {
-    // Taro.saveImageToPhotosAlbum({
-    //   filePath: canvasImg,
-    //   success: async () => {
-
-    //     Taro.showToast({
-    //       title: "保存成ww功",
-    //       icon: "success",
-    //       duration: 2000,
-    //     });
-    //   },
-    // });
-    // return
-
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -533,6 +503,13 @@ const CameraPage = () => {
       });
       return;
     }
+    console.log("shuiyinTypeSelect: ", shuiyinTypeSelect);
+    console.log("camera: ", camera);
+    if (shuiyinTypeSelect === "video" && typeof camera === "object") {
+      selectImg();
+      return;
+    }
+
     // 相机
     if (camera) {
       // 上传时间位置 保存
@@ -598,12 +575,15 @@ const CameraPage = () => {
           "&scale=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.scale +
           "&vip=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.vip,
+          canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
+          "&shuiyinTypeSelect=" +
+          shuiyinTypeSelect,
       });
     }
   };
 
   Taro.useShareAppMessage((res) => {
+    console.log("userInfo.openid: ", userInfo.openid);
     return {
       title: "分享你一款可修改时间、位置的水印相机",
       path: "/pages/index/index?id=" + userInfo.openid,
@@ -676,31 +656,52 @@ const CameraPage = () => {
       });
       return;
     }
-    Taro.chooseImage({
-      count: 1,
-      success: function (res) {
-        const filePath = res.tempFilePaths[0];
+    if (shuiyinTypeSelect === "img") {
+      Taro.chooseImage({
+        count: 1,
+        success: function (res) {
+          const filePath = res.tempFilePaths[0];
 
-        Taro.getFileInfo({
-          filePath: filePath,
-          success: async function (info) {
-            const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
+          Taro.getFileInfo({
+            filePath: filePath,
+            success: async function (info) {
+              const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
-            if (fileSizeInMB > 3) {
-              Taro.showModal({
-                title: "提示",
-                content: "图片体积过大，请重新选择",
-                showCancel: false,
-              });
-            } else if (fileSizeInMB > 1 && fileSizeInMB < 3) {
-              takePhoto(false, filePath, true);
-            } else {
-              takePhoto(false, filePath);
-            }
-          },
-        });
-      },
-    });
+              if (fileSizeInMB > 3) {
+                Taro.showModal({
+                  title: "提示",
+                  content: "图片体积过大，请重新选择",
+                  showCancel: false,
+                });
+              } else if (fileSizeInMB > 1 && fileSizeInMB < 3) {
+                takePhoto(false, filePath, true);
+              } else {
+                takePhoto(false, filePath);
+              }
+            },
+          });
+        },
+      });
+    } else {
+      Taro.chooseMedia({
+        count: 1,
+        mediaType: "video",
+        sourceType: "album",
+        success: function (res) {
+          const data = res.tempFiles[0];
+          const filePath = data.tempFilePath;
+          const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
+          if (fileSizeInMB > 50) {
+            Taro.showModal({
+              title: "提示",
+              content: "视频过大(大于50M)，请重新选择",
+              showCancel: false,
+            });
+          }
+          takePhoto(false, filePath, true);
+        },
+      });
+    }
   };
   let rafId = "";
   const drawMask = () => {
@@ -872,7 +873,6 @@ const CameraPage = () => {
   //       });
   //   }
   // }, [allAuth]);
-  console.log('addAnimate: ', addAnimate);
 
   return (
     <View className="container">
@@ -1014,10 +1014,7 @@ const CameraPage = () => {
         <View className="tools-bar-inner">
           <View
             className={
-              "xiangce " +
-              (vipAnimate || addAnimate
-                ? "button-animate "
-                : "")
+              "xiangce " + (vipAnimate || addAnimate ? "button-animate " : "")
             }
           >
             <Image
@@ -1029,10 +1026,7 @@ const CameraPage = () => {
           </View>
           <View
             className={
-              "shuiyin " +
-              (vipAnimate || addAnimate
-                ? "button-animate "
-                : "")
+              "shuiyin " + (vipAnimate || addAnimate ? "button-animate " : "")
             }
           >
             <Image
@@ -1061,15 +1055,21 @@ const CameraPage = () => {
           <View
             className={
               "xiangce kefu vip " +
-              (vipAnimate || addAnimate
-                ? "button-animate "
-                : "")
+              (vipAnimate || addAnimate ? "button-animate " : "")
             }
           >
             <Button
               onClick={() => {
+                const inviteId =
+                  Taro.getCurrentInstance().router.params.id || "";
+                console.log("inviteId: ", inviteId);
+
                 Taro.navigateTo({
-                  url: "/pages/vip/index?type=" + userInfo.type,
+                  url:
+                    "/pages/vip/index?type=" +
+                    userInfo.type +
+                    "&id=" +
+                    inviteId,
                 });
               }}
               style={{
@@ -1090,9 +1090,7 @@ const CameraPage = () => {
           <View
             className={
               "xiangce kefu " +
-              (vipAnimate || addAnimate
-                ? "button-animate "
-                : "")
+              (vipAnimate || addAnimate ? "button-animate " : "")
             }
           >
             <Button
@@ -1118,6 +1116,35 @@ const CameraPage = () => {
           </View>
         </View>
       </View>
+
+      {/* {price.show && (
+        <View className="shantui-btns" style={{ marginTop: "5px" }}>
+          <RadioGroup
+            onChange={(e) => {
+              setShuiyinTypeSelected(e.detail.value);
+            }}
+          >
+            <View className="imgVideoShuiyin">
+              <Label className="vip-item">
+                <View>
+                  <Radio value="img" checked={true} />
+                </View>
+                <View className="vip-title">图片水印</View>
+              </Label>
+              <Label className="vip-item video-item">
+                <View>
+                  <Radio value="video" />
+                </View>
+                <View className="vip-title">
+                  视频水印
+                  <Text style={{ color: "gray" }}>（仅支持永久会员使用）</Text>
+                </View>
+              </Label>
+            </View>
+          </RadioGroup>
+        </View>
+      )} */}
+
       <View className="shantui-btns">
         <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
         <Switch
@@ -1142,8 +1169,19 @@ const CameraPage = () => {
         />
       </View>
       <View className="bottom-btns" style={{ marginTop: "5px" }}>
-        <Button openType="share" className="share-btn" type="button">
-          <Text>分享好友</Text>
+        <Button
+          // openType="share"
+          onClick={() => {
+            setInviteModalShow(true);
+            // wx.navigateToMiniProgram({
+            //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+            //   path: "pages/index/index",
+            // });
+          }}
+          className="share-btn"
+          type="button"
+        >
+          <Text>邀请返现</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>
@@ -1153,7 +1191,7 @@ const CameraPage = () => {
             <View className="circle"></View>
           </View>
         </Button>
-        <Button
+        {/* <Button
           className="share-btn"
           onClick={() => {
             wx.navigateToMiniProgram({
@@ -1176,9 +1214,34 @@ const CameraPage = () => {
           }}
         >
           抖音、小红书取图、去水印
-        </Button>
+        </Button> */}
       </View>
 
+      <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
+        <AtModalHeader>
+          <Text>提示</Text>
+        </AtModalHeader>
+        <AtModalContent>
+          <View className="modal-list">
+            <View className="txt1">
+              好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。
+            </View>
+          </View>
+        </AtModalContent>
+        <AtModalAction>
+          <Button
+            onClick={() => {
+              setInviteModalShow(false);
+            }}
+            style={{ flex: 1 }}
+          >
+            关闭
+          </Button>
+          <Button openType="share" type="button" style={{ flex: 1 }}>
+            去邀请
+          </Button>
+        </AtModalAction>
+      </AtModal>
       <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
         <AtModalHeader>
           <Text style={{ color: "#ffaa00" }}>提示</Text>
