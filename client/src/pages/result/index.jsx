@@ -318,7 +318,7 @@ const MergeCanvas = () => {
           // setImagePath(tempFilePath);
           setLoading(false);
 
-          clientCanvasSaveImage(tempFilePath,userInfo);
+          clientCanvasSaveImage(tempFilePath, userInfo);
         } catch (error) {
           console.error("保存图片失败:", error);
         }
@@ -327,13 +327,12 @@ const MergeCanvas = () => {
       console.error("绘制图片出错:", err);
     }
   };
-  const clientCanvasSaveImage = async (tempFilePath,info) => {
+  const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-      const cloudPath = `cliect/${
-        info.openid
-      }/${Date.now()}-${Math.random().toString(36).substring(7)}.${
-        filePath.match(/\.(\w+)$/)[1]
-      }`;
+
+      const cloudPath = `client/${info.openid}__${Math.random()
+        .toString(36)
+        .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
       const res = await wx.cloud.uploadFile({
         cloudPath,
         filePath,
