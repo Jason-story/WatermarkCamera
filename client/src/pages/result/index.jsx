@@ -111,7 +111,8 @@ const MergeCanvas = () => {
       console.log("firstImageFileID: ", firstImageFileID);
       // 调用云函数
       const res = await wx.cloud.callFunction({
-        name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
+        // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
+        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "mergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
@@ -329,7 +330,6 @@ const MergeCanvas = () => {
   };
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-
       const cloudPath = `client/${info.openid}__${Math.random()
         .toString(36)
         .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
