@@ -131,7 +131,8 @@ const MergeCanvas = () => {
       console.log("firstImageFileID: ", firstImageFileID);
       // 调用云函数
       const res = await cloud.callFunction({
-        name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
+        // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
+        name: shuiyinTypeSelect ==='video' ? "mergeVideoCanvas" : "mergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
