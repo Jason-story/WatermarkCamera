@@ -876,576 +876,597 @@ const CameraPage = () => {
 
   return (
     <View className="container">
-      <View
-        className="camera-box"
-        style={{ height: (screenWidth / 3) * 4 + "px" }}
-      >
-        <Marquee />
-        {permissions.camera && (
-          <Camera
-            className="camera"
-            resolution="high"
-            devicePosition={devicePosition}
-            flash={shanguangflag}
-            frameSize="large"
-            onError={cameraError}
-          />
-        )}
+      {userInfo.black ? (
+        "您存在违规操作，无法使用小程序"
+      ) : (
+        <View
+          style={{
+            position: "relative",
+            height: "100%",
+            width: "100%",
+          }}
+        >
 
-        {!allAuth && (
-          <View className="auth-box">
-            <View>
-              需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行，请在底部授权弹窗选择同意或者点击右上角-设置授权后刷新即可
-            </View>
-            <Button
-              className="share-btn"
-              onClick={() => {
-                Taro.openSetting();
-              }}
-              style={{
-                background: "linear-gradient(45deg,#ff6ec4, #FF5722)",
-                color: "white",
-                border: "none",
-                borderRadius: "25px",
-                marginLeft: "0",
-                fontSize: "30rpx",
-                cursor: "pointer",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                width: "50%",
-                margin: "0 5px 0 0",
-              }}
-            >
-              去授权
-            </Button>
-          </View>
-        )}
-
-        {allAuth && (
-          <View className="camera-btns">
-            {/* <View className="red-envelope-container">
-              <Image
-                className="red-envelope-image"
-                src={Hongbaoicon} // 替换为您的实际图片URL
-                onClick={() => {
-                  Taro.navigateTo({ url: "/pages/meituan/index" });
-                }}
+          <View
+            className="camera-box"
+            style={{ height: (screenWidth / 3) * 4 + "px" }}
+          >
+            <Marquee />
+            {permissions.camera && (
+              <Camera
+                className="camera"
+                resolution="high"
+                devicePosition={devicePosition}
+                flash={shanguangflag}
+                frameSize="large"
+                onError={cameraError}
               />
-            </View> */}
+            )}
 
-            <View className="zoom-box">
-              <View className="zoom-text" onClick={zoomClick}>
-                {zoomLevel}
-                <View className="icon-x"></View>
+            {!allAuth && (
+              <View className="auth-box">
+                <View>
+                  需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行，请在底部授权弹窗选择同意或者点击右上角-设置授权后刷新即可
+                </View>
+                <Button
+                  className="share-btn"
+                  onClick={() => {
+                    Taro.openSetting();
+                  }}
+                  style={{
+                    background: "linear-gradient(45deg,#ff6ec4, #FF5722)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "25px",
+                    marginLeft: "0",
+                    fontSize: "30rpx",
+                    cursor: "pointer",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    width: "50%",
+                    margin: "0 5px 0 0",
+                  }}
+                >
+                  去授权
+                </Button>
               </View>
-            </View>
-            <View className="fanzhuan-icon" onClick={fanzhuanClick}>
-              <Image src={fanzhuanImg}></Image>
-            </View>
-            <View className="shanguangdeng-icon" onClick={shanguangClick}>
-              {shanguangflag === "off" ? (
-                <Image src={shanguangdengOffImg}></Image>
-              ) : (
-                <Image src={shanguangdengImg}></Image>
-              )}
-            </View>
-          </View>
-        )}
-        {allAuth && (
-          <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
-            <Canvas
-              id="fishCanvas"
-              type="2d"
-              // className={canvasImg ? "hideCanvas" : ""}
-              style={{
-                width:
-                  canvasConfigState.length > 0 &&
-                  canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
-                height:
-                  canvasConfigState[currentShuiyinIndex]?.[0].height &&
-                  typeof canvasConfigState[currentShuiyinIndex]?.[0].height ===
-                    "number"
-                    ? canvasConfigState[currentShuiyinIndex]?.[0].height + "px"
-                    : canvasConfigState[currentShuiyinIndex]?.[0].height(
-                        locationName
-                      ) + "px",
+            )}
+
+            {allAuth && (
+              <View className="camera-btns">
+                {/* <View className="red-envelope-container">
+            <Image
+              className="red-envelope-image"
+              src={Hongbaoicon} // 替换为您的实际图片URL
+              onClick={() => {
+                Taro.navigateTo({ url: "/pages/meituan/index" });
               }}
             />
-            {canvasImg && (
-              <Image
-                src={canvasImg}
-                className={canvasImg ? "hideCanvas" : ""}
-                style={{
-                  width:
-                    canvasConfigState.length > 0 &&
-                    canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
-                  height:
-                    canvasConfigState[currentShuiyinIndex]?.[0].height &&
-                    typeof canvasConfigState[currentShuiyinIndex]?.[0]
-                      .height === "number"
-                      ? canvasConfigState[currentShuiyinIndex]?.[0].height +
-                        "px"
-                      : canvasConfigState[currentShuiyinIndex]?.[0].height(
-                          locationName
-                        ) + "px",
-                }}
-              ></Image>
+          </View> */}
+
+                <View className="zoom-box">
+                  <View className="zoom-text" onClick={zoomClick}>
+                    {zoomLevel}
+                    <View className="icon-x"></View>
+                  </View>
+                </View>
+                <View className="fanzhuan-icon" onClick={fanzhuanClick}>
+                  <Image src={fanzhuanImg}></Image>
+                </View>
+                <View className="shanguangdeng-icon" onClick={shanguangClick}>
+                  {shanguangflag === "off" ? (
+                    <Image src={shanguangdengOffImg}></Image>
+                  ) : (
+                    <Image src={shanguangdengImg}></Image>
+                  )}
+                </View>
+              </View>
+            )}
+            {allAuth && (
+              <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
+                <Canvas
+                  id="fishCanvas"
+                  type="2d"
+                  // className={canvasImg ? "hideCanvas" : ""}
+                  style={{
+                    width:
+                      canvasConfigState.length > 0 &&
+                      canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
+                    height:
+                      canvasConfigState[currentShuiyinIndex]?.[0].height &&
+                      typeof canvasConfigState[currentShuiyinIndex]?.[0]
+                        .height === "number"
+                        ? canvasConfigState[currentShuiyinIndex]?.[0].height +
+                          "px"
+                        : canvasConfigState[currentShuiyinIndex]?.[0].height(
+                            locationName
+                          ) + "px",
+                  }}
+                />
+                {canvasImg && (
+                  <Image
+                    src={canvasImg}
+                    className={canvasImg ? "hideCanvas" : ""}
+                    style={{
+                      width:
+                        canvasConfigState.length > 0 &&
+                        canvasConfigState[currentShuiyinIndex]?.[0].width +
+                          "px",
+                      height:
+                        canvasConfigState[currentShuiyinIndex]?.[0].height &&
+                        typeof canvasConfigState[currentShuiyinIndex]?.[0]
+                          .height === "number"
+                          ? canvasConfigState[currentShuiyinIndex]?.[0].height +
+                            "px"
+                          : canvasConfigState[currentShuiyinIndex]?.[0].height(
+                              locationName
+                            ) + "px",
+                    }}
+                  ></Image>
+                )}
+              </View>
             )}
           </View>
-        )}
-      </View>
-      {showAddMyApp && (
-        <View
-          className="add-my-app"
-          onClick={() => {
-            setAddMyAppShow(false);
-          }}
-        >
-          <Image src={AddMyApp}></Image>
-        </View>
-      )}
-      {/* {userInfo.type === "default" && (
-        <ad-custom
-          unit-id="adunit-ba74b4bc4303c143"
-          style={{ width: "100%" }}
-        ></ad-custom>
-      )} */}
-      {/* JSX 结构 */}
-      <View className="tools-bar">
-        <View className="tools-bar-inner">
-          <View
-            className={
-              "xiangce " + (vipAnimate || addAnimate ? "button-animate " : "")
-            }
-          >
-            <Image
-              src={XiangceIcon}
-              className="xiangceIcon"
-              onClick={selectImg}
-            ></Image>
-            <Text>相册</Text>
-          </View>
-          <View
-            className={
-              "shuiyin " + (vipAnimate || addAnimate ? "button-animate " : "")
-            }
-          >
-            <Image
-              src={ShuiyinIcon}
-              className="shuiyinIcon"
+          {showAddMyApp && (
+            <View
+              className="add-my-app"
               onClick={() => {
-                if (!allAuth) {
-                  Taro.showToast({
-                    title: "请先授权相机、相册、位置权限",
-                    icon: "none",
-                  });
-                  return;
+                setAddMyAppShow(false);
+              }}
+            >
+              <Image src={AddMyApp}></Image>
+            </View>
+          )}
+          {/* {userInfo.type === "default" && (
+      <ad-custom
+        unit-id="adunit-ba74b4bc4303c143"
+        style={{ width: "100%" }}
+      ></ad-custom>
+    )} */}
+          {/* JSX 结构 */}
+          <View className="tools-bar">
+            <View className="tools-bar-inner">
+              <View
+                className={
+                  "xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
                 }
-                setShowFloatLayout(!showFloatLayout);
-              }}
-            ></Image>
-            <Text>修改</Text>
-          </View>
-        </View>
-        <View className="take-photo" onClick={takePhoto}>
-          <View className="camera-button">
-            <View className="camera-button-inner"></View>
-          </View>
-        </View>
-        <View className="tools-bar-inner">
-          <View
-            className={
-              "xiangce kefu vip " +
-              (vipAnimate || addAnimate ? "button-animate " : "")
-            }
-          >
-            <Button
-              onClick={() => {
-                const inviteId =
-                  Taro.getCurrentInstance().router.params.id || "";
-                console.log("inviteId: ", inviteId);
-
-                Taro.navigateTo({
-                  url:
-                    "/pages/vip/index?type=" +
-                    userInfo.type +
-                    "&id=" +
-                    inviteId,
-                });
-              }}
-              style={{
-                background: "none",
-                color: "inherit",
-                border: "none",
-                padding: 0,
-                font: "inherit",
-                cursor: "pointer",
-                outline: "none",
-                height: "39px",
-              }}
-            >
-              <Image src={VipImg} className="xiangceIcon"></Image>
-            </Button>
-            <Text>会员</Text>
-          </View>
-          <View
-            className={
-              "xiangce kefu " +
-              (vipAnimate || addAnimate ? "button-animate " : "")
-            }
-          >
-            <Button
-              onClick={() => {
-                Taro.navigateTo({
-                  url: "/pages/me/index",
-                });
-              }}
-              style={{
-                background: "none",
-                color: "inherit",
-                border: "none",
-                padding: 0,
-                font: "inherit",
-                cursor: "pointer",
-                outline: "none",
-                height: "39px",
-              }}
-            >
-              <Image src={KefuIcon} className="xiangceIcon"></Image>
-            </Button>
-            <Text>我的</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* {price.show && (
-        <View className="shantui-btns" style={{ marginTop: "5px" }}>
-          <RadioGroup
-            onChange={(e) => {
-              setShuiyinTypeSelected(e.detail.value);
-            }}
-          >
-            <View className="imgVideoShuiyin">
-              <Label className="vip-item">
-                <View>
-                  <Radio value="img" checked={true} />
-                </View>
-                <View className="vip-title">图片水印</View>
-              </Label>
-              <Label className="vip-item video-item">
-                <View>
-                  <Radio value="video" />
-                </View>
-                <View className="vip-title">
-                  视频水印
-                  <Text style={{ color: "gray" }}>（仅支持永久会员使用）</Text>
-                </View>
-              </Label>
+              >
+                <Image
+                  src={XiangceIcon}
+                  className="xiangceIcon"
+                  onClick={selectImg}
+                ></Image>
+                <Text>相册</Text>
+              </View>
+              <View
+                className={
+                  "shuiyin " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Image
+                  src={ShuiyinIcon}
+                  className="shuiyinIcon"
+                  onClick={() => {
+                    if (!allAuth) {
+                      Taro.showToast({
+                        title: "请先授权相机、相册、位置权限",
+                        icon: "none",
+                      });
+                      return;
+                    }
+                    setShowFloatLayout(!showFloatLayout);
+                  }}
+                ></Image>
+                <Text>修改</Text>
+              </View>
             </View>
-          </RadioGroup>
-        </View>
-      )} */}
+            <View className="take-photo" onClick={takePhoto}>
+              <View className="camera-button">
+                <View className="camera-button-inner"></View>
+              </View>
+            </View>
+            <View className="tools-bar-inner">
+              <View
+                className={
+                  "xiangce kefu vip " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Button
+                  onClick={() => {
+                    const inviteId =
+                      Taro.getCurrentInstance().router.params.id || "";
+                    console.log("inviteId: ", inviteId);
 
-      <View className="shantui-btns">
-        <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
-        <Switch
-          checked={shantuiSwitch}
-          style={{ transform: "scale(0.7)" }}
-          onChange={(e) => {
-            setShantuiSwitch(e.detail.value);
-          }}
-        />
-      </View>
-      <View className="shantui-btns">
-        <View style={{ marginRight: "10px" }}>
-          保存位置等数据，下次使用时无需再次修改
-        </View>
-        <Switch
-          disabled={!locationName}
-          checked={isShuiyinSaved}
-          style={{ transform: "scale(0.7)" }}
-          onChange={(e) => {
-            saveChange(e.detail.value);
-          }}
-        />
-      </View>
-      <View className="bottom-btns" style={{ marginTop: "5px" }}>
-        <Button
-          // openType="share"
-          onClick={() => {
-            setInviteModalShow(true);
-            // wx.navigateToMiniProgram({
-            //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-            //   path: "pages/index/index",
-            // });
-          }}
-          className="share-btn"
-          type="button"
-        >
-          <Text>邀请返现</Text>
-          <View id="container-stars">
-            <View id="stars"></View>
-          </View>
-
-          <View id="glow">
-            <View className="circle"></View>
-            <View className="circle"></View>
-          </View>
-        </Button>
-        {/* <Button
-          className="share-btn"
-          onClick={() => {
-            wx.navigateToMiniProgram({
-              appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-              path: "pages/index/index",
-            });
-          }}
-          style={{
-            background: "linear-gradient(45deg, #ff512f, #dd2476)",
-            color: "white",
-            border: "none",
-            borderRadius: "30px",
-            padding: "5px 16px",
-            fontSize: "32rpx",
-            cursor: "pointer",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            marginBottom: "10px",
-            height: "46px",
-            marginTop: "10px",
-          }}
-        >
-          抖音、小红书取图、去水印
-        </Button> */}
-      </View>
-
-      <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
-        <AtModalHeader>
-          <Text>提示</Text>
-        </AtModalHeader>
-        <AtModalContent>
-          <View className="modal-list">
-            <View className="txt1">
-              好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。
+                    Taro.navigateTo({
+                      url:
+                        "/pages/vip/index?type=" +
+                        userInfo.type +
+                        "&id=" +
+                        inviteId,
+                    });
+                  }}
+                  style={{
+                    background: "none",
+                    color: "inherit",
+                    border: "none",
+                    padding: 0,
+                    font: "inherit",
+                    cursor: "pointer",
+                    outline: "none",
+                    height: "39px",
+                  }}
+                >
+                  <Image src={VipImg} className="xiangceIcon"></Image>
+                </Button>
+                <Text>会员</Text>
+              </View>
+              <View
+                className={
+                  "xiangce kefu " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Button
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: "/pages/me/index",
+                    });
+                  }}
+                  style={{
+                    background: "none",
+                    color: "inherit",
+                    border: "none",
+                    padding: 0,
+                    font: "inherit",
+                    cursor: "pointer",
+                    outline: "none",
+                    height: "39px",
+                  }}
+                >
+                  <Image src={KefuIcon} className="xiangceIcon"></Image>
+                </Button>
+                <Text>我的</Text>
+              </View>
             </View>
           </View>
-        </AtModalContent>
-        <AtModalAction>
-          <Button
-            onClick={() => {
-              setInviteModalShow(false);
-            }}
-            style={{ flex: 1 }}
-          >
-            关闭
-          </Button>
-          <Button openType="share" type="button" style={{ flex: 1 }}>
-            去邀请
-          </Button>
-        </AtModalAction>
-      </AtModal>
-      <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
-        <AtModalHeader>
-          <Text style={{ color: "#ffaa00" }}>提示</Text>
-        </AtModalHeader>
-        <AtModalContent>
-          <View className="modal-list">
-            <View className="txt1">您的会员已到期,继续使用请重新开通会员</View>
+
+          {/* {price.show && (
+      <View className="shantui-btns" style={{ marginTop: "5px" }}>
+        <RadioGroup
+          onChange={(e) => {
+            setShuiyinTypeSelected(e.detail.value);
+          }}
+        >
+          <View className="imgVideoShuiyin">
+            <Label className="vip-item">
+              <View>
+                <Radio value="img" checked={true} />
+              </View>
+              <View className="vip-title">图片水印</View>
+            </Label>
+            <Label className="vip-item video-item">
+              <View>
+                <Radio value="video" />
+              </View>
+              <View className="vip-title">
+                视频水印
+                <Text style={{ color: "gray" }}>（仅支持永久会员使用）</Text>
+              </View>
+            </Label>
           </View>
-        </AtModalContent>
-        <AtModalAction>
-          <Button
-            onClick={() => {
-              setVipClosedModal(false);
-            }}
-            style={{ flex: 1 }}
-          >
-            关闭
-          </Button>
-          <Button openType="contact" style={{ flex: 1 }}>
-            重新开通
-          </Button>
-        </AtModalAction>
-      </AtModal>
-      <AtFloatLayout
-        isOpened={showFloatLayout}
-        title="水印选择、修改"
-        onClose={(e) => {
-          setEdit(false);
-          setShowFloatLayout(!showFloatLayout);
+        </RadioGroup>
+      </View>
+    )} */}
+
+          <View className="shantui-btns">
+            <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
+            <Switch
+              checked={shantuiSwitch}
+              style={{ transform: "scale(0.7)" }}
+              onChange={(e) => {
+                setShantuiSwitch(e.detail.value);
+              }}
+            />
+          </View>
+          <View className="shantui-btns">
+            <View style={{ marginRight: "10px" }}>
+              保存位置等数据，下次使用时无需再次修改
+            </View>
+            <Switch
+              disabled={!locationName}
+              checked={isShuiyinSaved}
+              style={{ transform: "scale(0.7)" }}
+              onChange={(e) => {
+                saveChange(e.detail.value);
+              }}
+            />
+          </View>
+          <View className="bottom-btns" style={{ marginTop: "5px" }}>
+            <Button
+              // openType="share"
+              onClick={() => {
+                setInviteModalShow(true);
+                // wx.navigateToMiniProgram({
+                //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+                //   path: "pages/index/index",
+                // });
+              }}
+              className="share-btn"
+              type="button"
+            >
+              <Text>邀请返现</Text>
+              <View id="container-stars">
+                <View id="stars"></View>
+              </View>
+
+              <View id="glow">
+                <View className="circle"></View>
+                <View className="circle"></View>
+              </View>
+            </Button>
+            {/* <Button
+        className="share-btn"
+        onClick={() => {
+          wx.navigateToMiniProgram({
+            appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+            path: "pages/index/index",
+          });
+        }}
+        style={{
+          background: "linear-gradient(45deg, #ff512f, #dd2476)",
+          color: "white",
+          border: "none",
+          borderRadius: "30px",
+          padding: "5px 16px",
+          fontSize: "32rpx",
+          cursor: "pointer",
+          transition: "transform 0.2s, box-shadow 0.2s",
+          marginBottom: "10px",
+          height: "46px",
+          marginTop: "10px",
         }}
       >
-        {!edit ? (
-          <View className="shuiyin-list">
-            {canvasConfigState.map((item, index) => {
-              return (
-                <React.Fragment key={index}>
-                  {/* 会员免广告 */}
-                  <View
-                    className="shuiyin-item"
-                    onClick={() => {
-                      setCurrentShuiyinIndex(index);
-                    }}
-                  >
-                    <View className="shuiyin-item-img">
-                      {item[0].vip && (
-                        <Image
-                          mode="aspectFit"
-                          className="vip-arrow"
-                          src={VipArrow}
-                        ></Image>
-                      )}
-                      <Image mode="aspectFit" src={item[0].img}></Image>
-                    </View>
-                    {currentShuiyinIndex === index && (
-                      <View className="shuiyin-item-cover">
-                        <Button
-                          onClick={() => {
-                            setEdit(true);
-                            updateShuiyinIndex(index);
-                          }}
-                        >
-                          编辑
-                        </Button>
+        抖音、小红书取图、去水印
+      </Button> */}
+          </View>
+
+          <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
+            <AtModalHeader>
+              <Text>提示</Text>
+            </AtModalHeader>
+            <AtModalContent>
+              <View className="modal-list">
+                <View className="txt1">
+                  好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。
+                </View>
+              </View>
+            </AtModalContent>
+            <AtModalAction>
+              <Button
+                onClick={() => {
+                  setInviteModalShow(false);
+                }}
+                style={{ flex: 1 }}
+              >
+                关闭
+              </Button>
+              <Button openType="share" type="button" style={{ flex: 1 }}>
+                去邀请
+              </Button>
+            </AtModalAction>
+          </AtModal>
+          <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
+            <AtModalHeader>
+              <Text style={{ color: "#ffaa00" }}>提示</Text>
+            </AtModalHeader>
+            <AtModalContent>
+              <View className="modal-list">
+                <View className="txt1">
+                  您的会员已到期,继续使用请重新开通会员
+                </View>
+              </View>
+            </AtModalContent>
+            <AtModalAction>
+              <Button
+                onClick={() => {
+                  setVipClosedModal(false);
+                }}
+                style={{ flex: 1 }}
+              >
+                关闭
+              </Button>
+              <Button openType="contact" style={{ flex: 1 }}>
+                重新开通
+              </Button>
+            </AtModalAction>
+          </AtModal>
+          <AtFloatLayout
+            isOpened={showFloatLayout}
+            title="水印选择、修改"
+            onClose={(e) => {
+              setEdit(false);
+              setShowFloatLayout(!showFloatLayout);
+            }}
+          >
+            {!edit ? (
+              <View className="shuiyin-list">
+                {canvasConfigState.map((item, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      {/* 会员免广告 */}
+                      <View
+                        className="shuiyin-item"
+                        onClick={() => {
+                          setCurrentShuiyinIndex(index);
+                        }}
+                      >
+                        <View className="shuiyin-item-img">
+                          {item[0].vip && (
+                            <Image
+                              mode="aspectFit"
+                              className="vip-arrow"
+                              src={VipArrow}
+                            ></Image>
+                          )}
+                          <Image mode="aspectFit" src={item[0].img}></Image>
+                        </View>
+                        {currentShuiyinIndex === index && (
+                          <View className="shuiyin-item-cover">
+                            <Button
+                              onClick={() => {
+                                setEdit(true);
+                                updateShuiyinIndex(index);
+                              }}
+                            >
+                              编辑
+                            </Button>
+                          </View>
+                        )}
                       </View>
-                    )}
-                  </View>
-                  {index === 1 && userInfo.type === "default" && (
-                    <View
-                      className="extra-view"
-                      style={{ width: "100%!important" }}
+                      {index === 1 && userInfo.type === "default" && (
+                        <View
+                          className="extra-view"
+                          style={{ width: "100%!important" }}
+                        >
+                          <AdCustom
+                            unitId="adunit-d0875afa048b3342"
+                            style={{ width: "100%!important" }}
+                          />
+                        </View>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </View>
+            ) : (
+              <View className="shuiyin-list">
+                <View className="input-item">
+                  {/* <Switch checked={showInput} onChange={handleSwitchChange} /> */}
+                  {/* {showInput && <Input placeholder="请输入内容" />} */}
+                  <AtCard title="时间">
+                    <Picker
+                      mode="date"
+                      value={`${year}年${month}月${day}日`}
+                      onChange={handleDateChange}
                     >
-                      <AdCustom
-                        unitId="adunit-c607bfdd158f34c6"
-                        style={{ width: "100%!important" }}
+                      <View>选择日期： {`${year}年${month}月${day}日`}</View>
+                    </Picker>
+                    <Picker
+                      mode="time"
+                      value={`${hours}:${minutes}`}
+                      onChange={handleTimeChange}
+                    >
+                      <View>选择时间： {`${hours}:${minutes}`}</View>
+                    </Picker>
+                  </AtCard>
+                  <AtCard title="地点">
+                    <Picker
+                      mode="region"
+                      value={editCity}
+                      onChange={handleCityChange}
+                    >
+                      <View className="input-picker">
+                        选择城市： {editCity}
+                      </View>
+                    </Picker>
+                    <View className="picker">
+                      <Text>详细地点： </Text>
+                      <Input
+                        className="input"
+                        value={locationName}
+                        maxlength={30}
+                        clear={true}
+                        onInput={(e) => {
+                          debounce(setLocationName(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </AtCard>
+                  <AtCard title="标题">
+                    <View className="picker">
+                      <Text>标题： </Text>
+                      <Input
+                        className="input"
+                        value={title}
+                        maxlength={8}
+                        clear={true}
+                        onInput={(e) => {
+                          debounce(setTitle(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </AtCard>
+                  <AtCard title="天气">
+                    <View className="picker">
+                      <Text>天气&温度： </Text>
+                      <Input
+                        className="input"
+                        value={weather}
+                        maxlength={8}
+                        clear={true}
+                        onInput={(e) => {
+                          isWeatherEdited = true;
+                          debounce(setWeather(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </AtCard>
+                  <AtCard title="经纬度">
+                    <View className="picker" style={{ height: "50px" }}>
+                      <Text>是否显示： </Text>
+
+                      <Switch
+                        checked={hideJw}
+                        onChange={(e) => {
+                          setHideJw(e.detail.value);
+                        }}
                       />
                     </View>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </View>
-        ) : (
-          <View className="shuiyin-list">
-            <View className="input-item">
-              {/* <Switch checked={showInput} onChange={handleSwitchChange} /> */}
-              {/* {showInput && <Input placeholder="请输入内容" />} */}
-              <AtCard title="时间">
-                <Picker
-                  mode="date"
-                  value={`${year}年${month}月${day}日`}
-                  onChange={handleDateChange}
-                >
-                  <View>选择日期： {`${year}年${month}月${day}日`}</View>
-                </Picker>
-                <Picker
-                  mode="time"
-                  value={`${hours}:${minutes}`}
-                  onChange={handleTimeChange}
-                >
-                  <View>选择时间： {`${hours}:${minutes}`}</View>
-                </Picker>
-              </AtCard>
-              <AtCard title="地点">
-                <Picker
-                  mode="region"
-                  value={editCity}
-                  onChange={handleCityChange}
-                >
-                  <View className="input-picker">选择城市： {editCity}</View>
-                </Picker>
-                <View className="picker">
-                  <Text>详细地点： </Text>
-                  <Input
-                    className="input"
-                    value={locationName}
-                    maxlength={30}
-                    clear={true}
-                    onInput={(e) => {
-                      debounce(setLocationName(e.detail.value), 100);
-                    }}
-                  ></Input>
+                  </AtCard>
+                  <AtCard title="经度">
+                    <View className="picker">
+                      <Text>经度： </Text>
+                      <Input
+                        className="input"
+                        value={longitude}
+                        maxlength={14}
+                        clear={true}
+                        type="number"
+                        onInput={(e) => {
+                          debounce(setLongitude(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </AtCard>
+                  <AtCard title="纬度">
+                    <View className="picker">
+                      <Text>纬度： </Text>
+                      <Input
+                        className="input"
+                        value={latitude}
+                        type="number"
+                        maxlength={14}
+                        clear={true}
+                        onInput={(e) => {
+                          debounce(setLatitude(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </AtCard>
                 </View>
-              </AtCard>
-              <AtCard title="标题">
-                <View className="picker">
-                  <Text>标题： </Text>
-                  <Input
-                    className="input"
-                    value={title}
-                    maxlength={8}
-                    clear={true}
-                    onInput={(e) => {
-                      debounce(setTitle(e.detail.value), 100);
-                    }}
-                  ></Input>
-                </View>
-              </AtCard>
-              <AtCard title="天气">
-                <View className="picker">
-                  <Text>天气&温度： </Text>
-                  <Input
-                    className="input"
-                    value={weather}
-                    maxlength={8}
-                    clear={true}
-                    onInput={(e) => {
-                      isWeatherEdited = true;
-                      debounce(setWeather(e.detail.value), 100);
-                    }}
-                  ></Input>
-                </View>
-              </AtCard>
-              <AtCard title="经纬度">
-                <View className="picker" style={{ height: "50px" }}>
-                  <Text>是否显示： </Text>
-
-                  <Switch
-                    checked={hideJw}
-                    onChange={(e) => {
-                      setHideJw(e.detail.value);
-                    }}
-                  />
-                </View>
-              </AtCard>
-              <AtCard title="经度">
-                <View className="picker">
-                  <Text>经度： </Text>
-                  <Input
-                    className="input"
-                    value={longitude}
-                    maxlength={14}
-                    clear={true}
-                    type="number"
-                    onInput={(e) => {
-                      debounce(setLongitude(e.detail.value), 100);
-                    }}
-                  ></Input>
-                </View>
-              </AtCard>
-              <AtCard title="纬度">
-                <View className="picker">
-                  <Text>纬度： </Text>
-                  <Input
-                    className="input"
-                    value={latitude}
-                    type="number"
-                    maxlength={14}
-                    clear={true}
-                    onInput={(e) => {
-                      debounce(setLatitude(e.detail.value), 100);
-                    }}
-                  ></Input>
-                </View>
-              </AtCard>
-            </View>
-          </View>
-        )}
-        {!edit && (
-          <Text style={{ display: "block", textAlign: "center" }}>
-            更多样式开发中...
-          </Text>
-        )}
-      </AtFloatLayout>
-      <AtToast isOpened={showToast} text="请输入详细地点"></AtToast>
+              </View>
+            )}
+            {!edit && (
+              <Text style={{ display: "block", textAlign: "center" }}>
+                更多样式开发中...
+              </Text>
+            )}
+          </AtFloatLayout>
+          <AtToast isOpened={showToast} text="请输入详细地点"></AtToast>
+        </View>
+      )}
     </View>
   );
 };
