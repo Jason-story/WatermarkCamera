@@ -94,7 +94,7 @@ exports.main = async (event, context) => {
 
         // Upload to cloud storage
         const uploadResult = await cloud.uploadFile({
-            cloudPath: `merged_images/${Date.now()}.jpg`,
+            cloudPath: `server_images/${userInfo.openid}__${Date.now()}.jpg`,
             fileContent: buffer
         });
 

@@ -85,8 +85,8 @@ const MergeCanvas = () => {
     });
   };
 
-  async function uploadImage(filePath) {
-    const cloudPath = `temp_images/${Date.now()}-${Math.random()
+  async function uploadImage(filePath, fileName = "server_temp_images") {
+    const cloudPath = `${fileName}/${Date.now()}-${Math.random()
       .toString(36)
       .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
     const res = await wx.cloud.uploadFile({
@@ -244,7 +244,6 @@ const MergeCanvas = () => {
             handleMergedImage(fileID, res.result.data);
           } else {
             console.log("客户端 ");
-
             // 本地生成
             drawImages(res.result.data);
           }
@@ -319,7 +318,7 @@ const MergeCanvas = () => {
           // setImagePath(tempFilePath);
           setLoading(false);
 
-          clientCanvasSaveImage(tempFilePath);
+          clientCanvasSaveImage(tempFilePath,userInfo);
         } catch (error) {
           console.error("保存图片失败:", error);
         }
@@ -328,13 +327,25 @@ const MergeCanvas = () => {
       console.error("绘制图片出错:", err);
     }
   };
-  const clientCanvasSaveImage = async (tempFilePath) => {
-    // setImagePath(tempFilePath);
+  const clientCanvasSaveImage = async (tempFilePath,info) => {
+    async function uploadImage(filePath) {
+      const cloudPath = `cliect/${
+        info.openid
+      }/${Date.now()}-${Math.random().toString(36).substring(7)}.${
+        filePath.match(/\.(\w+)$/)[1]
+      }`;
+      const res = await wx.cloud.uploadFile({
+        cloudPath,
+        filePath,
+      });
+      return res.fileID;
+    }
     setLoading(false);
     const save = () => {
       Taro.saveImageToPhotosAlbum({
         filePath: tempFilePath,
         success: async () => {
+          uploadImage(tempFilePath);
           await Taro.cloud.callFunction({
             name: "addUser",
             data: {
