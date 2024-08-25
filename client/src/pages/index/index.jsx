@@ -486,17 +486,21 @@ const CameraPage = () => {
       });
       return;
     }
-    console.log("shuiyinTypeSelect: ", shuiyinTypeSelect);
-    console.log("camera: ", camera);
     if (shuiyinTypeSelect === "video" && typeof camera === "object") {
       selectImg();
+      return;
+    }
+    if (!locationName) {
+      Taro.showToast({
+        title: "位置获取中...",
+        icon: "none",
+      });
       return;
     }
 
     // 相机
     if (camera) {
       // 上传时间位置 保存
-
       Taro.cloud.callFunction({
         name: "updateSavedConfig",
         data: {
@@ -566,7 +570,6 @@ const CameraPage = () => {
   };
 
   Taro.useShareAppMessage((res) => {
-    console.log("userInfo.openid: ", userInfo.openid);
     return {
       title: "分享你一款可修改时间、位置的水印相机",
       path: "/pages/index/index?id=" + userInfo.openid,
