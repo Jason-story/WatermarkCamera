@@ -62,6 +62,7 @@ const maxDate = new Date("2030-01-01");
 
 // const date = `${year}年${month}月${day}日`;
 // const time = `${hours}:${minutes}`;
+let canTakePhoto = false;
 
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
@@ -490,9 +491,9 @@ const CameraPage = () => {
       selectImg();
       return;
     }
-    if (!locationName) {
+    if (!canTakePhoto) {
       Taro.showToast({
-        title: "位置获取中...",
+        title: "水印绘制中,请稍等...",
         icon: "none",
       });
       return;
@@ -817,11 +818,11 @@ const CameraPage = () => {
         });
     });
   };
-
   useEffect(() => {
     setTimeout(() => {
       setLocationName((prevName) => " " + prevName + " ");
-    }, 3000);
+      canTakePhoto = true
+    }, 4000);
   }, []);
 
   useEffect(() => {
