@@ -22,7 +22,6 @@ const screenWidth = Taro.getSystemInfoSync().screenWidth;
 let interstitialAd = null;
 const inviteId = Taro.getCurrentInstance().router.params.id;
 
-
 let cloud = "";
 const appid = Taro.getAccountInfoSync().miniProgram.appId;
 const getCloud = async () => {
@@ -40,7 +39,6 @@ const getCloud = async () => {
   }
   return cloud;
 };
-
 
 const MergeCanvas = () => {
   Taro.getCurrentInstance().router.params;
@@ -132,7 +130,7 @@ const MergeCanvas = () => {
       // 调用云函数
       const res = await cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
-        name: shuiyinTypeSelect ==='video' ? "mergeVideoCanvas" : "mergeImage",
+        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "mergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
@@ -235,7 +233,7 @@ const MergeCanvas = () => {
 
   useEffect(() => {
     const getData = async () => {
-      await getCloud()
+      await getCloud();
       await cloud.callFunction({
         name: "addUser",
         success: async function (res) {
@@ -349,12 +347,31 @@ const MergeCanvas = () => {
       console.error("绘制图片出错:", err);
     }
   };
+  function generateTimestamp() {
+    const now = new Date();
+
+    // 获取当前时间的时间戳（毫秒）
+    const timestamp = now.getTime();
+
+    // 计算北京时间，中国位于 UTC+8 时区
+    const beijingTime = new Date(timestamp + 8 * 60 * 60 * 1000);
+
+    // 格式化时间
+    const year = beijingTime.getUTCFullYear();
+    const month = String(beijingTime.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(beijingTime.getUTCDate()).padStart(2, "0");
+    const hours = String(beijingTime.getUTCHours()).padStart(2, "0");
+    const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
+
+    return `${year}_${month}_${day}_${hours}_${minutes}_${seconds}`;
+  }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
+      const cloudPath = `client/${generateTimestamp()}-${info.openid}.${
+        filePath.match(/\.(\w+)$/)[1]
+      }`;
 
-      const cloudPath = `client/${info.openid}__${Math.random()
-        .toString(36)
-        .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
       const res = await cloud.uploadFile({
         cloudPath,
         filePath,

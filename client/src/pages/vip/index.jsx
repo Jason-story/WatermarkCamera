@@ -38,33 +38,33 @@ const getCloud = async () => {
 const UserInfo = ({ userInfo, price = { show: false } }) => {
   const [selected, setSelected] = useState("halfYearMonth");
   const inviteId = Taro.getCurrentInstance().router.params.id || "";
-  console.log('inviteId: ', inviteId);
+  console.log("inviteId: ", inviteId);
 
   const vipConfig = [
     {
       key: "month",
-      title: "包月会员 " + price["month"] + "元",
+      title: "包月会员 " + (price["month"] * 1 - 0.1) + "元",
       price: price.month,
     },
     {
       key: "threeMonth",
-      title: "三月会员 " + price["threeMonth"] + "元",
+      title: "三月会员 " + (price["threeMonth"] * 1 - 0.1) + "元",
       price: price.threeMonth,
     },
     {
       key: "halfYearMonth",
       checked: true,
-      title: "半年会员 " + price["halfYearMonth"] + "元",
+      title: "半年会员 " + (price["halfYearMonth"] * 1 - 0.1) + "元",
       price: price.halfYearMonth,
     },
     {
       key: "year",
-      title: "包年会员 " + price["year"] + "元",
+      title: "包年会员 " + (price["year"] * 1 - 0.1) + "元",
       price: price.year,
     },
     {
       key: "never",
-      title: "永久会员 " + price["never"] + "元",
+      title: "永久会员 " + (price["never"] * 1 - 0.1) + "元",
       price: price.never,
     },
   ];
@@ -137,7 +137,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       });
       return;
     }
-    const price = vipConfig.find((item) => item.key === selected).price;
+    const price = vipConfig.find((item) => item.key === selected).price - 0.1;
     //需要加密的参数
     let data = {
       version: "1.1",

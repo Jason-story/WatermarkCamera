@@ -503,8 +503,13 @@ const CameraPage = () => {
       });
       return;
     }
-    console.log("shuiyinTypeSelect: ", shuiyinTypeSelect);
-    console.log("camera: ", camera);
+    if (!locationName) {
+      Taro.showToast({
+        title: "位置获取中...",
+        icon: "none",
+      });
+      return;
+    }
     if (shuiyinTypeSelect === "video" && typeof camera === "object") {
       selectImg();
       return;
