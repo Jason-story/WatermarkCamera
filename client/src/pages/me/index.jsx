@@ -226,7 +226,6 @@ const Index = () => {
         todayCount={data.todayUsageCount}
         userId={data.openid}
         userInfo={data}
-        onChooseAvatar={onChooseAvatar}
         userType={Date.now() > data.end_time ? "default" : data.type}
         endTime={data.end_time}
       />

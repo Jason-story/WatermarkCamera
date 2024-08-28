@@ -188,7 +188,7 @@ const MergeCanvas = () => {
                 },
               });
               if (inviteId) {
-                await Taro.cloud.callFunction({
+                await cloud.callFunction({
                   name: "invite",
                   data: {
                     invite_id: inviteId,
@@ -419,7 +419,7 @@ const MergeCanvas = () => {
             },
           });
           if (inviteId) {
-            await Taro.cloud.callFunction({
+            await cloud.callFunction({
               name: "invite",
               data: {
                 invite_id: inviteId,
