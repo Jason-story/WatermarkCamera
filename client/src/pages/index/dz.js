@@ -35,7 +35,7 @@ const generateCanvasConfig = ({
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
               ctx.font = `${fontSize}px fzlt`;
-
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
               // 添加阴影效果
               ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
               ctx.shadowOffsetX = 1;
@@ -127,6 +127,7 @@ const generateCanvasConfig = ({
                   img.onload = () => {
                     const iconSize = 28; // Adjust this value as needed
                     // 添加阴影效果
+
                     ctx.shadowColor = "none";
                     ctx.shadowOffsetX = 0;
                     ctx.shadowOffsetY = 0;
@@ -156,23 +157,15 @@ const generateCanvasConfig = ({
                     }
                   };
                 },
-                fail: (err) => {
-                  console.error("Failed to load custom icon:", err);
-                  // Fallback to original text icon if image fails to load
-                  ctx.font = `bold ${18}px 黑体`;
-                  ctx.fillText(
-                    "📍",
-                    xPosition + dateWidth + weeklyWidth,
-                    yPosition + 2
-                  );
-                },
               });
             },
             args: [
               {
                 fontSize: 14,
                 color: "white",
-                text: `${year}.${month}.${day}  ${weekly} @ ${locationName}`,
+                text: `${year}.${month}.${day}  ${weekly} @ ${
+                  locationName || "加载中..."
+                }`,
                 position: [0, 99],
               },
             ],

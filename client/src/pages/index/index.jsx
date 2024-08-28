@@ -62,7 +62,7 @@ const maxDate = new Date("2030-01-01");
 
 // const date = `${year}年${month}月${day}日`;
 // const time = `${hours}:${minutes}`;
-let canTakePhoto = false;
+let canTakePhotoFlag = false;
 
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
@@ -105,6 +105,7 @@ const CameraPage = () => {
   const [addAnimate, setAddAnimate] = useState(false);
   const [vipAnimate, setVipAnimate] = useState(false);
   const [inviteModalShow, setInviteModalShow] = useState(false);
+  const [canTakePhoto, setCanTakePhoto] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -291,6 +292,7 @@ const CameraPage = () => {
         // 拼接市以下的地址信息，不包括门牌号
         const detailedAddress = `${addr}`;
         setLocationName(detailedAddress);
+        console.log("detailedAddress: ", detailedAddress);
         // setLocationName("东园宾馆(教育路店)");
       },
       fail: (err) => {
@@ -493,14 +495,8 @@ const CameraPage = () => {
       selectImg();
       return;
     }
-    if (!canTakePhoto) {
-      Taro.showToast({
-        title: "水印绘制中,请稍等...",
-        icon: "none",
-      });
-      return;
-    }
 
+    const inviteId = Taro.getCurrentInstance().router.params.id || "";
     // 相机
     if (camera) {
       // 上传时间位置 保存
@@ -514,9 +510,6 @@ const CameraPage = () => {
             latitude,
             longitude,
           },
-        },
-        success: function (res) {
-          console.log("保存成功 ");
         },
       });
 
@@ -543,7 +536,9 @@ const CameraPage = () => {
                 "&scale=" +
                 canvasConfigState[currentShuiyinIndex]?.[0]?.scale +
                 "&vip=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.vip,
+                canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
+                "&id=" +
+                inviteId,
             });
           }, 200);
         },
@@ -566,7 +561,9 @@ const CameraPage = () => {
           "&vip=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
           "&shuiyinTypeSelect=" +
-          shuiyinTypeSelect,
+          shuiyinTypeSelect +
+          "&id=" +
+          inviteId,
       });
     }
   };
@@ -616,6 +613,10 @@ const CameraPage = () => {
     if (userInfo?.saveConfig?.isSaved && !edit) {
       if (locationName !== userInfo.saveConfig.locationName) {
         setTimeout(() => {
+          console.log(
+            "userInfo.saveConfig.locationName: ",
+            userInfo.saveConfig.locationName
+          );
           setLocationName(userInfo.saveConfig.locationName);
           isUseServerData = true;
         }, 1000);
@@ -693,6 +694,9 @@ const CameraPage = () => {
   };
   let rafId = "";
   const drawMask = () => {
+    if (!locationName) {
+      return;
+    }
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
       const query = Taro.createSelectorQuery();
@@ -712,7 +716,6 @@ const CameraPage = () => {
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             const dpr = wx.getSystemInfoSync().pixelRatio;
-
             const canvasConfig = dingzhi({
               hours,
               minutes,
@@ -819,12 +822,24 @@ const CameraPage = () => {
         });
     });
   };
-  useEffect(() => {
-    setTimeout(() => {
-      setLocationName((prevName) => " " + prevName + " ");
-      canTakePhoto = true
-    }, 4000);
-  }, []);
+  let canTakePhotoFlag = false;
+
+  // useEffect(() => {
+  //   let count = 0;
+  //   const intervalId = setInterval(() => {
+  //     if (count < 6) {
+  //       setCanTakePhoto(true);
+  //       drawMask();
+  //       canTakePhotoFlag = true;
+  //       count++;
+  //     } else {
+  //       clearInterval(intervalId);
+  //     }
+  //   }, 3000);
+
+  //   // 清理函数
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   useEffect(() => {
     drawMask();
@@ -1369,6 +1384,7 @@ const CameraPage = () => {
                         maxlength={30}
                         clear={true}
                         onInput={(e) => {
+                          console.log("e: ", e);
                           debounce(setLocationName(e.detail.value), 100);
                         }}
                       ></Input>

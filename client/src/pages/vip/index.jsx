@@ -20,7 +20,7 @@ const md5 = require("./md5.js");
 const UserInfo = ({ userInfo, price = { show: false } }) => {
   const [selected, setSelected] = useState("halfYearMonth");
   const inviteId = Taro.getCurrentInstance().router.params.id || "";
-  console.log('inviteId: ', inviteId);
+  console.log("inviteId: ", inviteId);
 
   const vipConfig = [
     {
@@ -197,7 +197,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
             className="user-details"
             style={{ marginTop: "20px", fontWeight: "bold" }}
           >
-            P图、定制水印可以咨询客服
+            定制水印请咨询客服
           </View>
         </View>
       )}
@@ -225,27 +225,27 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
             >
               去付款
             </Button>
-            <Button
-              openType="contact"
-              style={{
-                background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
-                color: "white",
-                border: "none",
-                borderRadius: "25px",
-                padding: "0 20px",
-                fontSize: "30rpx",
-                cursor: "pointer",
-                boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                marginBottom: "20px",
-              }}
-              type="default"
-              className="guide-btn"
-            >
-              联系客服
-            </Button>
           </View>
         )}
+        <Button
+          openType="contact"
+          style={{
+            background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
+            color: "white",
+            border: "none",
+            borderRadius: "25px",
+            padding: "0 20px",
+            fontSize: "30rpx",
+            cursor: "pointer",
+            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            marginBottom: "20px",
+          }}
+          type="default"
+          className="guide-btn"
+        >
+          联系客服
+        </Button>
       </View>
       {userInfo.type === "default" && (
         // 若在开发者工具中无法预览广告，请切换开发者工具中的基础库版本

@@ -244,7 +244,7 @@ const Index = () => {
   Taro.useShareAppMessage((res) => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
-      path: "/pages/index/index?id=" + userInfo.openid,
+      path: "/pages/index/index?id=" + data.openid,
       imageUrl: ShareImg,
     };
   });
