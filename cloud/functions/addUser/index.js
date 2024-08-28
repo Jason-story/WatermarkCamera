@@ -57,6 +57,10 @@ exports.main = async (event, context) => {
 
                 // 更新 times 字段
                 updateData.times = _.inc(1);
+                // if (userData.invite_count > 0) {
+                //     updateData.invite_count = userData.invite_count - 1;
+                // }
+
                 if (userData.vip_count > 0) {
                     updateData.vip_count = userData.vip_count - 1;
                 }
@@ -143,6 +147,9 @@ exports.main = async (event, context) => {
 
                     // 更新 times 字段
                     updateData.times = _.inc(1);
+                    // if (userData.invite_count > 0) {
+                    //     updateData.invite_count = userData.invite_count - 1;
+                    // }
                     if (userData.vip_count > 0) {
                         updateData.vip_count = userData.vip_count - 1;
                     }

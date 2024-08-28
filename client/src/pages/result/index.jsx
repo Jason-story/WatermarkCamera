@@ -155,6 +155,12 @@ const MergeCanvas = () => {
                   remark: "成功使用",
                 },
               });
+              await Taro.cloud.callFunction({
+                name: "invite",
+                data: {
+                  invite_id: inviteId,
+                },
+              });
               setTimeout(() => {
                 Taro.showToast({
                   title: "已保存到相册",
@@ -218,9 +224,12 @@ const MergeCanvas = () => {
       await Taro.cloud.callFunction({
         name: "addUser",
         success: async function (res) {
+          if (res.result.data.invite_count == undefined) {
+            res.result.data.invite_count = 0;
+          }
           // 免费次数用尽
           if (
-            (res.result.data.times >= 2 &&
+            (res.result.data.times >= 2 + res.result.data.invite_count &&
               res.result.data.type === "default") ||
             (res.result.data.type === "default" && isVip === "true")
           ) {
@@ -370,12 +379,12 @@ const MergeCanvas = () => {
               remark: "成功使用",
             },
           });
-          // await Taro.cloud.callFunction({
-          //   name: "invite",
-          //   data: {
-          //     invite_id: inviteId,
-          //   },
-          // });
+          await Taro.cloud.callFunction({
+            name: "invite",
+            data: {
+              invite_id: inviteId,
+            },
+          });
           setTimeout(() => {
             Taro.showToast({
               title: "已保存到相册",

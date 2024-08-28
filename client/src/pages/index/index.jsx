@@ -480,6 +480,8 @@ const CameraPage = () => {
     });
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
+    console.log("canvasImg: ", canvasImg);
+
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -518,7 +520,6 @@ const CameraPage = () => {
         },
       });
 
-      console.log("canvasImg: ", canvasImg);
       cameraContext?.takePhoto({
         zoom: zoomLevel,
         quality:
@@ -810,7 +811,7 @@ const CameraPage = () => {
                     console.error("写入文件失败：", err);
                   },
                 });
-              }, 300); // 延迟执行以确保绘制完成
+              }, 1000); // 延迟执行以确保绘制完成
             } catch (error) {
               console.log("error: ", error);
             }
@@ -1183,7 +1184,7 @@ const CameraPage = () => {
                 className="share-btn"
                 type="button"
               >
-                <Text>邀请返现</Text>
+                <Text>邀好友得次数</Text>
                 <View id="container-stars">
                   <View id="stars"></View>
                 </View>
@@ -1227,7 +1228,8 @@ const CameraPage = () => {
             <AtModalContent>
               <View className="modal-list">
                 <View className="txt1">
-                  好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。
+                  好友通过您的邀请链接成功使用一次，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
+                  {/* 好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。 */}
                 </View>
               </View>
             </AtModalContent>

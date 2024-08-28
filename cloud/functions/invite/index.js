@@ -37,11 +37,10 @@ exports.main = async (event, context) => {
                 invite_id: invite_id,
                 openid: OPENID,
                 timestamp: _.gte(today).and(_.lte(endOfDay)),
-                _createTime: +new Date()
             })
             .count();
 
-        if (inviteCheck.total >= 2) {
+        if (inviteCheck.total >= 1) {
             await transaction.rollback();
             return {
                 success: false,
@@ -71,7 +70,7 @@ exports.main = async (event, context) => {
             .doc(userCheck.data[0]._id)
             .update({
                 data: {
-                    invite_count: _.inc(2)
+                    invite_count: _.inc(1)
                 }
             });
 
