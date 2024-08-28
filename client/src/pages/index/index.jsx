@@ -79,6 +79,8 @@ const getCloud = async () => {
   }
   return cloud;
 };
+let canTakePhotoFlag = false;
+
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -120,6 +122,7 @@ const CameraPage = () => {
   const [addAnimate, setAddAnimate] = useState(false);
   const [vipAnimate, setVipAnimate] = useState(false);
   const [inviteModalShow, setInviteModalShow] = useState(false);
+  const [canTakePhoto, setCanTakePhoto] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -307,6 +310,7 @@ const CameraPage = () => {
         // 拼接市以下的地址信息，不包括门牌号
         const detailedAddress = `${addr}`;
         setLocationName(detailedAddress);
+        console.log("detailedAddress: ", detailedAddress);
         // setLocationName("东园宾馆(教育路店)");
       },
       fail: (err) => {
@@ -503,23 +507,16 @@ const CameraPage = () => {
       });
       return;
     }
-    if (!locationName) {
-      Taro.showToast({
-        title: "位置获取中...",
-        icon: "none",
-      });
-      return;
-    }
     if (shuiyinTypeSelect === "video" && typeof camera === "object") {
       selectImg();
       return;
     }
 
+    const inviteId = Taro.getCurrentInstance().router.params.id || "";
     // 相机
     if (camera) {
       // 上传时间位置 保存
-
-      cloud.callFunction({
+      Taro.cloud.callFunction({
         name: "updateSavedConfig",
         data: {
           saveConfig: {
@@ -530,12 +527,8 @@ const CameraPage = () => {
             longitude,
           },
         },
-        success: function (res) {
-          console.log("保存成功 ");
-        },
       });
 
-      console.log("canvasImg: ", canvasImg);
       cameraContext?.takePhoto({
         zoom: zoomLevel,
         quality:
@@ -559,7 +552,9 @@ const CameraPage = () => {
                 "&scale=" +
                 canvasConfigState[currentShuiyinIndex]?.[0]?.scale +
                 "&vip=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.vip,
+                canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
+                "&id=" +
+                inviteId,
             });
           }, 200);
         },
@@ -582,7 +577,9 @@ const CameraPage = () => {
           "&vip=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
           "&shuiyinTypeSelect=" +
-          shuiyinTypeSelect,
+          shuiyinTypeSelect +
+          "&id=" +
+          inviteId,
       });
     }
   };
@@ -633,6 +630,10 @@ const CameraPage = () => {
     if (userInfo?.saveConfig?.isSaved && !edit) {
       if (locationName !== userInfo.saveConfig.locationName) {
         setTimeout(() => {
+          console.log(
+            "userInfo.saveConfig.locationName: ",
+            userInfo.saveConfig.locationName
+          );
           setLocationName(userInfo.saveConfig.locationName);
           isUseServerData = true;
         }, 1000);
@@ -710,6 +711,9 @@ const CameraPage = () => {
   };
   let rafId = "";
   const drawMask = () => {
+    if (!locationName) {
+      return;
+    }
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
       const query = Taro.createSelectorQuery();
@@ -729,7 +733,6 @@ const CameraPage = () => {
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             const dpr = wx.getSystemInfoSync().pixelRatio;
-
             const canvasConfig = dingzhi({
               hours,
               minutes,
@@ -828,7 +831,7 @@ const CameraPage = () => {
                     console.error("写入文件失败：", err);
                   },
                 });
-              }, 300); // 延迟执行以确保绘制完成
+              }, 1000); // 延迟执行以确保绘制完成
             } catch (error) {
               console.log("error: ", error);
             }
@@ -836,12 +839,24 @@ const CameraPage = () => {
         });
     });
   };
+  let canTakePhotoFlag = false;
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLocationName((prevName) => " " + prevName + " ");
-    }, 3000);
-  }, []);
+  // useEffect(() => {
+  //   let count = 0;
+  //   const intervalId = setInterval(() => {
+  //     if (count < 6) {
+  //       setCanTakePhoto(true);
+  //       drawMask();
+  //       canTakePhotoFlag = true;
+  //       count++;
+  //     } else {
+  //       clearInterval(intervalId);
+  //     }
+  //   }, 3000);
+
+  //   // 清理函数
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   useEffect(() => {
     drawMask();
@@ -1201,7 +1216,7 @@ const CameraPage = () => {
                 className="share-btn"
                 type="button"
               >
-                <Text>邀请返现</Text>
+                <Text>邀好友得次数</Text>
                 <View id="container-stars">
                   <View id="stars"></View>
                 </View>
@@ -1245,7 +1260,8 @@ const CameraPage = () => {
             <AtModalContent>
               <View className="modal-list">
                 <View className="txt1">
-                  好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。
+                  好友通过您的邀请链接成功使用一次，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
+                  {/* 好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。 */}
                 </View>
               </View>
             </AtModalContent>
@@ -1385,6 +1401,7 @@ const CameraPage = () => {
                         maxlength={30}
                         clear={true}
                         onInput={(e) => {
+                          console.log("e: ", e);
                           debounce(setLocationName(e.detail.value), 100);
                         }}
                       ></Input>

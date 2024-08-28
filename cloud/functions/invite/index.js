@@ -4,7 +4,7 @@ const cloud = require('wx-server-sdk');
 // 初始化云开发环境
 cloud.init({
     env: cloud.DYNAMIC_CURRENT_ENV
-  });
+});
 
 // 获取数据库引用
 const db = cloud.database();
@@ -13,9 +13,11 @@ const _ = db.command;
 // 云函数入口函数
 exports.main = async (event, context) => {
     const wxContext = cloud.getWXContext();
-    const OPENID = wxContext.OPENID;
-    const invite_id = event.invite_id;
-    if (invite_id == OPENID) {
+    const OPENID = wxContext.OPENID; // 被邀请者
+    const invite_id = event.invite_id; // 邀请者
+    console.log('event: ', event);
+    console.log('invite_id: ', invite_id);
+    if (invite_id === OPENID) {
         return {
             success: false,
             message: 'You cannot invite yourself'
@@ -25,27 +27,49 @@ exports.main = async (event, context) => {
     const transaction = await db.startTransaction();
 
     try {
-        // 检查当前 invite_id 是否已经用过2次
-        const today = new Date();
+        const now = new Date();
+        const today = new Date(now);
         today.setHours(0, 0, 0, 0);
         const endOfDay = new Date(today);
         endOfDay.setHours(23, 59, 59, 999);
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
 
-        const inviteCheck = await transaction
+        // 检查邀请者(invite_id)在过去24小时内是否已经邀请过
+        const inviterCheck = await transaction
             .collection('invites')
             .where({
                 invite_id: invite_id,
-                openid: OPENID,
-                timestamp: _.gte(today).and(_.lte(endOfDay)),
-                _createTime: +new Date()
+                timestamp: _.gte(yesterday)
             })
             .count();
 
-        if (inviteCheck.total >= 2) {
+        if (inviterCheck.total >= 1) {
             await transaction.rollback();
             return {
                 success: false,
-                message: 'Invite limit reached for today'
+                invite_id,
+                event,
+                message: '24小时内已邀请过'
+            };
+        }
+
+        // 检查被邀请者(OPENID)今天被邀请的次数
+        const inviteeCheck = await transaction
+            .collection('invites')
+            .where({
+                openid: OPENID,
+                timestamp: _.gte(today).and(_.lte(endOfDay))
+            })
+            .count();
+
+        if (inviteeCheck.total >= 3) {
+            await transaction.rollback();
+            return {
+                success: false,
+                invite_id,
+                event,
+                message: '今日已被邀请3次'
             };
         }
 
@@ -61,6 +85,8 @@ exports.main = async (event, context) => {
             await transaction.rollback();
             return {
                 success: false,
+                event,
+
                 message: 'User not found'
             };
         }
@@ -71,24 +97,26 @@ exports.main = async (event, context) => {
             .doc(userCheck.data[0]._id)
             .update({
                 data: {
-                    invite_count: _.inc(2)
+                    invite_count: _.inc(1)
                 }
             });
 
-        // 记录此次 invite_id 使用
+        // 记录此次邀请
         await transaction.collection('invites').add({
             data: {
                 invite_id: invite_id,
                 openid: OPENID,
-                timestamp: new Date(),
-                _createTime: +new Date()
+                _createTime: +new Date(),
+                timestamp: now
             }
         });
 
         await transaction.commit();
         return {
             success: true,
-            message: 'Invite count updated successfully'
+            invite_id,
+            event,
+            message: '邀请成功'
         };
     } catch (e) {
         await transaction.rollback();

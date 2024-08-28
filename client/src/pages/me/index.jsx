@@ -117,32 +117,32 @@ const UserInfo = ({
           <Text className="value">{userId || "xxx"}</Text>
         </View>
 
-        <View className="user-item">
-          <Text className="label">免费使用次数</Text>
+        {/* <View className="user-item">
+          <Text className="label">免费使用总次数</Text>
           <Text className="value">
             {userType !== "default" ? "不限量" : "共2次"}
           </Text>
-        </View>
-        <View className="user-item">
-          <Text className="label">已使用次数</Text>
-          <Text className="value">{totalQuota}</Text>
-        </View>
-        <View className="user-item">
-          <Text className="label">待提现</Text>
-          <Text className="value">{userInfo.mone || "0"}元</Text>
-        </View>
-        {/* <View className="user-item">
-          <Text className="label">邀请赠送总次数</Text>
-          <Text className="value">{inviteCount}</Text>
         </View> */}
         {/* <View className="user-item">
-          <Text className="label">已使用总额度</Text>
+          <Text className="label">已使用次数</Text>
+          <Text className="value">{totalQuota}</Text>
+        </View> */}
+        {/* <View className="user-item">
+          <Text className="label">待提现</Text>
+          <Text className="value">{userInfo.mone || "0"}元</Text>
+        </View> */}
+        <View className="user-item">
+          <Text className="label">邀请获赠总次数</Text>
+          <Text className="value">{inviteCount || 0}</Text>
+        </View>
+        <View className="user-item">
+          <Text className="label">已使用次数/总次数</Text>
           <Text className="value">
             {userType !== "default"
               ? "不限量"
-              : (totalQuota || "0") + ("/" + (10 + (inviteCount || 0)))}
+              : (totalQuota || "0") + ("/" + (2 + (inviteCount || 0)))}
           </Text>
-        </View> */}
+        </View>
         {/* <View
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >
@@ -211,7 +211,7 @@ const Index = () => {
   Taro.useShareAppMessage((res) => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
-      path: "/pages/index/index?id=" + userInfo.openid,
+      path: "/pages/index/index?id=" + data.openid,
       imageUrl: ShareImg,
     };
   });
@@ -226,6 +226,7 @@ const Index = () => {
         todayCount={data.todayUsageCount}
         userId={data.openid}
         userInfo={data}
+        onChooseAvatar={onChooseAvatar}
         userType={Date.now() > data.end_time ? "default" : data.type}
         endTime={data.end_time}
       />

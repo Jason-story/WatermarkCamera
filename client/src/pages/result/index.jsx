@@ -20,7 +20,20 @@ import { appConfigs } from "../../appConfig.js";
 
 const screenWidth = Taro.getSystemInfoSync().screenWidth;
 let interstitialAd = null;
-const inviteId = Taro.getCurrentInstance().router.params.id;
+function isFree() {
+  const daysOfWeek = [
+    "星期日",
+    "星期一",
+    "星期二",
+    "星期三",
+    "星期四",
+    "星期五",
+    "星期六",
+  ];
+  const today = new Date();
+  const dayIndex = today.getDay();
+  return daysOfWeek[dayIndex] === "星期五";
+}
 
 let cloud = "";
 const appid = Taro.getAccountInfoSync().miniProgram.appId;
@@ -42,6 +55,7 @@ const getCloud = async () => {
 
 const MergeCanvas = () => {
   Taro.getCurrentInstance().router.params;
+  const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
   const position = Taro.getCurrentInstance().router.params.position;
@@ -173,6 +187,14 @@ const MergeCanvas = () => {
                   remark: "成功使用",
                 },
               });
+              if (inviteId) {
+                await Taro.cloud.callFunction({
+                  name: "invite",
+                  data: {
+                    invite_id: inviteId,
+                  },
+                });
+              }
               setTimeout(() => {
                 Taro.showToast({
                   title: "已保存到相册",
@@ -200,7 +222,7 @@ const MergeCanvas = () => {
         },
       });
     };
-    if (userInfo.vip_count === 0) {
+    if (userInfo.vip_count === 0 && !isFree()) {
       Taro.showToast({
         title: "你的会员额度已经用完，请联系客服购买",
         icon: "none",
@@ -237,15 +259,22 @@ const MergeCanvas = () => {
       await cloud.callFunction({
         name: "addUser",
         success: async function (res) {
-          // 免费次数用尽
-          if (
-            (res.result.data.times >= 2 &&
-              res.result.data.type === "default") ||
-            (res.result.data.type === "default" && isVip === "true")
-          ) {
-            setIsShowModal(true);
+          if (res.result.data.invite_count == undefined) {
+            res.result.data.invite_count = 0;
+          }
+          if (isFree()) {
             setLoading(false);
-            return;
+          } else {
+            // 免费次数用尽
+            if (
+              (res.result.data.times >= 2 + res.result.data.invite_count &&
+                res.result.data.type === "default") ||
+              (res.result.data.type === "default" && isVip === "true")
+            ) {
+              setIsShowModal(true);
+              setLoading(false);
+              return;
+            }
           }
 
           await setUserInfo(res.result.data);
@@ -260,7 +289,6 @@ const MergeCanvas = () => {
             );
             setImageHeight(height);
             setImageWidth(width);
-            console.log("width: ", width);
             handleMergedImage(fileID, res.result.data);
           } else {
             console.log("客户端 ");
@@ -378,7 +406,6 @@ const MergeCanvas = () => {
       });
       return res.fileID;
     }
-
     setLoading(false);
     const save = () => {
       Taro.saveImageToPhotosAlbum({
@@ -391,12 +418,14 @@ const MergeCanvas = () => {
               remark: "成功使用",
             },
           });
-          // await Taro.cloud.callFunction({
-          //   name: "invite",
-          //   data: {
-          //     invite_id: inviteId,
-          //   },
-          // });
+          if (inviteId) {
+            await Taro.cloud.callFunction({
+              name: "invite",
+              data: {
+                invite_id: inviteId,
+              },
+            });
+          }
           setTimeout(() => {
             Taro.showToast({
               title: "已保存到相册",
@@ -588,10 +617,11 @@ const MergeCanvas = () => {
           <AtModalContent>
             <View className="modal-list">
               <View style={{ lineHeight: 1.6 }}>
-                {isVip === "true" ? "该水印为会员专属" : "您免费次数用完"}
-                ，请联系客服开通会员，会员为
+                {isVip === "true"
+                  ? "该水印为会员专属，请开通会员，会员为"
+                  : "您免费次数用完，请到首页-邀请好友得次数或者开通会员，会员为"}
                 <Text style={{ color: "red" }}>收费服务</Text>
-                ，请知悉!!!
+                ，请知悉！！！
               </View>
             </View>
           </AtModalContent>
