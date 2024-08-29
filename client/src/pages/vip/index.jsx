@@ -38,7 +38,6 @@ const getCloud = async () => {
 const UserInfo = ({ userInfo, price = { show: false } }) => {
   const [selected, setSelected] = useState("halfYearMonth");
   const inviteId = Taro.getCurrentInstance().router.params.id || "";
-  console.log("inviteId: ", inviteId);
 
   const vipConfig = [
     {
