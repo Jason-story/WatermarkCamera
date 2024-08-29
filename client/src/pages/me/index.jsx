@@ -5,6 +5,9 @@ import Head from "../../images/head.jpg";
 import ShareImg from "../../images/logo.jpg";
 
 import "./index.scss";
+
+const inviteId = Taro.getCurrentInstance().router.params.id || "";
+
 const UserInfo = ({
   userInfo,
   avatar,
@@ -137,7 +140,6 @@ const UserInfo = ({
       <View style={{ width: "100%", marginTop: "50px" }}>
         <Button
           onClick={() => {
-            const inviteId = Taro.getCurrentInstance().router.params.id || "";
             Taro.navigateTo({
               url: "/pages/vip/index?id=" + inviteId,
             });

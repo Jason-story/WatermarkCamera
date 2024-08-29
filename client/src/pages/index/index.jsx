@@ -59,6 +59,7 @@ const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
 const secondsD = String(now.getSeconds()).padStart(2, "0");
 const maxDate = new Date("2030-01-01");
+const inviteId = Taro.getCurrentInstance().router.params.id || "";
 
 // const date = `${year}年${month}月${day}日`;
 // const time = `${hours}:${minutes}`;
@@ -496,7 +497,6 @@ const CameraPage = () => {
       return;
     }
 
-    const inviteId = Taro.getCurrentInstance().router.params.id || "";
     // 相机
     if (camera) {
       // 上传时间位置 保存
@@ -1077,10 +1077,6 @@ const CameraPage = () => {
               >
                 <Button
                   onClick={() => {
-                    const inviteId =
-                      Taro.getCurrentInstance().router.params.id || "";
-                    console.log("inviteId: ", inviteId);
-
                     Taro.navigateTo({
                       url:
                         "/pages/vip/index?type=" +

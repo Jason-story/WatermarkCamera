@@ -614,8 +614,6 @@ const MergeCanvas = () => {
             </Button> */}
             <Button
               onClick={() => {
-                const inviteId =
-                  Taro.getCurrentInstance().router.params.id || "";
                 Taro.navigateTo({
                   url: "/pages/vip/index?id=" + inviteId,
                 });
