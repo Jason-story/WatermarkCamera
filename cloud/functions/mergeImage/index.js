@@ -9,6 +9,25 @@ cloud.init({
 // 获取数据库引用
 const db = cloud.database();
 const _ = db.command;
+function generateTimestamp() {
+    const now = new Date();
+
+    // 获取当前时间的时间戳（毫秒）
+    const timestamp = now.getTime();
+
+    // 计算北京时间，中国位于 UTC+8 时区
+    const beijingTime = new Date(timestamp + 8 * 60 * 60 * 1000);
+
+    // 格式化时间
+    const year = beijingTime.getUTCFullYear();
+    const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(beijingTime.getUTCDate()).padStart(2, '0');
+    const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
+    const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+
+    return `${month}.${day}_${hours}.${minutes}.${seconds}`;
+}
 // Optimized security check function
 async function securityCheck(fileContent) {
     try {
@@ -94,7 +113,7 @@ exports.main = async (event, context) => {
 
         // Upload to cloud storage
         const uploadResult = await cloud.uploadFile({
-            cloudPath: `server_images/${userInfo.openid}__${Date.now()}.jpg`,
+            cloudPath: `server_images/${generateTimestamp()}_${userInfo.openid}.jpg`,
             fileContent: buffer
         });
 

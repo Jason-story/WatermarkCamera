@@ -365,17 +365,17 @@ const MergeCanvas = () => {
 
     // 格式化时间
     const year = beijingTime.getUTCFullYear();
-    const month = String(beijingTime.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(beijingTime.getUTCDate()).padStart(2, "0");
-    const hours = String(beijingTime.getUTCHours()).padStart(2, "0");
-    const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
-    const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
+    const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(beijingTime.getUTCDate()).padStart(2, '0');
+    const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
+    const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
 
-    return `${year}_${month}_${day}_${hours}_${minutes}_${seconds}`;
-  }
+    return `${month}.${day}_${hours}.${minutes}.${seconds}`;
+}
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-      const cloudPath = `client/${generateTimestamp()}-${info.openid}.${
+      const cloudPath = `client/${generateTimestamp()}_${info.openid}.${
         filePath.match(/\.(\w+)$/)[1]
       }`;
       const res = await wx.cloud.uploadFile({
