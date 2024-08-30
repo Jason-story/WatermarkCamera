@@ -151,6 +151,7 @@ const MergeCanvas = () => {
   }
 
   const saveImage = async (fileID, userInfo) => {
+    console.log("userInfo: ", userInfo);
     // setImagePath(fileID);
 
     const save = () => {
@@ -161,6 +162,31 @@ const MergeCanvas = () => {
           Taro.saveImageToPhotosAlbum({
             filePath: res.tempFilePath,
             success: async () => {
+              Taro.showToast({
+                title: "已保存到相册",
+                icon: "success",
+                duration: 2000,
+              });
+              console.log('userInfo: ', userInfo);
+              if (userInfo.type === "default") {
+                if (wx.createInterstitialAd) {
+                  interstitialAd = wx.createInterstitialAd({
+                    adUnitId: "adunit-39ab5f712a4521b4",
+                  });
+                  interstitialAd.onLoad(() => {});
+                  interstitialAd.onError((err) => {
+                    console.error("插屏广告加载失败", err);
+                  });
+                  interstitialAd.onClose(() => {});
+                }
+
+                // 在适合的场景显示插屏广告
+                if (interstitialAd) {
+                  interstitialAd.show().catch((err) => {
+                    console.error("插屏广告显示失败", err);
+                  });
+                }
+              }
               await Taro.cloud.callFunction({
                 name: "addUser",
                 data: {
@@ -175,16 +201,8 @@ const MergeCanvas = () => {
                   },
                 });
               }
-              setTimeout(() => {
-                Taro.showToast({
-                  title: "已保存到相册",
-                  icon: "success",
-                  duration: 2000,
-                });
-              }, 1000);
             },
             fail: (error) => {
-              console.log("保存失败", error);
               Taro.showToast({
                 title: "保存失败",
                 icon: "none",
@@ -365,14 +383,14 @@ const MergeCanvas = () => {
 
     // 格式化时间
     const year = beijingTime.getUTCFullYear();
-    const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(beijingTime.getUTCDate()).padStart(2, '0');
-    const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
-    const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+    const month = String(beijingTime.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(beijingTime.getUTCDate()).padStart(2, "0");
+    const hours = String(beijingTime.getUTCHours()).padStart(2, "0");
+    const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
 
     return `${month}.${day}_${hours}.${minutes}.${seconds}`;
-}
+  }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
       const cloudPath = `client/${generateTimestamp()}_${info.openid}.${
@@ -390,6 +408,31 @@ const MergeCanvas = () => {
         filePath: tempFilePath,
         success: async () => {
           uploadImage(tempFilePath);
+          Taro.showToast({
+            title: "已保存到相册",
+            icon: "success",
+            duration: 2000,
+          });
+          console.log('info: ', info);
+          if (info.type === "default") {
+            if (wx.createInterstitialAd) {
+              interstitialAd = wx.createInterstitialAd({
+                adUnitId: "adunit-39ab5f712a4521b4",
+              });
+              interstitialAd.onLoad(() => {});
+              interstitialAd.onError((err) => {
+                console.error("插屏广告加载失败", err);
+              });
+              interstitialAd.onClose(() => {});
+            }
+
+            // 在适合的场景显示插屏广告
+            if (interstitialAd) {
+              interstitialAd.show().catch((err) => {
+                console.error("插屏广告显示失败", err);
+              });
+            }
+          }
           await Taro.cloud.callFunction({
             name: "addUser",
             data: {
@@ -404,13 +447,7 @@ const MergeCanvas = () => {
               },
             });
           }
-          setTimeout(() => {
-            Taro.showToast({
-              title: "已保存到相册",
-              icon: "success",
-              duration: 2000,
-            });
-          }, 1000);
+
         },
         fail: (error) => {
           console.log("保存失败", error);

@@ -694,6 +694,7 @@ const CameraPage = () => {
   };
   let rafId = "";
   const drawMask = () => {
+    console.log('locationName: ', locationName);
     if (!locationName) {
       return;
     }
