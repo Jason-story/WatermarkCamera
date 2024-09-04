@@ -202,7 +202,7 @@ const MergeCanvas = () => {
                   icon: "success",
                   duration: 2000,
                 });
-              }
+              })
             },
             fail: (error) => {
               Taro.showToast({
