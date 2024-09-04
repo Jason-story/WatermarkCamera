@@ -472,9 +472,9 @@ const generateCanvasConfig = ({
         img: Shuiyin3,
         scale: 0.4,
         name: "免费-工程记录-3",
-        width: 190, // 280 * 0.75
+        width: 210, // 280 * 0.75
         height: (locationName) => {
-          const baseHeight = 100; // 减小20px
+          const baseHeight = 110; // 减小20px
           const lineHeight = 20;
           const maxLines = 3;
           const charsPerLine = 15;

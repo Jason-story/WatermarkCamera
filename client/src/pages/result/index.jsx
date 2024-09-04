@@ -182,7 +182,32 @@ const MergeCanvas = () => {
           Taro.saveImageToPhotosAlbum({
             filePath: res.tempFilePath,
             success: async () => {
-              await cloud.callFunction({
+              Taro.showToast({
+                title: "已保存到相册",
+                icon: "success",
+                duration: 2000,
+              });
+              console.log('userInfo: ', userInfo);
+              if (userInfo.type === "default") {
+                if (wx.createInterstitialAd) {
+                  interstitialAd = wx.createInterstitialAd({
+                    adUnitId: "adunit-39ab5f712a4521b4",
+                  });
+                  interstitialAd.onLoad(() => {});
+                  interstitialAd.onError((err) => {
+                    console.error("插屏广告加载失败", err);
+                  });
+                  interstitialAd.onClose(() => {});
+                }
+
+                // 在适合的场景显示插屏广告
+                if (interstitialAd) {
+                  interstitialAd.show().catch((err) => {
+                    console.error("插屏广告显示失败", err);
+                  });
+                }
+              }
+              await Taro.cloud.callFunction({
                 name: "addUser",
                 data: {
                   remark: "成功使用",
@@ -196,13 +221,6 @@ const MergeCanvas = () => {
                   },
                 });
               }
-              setTimeout(() => {
-                Taro.showToast({
-                  title: "已保存到相册",
-                  icon: "success",
-                  duration: 2000,
-                });
-              })
             },
             fail: (error) => {
               Taro.showToast({

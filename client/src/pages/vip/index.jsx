@@ -203,7 +203,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
               return (
                 <Label className="vip-item" key={item.key}>
                   <View>
-                    <Radio value={item.key} checked={item.checked} />
+                    <Radio value={item.key} checked={price.current === item.key} />
                   </View>
                   <View className="vip-title">{item.title}</View>
                 </Label>
