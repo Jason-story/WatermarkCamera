@@ -1,4 +1,3 @@
-import Shuiyinxiangji from "../../images/shuiyinxiangji.png";
 import Taro from "@tarojs/taro";
 
 const generateCanvasConfig = ({

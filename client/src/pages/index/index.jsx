@@ -45,8 +45,6 @@ import Shuiyin3 from "../../images/shuiyin-3.png";
 import Shuiyin4 from "../../images/shuiyin-4.png";
 import Shuiyin5 from "../../images/shuiyin-5.png";
 import AddMyApp from "../../images/add-my-app.png";
-import Hongbaoicon from "../../images/hongbao.png";
-import ShuiyinLogo1 from "../../images/shuiyinxiangji.png";
 
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
@@ -106,7 +104,7 @@ const CameraPage = () => {
   const [addAnimate, setAddAnimate] = useState(false);
   const [vipAnimate, setVipAnimate] = useState(false);
   const [inviteModalShow, setInviteModalShow] = useState(false);
-  const [canTakePhoto, setCanTakePhoto] = useState(false);
+  const [update, setUpdate] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -636,7 +634,11 @@ const CameraPage = () => {
       fail: (err) => {},
     });
   }, []);
-
+  useEffect(() => {
+    setTimeout(() => {
+      setUpdate(true)
+    }, 8000);
+  }, []);
   const selectImg = () => {
     if (!allAuth) {
       Taro.showToast({
@@ -694,7 +696,6 @@ const CameraPage = () => {
   };
   let rafId = "";
   const drawMask = () => {
-    console.log("locationName: ", locationName);
     if (!locationName) {
       return;
     }
@@ -737,7 +738,6 @@ const CameraPage = () => {
               Shuiyin5,
               dpr,
               canvas,
-              ShuiyinLogo1,
             });
 
             const canvasConfigDz = generateCanvasConfig({
@@ -843,6 +843,8 @@ const CameraPage = () => {
   // }, []);
 
   useEffect(() => {
+    console.log('update: ', update);
+
     drawMask();
   }, [
     title,
@@ -858,6 +860,7 @@ const CameraPage = () => {
     day,
     currentShuiyinIndex,
     canvasConfigState.length,
+    update
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
@@ -1183,7 +1186,7 @@ const CameraPage = () => {
             />
           </View>
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
-          <Button
+            <Button
               className="share-btn"
               onClick={() => {
                 Taro.navigateTo({
@@ -1230,7 +1233,6 @@ const CameraPage = () => {
                 </View>
               </Button>
             )}
-
           </View>
 
           <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
