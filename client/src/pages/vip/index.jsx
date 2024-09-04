@@ -35,9 +35,9 @@ const getCloud = async () => {
   return cloud;
 };
 
+const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const UserInfo = ({ userInfo, price = { show: false } }) => {
-  const [selected, setSelected] = useState("halfYearMonth");
-  const inviteId = Taro.getCurrentInstance().router.params.id || "";
+  const [selected, setSelected] = useState("year");
 
   const vipConfig = [
     {
@@ -52,12 +52,12 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
     },
     {
       key: "halfYearMonth",
-      checked: true,
       title: "半年会员 " + (price["halfYearMonth"] * 1 - 0.1) + "元",
       price: price.halfYearMonth,
     },
     {
       key: "year",
+      checked: true,
       title: "包年会员 " + (price["year"] * 1 - 0.1) + "元",
       price: price.year,
     },
@@ -177,7 +177,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
   return (
     <View className="user-info">
       {price.show === true ? (
-        <View className="user-details" style={{ marginBottom: "40px" }}>
+        <View className="user-details" style={{ marginBottom: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>会员权益</Text>
           </View>
@@ -185,7 +185,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           <View>• 解锁会员专属水印</View>
           <View>• 高清水印图片</View>
           <View>• 去掉除封面广告之外的一切广告</View>
-          <View>• 客服支持（开通会员后联系客服获取微信号）</View>
+          <View>• 客服支持</View>
         </View>
       ) : (
         "暂无"
@@ -210,11 +210,13 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
               );
             })}
           </RadioGroup>
-          <View
-            className="user-details"
-            style={{ marginTop: "20px", fontWeight: "bold" }}
-          >
-            定制水印请咨询客服
+          <View className="user-details" style={{ marginTop: "20px" }}>
+            <View>
+              <Text style={{ fontWeight: "bold" }}>注意事项</Text>
+            </View>
+            <View>• 会员不支持退款，请充分了解后再开通</View>
+            <View>• 无法处理已经有水印的图片，只能人工P图处理（另外收费），可以咨询客服</View>
+            <View>• 定制水印请咨询客服（另外收费）</View>
           </View>
         </View>
       )}

@@ -501,6 +501,8 @@ const CameraPage = () => {
     });
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
+    console.log("canvasImg: ", canvasImg);
+
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -1199,6 +1201,29 @@ const CameraPage = () => {
             />
           </View>
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
+          <Button
+              className="share-btn"
+              onClick={() => {
+                Taro.navigateTo({
+                  url: "/pages/jiaocheng/index",
+                });
+              }}
+              style={{
+                background: "linear-gradient(45deg, #ff512f, #dd2476)",
+                color: "white",
+                border: "none",
+                borderRadius: "30px",
+                padding: "5px 16px",
+                fontSize: "32rpx",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                marginBottom: "10px",
+                height: "46px",
+                marginTop: "10px",
+              }}
+            >
+              使用教程
+            </Button>
             {price.show && (
               <Button
                 // openType="share"
@@ -1223,30 +1248,6 @@ const CameraPage = () => {
                 </View>
               </Button>
             )}
-            {/* <Button
-        className="share-btn"
-        onClick={() => {
-          wx.navigateToMiniProgram({
-            appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-            path: "pages/index/index",
-          });
-        }}
-        style={{
-          background: "linear-gradient(45deg, #ff512f, #dd2476)",
-          color: "white",
-          border: "none",
-          borderRadius: "30px",
-          padding: "5px 16px",
-          fontSize: "32rpx",
-          cursor: "pointer",
-          transition: "transform 0.2s, box-shadow 0.2s",
-          marginBottom: "10px",
-          height: "46px",
-          marginTop: "10px",
-        }}
-      >
-        抖音、小红书取图、去水印
-      </Button> */}
           </View>
 
           <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>

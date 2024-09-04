@@ -5,7 +5,7 @@ export default {
     "pages/vip/index",
     "pages/me/index",
     "pages/img/index",
-    "pages/meituan/index",
+    "pages/jiaocheng/index",
   ],
   requiredPrivateInfos: ["getLocation"],
   permission: {

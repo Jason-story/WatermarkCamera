@@ -20,7 +20,7 @@
     flex-direction: column;
     justify-content: space-between;
     width: 50%;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
 
     .qr-code-name {
       font-size: 30px;
@@ -29,6 +29,8 @@
 
     .qr-code-image {
       margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
     }
 
     .save-button {

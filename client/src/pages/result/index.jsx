@@ -32,7 +32,7 @@ function isFree() {
   ];
   const today = new Date();
   const dayIndex = today.getDay();
-  return daysOfWeek[dayIndex] === "星期五";
+  return daysOfWeek[dayIndex] === "星期五" ||daysOfWeek[dayIndex] === "星期日";
 }
 
 let cloud = "";
@@ -171,6 +171,7 @@ const MergeCanvas = () => {
   }
 
   const saveImage = async (fileID, userInfo) => {
+    console.log("userInfo: ", userInfo);
     // setImagePath(fileID);
 
     const save = () => {
@@ -201,10 +202,9 @@ const MergeCanvas = () => {
                   icon: "success",
                   duration: 2000,
                 });
-              }, 1000);
+              }
             },
             fail: (error) => {
-              console.log("保存失败", error);
               Taro.showToast({
                 title: "保存失败",
                 icon: "none",
@@ -392,15 +392,14 @@ const MergeCanvas = () => {
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
 
-    return `${year}_${month}_${day}_${hours}_${minutes}_${seconds}`;
+    return `${month}.${day}_${hours}.${minutes}.${seconds}`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-      const cloudPath = `client/${generateTimestamp()}-${info.openid}.${
+      const cloudPath = `client/${generateTimestamp()}_${info.openid}.${
         filePath.match(/\.(\w+)$/)[1]
       }`;
-
-      const res = await cloud.uploadFile({
+      const res = await wx.cloud.uploadFile({
         cloudPath,
         filePath,
       });
@@ -426,13 +425,7 @@ const MergeCanvas = () => {
               },
             });
           }
-          setTimeout(() => {
-            Taro.showToast({
-              title: "已保存到相册",
-              icon: "success",
-              duration: 2000,
-            });
-          }, 1000);
+
         },
         fail: (error) => {
           console.log("保存失败", error);
