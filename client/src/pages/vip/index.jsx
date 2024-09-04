@@ -216,7 +216,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
             </View>
             <View>• 会员不支持退款，请充分了解后再开通</View>
             <View>• 无法处理已经有水印的图片，只能人工P图处理（另外收费），可以咨询客服</View>
-            <View>• 定制水印请咨询客服（另外收费）</View>
+            <View>• 定制水印（另外收费）请咨询客服</View>
           </View>
         </View>
       )}
