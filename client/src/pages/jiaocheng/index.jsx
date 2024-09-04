@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Image, Button, Text } from "@tarojs/components";
-import Taro, { useLoad } from "@tarojs/taro";
 
 import "./index.scss";
 
