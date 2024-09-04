@@ -193,14 +193,14 @@ const MergeCanvas = () => {
                   remark: "成功使用",
                 },
               });
-              if (inviteId) {
-                await Taro.cloud.callFunction({
-                  name: "invite",
-                  data: {
-                    invite_id: inviteId,
-                  },
-                });
-              }
+              // if (inviteId) {
+              //   await Taro.cloud.callFunction({
+              //     name: "invite",
+              //     data: {
+              //       invite_id: inviteId,
+              //     },
+              //   });
+              // }
             },
             fail: (error) => {
               Taro.showToast({
@@ -439,14 +439,14 @@ const MergeCanvas = () => {
               remark: "成功使用",
             },
           });
-          if (inviteId) {
-            await Taro.cloud.callFunction({
-              name: "invite",
-              data: {
-                invite_id: inviteId,
-              },
-            });
-          }
+          // if (inviteId) {
+          //   await Taro.cloud.callFunction({
+          //     name: "invite",
+          //     data: {
+          //       invite_id: inviteId,
+          //     },
+          //   });
+          // }
 
         },
         fail: (error) => {

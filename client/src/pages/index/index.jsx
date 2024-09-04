@@ -145,6 +145,15 @@ const CameraPage = () => {
           }
         },
       });
+      // 邀请存档
+      if (inviteId) {
+        Taro.cloud.callFunction({
+          name: "invite",
+          data: {
+            invite_id: inviteId,
+          },
+        });
+      }
       Taro.cloud.callFunction({
         name: "getPrice",
         success: function (res) {
@@ -1242,7 +1251,7 @@ const CameraPage = () => {
             <AtModalContent>
               <View className="modal-list">
                 <View className="txt1">
-                  好友通过您的邀请链接成功使用一次，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
+                  好友打开您的分享链接，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
                   {/* 好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。 */}
                 </View>
               </View>
