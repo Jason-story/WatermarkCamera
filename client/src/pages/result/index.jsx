@@ -52,7 +52,6 @@ const getCloud = async () => {
   }
   return cloud;
 };
-
 const MergeCanvas = () => {
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
@@ -417,7 +416,7 @@ const MergeCanvas = () => {
       const cloudPath = `client/${generateTimestamp()}_${info.openid}.${
         filePath.match(/\.(\w+)$/)[1]
       }`;
-      const res = await wx.cloud.uploadFile({
+      const res = await cloud.uploadFile({
         cloudPath,
         filePath,
       });
@@ -434,6 +433,11 @@ const MergeCanvas = () => {
             data: {
               remark: "成功使用",
             },
+          });
+          Taro.showToast({
+            title: "已保存到相册",
+            icon: "success",
+            duration: 2000,
           });
           // if (inviteId) {
           //   await cloud.callFunction({
