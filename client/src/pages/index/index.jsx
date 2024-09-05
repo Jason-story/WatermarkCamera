@@ -83,7 +83,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(2);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   const [price, setPrice] = useState({});
   const [shuiyinTypeSelect, setShuiyinTypeSelected] = useState("img");
 
