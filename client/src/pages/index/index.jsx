@@ -44,6 +44,7 @@ import Shuiyin2 from "../../images/shuiyin-2.png";
 import Shuiyin3 from "../../images/shuiyin-3.png";
 import Shuiyin4 from "../../images/shuiyin-4.png";
 import Shuiyin5 from "../../images/shuiyin-5.png";
+import Shuiyin6 from "../../images/shuiyin-6.png";
 import AddMyApp from "../../images/add-my-app.png";
 import { appConfigs } from "../../appConfig.js";
 import "./index.scss";
@@ -764,6 +765,7 @@ const CameraPage = () => {
               Shuiyin3,
               Shuiyin4,
               Shuiyin5,
+              Shuiyin6,
               dpr,
               canvas,
             });

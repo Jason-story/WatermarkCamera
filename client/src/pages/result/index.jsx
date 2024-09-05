@@ -32,7 +32,7 @@ function isFree() {
   ];
   const today = new Date();
   const dayIndex = today.getDay();
-  return daysOfWeek[dayIndex] === "星期五" ||daysOfWeek[dayIndex] === "星期日";
+  return daysOfWeek[dayIndex] === "星期六" ||daysOfWeek[dayIndex] === "星期日";
 }
 
 let cloud = "";

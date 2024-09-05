@@ -75,7 +75,7 @@ const generateCanvasConfig = ({
               {
                 fontSize: 14,
                 color: "white",
-                text: `${weekly} ${weather}℃`,
+                text: `${weekly} ${weather || "刷新重试"}℃`,
                 position: [82, 42],
               },
             ],
@@ -432,7 +432,7 @@ const generateCanvasConfig = ({
               {
                 fontSize: 13.5, // 18 * 0.75
                 color: "#000",
-                text: "天   气：" + weather + "℃",
+                text: "天   气：" + (weather ? weather + "℃" : "刷新重试"),
                 position: [11.25, 67.5], // 15 * 0.75, 90 * 0.75
               },
             ],

@@ -16,6 +16,7 @@ const generateCanvasConfig = ({
   title,
   Shuiyin4,
   Shuiyin5,
+  Shuiyin6,
   canvas,
 }) => {
   let width = "";
@@ -343,6 +344,236 @@ const generateCanvasConfig = ({
           let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },
+      },
+    ],
+    [
+      {
+        path: [
+          // 时间
+          {
+            draw: (ctx, textConfig) => {
+              const { fontSize, color, text, position } = textConfig;
+              ctx.font = `${fontSize}px fzlt`;
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+              // 添加阴影效果
+              ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+              ctx.shadowOffsetX = 1;
+              ctx.shadowOffsetY = 8;
+              ctx.shadowBlur = 3;
+
+              // 分割小时和分钟
+              const [hours, minutes] = text.split(":");
+
+              // 计算各部分的宽度
+              const hoursWidth = ctx.measureText(hours).width;
+              const minutesWidth = ctx.measureText(minutes).width;
+              const dotRadius = 4; // 缩小的圆点半径
+              const dotSpacing = 20; // 两个圆点的垂直间距
+              const totalWidth =
+                hoursWidth + minutesWidth + dotRadius * 2 + fontSize / 4; // 总宽度
+
+              // 计算居中位置
+              const canvasWidth = width - 20; // 假设你知道 canvas 的宽度
+              const xPosition = (canvasWidth - totalWidth) / 2;
+              const yPosition = position[1]; // 保持 y 位置不变
+
+              // 绘制小时部分
+              ctx.fillStyle = color;
+              ctx.fillText(hours, xPosition, yPosition);
+
+              // 计算圆点的中心位置
+              const dotXPosition = xPosition + hoursWidth + fontSize / 8; // 水平居中
+              const dotYCenter = yPosition - fontSize / 4; // 垂直居中
+
+              // 绘制两个垂直居中的圆点
+              ctx.fillStyle = "#fac92e";
+
+              // 上圆点
+              ctx.beginPath();
+              ctx.arc(
+                dotXPosition + 7,
+                dotYCenter - dotSpacing / 2 - 5,
+                dotRadius,
+                0,
+                Math.PI * 2
+              );
+              ctx.fill();
+
+              // 下圆点
+              ctx.beginPath();
+              ctx.arc(
+                dotXPosition + 7,
+                dotYCenter + dotSpacing / 2 - 5,
+                dotRadius,
+                0,
+                Math.PI * 2
+              );
+              ctx.fill();
+
+              // 绘制分钟部分
+              ctx.fillStyle = color;
+              ctx.fillText(
+                minutes,
+                dotXPosition + dotRadius * 2 + fontSize / 4,
+                yPosition
+              );
+            },
+            args: [
+              {
+                fontSize: 52,
+                color: "white",
+                text: `${hours}:${minutes}`,
+                position: [0, 70], // position 数组的 x 值在计算居中时被忽略
+              },
+            ],
+          },
+          // 日期
+          {
+            draw: (ctx, config) => {
+              const { fontSize, color, text, position } = config;
+              const canvasWidth = width - 20; // Assuming you know the canvas width
+
+              // Split text
+              const parts = text.split("@");
+              const beforeMarker = parts[0].split(weekly);
+              const datePart = beforeMarker[0].trim() + "  ";
+              const weeklyPart = weekly;
+
+              // Set font and style
+              ctx.font = `${fontSize}px 黑体`;
+              ctx.fillStyle = color;
+
+              // Calculate widths
+              const dateWidth = ctx.measureText(datePart).width;
+              const weeklyWidth = ctx.measureText(weeklyPart).width;
+
+              // Calculate total width and center position
+              const totalWidth = dateWidth + weeklyWidth;
+              const xPosition = (canvasWidth - totalWidth) / 2;
+              let yPosition = position[1];
+
+              // Draw date part
+              ctx.font = `${fontSize}px 黑体`;
+              ctx.fillText(datePart, xPosition, yPosition);
+
+              // Draw weekly part
+              ctx.font = `bold ${fontSize}px 黑体`;
+              ctx.fillText(weeklyPart, xPosition + dateWidth, yPosition);
+            },
+            args: [
+              {
+                fontSize: 15,
+                color: "white",
+                text: `${year}年${month}月${day}日  ${weekly}`,
+                position: [0, 100],
+              },
+            ],
+          },
+          {
+            draw: (ctx, config) => {
+              const { fontSize, color, text, position } = config;
+              const maxCharsPerLine = 20; // 每行最多20个字符
+              const canvasWidth = width - 20; // 假设你已经知道canvas的宽度
+
+              // 提取locationName
+              const parts = text.split("@");
+              const locationName = parts[1].trim();
+
+              // 设置字体和样式
+              ctx.font = `${fontSize}px 黑体`;
+              ctx.fillStyle = color;
+
+              // 分割locationName为两行
+              let firstLine, secondLine;
+              if (locationName.length > maxCharsPerLine) {
+                firstLine = locationName.slice(0, maxCharsPerLine);
+                secondLine = locationName.slice(maxCharsPerLine);
+              } else {
+                firstLine = locationName;
+                secondLine = "";
+              }
+
+              // 计算每行的宽度
+              const firstLineWidth = ctx.measureText(firstLine).width;
+              const secondLineWidth = ctx.measureText(secondLine).width;
+
+              // 计算第一行和第二行的居中位置
+              const xPositionFirstLine = (canvasWidth - firstLineWidth) / 2;
+              const xPositionSecondLine = (canvasWidth - secondLineWidth) / 2;
+              let yPosition = position[1];
+
+              // 绘制第一行
+              ctx.fillText(firstLine, xPositionFirstLine, yPosition);
+
+              // 如果有第二行，绘制第二行，并且独立居中
+              if (secondLine) {
+                yPosition += fontSize + 7; // 增加行间距
+                ctx.fillText(secondLine, xPositionSecondLine, yPosition);
+              }
+            },
+            args: [
+              {
+                fontSize: 15,
+                color: "white",
+                text: `@ ${locationName}`,
+                position: [0, 126],
+              },
+            ],
+          },
+
+          // 水印相机
+          {
+            draw: (ctx, config) => {
+              const { fontSize, color, text, position } = config;
+              // 绘制图片
+              Taro.getImageInfo({
+                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/shuiyinxiangji.png", // 替换为你的图片路径
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = imgInfo.path;
+                  img.onload = () => {
+                    const imgWidth = imgInfo.width / dpr + 5;
+                    const imgHeight = imgInfo.height / dpr + 5;
+
+                    // 获取画布的宽高
+                    const canvasWidth = canvas.width / dpr;
+                    const canvasHeight = canvas.height / dpr;
+
+                    // 计算图片绘制的坐标，使其位于右下角
+                    const x = canvasWidth - imgWidth;
+                    const y = canvasHeight - imgHeight + 16;
+                    ctx.shadowColor = "none";
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.shadowBlur = 0;
+                    ctx.drawImage(img, x, y, imgWidth, imgHeight);
+                  };
+                  img.onerror = (err) => {
+                    console.error("图片加载失败", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("获取图片信息失败", err);
+                },
+              });
+            },
+            args: [
+              {
+                fontSize: 15.3,
+                color: "rgba(255, 255, 255, 0.8)", // 使用带透明度的白色作为文字颜色
+                text: `水印相机`,
+                position: [0, 103],
+              },
+            ],
+          },
+        ],
+        img: Shuiyin6,
+        width: width - 20,
+        height: 160,
+        scale: 0.95,
+        name: "定制-水印相机",
+        position: "center",
       },
     ],
   ];
