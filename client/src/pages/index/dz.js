@@ -392,7 +392,7 @@ const generateCanvasConfig = ({
               // 上圆点
               ctx.beginPath();
               ctx.arc(
-                dotXPosition + 5,
+                dotXPosition + 7,
                 dotYCenter - dotSpacing / 2 - 5,
                 dotRadius,
                 0,
@@ -403,7 +403,7 @@ const generateCanvasConfig = ({
               // 下圆点
               ctx.beginPath();
               ctx.arc(
-                dotXPosition + 5,
+                dotXPosition + 7,
                 dotYCenter + dotSpacing / 2 - 5,
                 dotRadius,
                 0,
