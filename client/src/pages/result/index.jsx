@@ -207,7 +207,7 @@ const MergeCanvas = () => {
                   });
                 }
               }
-              await Taro.cloud.callFunction({
+              await cloud.callFunction({
                 name: "addUser",
                 data: {
                   remark: "成功使用",
