@@ -8,9 +8,6 @@ import {
   Canvas,
   Switch,
   Picker,
-  RadioGroup,
-  Radio,
-  Label,
   Input,
   Ad,
   AdCustom,
@@ -18,11 +15,9 @@ import {
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import {
-  AtButton,
   AtModal,
   AtToast,
   AtCard,
-  AtSwitch,
   AtModalHeader,
   AtModalContent,
   AtModalAction,
@@ -56,12 +51,10 @@ const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始�
 const dayD = String(now.getDate()).padStart(2, "0");
 const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
-const secondsD = String(now.getSeconds()).padStart(2, "0");
-const maxDate = new Date("2030-01-01");
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 
 const fs = wx.getFileSystemManager();
-const CACHE_LIMIT = 50 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
+const CACHE_LIMIT = 30 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
 
 function getCacheSize(path) {
   let totalSize = 0;
@@ -98,7 +91,6 @@ function clearCacheIfNeeded(path) {
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
-  const [settingShow, setSettingShow] = useState(false);
   const [allAuth, setAllAuth] = useState(false);
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
@@ -501,7 +493,6 @@ const CameraPage = () => {
         return 1;
       }
     });
-    setSettingShow(false);
   };
   const fanzhuanClick = (event) => {
     setDevicePosition((prevvalue) => {
