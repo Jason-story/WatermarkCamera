@@ -481,7 +481,7 @@ const generateCanvasConfig = ({
               const locationName = parts[1].trim();
 
               // 设置字体和样式
-              ctx.font = `${fontSize}px 黑体`;
+              ctx.font = `bold ${fontSize}px 黑体`;
               ctx.fillStyle = color;
 
               // 分割locationName为两行

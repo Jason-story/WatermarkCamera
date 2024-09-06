@@ -19,8 +19,10 @@ const md5 = require("./md5.js");
 
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const UserInfo = ({ userInfo, price = { show: false } }) => {
-  const [selected, setSelected] = useState("year");
-
+  const [selected, setSelected] = useState("");
+  useEffect(() => {
+    price && setSelected(price.current);
+  }, [price]);
   const vipConfig = [
     {
       key: "month",
@@ -184,7 +186,10 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
               return (
                 <Label className="vip-item" key={item.key}>
                   <View>
-                    <Radio value={item.key} checked={price.current === item.key} />
+                    <Radio
+                      value={item.key}
+                      checked={price.current === item.key}
+                    />
                   </View>
                   <View className="vip-title">{item.title}</View>
                 </Label>
@@ -196,7 +201,10 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
               <Text style={{ fontWeight: "bold" }}>注意事项</Text>
             </View>
             <View>• 会员不支持退款，请充分了解后再开通</View>
-            <View>• 无法处理已经有水印的图片，只能人工P图处理（另外收费），可以咨询客服</View>
+            <View>
+              •
+              无法处理已经有水印的图片，只能人工P图处理（另外收费），可以咨询客服
+            </View>
             <View>• 定制水印（另外收费）请咨询客服</View>
           </View>
         </View>
