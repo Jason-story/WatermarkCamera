@@ -319,7 +319,6 @@ const CameraPage = () => {
         // 拼接市以下的地址信息，不包括门牌号
         const detailedAddress = `${addr}`;
         setLocationName(detailedAddress);
-        console.log("detailedAddress: ", detailedAddress);
         // setLocationName("东园宾馆(教育路店)");
       },
       fail: (err) => {
@@ -595,7 +594,6 @@ const CameraPage = () => {
   };
 
   Taro.useShareAppMessage((res) => {
-    console.log("userInfo.openid: ", userInfo.openid);
     return {
       title: "分享你一款可修改时间、位置的水印相机",
       path: "/pages/index/index?id=" + userInfo.openid,
@@ -640,10 +638,6 @@ const CameraPage = () => {
     if (userInfo?.saveConfig?.isSaved && !edit) {
       if (locationName !== userInfo.saveConfig.locationName) {
         setTimeout(() => {
-          console.log(
-            "userInfo.saveConfig.locationName: ",
-            userInfo.saveConfig.locationName
-          );
           setLocationName(userInfo.saveConfig.locationName);
           isUseServerData = true;
         }, 1000);
@@ -666,7 +660,7 @@ const CameraPage = () => {
   useEffect(() => {
     setTimeout(() => {
       setUpdate(true);
-    }, 8000);
+    }, 5000);
   }, []);
   const selectImg = () => {
     if (!allAuth) {
@@ -873,8 +867,6 @@ const CameraPage = () => {
   // }, []);
 
   useEffect(() => {
-    console.log("update: ", update);
-
     drawMask();
   }, [
     title,
@@ -1413,7 +1405,6 @@ const CameraPage = () => {
                         maxlength={30}
                         clear={true}
                         onInput={(e) => {
-                          console.log("e: ", e);
                           debounce(setLocationName(e.detail.value), 100);
                         }}
                       ></Input>
