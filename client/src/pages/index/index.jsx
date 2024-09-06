@@ -60,9 +60,40 @@ const secondsD = String(now.getSeconds()).padStart(2, "0");
 const maxDate = new Date("2030-01-01");
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 
-// const date = `${year}年${month}月${day}日`;
-// const time = `${hours}:${minutes}`;
-let canTakePhotoFlag = false;
+const fs = wx.getFileSystemManager();
+const CACHE_LIMIT = 50 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
+
+function getCacheSize(path) {
+  let totalSize = 0;
+  try {
+    const stats = fs.statSync(path);
+    if (stats.isDirectory()) {
+      const files = fs.readdirSync(path);
+      files.forEach((file) => {
+        totalSize += getCacheSize(`${path}/${file}`);
+      });
+    } else {
+      totalSize += stats.size / 1024; // 将字节转换为 KB
+    }
+  } catch (error) {
+    console.error("获取缓存大小失败:", error);
+  }
+  return totalSize;
+}
+
+function clearCacheIfNeeded(path) {
+  const totalSize = getCacheSize(path);
+  console.log("缓存大小:", totalSize + "KB");
+  if (totalSize > CACHE_LIMIT) {
+    // 如果缓存超过限制，删除缓存
+    try {
+      fs.rmdirSync(path, true); // 递归删除整个目录
+      console.log("缓存已清理");
+    } catch (error) {
+      console.error("清理缓存失败:", error);
+    }
+  }
+}
 
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
@@ -125,6 +156,8 @@ const CameraPage = () => {
   }
 
   useEffect(() => {
+    // 小程序启动时调用此函数
+    clearCacheIfNeeded(wx.env.USER_DATA_PATH);
     const init = async () => {
       await Taro.cloud.init({
         env: "sy-4gecj2zw90583b8b",
@@ -641,7 +674,7 @@ const CameraPage = () => {
   }, []);
   useEffect(() => {
     setTimeout(() => {
-      setUpdate(true)
+      setUpdate(true);
     }, 4000);
   }, []);
   const selectImg = () => {
@@ -864,7 +897,7 @@ const CameraPage = () => {
     day,
     currentShuiyinIndex,
     canvasConfigState.length,
-    update
+    update,
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
