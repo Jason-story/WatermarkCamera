@@ -120,6 +120,13 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       return;
     }
     const price = vipConfig.find((item) => item.key === selected).price;
+    let plateform = "无";
+    wx.getSystemInfo({
+      success: function (res) {
+        plateform = res.platform;
+      },
+    });
+
     //需要加密的参数
     let data = {
       version: "1.1",
@@ -139,7 +146,9 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
         "&inviteId=" +
         inviteId +
         "&price=" +
-        price,
+        price +
+        "&plateform=" +
+        plateform,
       wap_url: "https://api.xunhupay.com", //填写支付网关
     };
     let sign = wxPaySign(data, "93417b6135b9f85bf14700c4d957aa6e");
