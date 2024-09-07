@@ -181,8 +181,9 @@ const generateCanvasConfig = ({
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
                   img.onload = () => {
-                    const imgWidth = imgInfo.width / dpr + 5;
-                    const imgHeight = imgInfo.height / dpr + 5;
+
+                    const imgWidth = imgInfo.width / 3 + 5;
+                    const imgHeight = imgInfo.height / 3 + 5;
 
                     // 获取画布的宽高
                     const canvasWidth = canvas.width / dpr;
@@ -533,8 +534,8 @@ const generateCanvasConfig = ({
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
                   img.onload = () => {
-                    const imgWidth = imgInfo.width / dpr + 5;
-                    const imgHeight = imgInfo.height / dpr + 5;
+                    const imgWidth = imgInfo.width / 3 + 5;
+                    const imgHeight = imgInfo.height / 3 + 5;
 
                     // 获取画布的宽高
                     const canvasWidth = canvas.width / dpr;

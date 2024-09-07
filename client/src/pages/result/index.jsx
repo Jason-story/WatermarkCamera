@@ -32,7 +32,7 @@ function isFree() {
   ];
   const today = new Date();
   const dayIndex = today.getDay();
-  return daysOfWeek[dayIndex] === "星期六" || daysOfWeek[dayIndex] === "星期日";
+  return daysOfWeek[dayIndex] === "星期日";
 }
 
 const MergeCanvas = () => {
@@ -55,7 +55,6 @@ const MergeCanvas = () => {
   const [imgInfo, setImgInfo] = useState({});
   const [isShowModal, setIsShowModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
-  const [isShare, setShare] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("图片检测中. . .");
   const texts = ["图片检测中. . .", "图片生成中. . .", "图片下载中. . ."];
@@ -103,7 +102,7 @@ const MergeCanvas = () => {
     const cloudPath = `${fileName}/${Date.now()}-${Math.random()
       .toString(36)
       .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
-    const res = await wx.cloud.uploadFile({
+    const res = await Taro.cloud.uploadFile({
       cloudPath,
       filePath,
     });
@@ -123,7 +122,7 @@ const MergeCanvas = () => {
       ]);
 
       // 调用云函数
-      const res = await wx.cloud.callFunction({
+      const res = await Taro.cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
         name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "mergeImage",
         data: {
@@ -151,12 +150,9 @@ const MergeCanvas = () => {
   }
 
   const saveImage = async (fileID, userInfo) => {
-    console.log("userInfo: ", userInfo);
-    // setImagePath(fileID);
-
     const save = () => {
       // 下载云存储中的图片
-      wx.cloud.downloadFile({
+      Taro.cloud.downloadFile({
         fileID: fileID, // 替换为你要下载的图片文件ID
         success: (res) => {
           Taro.saveImageToPhotosAlbum({
@@ -167,7 +163,7 @@ const MergeCanvas = () => {
                 icon: "success",
                 duration: 2000,
               });
-              console.log('userInfo: ', userInfo);
+              setLoading(false);
               if (userInfo.type === "default") {
                 if (wx.createInterstitialAd) {
                   interstitialAd = wx.createInterstitialAd({
@@ -203,6 +199,8 @@ const MergeCanvas = () => {
               // }
             },
             fail: (error) => {
+              setLoading(false);
+
               Taro.showToast({
                 title: "保存失败",
                 icon: "none",
@@ -248,7 +246,6 @@ const MergeCanvas = () => {
   // 假设这个函数在成功合并图片后被调用
   async function handleMergedImage(mergedImageFileID, info) {
     await saveImage(mergedImageFileID, info);
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -260,7 +257,6 @@ const MergeCanvas = () => {
             res.result.data.invite_count = 0;
           }
           if (isFree()) {
-            setLoading(false);
           } else {
             // 免费次数用尽
             if (
@@ -273,7 +269,6 @@ const MergeCanvas = () => {
               return;
             }
           }
-
           await setUserInfo(res.result.data);
           // 服务端合成图片
           if (serverCanvas === "true") {
@@ -412,24 +407,23 @@ const MergeCanvas = () => {
       const cloudPath = `client/${generateTimestamp()}_${info.openid}.${
         filePath.match(/\.(\w+)$/)[1]
       }`;
-      const res = await wx.cloud.uploadFile({
+      const res = await Taro.cloud.uploadFile({
         cloudPath,
         filePath,
       });
       return res.fileID;
     }
-    setLoading(false);
     const save = () => {
       Taro.saveImageToPhotosAlbum({
         filePath: tempFilePath,
         success: async () => {
+          setLoading(false);
           uploadImage(tempFilePath);
           Taro.showToast({
             title: "已保存到相册",
             icon: "success",
             duration: 2000,
           });
-          console.log('info: ', info);
           if (info.type === "default") {
             if (wx.createInterstitialAd) {
               interstitialAd = wx.createInterstitialAd({
@@ -463,9 +457,10 @@ const MergeCanvas = () => {
           //     },
           //   });
           // }
-
         },
         fail: (error) => {
+          setLoading(false);
+
           console.log("保存失败", error);
           Taro.showToast({
             title: "保存失败",
