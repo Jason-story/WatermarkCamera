@@ -317,7 +317,7 @@ const generateCanvasConfig = ({
         width: 255,
         scale: 0.55,
         name: "定制-今日水印相机-打卡",
-        vip: true,
+        // vip: true,
         height: (locationName, hideJw) => {
           const baseHeight = 100; // 减小20px
           const lineHeight = 21.25;
