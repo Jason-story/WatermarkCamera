@@ -18,11 +18,9 @@ import {
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import {
-  AtButton,
   AtModal,
   AtToast,
   AtCard,
-  AtSwitch,
   AtModalHeader,
   AtModalContent,
   AtModalAction,
@@ -119,7 +117,6 @@ let canTakePhotoFlag = false;
 const CameraPage = () => {
   const [cameraContext, setCameraContext] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
-  const [settingShow, setSettingShow] = useState(false);
   const [allAuth, setAllAuth] = useState(false);
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
@@ -135,7 +132,7 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(2);
   const [price, setPrice] = useState({});
   const [shuiyinTypeSelect, setShuiyinTypeSelected] = useState("img");
 
@@ -177,7 +174,7 @@ const CameraPage = () => {
   }
 
   useEffect(() => {
-    // 检查缓存大小并清理
+    // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
     const init = async () => {
       await getCloud();
@@ -523,7 +520,6 @@ const CameraPage = () => {
         return 1;
       }
     });
-    setSettingShow(false);
   };
   const fanzhuanClick = (event) => {
     setDevicePosition((prevvalue) => {
@@ -697,7 +693,7 @@ const CameraPage = () => {
   useEffect(() => {
     setTimeout(() => {
       setUpdate(true);
-    }, 5000);
+    }, 4000);
   }, []);
   const selectImg = () => {
     if (!allAuth) {

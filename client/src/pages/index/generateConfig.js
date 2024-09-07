@@ -310,6 +310,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin2,
         width: 255,
+        vip: true,
         scale: 0.5,
         name: "免费-打卡-2",
         height: locationName.length > 16 ? 125 : 105,
@@ -470,7 +471,8 @@ const generateCanvasConfig = ({
           },
         ],
         img: Shuiyin3,
-        scale: 0.4,
+        scale: 0.45,
+        vip: true,
         name: "免费-工程记录-3",
         width: 210, // 280 * 0.75
         height: (locationName) => {

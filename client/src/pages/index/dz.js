@@ -181,8 +181,9 @@ const generateCanvasConfig = ({
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
                   img.onload = () => {
-                    const imgWidth = imgInfo.width / dpr + 5;
-                    const imgHeight = imgInfo.height / dpr + 5;
+
+                    const imgWidth = imgInfo.width / 3 + 5;
+                    const imgHeight = imgInfo.height / 3 + 5;
 
                     // 获取画布的宽高
                     const canvasWidth = canvas.width / dpr;
@@ -317,7 +318,7 @@ const generateCanvasConfig = ({
         width: 255,
         scale: 0.55,
         name: "定制-今日水印相机-打卡",
-        vip: true,
+        // vip: true,
         height: (locationName, hideJw) => {
           const baseHeight = 100; // 减小20px
           const lineHeight = 21.25;
@@ -533,8 +534,8 @@ const generateCanvasConfig = ({
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
                   img.onload = () => {
-                    const imgWidth = imgInfo.width / dpr + 5;
-                    const imgHeight = imgInfo.height / dpr + 5;
+                    const imgWidth = imgInfo.width / 3 + 5;
+                    const imgHeight = imgInfo.height / 3 + 5;
 
                     // 获取画布的宽高
                     const canvasWidth = canvas.width / dpr;

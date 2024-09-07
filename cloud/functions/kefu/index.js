@@ -70,7 +70,6 @@ exports.main = async (event, context) => {
                 // '您好，欢迎使用水印相机。如果您要开通会员请复制下面链接到浏览器中打开。如有问题请留言，我会第一时间回复您。'
                 '您好，周六周日免费使用，觉得好用就开个会员支持一下吧 ☺️ 有任何问题可留言，第一时间回复。'
         });
-
         // 发送微信号
         // await sendCustomerServiceMessage(userOpenId, 'text', {
         //     content: '开通会员请到 小程序-我的-点击id 复制文字发送给我。并选择会员类型。'
