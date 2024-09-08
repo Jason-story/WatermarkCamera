@@ -455,7 +455,7 @@ const generateCanvasConfig = ({
               let yPosition = position[1];
 
               // Draw date part
-              ctx.font = `${fontSize}px 黑体`;
+              ctx.font = `bold ${fontSize}px 黑体`;
               ctx.fillText(datePart, xPosition, yPosition);
 
               // Draw weekly part
