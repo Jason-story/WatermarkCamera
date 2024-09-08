@@ -18,7 +18,6 @@ const UserInfo = ({
   userId,
   endTime,
   todayCount,
-  onChooseAvatar,
   userType,
 }) => {
   const onCopyText = (text) => {
@@ -126,6 +125,23 @@ const UserInfo = ({
               : (totalQuota || "0") + ("/" + (2 + (inviteCount || 0)))}
           </Text>
         </View>
+        {userType !== "default" && (
+          <View
+            className="user-item"
+            onClick={() => {
+              onCopyText('jason_story');
+            }}
+          >
+            <View
+              className="label"
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              客服微信 <View style={{ fontSize: "12px" }}>(点击复制)</View>
+            </View>
+            <Text className="value">{"jason_story"}</Text>
+          </View>
+        )}
+
         {/* <View
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >
@@ -194,14 +210,6 @@ const Index = () => {
     });
   };
 
-  const onChooseAvatar = (e) => {
-    const { avatarUrl } = e.detail;
-    setUserInfo((prev) => ({
-      ...prev,
-      avatar: avatarUrl,
-    }));
-  };
-
   const checkAuthorization = () => {
     Taro.getSetting({
       success: (res) => {
@@ -261,7 +269,6 @@ const Index = () => {
         todayCount={data.todayUsageCount}
         userId={data.openid}
         userInfo={data}
-        onChooseAvatar={onChooseAvatar}
         userType={Date.now() > data.end_time ? "default" : data.type}
         endTime={data.end_time}
       />
