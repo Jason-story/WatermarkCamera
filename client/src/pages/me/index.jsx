@@ -144,6 +144,23 @@ const UserInfo = ({
               : (totalQuota || "0") + ("/" + (2 + (inviteCount || 0)))}
           </Text>
         </View>
+        {userType !== "default" && (
+          <View
+            className="user-item"
+            onClick={() => {
+              onCopyText('jason_story');
+            }}
+          >
+            <View
+              className="label"
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              客服微信 <View style={{ fontSize: "12px" }}>(点击复制)</View>
+            </View>
+            <Text className="value">{"jason_story"}</Text>
+          </View>
+        )}
+
         {/* <View
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >

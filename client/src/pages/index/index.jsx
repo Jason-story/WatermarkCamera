@@ -48,6 +48,7 @@ import { appConfigs } from "../../appConfig.js";
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
+const app = Taro.getApp();
 const now = new Date();
 const yearD = now.getFullYear();
 const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
@@ -131,8 +132,9 @@ const CameraPage = () => {
   const [hours, setHours] = useState(hoursD);
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
+
   // 水印选择
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(2);
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   const [price, setPrice] = useState({});
   const [shuiyinTypeSelect, setShuiyinTypeSelected] = useState("img");
 
@@ -196,6 +198,13 @@ const CameraPage = () => {
                 }
               });
           }
+        },
+      });
+      cloud.callFunction({
+        name: "getDD",
+        success: function (res) {
+          app.$app.globalData.config = res.result.data;
+          setCurrentShuiyinIndex(res.result.data.shuiyinindex);
         },
       });
       // 邀请存档
@@ -1312,7 +1321,7 @@ const CameraPage = () => {
                 关闭
               </Button>
               <Button openType="share" type="button" style={{ flex: 1 }}>
-                去邀请
+                去群聊邀请
               </Button>
             </AtModalAction>
           </AtModal>

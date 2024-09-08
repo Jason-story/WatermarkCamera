@@ -4,6 +4,14 @@ import "./app.scss";
 import "taro-ui/dist/style/index.scss";
 
 class App extends Component {
+  constructor() {
+    super();
+    // 手动定义 globalData
+    this.globalData = {
+      config: {},
+    };
+  }
+
   componentDidMount() {
     Taro.cloud.init({
       env: "sy-4gecj2zw90583b8b",
