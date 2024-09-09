@@ -209,6 +209,8 @@ const CameraPage = () => {
       });
       // 邀请存档
       if (inviteId) {
+        Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
+
         cloud.callFunction({
           name: "invite",
           data: {
@@ -1038,9 +1040,7 @@ const CameraPage = () => {
                   type="2d"
                   // className={canvasImg ? "hideCanvas" : ""}
                   style={{
-                    width:
-                      canvasConfigState.length > 0 &&
-                      canvasConfigState[currentShuiyinIndex]?.[0].width + "px",
+                    width: screenWidth,
                     height:
                       canvasConfigState[currentShuiyinIndex]?.[0].height &&
                       typeof canvasConfigState[currentShuiyinIndex]?.[0]
@@ -1057,10 +1057,7 @@ const CameraPage = () => {
                     src={canvasImg}
                     className={canvasImg ? "hideCanvas" : ""}
                     style={{
-                      width:
-                        canvasConfigState.length > 0 &&
-                        canvasConfigState[currentShuiyinIndex]?.[0].width +
-                          "px",
+                      width: "100%",
                       height:
                         canvasConfigState[currentShuiyinIndex]?.[0].height &&
                         typeof canvasConfigState[currentShuiyinIndex]?.[0]

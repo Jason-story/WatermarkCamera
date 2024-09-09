@@ -128,10 +128,10 @@ const UserInfo = ({
           <Text className="label">已使用次数</Text>
           <Text className="value">{totalQuota}</Text>
         </View> */}
-        {/* <View className="user-item">
+        <View className="user-item">
           <Text className="label">待提现</Text>
           <Text className="value">{userInfo.mone || "0"}元</Text>
-        </View> */}
+        </View>
         <View className="user-item">
           <Text className="label">邀请获赠总次数</Text>
           <Text className="value">{inviteCount || 0}</Text>
@@ -148,7 +148,7 @@ const UserInfo = ({
           <View
             className="user-item"
             onClick={() => {
-              onCopyText('jason_story');
+              onCopyText("jason_story");
             }}
           >
             <View
