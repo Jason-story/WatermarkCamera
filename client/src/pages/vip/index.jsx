@@ -44,28 +44,28 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
   const vipConfig = [
     {
       key: "month",
-      title: "包月会员 " + (price["month"] * 1 - 0.11) + "元",
+      title: "包月会员 " + (price["month"] * 1 - 0.01) + "元",
       price: price.month,
     },
     {
       key: "threeMonth",
-      title: "三月会员 " + (price["threeMonth"] * 1 - 0.11) + "元",
+      title: "三月会员 " + (price["threeMonth"] * 1 - 0.01) + "元",
       price: price.threeMonth,
     },
     {
       key: "halfYearMonth",
-      title: "半年会员 " + (price["halfYearMonth"] * 1 - 0.11) + "元",
+      title: "半年会员 " + (price["halfYearMonth"] * 1 - 0.01) + "元",
       price: price.halfYearMonth,
     },
     {
       key: "year",
       checked: true,
-      title: "包年会员 " + (price["year"] * 1 - 0.11) + "元",
+      title: "包年会员 " + (price["year"] * 1 - 0.01) + "元",
       price: price.year,
     },
     {
       key: "never",
-      title: "永久会员 " + (price["never"] * 1 - 0.11) + "元",
+      title: "永久会员 " + (price["never"] * 1 - 0.01) + "元",
       price: price.never,
     },
   ];
@@ -138,14 +138,13 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       });
       return;
     }
-    const price = vipConfig.find((item) => item.key === selected).price - 0.11;
+    const price = vipConfig.find((item) => item.key === selected).price - 0.01;
     let plateform = "无";
     wx.getSystemInfo({
       success: function (res) {
         plateform = res.platform;
       },
     });
-
     //需要加密的参数
     let data = {
       version: "1.1",
