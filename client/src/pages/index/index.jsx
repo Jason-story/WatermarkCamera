@@ -35,6 +35,8 @@ import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import VipArrow from "../../images/vip-arrow.png";
 import XiangceIcon from "../../images/xiangce.png";
+import Setting from "../../images/setting.png";
+import Jiaocheng from "../../images/jiaocheng.png";
 import KefuIcon from "../../images/kefu.png";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import Shuiyin1 from "../../images/shuiyin-1.png";
@@ -139,6 +141,7 @@ const CameraPage = () => {
   const [shuiyinTypeSelect, setShuiyinTypeSelected] = useState("img");
 
   const [showFloatLayout, setShowFloatLayout] = useState(false);
+  const [showSetting, setShowSetting] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
   const [city, setCity] = useState("");
   const [edit, setEdit] = useState(false);
@@ -1052,6 +1055,7 @@ const CameraPage = () => {
                           ) + "px",
                   }}
                 />
+
                 {canvasImg && (
                   <Image
                     src={canvasImg}
@@ -1083,14 +1087,7 @@ const CameraPage = () => {
               <Image src={AddMyApp}></Image>
             </View>
           )}
-          {/* {userInfo.type === "default" && (
-      <ad-custom
-        unit-id="adunit-ba74b4bc4303c143"
-        style={{ width: "100%" }}
-      ></ad-custom>
-    )} */}
-          {/* JSX 结构 */}
-          <View className="tools-bar">
+          <View className="tools-bar" >
             <View className="tools-bar-inner">
               <View
                 className={
@@ -1194,60 +1191,49 @@ const CameraPage = () => {
               </View>
             </View>
           </View>
-
-          {/* {price.show && (
-      <View className="shantui-btns" style={{ marginTop: "5px" }}>
-        <RadioGroup
-          onChange={(e) => {
-            setShuiyinTypeSelected(e.detail.value);
-          }}
-        >
-          <View className="imgVideoShuiyin">
-            <Label className="vip-item">
-              <View>
-                <Radio value="img" checked={true} />
+          {/* ------- */}
+          <View
+            className="tools-bar"
+            style={{  marginTop: "-15px" }}
+          >
+            <View className="tools-bar-inner">
+              <View
+                className={
+                  "xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Image
+                  src={Setting}
+                  className="xiangceIcon"
+                  onClick={() => {
+                    setShowSetting(!showSetting);
+                  }}
+                ></Image>
+                <Text>设置</Text>
               </View>
-              <View className="vip-title">图片水印</View>
-            </Label>
-            <Label className="vip-item video-item">
-              <View>
-                <Radio value="video" />
+              <View
+                className={
+                  "xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Image
+                  src={Jiaocheng}
+                  className="xiangceIcon"
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: "/pages/jiaocheng/index",
+                    });
+                  }}
+                ></Image>
+                <Text>教程</Text>
               </View>
-              <View className="vip-title">
-                视频水印
-                <Text style={{ color: "gray" }}>（仅支持永久会员使用）</Text>
-              </View>
-            </Label>
-          </View>
-        </RadioGroup>
-      </View>
-    )} */}
-
-          <View className="shantui-btns">
-            <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
-            <Switch
-              checked={shantuiSwitch}
-              style={{ transform: "scale(0.7)" }}
-              onChange={(e) => {
-                setShantuiSwitch(e.detail.value);
-              }}
-            />
-          </View>
-          <View className="shantui-btns">
-            <View style={{ marginRight: "10px" }}>
-              保存位置等数据，下次使用时无需再次修改
             </View>
-            <Switch
-              disabled={!locationName}
-              checked={isShuiyinSaved}
-              style={{ transform: "scale(0.7)" }}
-              onChange={(e) => {
-                saveChange(e.detail.value);
-              }}
-            />
           </View>
+          {/* ------- */}
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
-            <Button
+            {/* <Button
               className="share-btn"
               onClick={() => {
                 Taro.navigateTo({
@@ -1269,8 +1255,7 @@ const CameraPage = () => {
               }}
             >
               使用教程
-            </Button>
-            {price.show && (
+            </Button> */}
               <Button
                 // openType="share"
                 onClick={() => {
@@ -1293,9 +1278,7 @@ const CameraPage = () => {
                   <View className="circle"></View>
                 </View>
               </Button>
-            )}
           </View>
-
           <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text>提示</Text>
@@ -1347,6 +1330,58 @@ const CameraPage = () => {
               </Button>
             </AtModalAction>
           </AtModal>
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          <AtFloatLayout
+            isOpened={showSetting}
+            title="设置"
+            onClose={(e) => {
+              setShowSetting(!showSetting);
+            }}
+          >
+            <View className="shuiyin-list">
+              <View className="shantui-btns">
+                <View style={{ marginRight: "10px" }}>
+                  微信闪退请打开此开关
+                </View>
+                <Switch
+                  checked={shantuiSwitch}
+                  style={{ transform: "scale(0.7)" }}
+                  onChange={(e) => {
+                    setShantuiSwitch(e.detail.value);
+                  }}
+                />
+              </View>
+              <View className="shantui-btns">
+                <View style={{ marginRight: "10px" }}>
+                  保存位置等数据，下次使用时无需再次修改
+                </View>
+                <Switch
+                  disabled={!locationName}
+                  checked={isShuiyinSaved}
+                  style={{ transform: "scale(0.7)" }}
+                  onChange={(e) => {
+                    saveChange(e.detail.value);
+                  }}
+                />
+              </View>
+            </View>
+          </AtFloatLayout>
+          {/*  +++++++++++++++++++++++  */}
+          {/*  +++++++++++++++++++++++  */}
+          {/*  +++++++++++++++++++++++  */}
+          {/*  +++++++++++++++++++++++  */}
+          {/*  +++++++++++++++++++++++  */}
+          {/*  +++++++++++++++++++++++  */}
+          {/*  +++++++++++++++++++++++  */}
+          {/*  +++++++++++++++++++++++  */}
+
           <AtFloatLayout
             isOpened={showFloatLayout}
             title="水印选择、修改"
