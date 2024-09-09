@@ -17,8 +17,14 @@ import "./index.scss";
 const md5 = require("./md5.js");
 // const md5 = require("md5");
 
-const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const UserInfo = ({ userInfo, price = { show: false } }) => {
+  let inviteId = Taro.getCurrentInstance().router.params.id || "";
+  Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
+    if (res.data) {
+      inviteId = res.data;
+    }
+  });
+
   const [selected, setSelected] = useState("");
   useEffect(() => {
     price && setSelected(price.current);
@@ -210,6 +216,9 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
               <Text style={{ fontWeight: "bold" }}>注意事项</Text>
             </View>
             <View>• 会员不支持退款，请充分了解后再开通</View>
+            <View style={{ color: "#f22c3d" }}>
+              • 邀请好友开通会员，你将获得他开通额度的20%（可提现）
+            </View>
             <View>
               •
               无法处理已经有水印的图片，只能人工P图处理（另外收费），可以咨询客服

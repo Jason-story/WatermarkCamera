@@ -32,12 +32,10 @@ exports.main = async (event, context) => {
     // 使用正则表达式提取 inviteId
     let priceMatch = body.match(/price%3D([^%&]*)/);
     let price = priceMatch ? decodeURIComponent(priceMatch[1]) : null;
-      // 使用正则表达式提取 inviteId
-      let plateformMatch = body.match(/plateform%3D([^%&]*)/);
-      let plateform = plateformMatch ? decodeURIComponent(plateformMatch[1]) : null;
+    // 使用正则表达式提取 inviteId
+    let plateformMatch = body.match(/plateform%3D([^%&]*)/);
+    let plateform = plateformMatch ? decodeURIComponent(plateformMatch[1]) : null;
 
-
-    
     console.log('openid:', openid);
     console.log('type:', type);
     console.log('inviteId: ', inviteId);
@@ -80,7 +78,7 @@ exports.main = async (event, context) => {
                 })
                 .update({
                     data: {
-                        mone: _.inc(price * 0.2) // 使用 _.inc 来增加 mone 的值
+                        mone: _.inc((price * 0.2).toFixed(2)) // 使用 _.inc 来增加 mone 的值
                     }
                 });
         }

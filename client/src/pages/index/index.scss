@@ -28,8 +28,9 @@ page {
 }
 .mask-box {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 15px;
+  left: 0;
+  width: 100%;
   &.top {
     bottom: 45%;
   }
@@ -269,19 +270,19 @@ page {
 .vip {
   margin-left: 30%;
 }
-.imgVideoShuiyin{
+.imgVideoShuiyin {
   display: flex;
   align-items: center;
   justify-content: start;
   margin-bottom: 10px;
-  label{
+  label {
     width: 160px;
     display: flex;
     align-items: center;
     justify-content: start;
 
-    &.video-item{
-      width: 450px
+    &.video-item {
+      width: 450px;
     }
   }
 }

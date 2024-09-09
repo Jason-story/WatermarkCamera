@@ -41,7 +41,7 @@ const MergeCanvas = () => {
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
   const position = Taro.getCurrentInstance().router.params.position;
-  const scale = Taro.getCurrentInstance().router.params.scale || 0.5;
+  const scale =  1;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
   const isVip = Taro.getCurrentInstance().router.params.vip;
   // 图片水印 or 视频水印
@@ -124,7 +124,7 @@ const MergeCanvas = () => {
       // 调用云函数
       const res = await Taro.cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
-        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "mergeImage",
+        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "serverMergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
@@ -343,11 +343,11 @@ const MergeCanvas = () => {
       ctx.drawImage(info1.path, 0, 0, canvasWidth, canvasHeight);
 
       // 计算 img2 的新尺寸
-      let img2Width = canvasWidth * scale;
+      let img2Width = canvasWidth;
       let img2Height = img2Width * (info2.height / info2.width);
 
       // 计算 img2 的位置
-      let x = position === "center" ? (canvasWidth - img2Width) / 2 : 10 * dpr;
+      let x =0;
       let y = canvasHeight - img2Height - 10 * dpr;
 
       // 绘制第二张图片
