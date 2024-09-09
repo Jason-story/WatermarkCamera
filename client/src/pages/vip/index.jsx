@@ -186,7 +186,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
 
   return (
     <View className="user-info">
-      {price.show === true ? (
+      {price.secondshow === true ? (
         <View className="user-details" style={{ marginBottom: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>会员权益</Text>
@@ -200,7 +200,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       ) : (
         "暂无"
       )}
-      {!price.showPrice ? (
+      {!price.secondshow ? (
         ""
       ) : (
         <View style={{ width: "100%" }}>
@@ -237,7 +237,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
         </View>
       )}
       <View style={{ width: "100%", marginTop: "20px" }}>
-        {price.show && (
+        {price.secondshow && (
           <View>
             <Button
               style={{
