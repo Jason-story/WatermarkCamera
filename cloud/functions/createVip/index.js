@@ -56,31 +56,35 @@ exports.main = async (event, context) => {
         const endTime = currentTime + config[type] * 24 * 60 * 60 * 1000; // 计算结束时间
 
         // 更新用户信息
-        const result = await transaction
+        const user = await transaction
             .collection('users')
             .where({
-                openid
+                openid: inviteId
             })
-            .update({
-                data: {
-                    type: type,
-                    plateform,
-                    pay_time: currentTime,
-                    end_time: endTime
-                }
-            });
+            .get();
+
         // 更新邀请来源用户信息
         if (openid !== inviteId) {
-            await transaction
-                .collection('users')
-                .where({
-                    openid: inviteId
-                })
-                .update({
-                    data: {
-                        mone: _.inc((price * 0.2).toFixed(2)) // 使用 _.inc 来增加 mone 的值
-                    }
-                });
+            // 检查用户是否存在
+            if (user.data.length > 0) {
+                const userType = user.data[0].type;
+
+                // 根据 type 的值决定使用的 multiplier
+                const multiplier = userType === 'default' ? 0.05 : 0.2;
+                const incrementValue = (price * multiplier).toFixed(2) * 1; // 保留两位小数，并转为数值
+
+                // 更新用户的 mone 字段
+                await transaction
+                    .collection('users')
+                    .where({
+                        openid: inviteId
+                    })
+                    .update({
+                        data: {
+                            mone: _.inc(incrementValue) // 根据计算的值增加 mone
+                        }
+                    });
+            }
         }
 
         return {
