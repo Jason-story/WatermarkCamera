@@ -636,7 +636,7 @@ const MergeCanvas = () => {
           重新拍摄
         </Button>
 
-        <AtModal isOpened={isShowModal} closeOnClickOverlay={true}>
+        <AtModal isOpened={isShowModal} closeOnClickOverlay={false}>
           <AtModalHeader>
             <Text>提示</Text>
           </AtModalHeader>
