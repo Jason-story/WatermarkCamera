@@ -16,14 +16,17 @@ import Head from "../../images/head.jpg";
 import "./index.scss";
 const md5 = require("./md5.js");
 // const md5 = require("md5");
+const app = getApp();
 
 const UserInfo = ({ userInfo, price = { show: false } }) => {
+  const config = app.$app.globalData.config;
+
   let inviteId = Taro.getCurrentInstance().router.params.id || "";
-  Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
-    if (res.data) {
-      inviteId = res.data;
-    }
-  });
+    Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
+      if (res.data) {
+        inviteId = res.data;
+      }
+    })
 
   const [selected, setSelected] = useState("");
   useEffect(() => {
@@ -188,6 +191,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       ) : (
         "暂无"
       )}
+
       {!price.showPrice ? (
         ""
       ) : (
@@ -211,21 +215,6 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
               );
             })}
           </RadioGroup>
-          <View className="user-details" style={{ marginTop: "20px" }}>
-            <View>
-              <Text style={{ fontWeight: "bold" }}>注意事项</Text>
-            </View>
-            <View>• 会员不支持退款，请充分了解后再开通</View>
-            <View style={{ color: "#f22c3d" }}>
-              •
-              如果您已经开通会员，您邀请好友开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得10%
-            </View>
-            <View>
-              •
-              无法处理已经有水印的图片，只能人工P图处理（另外收费），可以咨询客服
-            </View>
-            <View>• 定制水印（另外收费）请咨询客服</View>
-          </View>
         </View>
       )}
       <View style={{ width: "100%", marginTop: "20px" }}>
@@ -274,6 +263,21 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           联系客服
         </Button>
       </View>
+
+      {price.showPrice && (
+        <View className="user-details" style={{ marginTop: "20px" }}>
+          <View>
+            <Text style={{ fontWeight: "bold" }}>注意事项</Text>
+          </View>
+          <View style={{ color: "#f22c3d" }}>
+            •
+            如果您已经开通会员，您再邀请好友开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
+          </View>
+          {config.jiaochengtext.map((item, index) => {
+            return <View key={index}>• {item}</View>;
+          })}
+        </View>
+      )}
       {userInfo.type === "default" && (
         // 若在开发者工具中无法预览广告，请切换开发者工具中的基础库版本
         // wxml文件
