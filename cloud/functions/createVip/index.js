@@ -54,7 +54,20 @@ exports.main = async (event, context) => {
     try {
         const currentTime = Date.now(); // 获取当前时间的毫秒时间戳
         const endTime = currentTime + config[type] * 24 * 60 * 60 * 1000; // 计算结束时间
-
+        // 更新用户信息
+        await transaction
+            .collection('users')
+            .where({
+                openid
+            })
+            .update({
+                data: {
+                    type: type,
+                    plateform,
+                    pay_time: currentTime,
+                    end_time: endTime
+                }
+            });
         // 更新用户信息
         const user = await transaction
             .collection('users')
@@ -88,7 +101,8 @@ exports.main = async (event, context) => {
         }
 
         return {
-            msg: '用户信息更新成功'
+            msg: '用户信息更新成功',
+ 
         };
     } catch (error) {
         return {
