@@ -204,7 +204,7 @@ const CameraPage = () => {
         },
       });
       cloud.callFunction({
-        name: "getDD",
+        name: "getConfig",
         success: function (res) {
           app.$app.globalData.config = res.result.data;
           setCurrentShuiyinIndex(res.result.data.shuiyinindex);
@@ -1268,7 +1268,7 @@ const CameraPage = () => {
                 className="share-btn"
                 type="button"
               >
-                <Text>邀好友得次数</Text>
+                <Text>邀好友得现金/次数</Text>
                 <View id="container-stars">
                   <View id="stars"></View>
                 </View>
@@ -1287,7 +1287,9 @@ const CameraPage = () => {
               <View className="modal-list">
                 <View className="txt1">
                   好友打开您的分享链接，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
-                  {/* 好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。 */}
+                  <View style={{ color: "#f22c3d" }}>
+                    如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
+                  </View>
                 </View>
               </View>
             </AtModalContent>
