@@ -17,25 +17,13 @@ import {
 } from "taro-ui";
 import "./index.scss";
 import restart from "../../images/restart.png";
+const app = getApp();
 
 const screenWidth = Taro.getSystemInfoSync().screenWidth;
 let interstitialAd = null;
-function isFree() {
-  const daysOfWeek = [
-    "星期日",
-    "星期一",
-    "星期二",
-    "星期三",
-    "星期四",
-    "星期五",
-    "星期六",
-  ];
-  const today = new Date();
-  const dayIndex = today.getDay();
-  return daysOfWeek[dayIndex] === "星期日";
-}
 
 const MergeCanvas = () => {
+  const config = app.$app.globalData.config;
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
@@ -218,7 +206,7 @@ const MergeCanvas = () => {
         },
       });
     };
-    if (userInfo.vip_count === 0 && !isFree()) {
+    if (userInfo.vip_count === 0 && !config.isFree) {
       Taro.showToast({
         title: "你的会员额度已经用完，请联系客服购买",
         icon: "none",
@@ -247,7 +235,6 @@ const MergeCanvas = () => {
   async function handleMergedImage(mergedImageFileID, info) {
     await saveImage(mergedImageFileID, info);
   }
-
   useEffect(() => {
     const getData = async () => {
       await Taro.cloud.callFunction({
@@ -256,7 +243,7 @@ const MergeCanvas = () => {
           if (res.result.data.invite_count == undefined) {
             res.result.data.invite_count = 0;
           }
-          if (isFree()) {
+          if (config.isFree) {
           } else {
             // 免费次数用尽
             if (

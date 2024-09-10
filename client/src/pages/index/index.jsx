@@ -177,7 +177,7 @@ const CameraPage = () => {
         },
       });
       Taro.cloud.callFunction({
-        name: "getDD",
+        name: "getConfig",
         success: function (res) {
           app.$app.globalData.config = res.result.data;
           setCurrentShuiyinIndex(res.result.data.shuiyinindex);
@@ -1059,7 +1059,7 @@ const CameraPage = () => {
               <Image src={AddMyApp}></Image>
             </View>
           )}
-          <View className="tools-bar" >
+          <View className="tools-bar">
             <View className="tools-bar-inner">
               <View
                 className={
@@ -1164,10 +1164,7 @@ const CameraPage = () => {
             </View>
           </View>
           {/* ------- */}
-          <View
-            className="tools-bar"
-            style={{  marginTop: "-15px" }}
-          >
+          <View className="tools-bar" style={{ marginTop: "-15px" }}>
             <View className="tools-bar-inner">
               <View
                 className={
@@ -1228,28 +1225,27 @@ const CameraPage = () => {
             >
               使用教程
             </Button> */}
-              <Button
-                // openType="share"
-                onClick={() => {
-                  setInviteModalShow(true);
-                  // wx.navigateToMiniProgram({
-                  //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-                  //   path: "pages/index/index",
-                  // });
-                }}
-                className="share-btn"
-                type="button"
-              >
-                <Text>邀好友得次数</Text>
-                <View id="container-stars">
-                  <View id="stars"></View>
-                </View>
-
-                <View id="glow">
-                  <View className="circle"></View>
-                  <View className="circle"></View>
-                </View>
-              </Button>
+            <Button
+              // openType="share"
+              onClick={() => {
+                setInviteModalShow(true);
+                // wx.navigateToMiniProgram({
+                //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+                //   path: "pages/index/index",
+                // });
+              }}
+              className="share-btn"
+              type="button"
+            >
+              <Text>邀好友得现金/次数</Text>
+              <View id="container-stars">
+                <View id="stars"></View>
+              </View>
+              <View id="glow">
+                <View className="circle"></View>
+                <View className="circle"></View>
+              </View>
+            </Button>
           </View>
           <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
             <AtModalHeader>
@@ -1259,6 +1255,9 @@ const CameraPage = () => {
               <View className="modal-list">
                 <View className="txt1">
                   好友打开您的分享链接，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
+                  <View style={{ color: "#f22c3d" }}>
+                    如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
+                  </View>
                   {/* 好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。 */}
                 </View>
               </View>

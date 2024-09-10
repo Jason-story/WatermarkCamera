@@ -22,11 +22,11 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
   const config = app.$app.globalData.config;
 
   let inviteId = Taro.getCurrentInstance().router.params.id || "";
-    Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
-      if (res.data) {
-        inviteId = res.data;
-      }
-    })
+  Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
+    if (res.data) {
+      inviteId = res.data;
+    }
+  });
 
   const [selected, setSelected] = useState("");
   useEffect(() => {
@@ -271,7 +271,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           </View>
           <View style={{ color: "#f22c3d" }}>
             •
-            如果您已经开通会员，您再邀请好友开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
+            如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
           </View>
           {config.jiaochengtext.map((item, index) => {
             return <View key={index}>• {item}</View>;
