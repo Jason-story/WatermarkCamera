@@ -160,6 +160,7 @@ const CameraPage = () => {
   const [vipAnimate, setVipAnimate] = useState(false);
   const [inviteModalShow, setInviteModalShow] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [showHasCheck, setShowHasCheck] = useState(undefined);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -894,24 +895,15 @@ const CameraPage = () => {
         });
     });
   };
-  let canTakePhotoFlag = false;
-
-  // useEffect(() => {
-  //   let count = 0;
-  //   const intervalId = setInterval(() => {
-  //     if (count < 6) {
-  //       setCanTakePhoto(true);
-  //       drawMask();
-  //       canTakePhotoFlag = true;
-  //       count++;
-  //     } else {
-  //       clearInterval(intervalId);
-  //     }
-  //   }, 3000);
-
-  //   // 清理函数
-  //   return () => clearInterval(intervalId);
-  // }, []);
+  useEffect(() => {
+    if (app.$app.globalData.config.showHasCheck !== undefined) {
+      console.log(
+        "app.$app.globalData.config.showHasCheck: ",
+        app.$app.globalData.config.showHasCheck
+      );
+      setShowHasCheck(app.$app.globalData.config.showHasCheck);
+    }
+  }, [app.$app.globalData.config.showHasCheck]);
 
   useEffect(() => {
     drawMask();
@@ -930,6 +922,8 @@ const CameraPage = () => {
     currentShuiyinIndex,
     canvasConfigState.length,
     update,
+    // 已验证下标
+    showHasCheck,
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
@@ -1087,7 +1081,7 @@ const CameraPage = () => {
               <Image src={AddMyApp}></Image>
             </View>
           )}
-          <View className="tools-bar" >
+          <View className="tools-bar">
             <View className="tools-bar-inner">
               <View
                 className={
@@ -1192,10 +1186,7 @@ const CameraPage = () => {
             </View>
           </View>
           {/* ------- */}
-          <View
-            className="tools-bar"
-            style={{  marginTop: "-15px" }}
-          >
+          <View className="tools-bar" style={{ marginTop: "-15px" }}>
             <View className="tools-bar-inner">
               <View
                 className={
@@ -1256,28 +1247,28 @@ const CameraPage = () => {
             >
               使用教程
             </Button> */}
-              <Button
-                // openType="share"
-                onClick={() => {
-                  setInviteModalShow(true);
-                  // wx.navigateToMiniProgram({
-                  //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-                  //   path: "pages/index/index",
-                  // });
-                }}
-                className="share-btn"
-                type="button"
-              >
-                <Text>邀好友得现金/次数</Text>
-                <View id="container-stars">
-                  <View id="stars"></View>
-                </View>
+            <Button
+              // openType="share"
+              onClick={() => {
+                setInviteModalShow(true);
+                // wx.navigateToMiniProgram({
+                //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+                //   path: "pages/index/index",
+                // });
+              }}
+              className="share-btn"
+              type="button"
+            >
+              <Text>邀好友得现金/次数</Text>
+              <View id="container-stars">
+                <View id="stars"></View>
+              </View>
 
-                <View id="glow">
-                  <View className="circle"></View>
-                  <View className="circle"></View>
-                </View>
-              </Button>
+              <View id="glow">
+                <View className="circle"></View>
+                <View className="circle"></View>
+              </View>
+            </Button>
           </View>
           <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
             <AtModalHeader>
@@ -1370,6 +1361,18 @@ const CameraPage = () => {
                   style={{ transform: "scale(0.7)" }}
                   onChange={(e) => {
                     saveChange(e.detail.value);
+                  }}
+                />
+              </View>
+              <View className="shantui-btns">
+                <View style={{ marginRight: "10px" }}>
+                  是否需要左下角已验证下标
+                </View>
+                <Switch
+                  checked={showHasCheck}
+                  style={{ transform: "scale(0.7)" }}
+                  onChange={(e) => {
+                    setShowHasCheck(e.detail.value);
                   }}
                 />
               </View>
