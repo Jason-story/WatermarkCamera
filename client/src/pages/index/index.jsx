@@ -134,6 +134,10 @@ const CameraPage = () => {
   const [vipAnimate, setVipAnimate] = useState(false);
   const [inviteModalShow, setInviteModalShow] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [showHasCheck, setShowHasCheck] = useState(undefined);
+  const [showTrueCode, setShowTrueCode] = useState(undefined);
+  const [disableTrueCode, setDisableTrueCode] = useState(null);
+  const [showSettingFloatLayout, setShowSettingFloatLayout] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -781,6 +785,9 @@ const CameraPage = () => {
               Shuiyin6,
               dpr,
               canvas,
+              showHasCheck,
+              showTrueCode,
+              disableTrueCode,
             });
 
             const canvasConfigDz = generateCanvasConfig({
@@ -866,24 +873,22 @@ const CameraPage = () => {
         });
     });
   };
-  let canTakePhotoFlag = false;
 
-  // useEffect(() => {
-  //   let count = 0;
-  //   const intervalId = setInterval(() => {
-  //     if (count < 6) {
-  //       setCanTakePhoto(true);
-  //       drawMask();
-  //       canTakePhotoFlag = true;
-  //       count++;
-  //     } else {
-  //       clearInterval(intervalId);
-  //     }
-  //   }, 3000);
+  useEffect(() => {
+    if (app.$app.globalData.config.showHasCheck !== undefined) {
+      setShowHasCheck(app.$app.globalData.config.showHasCheck);
+    }
+  }, [app.$app.globalData.config.showHasCheck]);
 
-  //   // 清理函数
-  //   return () => clearInterval(intervalId);
-  // }, []);
+  useEffect(() => {
+    if (app.$app.globalData.config.showTrueCode !== undefined) {
+      setShowTrueCode(app.$app.globalData.config.showTrueCode);
+    }
+  }, [app.$app.globalData.config.showTrueCode]);
+
+  useEffect(() => {
+    setDisableTrueCode(app.$app.globalData.config.disableTrueCode);
+  }, [app.$app.globalData.config.disableTrueCode]);
 
   useEffect(() => {
     drawMask();
@@ -902,6 +907,10 @@ const CameraPage = () => {
     currentShuiyinIndex,
     canvasConfigState.length,
     update,
+    // 已验证下标
+    showHasCheck,
+    // 右下角防伪码
+    showTrueCode,
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
@@ -1009,7 +1018,12 @@ const CameraPage = () => {
               </View>
             )}
             {allAuth && (
-              <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
+              <View
+                className={
+                  "mask-box" +
+                  (showFloatLayout || showSettingFloatLayout ? " top" : "")
+                }
+              >
                 <Canvas
                   id="fishCanvas"
                   type="2d"
@@ -1177,6 +1191,7 @@ const CameraPage = () => {
                   className="xiangceIcon"
                   onClick={() => {
                     setShowSetting(!showSetting);
+                    setShowSettingFloatLayout(!showSettingFloatLayout);
                   }}
                 ></Image>
                 <Text>设置</Text>
@@ -1314,33 +1329,67 @@ const CameraPage = () => {
             title="设置"
             onClose={(e) => {
               setShowSetting(!showSetting);
+              setShowSettingFloatLayout(!showSettingFloatLayout);
             }}
           >
             <View className="shuiyin-list">
-              <View className="shantui-btns">
+              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
                   微信闪退请打开此开关
                 </View>
                 <Switch
-                  checked={shantuiSwitch}
                   style={{ transform: "scale(0.7)" }}
+                  checked={shantuiSwitch}
                   onChange={(e) => {
                     setShantuiSwitch(e.detail.value);
                   }}
                 />
               </View>
-              <View className="shantui-btns">
+              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
                   保存位置等数据，下次使用时无需再次修改
                 </View>
                 <Switch
+                  style={{ transform: "scale(0.7)" }}
                   disabled={!locationName}
                   checked={isShuiyinSaved}
-                  style={{ transform: "scale(0.7)" }}
                   onChange={(e) => {
                     saveChange(e.detail.value);
                   }}
                 />
+              </View>
+              {disableTrueCode && (
+                <View className="shantui-btns" style={{ marginBottom: "10px" }}>
+                  <View style={{ marginRight: "10px" }}>
+                    是否需要左下角已验证下标
+                  </View>
+                  <Switch
+                    style={{ transform: "scale(0.7)" }}
+                    checked={showHasCheck}
+                    onChange={(e) => {
+                      setShowHasCheck(e.detail.value);
+                    }}
+                  />
+                </View>
+              )}
+              {disableTrueCode && (
+                <View className="shantui-btns" style={{ marginBottom: "10px" }}>
+                  <View style={{ marginRight: "10px" }}>
+                    是否需要右下角防伪码下标
+                  </View>
+                  <Switch
+                    style={{ transform: "scale(0.7)" }}
+                    checked={showTrueCode}
+                    onChange={(e) => {
+                      setShowTrueCode(e.detail.value);
+                    }}
+                  />
+                </View>
+              )}
+              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
+                <View style={{ marginRight: "10px", color: "#f22c3d" }}>
+                所有水印都无法验真，只是样子比较像，请注意使用风险！
+                </View>
               </View>
             </View>
           </AtFloatLayout>
@@ -1352,7 +1401,6 @@ const CameraPage = () => {
           {/*  +++++++++++++++++++++++  */}
           {/*  +++++++++++++++++++++++  */}
           {/*  +++++++++++++++++++++++  */}
-
           <AtFloatLayout
             isOpened={showFloatLayout}
             title="水印选择、修改"
