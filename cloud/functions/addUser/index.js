@@ -41,6 +41,7 @@ exports.main = async (event, context) => {
             if (userData.lastUsageDate !== todayStr) {
                 updateData.todayUsageCount = 0; // 重置今日使用次数
                 updateData.lastUsageDate = todayStr; // 更新上次记录日期
+                updateData.useTime = +new Date(); // 更新上次记录日期
             } else {
                 updateData.todayUsageCount = userData.todayUsageCount || 0;
             }
