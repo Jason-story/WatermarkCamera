@@ -55,6 +55,7 @@ exports.main = async (event, context) => {
             if (event.remark === '成功使用') {
                 todayUsageCount = updateData.todayUsageCount + 1;
                 updateData.todayUsageCount = todayUsageCount;
+                updateData.useTime = +new Date(); // 更新上次记录日期
 
                 // 更新 times 字段
                 updateData.times = _.inc(1);
@@ -79,7 +80,10 @@ exports.main = async (event, context) => {
                 type: 'default',
                 todayUsageCount: event.remark === '成功使用' ? 1 : 0,
                 times: event.remark === '成功使用' ? 1 : 0,
+                useTime : +new Date(), // 更新上次记录日期
+
                 lastUsageDate: todayStr // 记录上次使用日期
+
             };
             await transaction.collection('users').add({ data: newUser });
             await transaction.commit();
@@ -101,10 +105,11 @@ exports.main = async (event, context) => {
 
             // 重新计算今日使用次数
             todayUsageCount = userData.todayUsageCount || 0;
+            useTime = +new Date(); // 更新上次记录日期
 
             return {
                 success: true,
-                data: { ...userData, todayUsageCount, share: true },
+                data: { ...userData, todayUsageCount, useTime,share: true },
                 message: '用户信息已更新或添加'
             };
         } else {
@@ -138,6 +143,9 @@ exports.main = async (event, context) => {
                 if (userData.lastUsageDate !== todayStr) {
                     updateData.todayUsageCount = 0; // 重置今日使用次数
                     updateData.lastUsageDate = todayStr; // 更新上次记录日期
+                updateData.useTime = +new Date(); // 更新上次记录日期
+
+                    
                 } else {
                     updateData.todayUsageCount = userData.todayUsageCount || 0;
                 }
@@ -145,6 +153,7 @@ exports.main = async (event, context) => {
                 if (event.remark === '成功使用') {
                     todayUsageCount = updateData.todayUsageCount + 1;
                     updateData.todayUsageCount = todayUsageCount;
+                    updateData.useTime = +new Date(); // 更新上次记录日期
 
                     // 更新 times 字段
                     updateData.times = _.inc(1);
