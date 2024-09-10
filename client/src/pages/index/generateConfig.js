@@ -308,7 +308,8 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin2,
         width: 255,
-        vip: true,
+        // vip: true,
+
         name: "免费-打卡-2",
         height: locationName.length > 16 ? 130 : 110,
       },

@@ -27,7 +27,14 @@ exports.main = async (event, context) => {
             const firstRecord = userCheck.data[0];
             console.log('First Record:', firstRecord);
 
-            // 如果需要对第一条记录进行操作，可以在这里进行
+            // 获取当前服务器时间
+            const now = new Date();
+            const isSunday = now.getDay() === 0; // getDay() 返回 0 表示周日
+
+            // 添加 isFree 属性
+            firstRecord.isFree = isSunday;
+
+            // 如果需要对第一条记录进行其他操作，可以在这里进行
             // ...
 
             // 提交事务

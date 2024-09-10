@@ -161,6 +161,9 @@ const CameraPage = () => {
   const [inviteModalShow, setInviteModalShow] = useState(false);
   const [update, setUpdate] = useState(false);
   const [showHasCheck, setShowHasCheck] = useState(undefined);
+  const [showTrueCode, setShowTrueCode] = useState(undefined);
+  const [disableTrueCode, setDisableTrueCode] = useState(null);
+  const [showSettingFloatLayout, setShowSettingFloatLayout] = useState(false);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -810,6 +813,9 @@ const CameraPage = () => {
               Shuiyin6,
               dpr,
               canvas,
+              showHasCheck,
+              showTrueCode,
+              disableTrueCode,
             });
 
             const canvasConfigDz = generateCanvasConfig({
@@ -897,13 +903,19 @@ const CameraPage = () => {
   };
   useEffect(() => {
     if (app.$app.globalData.config.showHasCheck !== undefined) {
-      console.log(
-        "app.$app.globalData.config.showHasCheck: ",
-        app.$app.globalData.config.showHasCheck
-      );
       setShowHasCheck(app.$app.globalData.config.showHasCheck);
     }
   }, [app.$app.globalData.config.showHasCheck]);
+
+  useEffect(() => {
+    if (app.$app.globalData.config.showTrueCode !== undefined) {
+      setShowTrueCode(app.$app.globalData.config.showTrueCode);
+    }
+  }, [app.$app.globalData.config.showTrueCode]);
+
+  useEffect(() => {
+    setDisableTrueCode(app.$app.globalData.config.disableTrueCode);
+  }, [app.$app.globalData.config.disableTrueCode]);
 
   useEffect(() => {
     drawMask();
@@ -924,6 +936,8 @@ const CameraPage = () => {
     update,
     // 已验证下标
     showHasCheck,
+    // 右下角防伪码
+    showTrueCode,
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
@@ -1031,7 +1045,12 @@ const CameraPage = () => {
               </View>
             )}
             {allAuth && (
-              <View className={"mask-box" + (showFloatLayout ? " top" : "")}>
+              <View
+                className={
+                  "mask-box" +
+                  (showFloatLayout || showSettingFloatLayout ? " top" : "")
+                }
+              >
                 <Canvas
                   id="fishCanvas"
                   type="2d"
@@ -1199,6 +1218,7 @@ const CameraPage = () => {
                   className="xiangceIcon"
                   onClick={() => {
                     setShowSetting(!showSetting);
+                    setShowSettingFloatLayout(!showSettingFloatLayout);
                   }}
                 ></Image>
                 <Text>设置</Text>
@@ -1263,7 +1283,6 @@ const CameraPage = () => {
               <View id="container-stars">
                 <View id="stars"></View>
               </View>
-
               <View id="glow">
                 <View className="circle"></View>
                 <View className="circle"></View>
@@ -1281,6 +1300,7 @@ const CameraPage = () => {
                   <View style={{ color: "#f22c3d" }}>
                     如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
                   </View>
+                  {/* 好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。 */}
                 </View>
               </View>
             </AtModalContent>
@@ -1336,45 +1356,67 @@ const CameraPage = () => {
             title="设置"
             onClose={(e) => {
               setShowSetting(!showSetting);
+              setShowSettingFloatLayout(!showSettingFloatLayout);
             }}
           >
             <View className="shuiyin-list">
-              <View className="shantui-btns">
+              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
                   微信闪退请打开此开关
                 </View>
                 <Switch
-                  checked={shantuiSwitch}
                   style={{ transform: "scale(0.7)" }}
+                  checked={shantuiSwitch}
                   onChange={(e) => {
                     setShantuiSwitch(e.detail.value);
                   }}
                 />
               </View>
-              <View className="shantui-btns">
+              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
                   保存位置等数据，下次使用时无需再次修改
                 </View>
                 <Switch
+                  style={{ transform: "scale(0.7)" }}
                   disabled={!locationName}
                   checked={isShuiyinSaved}
-                  style={{ transform: "scale(0.7)" }}
                   onChange={(e) => {
                     saveChange(e.detail.value);
                   }}
                 />
               </View>
-              <View className="shantui-btns">
-                <View style={{ marginRight: "10px" }}>
-                  是否需要左下角已验证下标
+              {disableTrueCode && (
+                <View className="shantui-btns" style={{ marginBottom: "10px" }}>
+                  <View style={{ marginRight: "10px" }}>
+                    是否需要左下角已验证下标
+                  </View>
+                  <Switch
+                    style={{ transform: "scale(0.7)" }}
+                    checked={showHasCheck}
+                    onChange={(e) => {
+                      setShowHasCheck(e.detail.value);
+                    }}
+                  />
                 </View>
-                <Switch
-                  checked={showHasCheck}
-                  style={{ transform: "scale(0.7)" }}
-                  onChange={(e) => {
-                    setShowHasCheck(e.detail.value);
-                  }}
-                />
+              )}
+              {disableTrueCode && (
+                <View className="shantui-btns" style={{ marginBottom: "10px" }}>
+                  <View style={{ marginRight: "10px" }}>
+                    是否需要右下角防伪码下标
+                  </View>
+                  <Switch
+                    style={{ transform: "scale(0.7)" }}
+                    checked={showTrueCode}
+                    onChange={(e) => {
+                      setShowTrueCode(e.detail.value);
+                    }}
+                  />
+                </View>
+              )}
+              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
+                <View style={{ marginRight: "10px", color: "#f22c3d" }}>
+                所有水印都无法验真，只是样子比较像，请注意使用风险！
+                </View>
               </View>
             </View>
           </AtFloatLayout>
@@ -1386,7 +1428,6 @@ const CameraPage = () => {
           {/*  +++++++++++++++++++++++  */}
           {/*  +++++++++++++++++++++++  */}
           {/*  +++++++++++++++++++++++  */}
-
           <AtFloatLayout
             isOpened={showFloatLayout}
             title="水印选择、修改"
