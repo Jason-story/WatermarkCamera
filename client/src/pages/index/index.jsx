@@ -384,29 +384,6 @@ const CameraPage = () => {
     requestPermission();
   }, []);
   useEffect(() => {
-    if (allAuth && userInfo.type === "default") {
-      if (wx.createInterstitialAd) {
-        interstitialAd = wx.createInterstitialAd({
-          adUnitId: "adunit-58e7bd94d036305e",
-        });
-        interstitialAd.onLoad(() => {});
-        interstitialAd.onError((err) => {
-          console.error("插屏广告加载失败", err);
-        });
-        interstitialAd.onClose(() => {
-          setAddAnimate(true);
-        });
-      }
-
-      // 在适合的场景显示插屏广告
-      if (interstitialAd) {
-        interstitialAd.show().catch((err) => {
-          console.error("插屏广告显示失败", err);
-        });
-      }
-    }
-  }, [userInfo.type, allAuth]);
-  useEffect(() => {
     setVipAnimate(true);
   }, [userInfo.type]);
   useDidShow(() => {
