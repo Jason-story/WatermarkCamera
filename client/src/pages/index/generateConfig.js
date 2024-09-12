@@ -1,3 +1,5 @@
+import Taro from "@tarojs/taro";
+
 const generateCanvasConfig = ({
   hours,
   minutes,
@@ -11,10 +13,46 @@ const generateCanvasConfig = ({
   longitude,
   hideJw,
   title,
+  canvas,dpr,
   Shuiyin1,
   Shuiyin2,
   Shuiyin3,
+  showTrueCode,
+  disableTrueCode,
 }) => {
+  function generateRandomString() {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 大写字母
+    const numbers = "0123456789"; // 数字
+    let result = [];
+
+    // 随机选取10个大写字母
+    for (let i = 0; i < 10; i++) {
+      const randomLetter = letters.charAt(
+        Math.floor(Math.random() * letters.length)
+      );
+      result.push(randomLetter);
+    }
+
+    // 随机选取4个数字
+    for (let i = 0; i < 4; i++) {
+      const randomNumber = numbers.charAt(
+        Math.floor(Math.random() * numbers.length)
+      );
+      result.push(randomNumber);
+    }
+
+    // 将字母和数字随机打乱顺序
+    result = result.sort(() => Math.random() - 0.5);
+
+    // 确保第一个字符是字母
+    while (numbers.includes(result[0])) {
+      result = result.sort(() => Math.random() - 0.5); // 重新打乱顺序，直到字母在开头
+    }
+
+    // 返回字符串
+    return result.join("");
+  }
+
   return [
     [
       {
@@ -24,6 +62,47 @@ const generateCanvasConfig = ({
               const { color, rect } = backgroundConfig;
               ctx.fillStyle = color;
               ctx.fillRect(rect[0] - 5, rect[1] + 3, rect[2], rect[3]);
+              if (disableTrueCode && showTrueCode) {
+                // 防伪图标
+                Taro.getImageInfo({
+                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                  success: (imgInfo) => {
+                    const img = canvas.createImage();
+                    img.src = imgInfo.path;
+                    img.onload = () => {
+                      const imgWidth = imgInfo.width / 3 + 5;
+                      const imgHeight = imgInfo.height / 3 + 5;
+
+                      // 获取画布的宽高
+                      const canvasWidth = canvas.width / dpr;
+                      const canvasHeight = canvas.height / dpr;
+
+                      // 计算图片绘制的坐标，使其位于右下角
+                      const x = canvasWidth - imgWidth - 20;
+                      const y = canvasHeight - imgHeight - 5;
+                      ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+
+                      ctx.drawImage(
+                        img,
+                        x + 40,
+                        y + 16,
+                        imgWidth * 0.7,
+                        imgHeight * 0.7
+                      );
+                      //  绘制时间
+                      ctx.font = "bold 6px sans-serif"; // 加粗并放大时间文字
+                      ctx.fillStyle = "#fff";
+                      ctx.fillText(generateRandomString(), x + 52, y + 47);
+                    };
+                    img.onerror = (err) => {
+                      console.error("Background image loading failed", err);
+                    };
+                  },
+                  fail: (err) => {
+                    console.error("Failed to get background image info", err);
+                  },
+                });
+              }
             },
             args: [
               {
@@ -149,7 +228,7 @@ const generateCanvasConfig = ({
           },
         ],
         img: Shuiyin1,
-        width: 238,
+        right:true,
         name: "免费-时间天气-1",
         height: locationName.length > 16 ? 120 : 110,
       },
