@@ -1351,7 +1351,7 @@ const CameraPage = () => {
                     style={{
                       transform: "scale(0.7)",
                       opacity: !canvasConfigState[currentShuiyinIndex]?.[0]
-                        ?.right
+                        ?.left
                         ? 0.2
                         : 1,
                     }}
@@ -1379,9 +1379,9 @@ const CameraPage = () => {
                         ? 0.2
                         : 1,
                     }}
-                    checked={showHasCheck}
+                    checked={showTrueCode}
                     disabled={
-                      !canvasConfigState[currentShuiyinIndex]?.[0]?.left
+                      !canvasConfigState[currentShuiyinIndex]?.[0]?.right
                     }
                     onChange={(e) => {
                       setShowTrueCode(e.detail.value);
