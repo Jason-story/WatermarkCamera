@@ -352,7 +352,7 @@ const CameraPage = () => {
   };
   let interstitialAd = null;
   useEffect(() => {
-      checkPermissions();
+    checkPermissions();
     requestPermission();
   }, []);
   useEffect(() => {
@@ -759,6 +759,11 @@ const CameraPage = () => {
               Shuiyin2,
               Shuiyin3,
               Shuiyin5,
+              canvas,
+              dpr,
+              showHasCheck,
+              showTrueCode,
+              disableTrueCode,
             });
             canvasConfig.push(...canvasConfigDz);
             // 设置canvas宽高
@@ -1316,8 +1321,17 @@ const CameraPage = () => {
                     是否需要左下角已验证下标
                   </View>
                   <Switch
-                    style={{ transform: "scale(0.7)" }}
+                    style={{
+                      transform: "scale(0.7)",
+                      opacity: !canvasConfigState[currentShuiyinIndex]?.[0]
+                        ?.left
+                        ? 0.2
+                        : 1,
+                    }}
                     checked={showHasCheck}
+                    disabled={
+                      !canvasConfigState[currentShuiyinIndex]?.[0]?.left
+                    }
                     onChange={(e) => {
                       setShowHasCheck(e.detail.value);
                     }}
@@ -1330,8 +1344,17 @@ const CameraPage = () => {
                     是否需要右下角防伪码下标
                   </View>
                   <Switch
-                    style={{ transform: "scale(0.7)" }}
+                    style={{
+                      transform: "scale(0.7)",
+                      opacity: !canvasConfigState[currentShuiyinIndex]?.[0]
+                        ?.right
+                        ? 0.2
+                        : 1,
+                    }}
                     checked={showTrueCode}
+                    disabled={
+                      !canvasConfigState[currentShuiyinIndex]?.[0]?.right
+                    }
                     onChange={(e) => {
                       setShowTrueCode(e.detail.value);
                     }}
@@ -1340,7 +1363,7 @@ const CameraPage = () => {
               )}
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px", color: "#f22c3d" }}>
-                所有水印都无法验真，只是样子比较像，请注意使用风险！
+                  所有水印都无法验真，只是样子比较像，请注意使用风险！
                 </View>
               </View>
             </View>
