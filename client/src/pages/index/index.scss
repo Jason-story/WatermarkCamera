@@ -646,3 +646,19 @@ picker,
 .tools-bar-inner:last-child .button-animate:nth-child(2) {
   animation-delay: 1.3s;
 }
+.logo-wrap {
+  position: absolute;
+  left: 20px;
+}
+.add-pic-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-items: center;
+  flex-direction: column;
+  text {
+    font-size: 24px;
+    margin-top: 10px;
+    color: #fff;
+  }
+}

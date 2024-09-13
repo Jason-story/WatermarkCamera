@@ -32,7 +32,7 @@ const app = getApp();
 const UserInfo = ({ userInfo, price = { show: false } }) => {
   let fuckCheck = false;
   if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-    fuckCheck = true;
+    fuckCheck = false;
   }
   const config = app.$app.globalData.config;
 

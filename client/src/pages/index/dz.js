@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import Shuiyin7 from "../../images/shuiyin-7.png";
-console.log('Shuiyin7: ', Shuiyin7);
+console.log("Shuiyin7: ", Shuiyin7);
 const generateCanvasConfig = ({
   hours,
   minutes,
@@ -68,6 +68,14 @@ const generateCanvasConfig = ({
   }
 
   return [
+    // 1111111111111 start
+    // 1111111111111 start
+    // 1111111111111 start
+    // 1111111111111 start
+    // 1111111111111 start
+    // 1111111111111 start
+    // 1111111111111 start
+    // 1111111111111 start
     [
       {
         path: [
@@ -268,6 +276,21 @@ const generateCanvasConfig = ({
         vip: true,
       },
     ],
+    // 1111111111111 end
+    // 1111111111111 end
+    // 1111111111111 end
+    // 1111111111111 end
+    // 1111111111111 end
+    // 1111111111111 end
+    // 1111111111111 end
+    // 1111111111111 end
+
+    // 2222222222222 start
+    // 2222222222222 start
+    // 2222222222222 start
+    // 2222222222222 start
+    // 2222222222222 start
+    // 2222222222222 start
     [
       {
         path: [
@@ -278,8 +301,8 @@ const generateCanvasConfig = ({
               const { width } = rectConfig;
               const imgHeight = 34;
               const lineHeight = 21.25;
-              const maxLines = 3;
-              const charsPerLine = 15;
+              const maxLines = 2;
+              const charsPerLine = 20;
 
               const getLocationLines = (text) => {
                 const words = text.split("");
@@ -341,7 +364,7 @@ const generateCanvasConfig = ({
                       ctx.fillText(
                         `今日水印相机已验证 | 时间地点真实`,
                         28,
-                        dateY + 20
+                        126
                       );
                     }
 
@@ -420,7 +443,7 @@ const generateCanvasConfig = ({
                       //  绘制时间
                       ctx.font = "bold 6px NotoSansMono"; // 加粗并放大时间文字
                       ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(),  x + 56, y + 47);
+                      ctx.fillText(generateRandomString(), x + 56, y + 47);
                     };
 
                     img.onerror = (err) => {
@@ -445,12 +468,13 @@ const generateCanvasConfig = ({
         width: 255,
         name: "定制-今日水印相机-打卡",
         vip: true,
-        left:true,
-        right:true,
+        left: true,
+        right: true,
+        logoY: .6,
         height: (locationName, hideJw) => {
           const baseHeight = 110; // 减小20px
           const lineHeight = 21.25;
-          const maxLines = 3;
+          const maxLines = 2;
           const charsPerLine = 15;
 
           const getLocationLines = (text) => {
@@ -475,11 +499,22 @@ const generateCanvasConfig = ({
         },
       },
     ],
-    // -------------------------- start
-    // -------------------------- start
-    // -------------------------- start
-    // -------------------------- start
-    // -------------------------- start
+    // 2222222222222 end
+    // 2222222222222 end
+    // 2222222222222 end
+    // 2222222222222 end
+    // 2222222222222 end
+    // 2222222222222 end
+    // 2222222222222 end
+    // 2222222222222 end
+
+    // 3333333333333 start
+    // 3333333333333 start
+    // 3333333333333 start
+    // 3333333333333 start
+    // 3333333333333 start
+    // 3333333333333 start
+
     [
       {
         path: [
@@ -658,21 +693,25 @@ const generateCanvasConfig = ({
         img: Shuiyin7,
         vip: true,
         name: "免费-工程记录-3",
-        left:false,
-        right:true,
+        left: false,
+        right: true,
         height: () => {
           return (width * 4) / 3;
         },
       },
     ],
-    // ------------------ end
-    // ------------------ end
-    // ------------------ end
-    // ------------------ end
-    // ------------------ end
-    // ------------------ end
-    // ------------------ end
-    // ------------------ end
+    // 33333333333333 end
+    // 33333333333333 end
+    // 33333333333333 end
+    // 33333333333333 end
+    // 33333333333333 end
+    // 33333333333333 end
+    // 33333333333333 end
+
+    // 44444444444444 start
+    // 44444444444444 start
+    // 44444444444444 start
+    // 44444444444444 start
     [
       {
         path: [
@@ -905,7 +944,12 @@ const generateCanvasConfig = ({
         position: "center",
       },
     ],
+    // 4444444444444 end
+    // 4444444444444 end
+    // 4444444444444 end
+    // 4444444444444 end
+    // 4444444444444 end
+    // 4444444444444 end
   ];
 };
 export default generateCanvasConfig;
-

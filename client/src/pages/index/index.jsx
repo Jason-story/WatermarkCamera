@@ -44,6 +44,7 @@ import Shuiyin5 from "../../images/shuiyin-5.png";
 import Shuiyin6 from "../../images/shuiyin-6.png";
 import AddMyApp from "../../images/add-my-app.png";
 import Arrow from "../../images/left-arrow.png";
+import AddPic from "../../images/add-pic.png";
 
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
@@ -139,6 +140,9 @@ const CameraPage = () => {
   const [showTrueCode, setShowTrueCode] = useState(undefined);
   const [disableTrueCode, setDisableTrueCode] = useState(null);
   const [showSettingFloatLayout, setShowSettingFloatLayout] = useState(false);
+  const [logoPath, setLogoPath] = useState("");
+  const [logoWidth, setLogoWidth] = useState(0);
+  const [logoHeight, setLogoHeight] = useState(0);
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -646,12 +650,11 @@ const CameraPage = () => {
       source:
         'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-13/16741726192400525_NotoSansMono.ttf?sign=e538c8b4afae718262ea3eb01d7fc9f1&t=1726192401")',
       success: (res) => {
-        console.log('res: ', res);
+        console.log("res: ", res);
         drawMask();
       },
       fail: (err) => {
-        console.log('err: ', err);
-
+        console.log("err: ", err);
       },
     });
   }, []);
@@ -911,6 +914,62 @@ const CameraPage = () => {
   //   }
   // }, [allAuth]);
 
+  const uploadLogo = () => {
+    Taro.chooseImage({
+      count: 1,
+      success: function (res) {
+        const filePath = res.tempFilePaths[0];
+
+        Taro.getFileInfo({
+          filePath: filePath,
+          success: async function (info) {
+            console.log("info: ", info);
+            const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
+
+            if (fileSizeInMB > 1) {
+              Taro.showModal({
+                title: "提示",
+                content: "Logo体积过大，请重新选择",
+                showCancel: false,
+              });
+              return;
+            }
+            Taro.getImageInfo({
+              src: filePath,
+              success: async function (info) {
+                let height, width;
+                height = 70;
+                width = (info.width / info.height) * 70;
+                if (
+                  info.height / info.width > 2.5 ||
+                  info.height / info.width < 0.4
+                ) {
+                  width = 140;
+                  height = (info.height / info.width) * 140;
+                }
+                setLogoWidth(width);
+                setLogoHeight(height);
+                setLogoPath(filePath);
+                app.$app.globalData.config.logoConfig = {
+                  width,
+                  height,
+                  path: filePath,
+                  x: 20,
+                  y:
+                    canvasConfigState[currentShuiyinIndex]?.[0].logoY *
+                    ((screenWidth / 3) * 4),
+                };
+              },
+            });
+          },
+        });
+      },
+    });
+  };
+  console.log(
+    "canvasConfigState[currentShuiyinIndex]?.[0].logoY: ",
+    canvasConfigState[currentShuiyinIndex]?.[0].logoY
+  );
   return (
     <View className="container">
       {userInfo.black ? (
@@ -995,6 +1054,40 @@ const CameraPage = () => {
                     <Image src={shanguangdengImg}></Image>
                   )}
                 </View>
+              </View>
+            )}
+            {allAuth && (
+              <View
+                className="logo-wrap"
+                style={{
+                  top:
+                    canvasConfigState[currentShuiyinIndex]?.[0].logoY *
+                      ((screenWidth / 3) * 4) +
+                    "px",
+                }}
+                onClick={() => {
+                  uploadLogo();
+                }}
+              >
+                {logoPath ? (
+                  <Image
+                    className="logo"
+                    src={logoPath}
+                    style={{
+                      height: logoHeight + "px",
+                      width: logoWidth + "px",
+                    }}
+                  ></Image>
+                ) : (
+                  <View className="add-pic-wrap">
+                    <Image
+                      className="add-pic"
+                      src={AddPic}
+                      style={{ width: "50px", height: "50px" }}
+                    ></Image>
+                    <Text>上传logo</Text>
+                  </View>
+                )}
               </View>
             )}
             {allAuth && (
