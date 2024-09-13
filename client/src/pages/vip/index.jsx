@@ -318,6 +318,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
         <AtModalAction>
           <Button
             onClick={() => {
+              setIsShowModal(false);
               Taro.navigateTo({
                 url: "/pages/jiaocheng/index",
               });

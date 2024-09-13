@@ -646,9 +646,13 @@ const CameraPage = () => {
       source:
         'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-13/16741726192400525_NotoSansMono.ttf?sign=e538c8b4afae718262ea3eb01d7fc9f1&t=1726192401")',
       success: (res) => {
+        console.log('res: ', res);
         drawMask();
       },
-      fail: (err) => {},
+      fail: (err) => {
+        console.log('err: ', err);
+
+      },
     });
   }, []);
   useEffect(() => {
