@@ -33,13 +33,14 @@ const generateCanvasConfig = ({
   function transformCoords(y) {
     return (width * 4) / 3 - y;
   }
+
   function generateRandomString() {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 大写字母
     const numbers = "0123456789"; // 数字
     let result = [];
 
     // 随机选取10个大写字母
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 11; i++) {
       const randomLetter = letters.charAt(
         Math.floor(Math.random() * letters.length)
       );
@@ -73,6 +74,8 @@ const generateCanvasConfig = ({
           // 时间
           {
             draw: (ctx, textConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
               const { fontSize, color, text, position } = textConfig;
               ctx.font = `${fontSize}px fzlt`;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -270,6 +273,8 @@ const generateCanvasConfig = ({
         path: [
           {
             draw: (ctx, rectConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
               const { width } = rectConfig;
               const imgHeight = 34;
               const lineHeight = 21.25;
@@ -413,10 +418,11 @@ const generateCanvasConfig = ({
                         imgHeight * 0.7
                       );
                       //  绘制时间
-                      ctx.font = "bold 6px sans-serif"; // 加粗并放大时间文字
+                      ctx.font = "bold 6px NotoSansMono"; // 加粗并放大时间文字
                       ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(), x + 52, y + 47);
+                      ctx.fillText(generateRandomString(),  x + 56, y + 47);
                     };
+
                     img.onerror = (err) => {
                       console.error("Background image loading failed", err);
                     };
@@ -480,6 +486,8 @@ const generateCanvasConfig = ({
           // 现场拍照
           {
             draw: (ctx, rectConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
               const { width, height, color, text } = rectConfig;
               // 清除画布
               ctx.clearRect(0, 0, width, height);
@@ -623,9 +631,9 @@ const generateCanvasConfig = ({
                         imgHeight * 0.7
                       );
                       //  绘制时间
-                      ctx.font = "bold 6px sans-serif"; // 加粗并放大时间文字
+                      ctx.font = "bold 6px NotoSansMono"; // 加粗并放大时间文字
                       ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(), x + 52, y + 47);
+                      ctx.fillText(generateRandomString(), x + 56, y + 47);
                     };
                     img.onerror = (err) => {
                       console.error("Background image loading failed", err);
@@ -671,6 +679,8 @@ const generateCanvasConfig = ({
           // 时间
           {
             draw: (ctx, textConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
               const { fontSize, color, text, position } = textConfig;
               ctx.font = `${fontSize}px fzlt`;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -898,3 +908,4 @@ const generateCanvasConfig = ({
   ];
 };
 export default generateCanvasConfig;
+

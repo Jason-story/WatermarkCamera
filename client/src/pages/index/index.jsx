@@ -43,6 +43,7 @@ import Shuiyin4 from "../../images/shuiyin-4.png";
 import Shuiyin5 from "../../images/shuiyin-5.png";
 import Shuiyin6 from "../../images/shuiyin-6.png";
 import AddMyApp from "../../images/add-my-app.png";
+import Arrow from "../../images/left-arrow.png";
 
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
@@ -509,6 +510,8 @@ const CameraPage = () => {
             locationName,
             latitude,
             longitude,
+            showTrueCode,
+            showHasCheck,
           },
         },
       });
@@ -596,6 +599,8 @@ const CameraPage = () => {
         locationName,
         latitude,
         longitude,
+        showTrueCode,
+        showHasCheck,
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
@@ -603,6 +608,8 @@ const CameraPage = () => {
         setLocationName(locationName);
         setLatitude(latitude);
         setLongitude(longitude);
+        setShowHasCheck(showHasCheck);
+        setShowTrueCode(showTrueCode);
       }, 1000);
     }
     saveChange(userInfo?.saveConfig?.isSaved);
@@ -626,6 +633,18 @@ const CameraPage = () => {
       scopes: ["webview", "native"],
       source:
         'url("https://files-1326662896.cos.ap-beijing.myqcloud.com/fzlt.ttf")',
+      success: (res) => {
+        drawMask();
+      },
+      fail: (err) => {},
+    });
+
+    wx.loadFontFace({
+      family: "NotoSansMono",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-13/16741726192400525_NotoSansMono.ttf?sign=e538c8b4afae718262ea3eb01d7fc9f1&t=1726192401")',
       success: (res) => {
         drawMask();
       },
@@ -1144,22 +1163,6 @@ const CameraPage = () => {
                 }
               >
                 <Image
-                  src={Setting}
-                  className="xiangceIcon"
-                  onClick={() => {
-                    setShowSetting(!showSetting);
-                    setShowSettingFloatLayout(!showSettingFloatLayout);
-                  }}
-                ></Image>
-                <Text>设置</Text>
-              </View>
-              <View
-                className={
-                  "xiangce " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Image
                   src={Jiaocheng}
                   className="xiangceIcon"
                   onClick={() => {
@@ -1170,11 +1173,62 @@ const CameraPage = () => {
                 ></Image>
                 <Text>教程</Text>
               </View>
+              <View
+                className={
+                  "xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Image
+                  src={Setting}
+                  className="xiangceIcon"
+                  onClick={() => {
+                    setShowSetting(!showSetting);
+                    setShowSettingFloatLayout(!showSettingFloatLayout);
+                  }}
+                ></Image>
+                <Text>设置</Text>
+              </View>
+            </View>
+            <View className="tools-bar-inner" style={{ marginLeft: "-80px" }}>
+              <View>
+                <Image
+                  src={Arrow}
+                  className="leftArrow"
+                  style={{ width: "50px", height: "50px" }}
+                ></Image>
+              </View>
+              <View style={{ fontSize: "14px" }}>
+                <View>微信闪退？</View>
+                <View>保存数据？</View>
+                {/* <View>隐藏防伪下标？</View> */}
+                <View>请点击设置</View>
+              </View>
             </View>
           </View>
-          {/* ------- */}
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
-            {/* <Button
+            <Button
+              // openType="share"
+              onClick={() => {
+                setInviteModalShow(true);
+                // wx.navigateToMiniProgram({
+                //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+                //   path: "pages/index/index",
+                // });
+              }}
+              className="share-btn"
+              type="button"
+            >
+              <Text>邀好友得现金/次数</Text>
+              <View id="container-stars">
+                <View id="stars"></View>
+              </View>
+              <View id="glow">
+                <View className="circle"></View>
+                <View className="circle"></View>
+              </View>
+            </Button>
+            <Button
               className="share-btn"
               onClick={() => {
                 Taro.navigateTo({
@@ -1196,27 +1250,6 @@ const CameraPage = () => {
               }}
             >
               使用教程
-            </Button> */}
-            <Button
-              // openType="share"
-              onClick={() => {
-                setInviteModalShow(true);
-                // wx.navigateToMiniProgram({
-                //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-                //   path: "pages/index/index",
-                // });
-              }}
-              className="share-btn"
-              type="button"
-            >
-              <Text>邀好友得现金/次数</Text>
-              <View id="container-stars">
-                <View id="stars"></View>
-              </View>
-              <View id="glow">
-                <View className="circle"></View>
-                <View className="circle"></View>
-              </View>
             </Button>
           </View>
           <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
@@ -1304,7 +1337,7 @@ const CameraPage = () => {
               </View>
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
-                  保存位置等数据，下次使用时无需再次修改
+                  保存位置、标题等数据，下次使用时无需再次修改
                 </View>
                 <Switch
                   style={{ transform: "scale(0.7)" }}
@@ -1315,7 +1348,7 @@ const CameraPage = () => {
                   }}
                 />
               </View>
-              {disableTrueCode && (
+              {/* {disableTrueCode && (
                 <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                   <View style={{ marginRight: "10px" }}>
                     是否需要左下角已验证下标
@@ -1360,7 +1393,7 @@ const CameraPage = () => {
                     }}
                   />
                 </View>
-              )}
+              )} */}
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px", color: "#f22c3d" }}>
                   所有水印都无法验真，只是样子比较像，请注意使用风险！
@@ -1478,6 +1511,55 @@ const CameraPage = () => {
                       ></Input>
                     </View>
                   </AtCard>
+                  {disableTrueCode && (
+                    <AtCard title="左下角已验证下标">
+                      <View className="picker" style={{ height: "50px" }}>
+                        <Text>是否显示： </Text>
+
+                        <Switch
+                          style={{
+                            transform: "scale(0.7)",
+                            opacity: !canvasConfigState[
+                              currentShuiyinIndex
+                            ]?.[0]?.left
+                              ? 0.2
+                              : 1,
+                          }}
+                          checked={showHasCheck}
+                          disabled={
+                            !canvasConfigState[currentShuiyinIndex]?.[0]?.left
+                          }
+                          onChange={(e) => {
+                            setShowHasCheck(e.detail.value);
+                          }}
+                        />
+                      </View>
+                    </AtCard>
+                  )}
+                  {disableTrueCode && (
+                    <AtCard title="右下角防伪下标">
+                      <View className="picker" style={{ height: "50px" }}>
+                        <Text>是否显示： </Text>
+                        <Switch
+                          style={{
+                            transform: "scale(0.7)",
+                            opacity: !canvasConfigState[
+                              currentShuiyinIndex
+                            ]?.[0]?.right
+                              ? 0.2
+                              : 1,
+                          }}
+                          checked={showTrueCode}
+                          disabled={
+                            !canvasConfigState[currentShuiyinIndex]?.[0]?.right
+                          }
+                          onChange={(e) => {
+                            setShowTrueCode(e.detail.value);
+                          }}
+                        />
+                      </View>
+                    </AtCard>
+                  )}
                   <AtCard title="标题">
                     <View className="picker">
                       <Text>标题： </Text>
@@ -1507,11 +1589,13 @@ const CameraPage = () => {
                       ></Input>
                     </View>
                   </AtCard>
+
                   <AtCard title="经纬度">
                     <View className="picker" style={{ height: "50px" }}>
                       <Text>是否显示： </Text>
 
                       <Switch
+                        style={{ transform: "scale(0.7)" }}
                         checked={hideJw}
                         onChange={(e) => {
                           setHideJw(e.detail.value);

@@ -24,9 +24,8 @@ const generateCanvasConfig = ({
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 大写字母
     const numbers = "0123456789"; // 数字
     let result = [];
-
     // 随机选取10个大写字母
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 11; i++) {
       const randomLetter = letters.charAt(
         Math.floor(Math.random() * letters.length)
       );
@@ -60,6 +59,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, backgroundConfig) => {
               const { color, rect } = backgroundConfig;
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
               ctx.fillStyle = color;
               ctx.fillRect(rect[0] - 5, rect[1] + 3, rect[2], rect[3]);
               if (disableTrueCode && showTrueCode) {
@@ -90,9 +90,9 @@ const generateCanvasConfig = ({
                         imgHeight * 0.7
                       );
                       //  绘制时间
-                      ctx.font = "bold 6px sans-serif"; // 加粗并放大时间文字
+                      ctx.font = "bold 6px NotoSansMono"; // 加粗并放大时间文字
                       ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(), x + 52, y + 47);
+                      ctx.fillText(generateRandomString(), x + 56, y + 47);
                     };
                     img.onerror = (err) => {
                       console.error("Background image loading failed", err);
@@ -240,6 +240,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, rectConfig) => {
               const { width, height, color } = rectConfig;
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
 
               ctx.fillStyle = color;
 
@@ -399,6 +400,8 @@ const generateCanvasConfig = ({
           // 背景
           {
             draw: (ctx, rectConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
               const { width, color, text } = rectConfig;
               const height = rectConfig.height();
               // 设置矩形的颜色

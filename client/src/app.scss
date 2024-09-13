@@ -7,10 +7,24 @@ page {
 .at-float-layout__container {
   min-height: 60% !important;
 }
+.at-card__header {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+.at-card__content {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
 .at-card__header-title {
   font-weight: bolder !important;
   // color:#ff6666!important
 }
 .result .at-modal__content {
   min-height: auto;
+}
+.at-card__content-info .picker {
+  height: 50px!important
+}
+.at-modal__content{
+  position: relative;
 }

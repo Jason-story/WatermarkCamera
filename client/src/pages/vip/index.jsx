@@ -9,10 +9,21 @@ import {
   Text,
   Button,
 } from "@tarojs/components";
+import {
+  AtButton,
+  AtModal,
+  AtToast,
+  AtCard,
+  AtSwitch,
+  AtModalHeader,
+  AtModalContent,
+  AtModalAction,
+  AtFloatLayout,
+} from "taro-ui";
 import { useDidShow } from "@tarojs/taro";
 import Taro from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
-import Head from "../../images/head.jpg";
+import Close from "../../images/close.png";
 import "./index.scss";
 const md5 = require("./md5.js");
 // const md5 = require("md5");
@@ -29,6 +40,8 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
   });
 
   const [selected, setSelected] = useState("");
+  const [isShowModal, setIsShowModal] = useState(false);
+
   useEffect(() => {
     price && setSelected(price.current);
   }, [price]);
@@ -244,7 +257,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           </View>
         )}
         <Button
-          openType="contact"
+          // openType="contact"
           style={{
             background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
             color: "white",
@@ -259,11 +272,64 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           }}
           type="default"
           className="guide-btn"
+          onClick={(e) => {
+            console.log("e: ", e);
+            setIsShowModal(true);
+          }}
         >
           联系客服
         </Button>
       </View>
+      <AtModal
+        isOpened={isShowModal}
+        closeOnClickOverlay={true}
+        onClose={() => {
+          setIsShowModal(false);
+        }}
+      >
+        <AtModalHeader>
+          <Text>提示</Text>
+          <View
+            onClick={() => {
+              setIsShowModal(false);
+            }}
+            style={{
+              position: "absolute",
+              right: "15px",
+              top: "10px",
+              width: "20px",
+              height: "20px",
+            }}
+          >
+            <Image
+              style={{ width: "100%", height: "100%" }}
+              src={Close}
+            ></Image>
+          </View>
+        </AtModalHeader>
 
+        <AtModalContent>
+          <View className="modal-list">
+            <View style={{ lineHeight: 1.6 }}>
+              使用问题请先查看教程，如仍然无法解决请联系客服。
+            </View>
+          </View>
+        </AtModalContent>
+        <AtModalAction>
+          <Button
+            onClick={() => {
+              Taro.navigateTo({
+                url: "/pages/jiaocheng/index",
+              });
+            }}
+          >
+            查看教程
+          </Button>
+          <Button openType="contact" type="default" className="guide-btn">
+            联系客服
+          </Button>
+        </AtModalAction>
+      </AtModal>
       {price.showPrice && (
         <View className="user-details" style={{ marginTop: "20px" }}>
           <View>

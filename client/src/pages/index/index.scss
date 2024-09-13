@@ -251,6 +251,21 @@ page {
   width: 70rpx;
   height: 70rpx;
 }
+.leftArrow {
+  animation: moveLeftRight 1.5s infinite ease-in-out;
+}
+/* 定义左右往复移动的动画 */
+@keyframes moveLeftRight {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-30px); /* 向左移动的距离 */
+  }
+  100% {
+    transform: translateX(0); /* 回到初始位置 */
+  }
+}
 .xiangce,
 .shuiyin {
   display: flex;
