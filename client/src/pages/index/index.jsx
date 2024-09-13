@@ -956,8 +956,7 @@ const CameraPage = () => {
                   path: filePath,
                   x: 20,
                   y:
-                    canvasConfigState[currentShuiyinIndex]?.[0].logoY *
-                    ((screenWidth / 3) * 4),
+                    canvasConfigState[currentShuiyinIndex]?.[0].logoY
                 };
               },
             });

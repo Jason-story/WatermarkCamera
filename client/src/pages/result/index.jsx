@@ -24,13 +24,13 @@ let interstitialAd = null;
 
 const MergeCanvas = () => {
   const config = app.$app.globalData.config;
-  console.log('config: ', config);
+  console.log("config: ", config);
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
   const position = Taro.getCurrentInstance().router.params.position;
-  const scale =  1;
+  const scale = 1;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
   const isVip = Taro.getCurrentInstance().router.params.vip;
   // 图片水印 or 视频水印
@@ -113,7 +113,10 @@ const MergeCanvas = () => {
       // 调用云函数
       const res = await Taro.cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
-        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "serverMergeImage",
+        name:
+          shuiyinTypeSelect === "video"
+            ? "mergeVideoCanvas"
+            : "serverMergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
@@ -335,12 +338,21 @@ const MergeCanvas = () => {
       let img2Height = img2Width * (info2.height / info2.width);
 
       // 计算 img2 的位置
-      let x =0;
+      let x = 0;
       let y = canvasHeight - img2Height - 10 * dpr;
-
       // 绘制第二张图片
       ctx.drawImage(info2.path, x, y, img2Width, img2Height);
-
+      // 绘制logo
+      if (config.logoConfig.path) {
+        const info3 = await Taro.getImageInfo({ src: config.logoConfig.path });
+        ctx.drawImage(
+          config.logoConfig.path,
+          config.logoConfig.x * dpr,
+          config.logoConfig.y * canvasHeight,
+          config.logoConfig.width * (canvasWidth / screenWidth),
+          config.logoConfig.height * (canvasWidth / screenWidth)
+        );
+      }
       await drawCanvas(ctx);
 
       setTimeout(async () => {
@@ -520,6 +532,7 @@ const MergeCanvas = () => {
           </View>
         )}
         <View className="watermark">可修改水印相机</View>
+
         <Image
           className="result-img"
           mode="scaleToFill"
@@ -529,6 +542,23 @@ const MergeCanvas = () => {
             display: "block",
             height: `100%`,
             minHeight: "50vh",
+          }}
+        />
+        <Image
+          className="result-img2"
+          mode="scaleToFill"
+          src={config.logoConfig.path}
+          style={{
+            width: `${config.logoConfig.width}px`,
+            display: "block",
+            height: `${config.logoConfig.height}px`,
+            bottom: "auto",
+            left: "10px",
+            top: `${
+              config.logoConfig.y *
+              (screenWidth / imgInfo.width) *
+              imgInfo.height
+            }px`,
           }}
         />
         <Image
