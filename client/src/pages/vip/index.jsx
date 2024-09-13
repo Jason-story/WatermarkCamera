@@ -194,7 +194,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
 
   return (
     <View className="user-info">
-      {price.show === true && fuckCheck === false ? (
+      {fuckCheck === false ? (
         <View className="user-details" style={{ marginBottom: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>会员权益</Text>
@@ -209,7 +209,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
         "暂无"
       )}
 
-      {price.show === true && fuckCheck === false ? (
+      {fuckCheck === false ? (
         <View style={{ width: "100%" }}>
           <RadioGroup
             onChange={(e) => {
@@ -233,7 +233,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
         </View>
       ) : null}
       <View style={{ width: "100%", marginTop: "20px" }}>
-        {price.show && fuckCheck === false && (
+        {fuckCheck === false && (
           <View>
             <Button
               style={{
@@ -333,7 +333,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           </Button>
         </AtModalAction>
       </AtModal>
-      {price.show === true && fuckCheck === false && (
+      {fuckCheck === false && (
         <View className="user-details" style={{ marginTop: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>注意事项</Text>
