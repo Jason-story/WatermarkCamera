@@ -256,7 +256,6 @@ const config = app.$app.globalData.config;
   async function handleMergedImage(mergedImageFileID, info) {
     await saveImage(mergedImageFileID, info);
   }
-
   useEffect(() => {
     const getData = async () => {
       await getCloud();
