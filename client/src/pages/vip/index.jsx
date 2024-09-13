@@ -50,7 +50,10 @@ const getCloud = async () => {
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const UserInfo = ({ userInfo, price = { show: false } }) => {
   const config = app.$app.globalData.config;
-
+  let fuckCheck = false;
+  if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
+    fuckCheck = true;
+  }
   let inviteId = Taro.getCurrentInstance().router.params.id || "";
   Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
     if (res.data) {
@@ -209,7 +212,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
 
   return (
     <View className="user-info">
-      {price.secondshow === true ? (
+      { fuckCheck === false ? (
         <View className="user-details" style={{ marginBottom: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>会员权益</Text>
@@ -223,9 +226,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       ) : (
         "暂无"
       )}
-      {!price.secondshow ? (
-        ""
-      ) : (
+      {fuckCheck === false ? (
         <View style={{ width: "100%" }}>
           <RadioGroup
             onChange={(e) => {
@@ -247,9 +248,9 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
             })}
           </RadioGroup>
         </View>
-      )}
+      ) : null}
       <View style={{ width: "100%", marginTop: "20px" }}>
-        {price.secondshow && (
+        { fuckCheck === false && (
           <View>
             <Button
               style={{
@@ -349,7 +350,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           </Button>
         </AtModalAction>
       </AtModal>
-      {price.showPrice && (
+      {fuckCheck === false && (
         <View className="user-details" style={{ marginTop: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>注意事项</Text>
