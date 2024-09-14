@@ -955,8 +955,7 @@ const CameraPage = () => {
                   height,
                   path: filePath,
                   x: 20,
-                  y:
-                    canvasConfigState[currentShuiyinIndex]?.[0].logoY
+                  y: canvasConfigState[currentShuiyinIndex]?.[0].logoY,
                 };
               },
             });
@@ -965,10 +964,7 @@ const CameraPage = () => {
       },
     });
   };
-  console.log(
-    "canvasConfigState[currentShuiyinIndex]?.[0].logoY: ",
-    canvasConfigState[currentShuiyinIndex]?.[0].logoY
-  );
+
   return (
     <View className="container">
       {userInfo.black ? (
@@ -1060,9 +1056,14 @@ const CameraPage = () => {
                 className="logo-wrap"
                 style={{
                   top:
-                    canvasConfigState[currentShuiyinIndex]?.[0].logoY *
-                      ((screenWidth / 3) * 4) +
-                    "px",
+                    showFloatLayout || showSettingFloatLayout
+                      ? (canvasConfigState[currentShuiyinIndex]?.[0].logoY -
+                          0.45) *
+                          ((screenWidth / 3) * 4) +
+                        "px"
+                      : canvasConfigState[currentShuiyinIndex]?.[0].logoY *
+                          ((screenWidth / 3) * 4) +
+                        "px",
                 }}
                 onClick={() => {
                   uploadLogo();

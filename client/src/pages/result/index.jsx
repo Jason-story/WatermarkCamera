@@ -100,14 +100,14 @@ const MergeCanvas = () => {
   async function mergeImages(
     firstImagePath,
     secondImagePath,
-    position,
     userInfo
   ) {
     try {
       // 上传图片
-      const [firstImageFileID, secondImageFileID] = await Promise.all([
+      const [firstImageFileID, secondImageFileID,logoImageFileId] = await Promise.all([
         uploadImage(firstImagePath),
         uploadImage(secondImagePath),
+        uploadImage(config.logoConfig.path),
       ]);
 
       // 调用云函数
@@ -116,10 +116,13 @@ const MergeCanvas = () => {
         name:
           shuiyinTypeSelect === "video"
             ? "mergeVideoCanvas"
-            : "serverMergeImage",
+            : "mergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
+          logoImageFileId,
+          screenWidth,
+          logoConfig:config.logoConfig,
           position,
           scale,
           userInfo,
@@ -267,8 +270,7 @@ const MergeCanvas = () => {
             const { fileID, width, height } = await mergeImages(
               firstImagePath,
               secondImagePath,
-              position,
-              res.result.data
+              res.result.data,
             );
             setImageHeight(height);
             setImageWidth(width);

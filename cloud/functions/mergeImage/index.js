@@ -54,7 +54,16 @@ async function securityCheck(fileContent) {
 }
 
 exports.main = async (event, context) => {
-    const { firstImageFileID, secondImageFileID, position, scale = 0.5, userInfo } = event;
+    const {
+        firstImageFileID,
+        secondImageFileID,
+        logoConfig,
+        screenWidth,
+        logoImageFileId,
+        scale = 1,
+        userInfo
+    } = event;
+    console.log('userInfo: ', userInfo);
     const transaction = await db.startTransaction();
     const isCheckData = await transaction.collection('isCheck').limit(1).get();
     let isCheck = false;
@@ -65,9 +74,10 @@ exports.main = async (event, context) => {
     }
     try {
         // Download images
-        const [firstImageRes, secondImageRes] = await Promise.all([
+        const [firstImageRes, secondImageRes, logoImageRes] = await Promise.all([
             cloud.downloadFile({ fileID: firstImageFileID }),
-            cloud.downloadFile({ fileID: secondImageFileID })
+            cloud.downloadFile({ fileID: secondImageFileID }),
+            cloud.downloadFile({ fileID: logoImageFileId })
         ]);
 
         if (isCheck) {
@@ -77,9 +87,10 @@ exports.main = async (event, context) => {
         }
 
         // Read images with Jimp
-        const [firstImage, secondImage] = await Promise.all([
+        const [firstImage, secondImage, logoImage] = await Promise.all([
             Jimp.read(firstImageRes.fileContent),
-            Jimp.read(secondImageRes.fileContent)
+            Jimp.read(secondImageRes.fileContent),
+            Jimp.read(logoImageRes.fileContent)
         ]);
 
         // Get dimensions of the first image
@@ -90,13 +101,22 @@ exports.main = async (event, context) => {
         let img2Width = canvasWidth * scale;
         let img2Height = img2Width * (secondImage.getHeight() / secondImage.getWidth());
         secondImage.resize(img2Width, img2Height);
-
         // Calculate position for the second image
-        let x = position === 'center' ? (canvasWidth - img2Width) / 2 : 10;
+        let x = 0;
         let y = canvasHeight - img2Height - 10;
 
         // Composite images
         firstImage.composite(secondImage, x, y);
+
+
+        // Resize the logo image
+        let logoWidth = logoConfig.width * (canvasWidth / screenWidth);
+        let logoHeight = logoConfig.height * (canvasWidth / screenWidth);
+        logoImage.resize(logoWidth, logoHeight);
+
+        let logoX = logoConfig.x;
+        let logoY = logoConfig.y * canvasHeight;
+        firstImage.composite(logoImage, logoX, logoY);
 
         // Scale factor based on user type
         const finalWidth = Math.round(canvasWidth);
@@ -119,7 +139,7 @@ exports.main = async (event, context) => {
 
         // Delete temporary original images
         await cloud.deleteFile({
-            fileList: [firstImageFileID, secondImageFileID]
+            fileList: [firstImageFileID, secondImageFileID, logoImageFileId]
         });
 
         return {

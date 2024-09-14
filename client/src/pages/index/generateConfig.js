@@ -13,7 +13,8 @@ const generateCanvasConfig = ({
   longitude,
   hideJw,
   title,
-  canvas,dpr,
+  canvas,
+  dpr,
   Shuiyin1,
   Shuiyin2,
   Shuiyin3,
@@ -167,7 +168,8 @@ const generateCanvasConfig = ({
 
               const maxLength = 16;
               const firstLine = text.slice(0, maxLength);
-              const secondLine = text.length > maxLength ? text.slice(maxLength) : "";
+              const secondLine =
+                text.length > maxLength ? text.slice(maxLength) : "";
 
               ctx.fillText(firstLine, position[0] - 5, position[1] + 3);
               if (secondLine) {
@@ -201,7 +203,9 @@ const generateCanvasConfig = ({
                 color: "white",
                 text: hideJw
                   ? "经纬度: " +
-                    ((latitude * 1)?.toFixed(5) + ", " + (longitude * 1)?.toFixed(5))
+                    ((latitude * 1)?.toFixed(5) +
+                      ", " +
+                      (longitude * 1)?.toFixed(5))
                   : "",
                 position: [20 - 5, 87 + 3], // Adjusted position
               },
@@ -222,13 +226,15 @@ const generateCanvasConfig = ({
                 lineWidth: 2.5,
                 color: "#fec52e",
                 start: [94 - 5, 5 + 3], // Adjusted position
-                end: [94 - 5, 44 + 3],  // Adjusted position
+                end: [94 - 5, 44 + 3], // Adjusted position
               },
             ],
           },
         ],
         img: Shuiyin1,
-        right:true,
+        right: true,
+        logoY: 0.65,
+
         name: "免费-时间天气-1",
         height: locationName.length > 16 ? 120 : 110,
       },
@@ -389,6 +395,7 @@ const generateCanvasConfig = ({
         img: Shuiyin2,
         width: 255,
         // vip: true,
+        logoY: 0.6,
 
         name: "免费-打卡-2",
         height: locationName.length > 16 ? 130 : 110,
@@ -413,7 +420,13 @@ const generateCanvasConfig = ({
               ctx.lineTo(width - radius + 10, 5);
               ctx.arcTo(width + 10, 5, width + 10, radius + 5, radius);
               ctx.lineTo(width + 10, height - radius + 5);
-              ctx.arcTo(width + 10, height + 5, width - radius + 10, height + 5, radius);
+              ctx.arcTo(
+                width + 10,
+                height + 5,
+                width - radius + 10,
+                height + 5,
+                radius
+              );
               ctx.lineTo(radius + 10, height + 5);
               ctx.arcTo(10, height + 5, 10, height - radius + 5, radius);
               ctx.lineTo(10, radius + 5);
@@ -552,6 +565,8 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin3,
         vip: true,
+        logoY: 0.6,
+
         name: "免费-工程记录-3",
         width: 225, // 280 * 0.75 + 15 - 5
         height: (locationName) => {
@@ -581,7 +596,7 @@ const generateCanvasConfig = ({
           return height;
         },
       },
-    ]
+    ],
   ];
 };
 

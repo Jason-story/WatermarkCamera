@@ -270,7 +270,7 @@ const generateCanvasConfig = ({
         img: Shuiyin4,
         width: width - 20,
         height: 140,
-        scale: 0.95,
+        logoY: .7,
         name: "定制-水印相机",
         position: "center",
         vip: true,
@@ -470,13 +470,12 @@ const generateCanvasConfig = ({
         vip: true,
         left: true,
         right: true,
-        logoY: .6,
+        logoY: .62,
         height: (locationName, hideJw) => {
           const baseHeight = 110; // 减小20px
           const lineHeight = 21.25;
           const maxLines = 2;
           const charsPerLine = 15;
-
           const getLocationLines = (text) => {
             const words = text.split("");
             let lines = 1;
@@ -693,6 +692,7 @@ const generateCanvasConfig = ({
         img: Shuiyin7,
         vip: true,
         name: "免费-工程记录-3",
+        logoY: .62,
         left: false,
         right: true,
         height: () => {
@@ -939,7 +939,7 @@ const generateCanvasConfig = ({
         img: Shuiyin6,
         width: width - 20,
         height: 160,
-        scale: 0.95,
+        logoY: .7,
         name: "定制-水印相机",
         position: "center",
       },
