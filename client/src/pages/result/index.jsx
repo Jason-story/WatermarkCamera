@@ -1,5 +1,5 @@
 // src/pages/merge/index.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect,useCallback, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useDidShow } from "@tarojs/taro";
@@ -112,15 +112,11 @@ const config = app.$app.globalData.config;
     });
     return res.fileID;
   }
-  async function mergeImages(
-    firstImagePath,
-    secondImagePath,
-    position,
-    userInfo
-  ) {
+  async function mergeImages(firstImagePath, secondImagePath, userInfo) {
     try {
       // 上传图片
-      const [firstImageFileID, secondImageFileID] = await Promise.all([
+      const [firstImageFileID, secondImageFileID, logoImageFileId] =
+      await Promise.all([
         uploadImage(firstImagePath),
         uploadImage(secondImagePath),
       ]);
@@ -129,10 +125,13 @@ const config = app.$app.globalData.config;
       // 调用云函数
       const res = await cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
-        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "serverMergeImage",
+        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "mergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
+          logoImageFileId,
+          screenWidth,
+          logoConfig: config.logoConfig,
           position,
           scale,
           userInfo,
@@ -140,6 +139,7 @@ const config = app.$app.globalData.config;
       });
       console.log("res: ", res);
 
+      console.log('res: ', res);
       if (res.result.success) {
         return res.result;
       } else {
@@ -285,7 +285,6 @@ const config = app.$app.globalData.config;
             const { fileID, width, height } = await mergeImages(
               firstImagePath,
               secondImagePath,
-              position,
               res.result.data
             );
             setImageHeight(height);
@@ -358,10 +357,18 @@ const config = app.$app.globalData.config;
       // 计算 img2 的位置
       let x =0;
       let y = canvasHeight - img2Height - 10 * dpr;
-
       // 绘制第二张图片
       ctx.drawImage(info2.path, x, y, img2Width, img2Height);
-
+      // 绘制logo
+      if (config?.logoConfig?.path) {
+        ctx.drawImage(
+          config.logoConfig.path,
+          config.logoConfig.x * dpr,
+          config.logoConfig.y * canvasHeight,
+          config.logoConfig.width * (canvasWidth / screenWidth),
+          config.logoConfig.height * (canvasWidth / screenWidth)
+        );
+      }
       await drawCanvas(ctx);
 
       setTimeout(async () => {
@@ -426,22 +433,40 @@ const config = app.$app.globalData.config;
       Taro.saveImageToPhotosAlbum({
         filePath: tempFilePath,
         success: async () => {
+          setLoading(false);
           uploadImage(tempFilePath);
+          Taro.showToast({
+            title: "已保存到相册",
+            icon: "success",
+            duration: 2000,
+          });
+          if (info.type === "default") {
+            if (wx.createInterstitialAd) {
+              interstitialAd = wx.createInterstitialAd({
+                adUnitId: "adunit-39ab5f712a4521b4",
+              });
+              interstitialAd.onLoad(() => {});
+              interstitialAd.onError((err) => {
+                console.error("插屏广告加载失败", err);
+              });
+              interstitialAd.onClose(() => {});
+            }
+
+            // 在适合的场景显示插屏广告
+            if (interstitialAd) {
+              interstitialAd.show().catch((err) => {
+                console.error("插屏广告显示失败", err);
+              });
+            }
+          }
           await cloud.callFunction({
             name: "addUser",
             data: {
               remark: "成功使用",
             },
           });
-          Taro.showToast({
-            title: "已保存到相册",
-            icon: "success",
-            duration: 2000,
-          });
-          setLoading(false);
-
           // if (inviteId) {
-          //   await cloud.callFunction({
+          //   await Taro.cloud.callFunction({
           //     name: "invite",
           //     data: {
           //       invite_id: inviteId,
@@ -486,7 +511,12 @@ const config = app.$app.globalData.config;
     // }
     save();
   };
-
+  const chongxinpaishe = useCallback(() => {
+    console.log('Button clicked');
+    Taro.navigateBack({
+      delta: 1,
+    });
+  }, []);
   // ----------------------客户端合成结束
   return (
     <View className="container result">
@@ -523,6 +553,7 @@ const config = app.$app.globalData.config;
           </View>
         )}
         <View className="watermark">可修改水印相机</View>
+
         <Image
           className="result-img"
           mode="scaleToFill"
@@ -534,6 +565,26 @@ const config = app.$app.globalData.config;
             minHeight: "50vh",
           }}
         />
+        {config?.logoConfig?.path && (
+          <Image
+            className="result-img2"
+            mode="scaleToFill"
+            src={config.logoConfig.path}
+            style={{
+              width: `${config.logoConfig.width}px`,
+              display: "block",
+              height: `${config.logoConfig.height}px`,
+              bottom: "auto",
+              left: "10px",
+              top: `${
+                config.logoConfig.y *
+                (screenWidth / imgInfo.width) *
+                imgInfo.height
+              }px`,
+            }}
+          />
+        )}
+
         <Image
           className="result-img2"
           mode="scaleToFill"
@@ -606,11 +657,7 @@ const config = app.$app.globalData.config;
         </Button>
         <Button
           className="share-btn"
-          onClick={() => {
-            Taro.navigateBack({
-              delta: 1, // delta 参数表示需要返回的页面数，默认为1
-            });
-          }}
+          onClick={chongxinpaishe}
           style={{
             background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
             color: "white",

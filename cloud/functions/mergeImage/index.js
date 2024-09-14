@@ -54,21 +54,35 @@ async function securityCheck(fileContent) {
 }
 
 exports.main = async (event, context) => {
-    const { firstImageFileID, secondImageFileID, position, scale = 0.5, userInfo } = event;
+    const {
+        firstImageFileID,
+        secondImageFileID,
+        logoConfig,
+        screenWidth,
+        logoImageFileId,
+        scale = 1,
+        userInfo
+    } = event;
     const transaction = await db.startTransaction();
     const isCheckData = await transaction.collection('isCheck').limit(1).get();
     let isCheck = false;
     if (isCheckData.data.length > 0) {
         // 获取第一条记录
         isCheck = isCheckData.data[0].check;
-        console.log('isCheck: ', isCheck);
     }
     try {
         // Download images
-        const [firstImageRes, secondImageRes] = await Promise.all([
+        const downloadTasks = [
             cloud.downloadFile({ fileID: firstImageFileID }),
             cloud.downloadFile({ fileID: secondImageFileID })
-        ]);
+        ];
+
+        // 只有当 logoImageFileId 存在时才添加到任务列表
+        if (logoImageFileId) {
+            downloadTasks.push(cloud.downloadFile({ fileID: logoImageFileId }));
+        }
+
+        const [firstImageRes, secondImageRes, logoImageRes = null] = await Promise.all(downloadTasks);
 
         if (isCheck) {
             console.log('isCheck222: ', isCheck);
@@ -76,11 +90,18 @@ exports.main = async (event, context) => {
             await Promise.all([securityCheck(firstImageRes.fileContent)]);
         }
 
-        // Read images with Jimp
-        const [firstImage, secondImage] = await Promise.all([
-            Jimp.read(firstImageRes.fileContent),
-            Jimp.read(secondImageRes.fileContent)
-        ]);
+        // 准备读取图像的任务
+        const readTasks = [Jimp.read(firstImageRes.fileContent), Jimp.read(secondImageRes.fileContent)];
+
+        // 只有当 logoImageRes 存在时才添加读取任务
+        if (logoImageRes) {
+            readTasks.push(Jimp.read(logoImageRes.fileContent));
+        } else {
+            readTasks.push(null); // 保证数组长度一致
+        }
+
+        const [firstImage, secondImage, logoImage] = await Promise.all(readTasks);
+        // 处理读取的图像
 
         // Get dimensions of the first image
         const canvasWidth = firstImage.getWidth();
@@ -90,13 +111,23 @@ exports.main = async (event, context) => {
         let img2Width = canvasWidth * scale;
         let img2Height = img2Width * (secondImage.getHeight() / secondImage.getWidth());
         secondImage.resize(img2Width, img2Height);
-
         // Calculate position for the second image
-        let x = position === 'center' ? (canvasWidth - img2Width) / 2 : 10;
+        let x = 0;
         let y = canvasHeight - img2Height - 10;
 
         // Composite images
         firstImage.composite(secondImage, x, y);
+
+        // Resize the logo image
+        if (logoImageFileId) {
+            let logoWidth = logoConfig.width * (canvasWidth / screenWidth);
+            let logoHeight = logoConfig.height * (canvasWidth / screenWidth);
+            logoImage.resize(logoWidth, logoHeight);
+
+            let logoX = logoConfig.x;
+            let logoY = logoConfig.y * canvasHeight;
+            firstImage.composite(logoImage, logoX, logoY);
+        }
 
         // Scale factor based on user type
         const finalWidth = Math.round(canvasWidth);
@@ -117,9 +148,16 @@ exports.main = async (event, context) => {
             fileContent: buffer
         });
 
-        // Delete temporary original images
+        // 构建文件列表，排除无效的 logoImageFileId
+        const fileList = [firstImageFileID, secondImageFileID].filter(Boolean); // 排除 null 或 undefined
+
+        // 如果 logoImageFileId 存在，才添加到 fileList 中
+        if (logoImageFileId) {
+            fileList.push(logoImageFileId);
+        }
+
         await cloud.deleteFile({
-            fileList: [firstImageFileID, secondImageFileID]
+            fileList: fileList
         });
 
         return {
