@@ -24,7 +24,6 @@ let interstitialAd = null;
 
 const MergeCanvas = () => {
   const config = app.$app.globalData.config;
-  console.log('config: ', config.logoConfig.y);
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径

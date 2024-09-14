@@ -968,7 +968,6 @@ const CameraPage = () => {
 
   useEffect(() => {
     if (app.$app.globalData.config.logoConfig) {
-      console.log('canvasConfigState[currentShuiyinIndex]?.[0].logoY: ', canvasConfigState[currentShuiyinIndex]?.[0].logoY);
       app.$app.globalData.config.logoConfig.y =
         canvasConfigState[currentShuiyinIndex]?.[0].logoY;
     }
@@ -1082,6 +1081,7 @@ const CameraPage = () => {
                     src={Jianhao}
                     onClick={(e) => {
                       setLogoPath("");
+                      app.$app.globalData.config.logoConfig = null;
                       e.stopPropagation();
                       e.preventDefault();
                     }}
