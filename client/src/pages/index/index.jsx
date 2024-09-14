@@ -45,6 +45,7 @@ import Shuiyin6 from "../../images/shuiyin-6.png";
 import AddMyApp from "../../images/add-my-app.png";
 import Arrow from "../../images/left-arrow.png";
 import AddPic from "../../images/add-pic.png";
+import Jianhao from "../../images/jianhao.png";
 
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
@@ -965,6 +966,13 @@ const CameraPage = () => {
     });
   };
 
+  useEffect(() => {
+    if (app.$app.globalData.config.logoConfig) {
+      console.log('canvasConfigState[currentShuiyinIndex]?.[0].logoY: ', canvasConfigState[currentShuiyinIndex]?.[0].logoY);
+      app.$app.globalData.config.logoConfig.y =
+        canvasConfigState[currentShuiyinIndex]?.[0].logoY;
+    }
+  }, [currentShuiyinIndex]);
   return (
     <View className="container">
       {userInfo.black ? (
@@ -1069,6 +1077,23 @@ const CameraPage = () => {
                   uploadLogo();
                 }}
               >
+                {logoPath && (
+                  <Image
+                    src={Jianhao}
+                    onClick={(e) => {
+                      setLogoPath("");
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                    style={{
+                      position: "absolute",
+                      right: "-13px",
+                      top: "-13px",
+                      width: "26px",
+                      height: "26px",
+                    }}
+                  ></Image>
+                )}
                 {logoPath ? (
                   <Image
                     className="logo"

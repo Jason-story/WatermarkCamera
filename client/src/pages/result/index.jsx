@@ -1,5 +1,5 @@
 // src/pages/merge/index.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect,useCallback, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useDidShow } from "@tarojs/taro";
@@ -24,7 +24,7 @@ let interstitialAd = null;
 
 const MergeCanvas = () => {
   const config = app.$app.globalData.config;
-  console.log("config: ", config);
+  console.log('config: ', config.logoConfig.y);
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
@@ -97,38 +97,33 @@ const MergeCanvas = () => {
     });
     return res.fileID;
   }
-  async function mergeImages(
-    firstImagePath,
-    secondImagePath,
-    userInfo
-  ) {
+  async function mergeImages(firstImagePath, secondImagePath, userInfo) {
     try {
       // 上传图片
-      const [firstImageFileID, secondImageFileID,logoImageFileId] = await Promise.all([
+      const [firstImageFileID, secondImageFileID, logoImageFileId] =
+      await Promise.all([
         uploadImage(firstImagePath),
         uploadImage(secondImagePath),
-        uploadImage(config.logoConfig.path),
-      ]);
-
+          config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
+        ]);
+        console.log('logoImageFileId: ', logoImageFileId);
       // 调用云函数
       const res = await Taro.cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
-        name:
-          shuiyinTypeSelect === "video"
-            ? "mergeVideoCanvas"
-            : "mergeImage",
+        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "mergeImage",
         data: {
           firstImageFileID,
           secondImageFileID,
           logoImageFileId,
           screenWidth,
-          logoConfig:config.logoConfig,
+          logoConfig: config.logoConfig,
           position,
           scale,
           userInfo,
         },
       });
 
+      console.log('res: ', res);
       if (res.result.success) {
         return res.result;
       } else {
@@ -270,7 +265,7 @@ const MergeCanvas = () => {
             const { fileID, width, height } = await mergeImages(
               firstImagePath,
               secondImagePath,
-              res.result.data,
+              res.result.data
             );
             setImageHeight(height);
             setImageWidth(width);
@@ -345,8 +340,7 @@ const MergeCanvas = () => {
       // 绘制第二张图片
       ctx.drawImage(info2.path, x, y, img2Width, img2Height);
       // 绘制logo
-      if (config.logoConfig.path) {
-        const info3 = await Taro.getImageInfo({ src: config.logoConfig.path });
+      if (config?.logoConfig?.path) {
         ctx.drawImage(
           config.logoConfig.path,
           config.logoConfig.x * dpr,
@@ -497,7 +491,12 @@ const MergeCanvas = () => {
     // }
     save();
   };
-
+  const chongxinpaishe = useCallback(() => {
+    console.log('Button clicked');
+    Taro.navigateBack({
+      delta: 1,
+    });
+  }, []);
   // ----------------------客户端合成结束
   return (
     <View className="container result">
@@ -546,23 +545,26 @@ const MergeCanvas = () => {
             minHeight: "50vh",
           }}
         />
-        <Image
-          className="result-img2"
-          mode="scaleToFill"
-          src={config.logoConfig.path}
-          style={{
-            width: `${config.logoConfig.width}px`,
-            display: "block",
-            height: `${config.logoConfig.height}px`,
-            bottom: "auto",
-            left: "10px",
-            top: `${
-              config.logoConfig.y *
-              (screenWidth / imgInfo.width) *
-              imgInfo.height
-            }px`,
-          }}
-        />
+        {config?.logoConfig?.path && (
+          <Image
+            className="result-img2"
+            mode="scaleToFill"
+            src={config.logoConfig.path}
+            style={{
+              width: `${config.logoConfig.width}px`,
+              display: "block",
+              height: `${config.logoConfig.height}px`,
+              bottom: "auto",
+              left: "10px",
+              top: `${
+                config.logoConfig.y *
+                (screenWidth / imgInfo.width) *
+                imgInfo.height
+              }px`,
+            }}
+          />
+        )}
+
         <Image
           className="result-img2"
           mode="scaleToFill"
@@ -635,11 +637,7 @@ const MergeCanvas = () => {
         </Button>
         <Button
           className="share-btn"
-          onClick={() => {
-            Taro.navigateBack({
-              delta: 1, // delta 参数表示需要返回的页面数，默认为1
-            });
-          }}
+          onClick={chongxinpaishe}
           style={{
             background: "linear-gradient(45deg,#ff6ec4, #7873f5)",
             color: "white",
