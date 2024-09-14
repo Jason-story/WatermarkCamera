@@ -927,7 +927,7 @@ const CameraPage = () => {
             console.log("info: ", info);
             const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
-            if (fileSizeInMB > 1) {
+            if (fileSizeInMB > 2) {
               Taro.showModal({
                 title: "提示",
                 content: "Logo体积过大，请重新选择",
@@ -951,6 +951,7 @@ const CameraPage = () => {
                 setLogoWidth(width);
                 setLogoHeight(height);
                 setLogoPath(filePath);
+                console.log('这里没更新: ', filePath);
                 app.$app.globalData.config.logoConfig = {
                   width,
                   height,
