@@ -7,6 +7,7 @@ import ShareImg from "../../images/logo.jpg";
 import "./index.scss";
 
 import { appConfigs } from "../../appConfig.js";
+const app = getApp();
 
 let cloud = "";
 const appid = Taro.getAccountInfoSync().miniProgram.appId;
