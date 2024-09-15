@@ -119,9 +119,9 @@ const config = app.$app.globalData.config;
       await Promise.all([
         uploadImage(firstImagePath),
         uploadImage(secondImagePath),
-      ]);
-
-      console.log("firstImageFileID: ", firstImageFileID);
+          config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
+        ]);
+        console.log('logoImageFileId: ', logoImageFileId);
       // 调用云函数
       const res = await cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",

@@ -49,11 +49,9 @@ const getCloud = async () => {
 
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const UserInfo = ({ userInfo, price = { show: false } }) => {
+  let fuckShenHe = app.$app.globalData.fuckShenHe;
   const config = app.$app.globalData.config;
-  let fuckCheck = false;
-  if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-    fuckCheck = true;
-  }
+
   let inviteId = Taro.getCurrentInstance().router.params.id || "";
   Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
     if (res.data) {
@@ -212,7 +210,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
 
   return (
     <View className="user-info">
-      { fuckCheck === false ? (
+      {fuckShenHe === false ? (
         <View className="user-details" style={{ marginBottom: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>会员权益</Text>
@@ -226,7 +224,8 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
       ) : (
         "暂无"
       )}
-      {fuckCheck === false ? (
+
+      {fuckShenHe === false ? (
         <View style={{ width: "100%" }}>
           <RadioGroup
             onChange={(e) => {
@@ -250,7 +249,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
         </View>
       ) : null}
       <View style={{ width: "100%", marginTop: "20px" }}>
-        { fuckCheck === false && (
+        {fuckShenHe === false && (
           <View>
             <Button
               style={{
@@ -275,29 +274,31 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
             </Button>
           </View>
         )}
-        <Button
-          // openType="contact"
-          style={{
-            background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
-            color: "white",
-            border: "none",
-            borderRadius: "25px",
-            padding: "0 20px",
-            fontSize: "30rpx",
-            cursor: "pointer",
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            marginBottom: "20px",
-          }}
-          type="default"
-          className="guide-btn"
-          onClick={(e) => {
-            console.log("e: ", e);
-            setIsShowModal(true);
-          }}
-        >
-          联系客服
-        </Button>
+        {!fuckShenHe && (
+          <Button
+            // openType="contact"
+            style={{
+              background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
+              color: "white",
+              border: "none",
+              borderRadius: "25px",
+              padding: "0 20px",
+              fontSize: "30rpx",
+              cursor: "pointer",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              marginBottom: "20px",
+            }}
+            type="default"
+            className="guide-btn"
+            onClick={(e) => {
+              console.log("e: ", e);
+              setIsShowModal(true);
+            }}
+          >
+            联系客服
+          </Button>
+        )}
       </View>
       <AtModal
         isOpened={isShowModal}
@@ -350,7 +351,7 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           </Button>
         </AtModalAction>
       </AtModal>
-      {fuckCheck === false && (
+      {fuckShenHe === false && (
         <View className="user-details" style={{ marginTop: "20px" }}>
           <View>
             <Text style={{ fontWeight: "bold" }}>注意事项</Text>

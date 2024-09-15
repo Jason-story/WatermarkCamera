@@ -20,6 +20,7 @@ import { createCameraContext, useDidShow } from "@tarojs/taro";
 import {
   AtModal,
   AtToast,
+  AtInput,
   AtCard,
   AtModalHeader,
   AtModalContent,
@@ -143,6 +144,7 @@ const CameraPage = () => {
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   const [price, setPrice] = useState({});
   const [shuiyinTypeSelect, setShuiyinTypeSelected] = useState("img");
+  const [qrCodePath, setQrCodePath] = useState("");
 
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
@@ -159,6 +161,9 @@ const CameraPage = () => {
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
+  const [addPhoneNumber, setAddPhoneNumber] = useState(false);
+  const [phone, setPhone] = useState("");
+
   const [screenWidth, setScreenWidth] = useState("");
   const [addAnimate, setAddAnimate] = useState(false);
   const [vipAnimate, setVipAnimate] = useState(false);
@@ -171,6 +176,7 @@ const CameraPage = () => {
   const [logoPath, setLogoPath] = useState("");
   const [logoWidth, setLogoWidth] = useState(0);
   const [logoHeight, setLogoHeight] = useState(0);
+  let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
@@ -202,7 +208,16 @@ const CameraPage = () => {
         name: "addUser",
         success: function (res) {
           setUserInfo(res.result.data);
-          if (res.result.data.end_time) {
+          // 会员填写手机号
+          if (
+            !res.result.data.phone &&
+            res.result.data.pay_time &&
+            res.result.data.end_time
+          ) {
+            setAddPhoneNumber(true);
+          }
+          // 有付费时间 没有到期时间 则到期
+          if (res.result.data.pay_time && !res.result.data.end_time) {
             Taro.getStorage({ key: "hasVipClosedModalShow" })
               .then(() => {})
               .catch(() => {
@@ -219,6 +234,20 @@ const CameraPage = () => {
         success: function (res) {
           app.$app.globalData.config = res.result.data;
           setCurrentShuiyinIndex(res.result.data.shuiyinindex);
+
+          wx.downloadFile({
+            url: app.$app.globalData.config.gzh, // 你的二维码图片地址
+            success(res) {
+              if (res.statusCode === 200) {
+                // 成功下载，设置图片路径到本地路径
+                console.log("res.tempFilePath: ", res.tempFilePath);
+                setQrCodePath(res.tempFilePath);
+              }
+            },
+            fail(err) {
+              console.log("二维码下载失败：", err);
+            },
+          });
         },
       });
       // 邀请存档
@@ -1346,7 +1375,7 @@ const CameraPage = () => {
                 <Text>设置</Text>
               </View>
             </View>
-            <View className="tools-bar-inner" style={{ marginLeft: "-80px" }}>
+            <View className="tools-bar-inner" style={{ marginLeft: "-90px" }}>
               <View>
                 <Image
                   src={Arrow}
@@ -1360,30 +1389,50 @@ const CameraPage = () => {
                 {/* <View>隐藏防伪下标？</View> */}
                 <View>请点击设置</View>
               </View>
+              {!fuckShenHe && (
+                <Image
+                  src={qrCodePath}
+                  onClick={() => {
+                    wx.previewImage({
+                      current: qrCodePath, // 当前显示图片的http链接
+                      urls: [qrCodePath], // 需要预览的图片http链接列表
+                    });
+                  }}
+                  style={{
+                    marginLeft: "30px",
+                    position: "absolute",
+                    right: "-7px",
+                    width: "60px",
+                    height: "74px",
+                  }}
+                ></Image>
+              )}
             </View>
           </View>
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
-            <Button
-              // openType="share"
-              onClick={() => {
-                setInviteModalShow(true);
-                // wx.navigateToMiniProgram({
-                //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-                //   path: "pages/index/index",
-                // });
-              }}
-              className="share-btn"
-              type="button"
-            >
-              <Text>邀好友得现金/次数</Text>
-              <View id="container-stars">
-                <View id="stars"></View>
-              </View>
-              <View id="glow">
-                <View className="circle"></View>
-                <View className="circle"></View>
-              </View>
-            </Button>
+            {!fuckShenHe && (
+              <Button
+                // openType="share"
+                onClick={() => {
+                  setInviteModalShow(true);
+                  // wx.navigateToMiniProgram({
+                  //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
+                  //   path: "pages/index/index",
+                  // });
+                }}
+                className="share-btn"
+                type="button"
+              >
+                <Text>邀好友得现金/次数</Text>
+                <View id="container-stars">
+                  <View id="stars"></View>
+                </View>
+                <View id="glow">
+                  <View className="circle"></View>
+                  <View className="circle"></View>
+                </View>
+              </Button>
+            )}
             <Button
               className="share-btn"
               onClick={() => {
@@ -1457,8 +1506,63 @@ const CameraPage = () => {
               >
                 关闭
               </Button>
-              <Button openType="contact" style={{ flex: 1 }}>
+              <Button
+                onClick={() => {
+                  Taro.navigateTo({
+                    url: "/pages/vip/index",
+                  });
+                }}
+                style={{ flex: 1 }}
+              >
                 重新开通
+              </Button>
+            </AtModalAction>
+          </AtModal>
+          {/* 会员填写手机号 防失联 */}
+          <AtModal isOpened={addPhoneNumber} closeOnClickOverlay={false}>
+            <AtModalHeader>
+              <Text style={{ color: "#ffaa00" }}>提示</Text>
+            </AtModalHeader>
+            <AtModalContent>
+              <View className="modal-list">
+                <View className="txt1">
+                  尊敬的会员，为防止失联，请填写您的手机号，如有变动第一时间通知您！
+                </View>
+                <View>
+                  <AtInput
+                    title="手机号"
+                    type="number"
+                    maxLength={11}
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e);
+                    }}
+                  />
+                </View>
+              </View>
+            </AtModalContent>
+            <AtModalAction>
+              <Button
+                onClick={() => {
+                  setAddPhoneNumber(false);
+                }}
+                style={{ flex: 1 }}
+              >
+                关闭
+              </Button>
+              <Button
+                style={{ flex: 1 }}
+                onClick={() => {
+                  Taro.cloud.callFunction({
+                    name: "addUser",
+                    data: {
+                      phone,
+                    },
+                  });
+                  setAddPhoneNumber(false);
+                }}
+              >
+                提交
               </Button>
             </AtModalAction>
           </AtModal>
