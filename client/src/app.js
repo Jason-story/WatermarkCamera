@@ -9,9 +9,9 @@ class App extends Component {
     // 手动定义 globalData
     this.globalData = {
       config: {},
-    };
+      fuckShenHe : wx.getAccountInfoSync().miniProgram.envVersion !== "release",
+      }
   }
-
   componentDidMount() {
     Taro.cloud.init({
       env: "sy-4gecj2zw90583b8b",

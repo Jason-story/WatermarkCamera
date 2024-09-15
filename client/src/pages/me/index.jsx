@@ -7,6 +7,7 @@ import ShareImg from "../../images/logo.jpg";
 import "./index.scss";
 
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
+const app = getApp();
 
 const UserInfo = ({
   userInfo,
@@ -20,6 +21,8 @@ const UserInfo = ({
   todayCount,
   userType,
 }) => {
+  let fuckShenHe = app.$app.globalData.fuckShenHe;
+
   const onCopyText = (text) => {
     Taro.setClipboardData({
       data: text,
@@ -72,112 +75,106 @@ const UserInfo = ({
   };
   return (
     <View className="user-info">
-      <View className="user-details">
-        <View className="user-item">
-          <Text className="label">我的等级</Text>
-          <Text className="value">{config[userType]}</Text>
-        </View>
-        {userType !== "default" && (
+      {!fuckShenHe && (
+        <View className="user-details">
           <View className="user-item">
-            <Text className="label">会员到期时间</Text>
-            <Text className="value">{formatDate(endTime)}</Text>
+            <Text className="label">我的等级</Text>
+            <Text className="value">{config[userType]}</Text>
           </View>
-        )}
+          {userType !== "default" && (
+            <View className="user-item">
+              <Text className="label">会员到期时间</Text>
+              <Text className="value">{formatDate(endTime)}</Text>
+            </View>
+          )}
 
-        <View
-          className="user-item"
-          onClick={() => {
-            onCopyText(userId);
-          }}
-        >
-          <View
-            className="label"
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            我的ID <View style={{ fontSize: "12px" }}>(点击复制)</View>
-          </View>
-          <Text className="value">{userId || "xxx"}</Text>
-        </View>
-
-        {/* <View className="user-item">
-          <Text className="label">免费使用总次数</Text>
-          <Text className="value">
-            {userType !== "default" ? "不限量" : "共2次"}
-          </Text>
-        </View> */}
-        {/* <View className="user-item">
-          <Text className="label">已使用次数</Text>
-          <Text className="value">{totalQuota}</Text>
-        </View> */}
-        <View className="user-item">
-          <Text className="label">待提现</Text>
-          <Text className="value">{userInfo.mone || "0"}元</Text>
-        </View>
-        <View className="user-item">
-          <Text className="label">邀请获赠总次数</Text>
-          <Text className="value">{inviteCount || 0}</Text>
-        </View>
-        <View className="user-item">
-          <Text className="label">已使用次数/总次数</Text>
-          <Text className="value">
-            {userType !== "default"
-              ? "不限量"
-              : (totalQuota || "0") + ("/" + (2 + (inviteCount || 0)))}
-          </Text>
-        </View>
-        {userType !== "default" && (
           <View
             className="user-item"
             onClick={() => {
-              onCopyText("jason_story");
+              onCopyText(userId);
             }}
           >
             <View
               className="label"
               style={{ display: "flex", flexDirection: "column" }}
             >
-              客服微信 <View style={{ fontSize: "12px" }}>(点击复制)</View>
+              我的ID <View style={{ fontSize: "12px" }}>(点击复制)</View>
             </View>
-            <Text className="value">{"jason_story"}</Text>
+            <Text className="value">{userId || "xxx"}</Text>
           </View>
-        )}
+          <View className="user-item">
+            <Text className="label">待提现</Text>
+            <Text className="value">{userInfo.mone || "0"}元</Text>
+          </View>
+          <View className="user-item">
+            <Text className="label">邀请获赠总次数</Text>
+            <Text className="value">{inviteCount || 0}</Text>
+          </View>
+          <View className="user-item">
+            <Text className="label">已使用次数/总次数</Text>
+            <Text className="value">
+              {userType !== "default"
+                ? "不限量"
+                : (totalQuota || "0") + ("/" + (2 + (inviteCount || 0)))}
+            </Text>
+          </View>
+          {userType !== "default" && (
+            <View
+              className="user-item"
+              onClick={() => {
+                onCopyText("jason_story");
+              }}
+            >
+              <View
+                className="label"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                客服微信 <View style={{ fontSize: "12px" }}>(点击复制)</View>
+              </View>
+              <Text className="value">{"jason_story"}</Text>
+            </View>
+          )}
 
-        {/* <View
+          {/* <View
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >
           邀请好友<Text style={{color:"#ff4d4f"}}>成功拍照</Text>1次，赠送您2次(同一好友每日最多赠送4次)
         </View> */}
-        {/* <View
+          {/* <View
           style={{ fontSize: "16px", marginTop: "10px", color: "rgb(#808080)" }}
         >
           点击ID即可复制
         </View> */}
-      </View>
-      <View style={{ width: "100%", marginTop: "50px" }}>
-        <Button
-          onClick={() => {
-            Taro.navigateTo({
-              url: "/pages/vip/index?id=" + inviteId,
-            });
-          }}
-          style={{
-            background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
-            color: "white",
-            border: "none",
-            borderRadius: "25px",
-            padding: "0 20px",
-            fontSize: "30rpx",
-            cursor: "pointer",
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-            transition: "transform 0.2s, box-shadow 0.2s",
-            marginBottom: "20px",
-          }}
-          type="default"
-          className="guide-btn"
-        >
-          会员
-        </Button>
-      </View>
+        </View>
+      )}
+      {!fuckShenHe && (
+        <View style={{ width: "100%", marginTop: "50px" }}>
+          <Button
+            onClick={() => {
+              Taro.navigateTo({
+                url: "/pages/vip/index?id=" + inviteId,
+              });
+            }}
+            style={{
+              background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
+              color: "white",
+              border: "none",
+              borderRadius: "25px",
+              padding: "0 20px",
+              fontSize: "30rpx",
+              cursor: "pointer",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              marginBottom: "20px",
+            }}
+            type="default"
+            className="guide-btn"
+          >
+            会员
+          </Button>
+        </View>
+      )}
+      {fuckShenHe && "暂无"}
       {userType === "default" && <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>}
     </View>
   );
@@ -200,7 +197,6 @@ const Index = () => {
         setData(res.result.data);
       },
     });
-
   }, []);
   Taro.useShareAppMessage((res) => {
     return {
