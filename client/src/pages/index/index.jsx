@@ -695,7 +695,7 @@ const CameraPage = () => {
       global: true,
       scopes: ["webview", "native"],
       source:
-        'url("https://files-1326662896.cos.ap-beijing.myqcloud.com/fzlt.ttf")',
+      'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/13611726462007499_fzlt.ttf?sign=4958a39f2e580a185a5952b7771b509f&t=1726462008")',
       success: (res) => {
         drawMask();
       },

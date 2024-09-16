@@ -171,7 +171,7 @@ const generateCanvasConfig = ({
 
               // Draw custom icon
               Taro.getImageInfo({
-                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/icon2.png",
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/11081726462338263_icon2.png?sign=4578fa27e2486fd9f014a43390cab42a&t=1726462338",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
@@ -227,7 +227,7 @@ const generateCanvasConfig = ({
               const { fontSize, color, text, position } = config;
               // 绘制图片
               Taro.getImageInfo({
-                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/shuiyinxiangji.png", // 替换为你的图片路径
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345", // 替换为你的图片路径
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
@@ -322,7 +322,7 @@ const generateCanvasConfig = ({
 
               const locationLines = getLocationLines(locationName);
               Taro.getImageInfo({
-                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/icon1.png",
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/13341726462341850_icon1.png?sign=f4b48a7312ef5d6222435285e88fd0c1&t=1726462342",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
@@ -896,7 +896,7 @@ const generateCanvasConfig = ({
               const { fontSize, color, text, position } = config;
               // 绘制图片
               Taro.getImageInfo({
-                src: "https://files-1326662896.cos.ap-beijing.myqcloud.com/shuiyinxiangji.png", // 替换为你的图片路径
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345", // 替换为你的图片路径
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
