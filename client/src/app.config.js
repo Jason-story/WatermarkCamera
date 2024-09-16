@@ -4,7 +4,6 @@ export default {
     "pages/result/index",
     "pages/vip/index",
     "pages/me/index",
-    "pages/img/index",
     "pages/jiaocheng/index",
   ],
   requiredPrivateInfos: ["getLocation"],
