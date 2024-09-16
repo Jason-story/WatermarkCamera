@@ -1553,7 +1553,7 @@ const CameraPage = () => {
               <Button
                 style={{ flex: 1 }}
                 onClick={() => {
-                  Taro.cloud.callFunction({
+                  cloud.callFunction({
                     name: "addUser",
                     data: {
                       phone,
