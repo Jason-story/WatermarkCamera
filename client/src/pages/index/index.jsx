@@ -224,12 +224,12 @@ const CameraPage = () => {
       // 邀请存档
       if (inviteId) {
         Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
-        Taro.cloud.callFunction({
-          name: "invite",
-          data: {
-            invite_id: inviteId,
-          },
-        });
+        // Taro.cloud.callFunction({
+        //   name: "invite",
+        //   data: {
+        //     invite_id: inviteId,
+        //   },
+        // });
       }
       Taro.cloud.callFunction({
         name: "getPrice",
@@ -1355,7 +1355,7 @@ const CameraPage = () => {
                 {/* <View>隐藏防伪下标？</View> */}
                 <View>请点击设置</View>
               </View>
-              {!fuckShenHe && (
+              {/* {!fuckShenHe && (
                 <Image
                   src={qrCodePath}
                   onClick={() => {
@@ -1372,24 +1372,22 @@ const CameraPage = () => {
                     height: "74px",
                   }}
                 ></Image>
-              )}
+              )} */}
             </View>
           </View>
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
             {!fuckShenHe && (
               <Button
-                // openType="share"
                 onClick={() => {
-                  setInviteModalShow(true);
-                  // wx.navigateToMiniProgram({
-                  //   appId: "wxaea1e208fcacb4d5", // 目标小程序的AppID
-                  //   path: "pages/index/index",
-                  // });
+                  // setInviteModalShow(true);
+                    Taro.navigateTo({
+                      url: "/pages/vip/index",
+                    });
                 }}
                 className="share-btn"
                 type="button"
               >
-                <Text>邀好友得现金/次数</Text>
+                <Text>增加次数</Text>
                 <View id="container-stars">
                   <View id="stars"></View>
                 </View>
@@ -1399,7 +1397,7 @@ const CameraPage = () => {
                 </View>
               </Button>
             )}
-            <Button
+            {/* <Button
               className="share-btn"
               onClick={() => {
                 Taro.navigateTo({
@@ -1421,9 +1419,9 @@ const CameraPage = () => {
               }}
             >
               使用教程
-            </Button>
+            </Button> */}
           </View>
-          <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
+          {/* <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text>提示</Text>
             </AtModalHeader>
@@ -1434,7 +1432,6 @@ const CameraPage = () => {
                   <View style={{ color: "#f22c3d" }}>
                     如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
                   </View>
-                  {/* 好友通过您的邀请链接开通会员，您将获得他付费的20%作为返现，邀请成功请到【我的】页面查看，并联系客服提现。 */}
                 </View>
               </View>
             </AtModalContent>
@@ -1451,7 +1448,7 @@ const CameraPage = () => {
                 去群聊邀请
               </Button>
             </AtModalAction>
-          </AtModal>
+          </AtModal> */}
           <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text style={{ color: "#ffaa00" }}>提示</Text>

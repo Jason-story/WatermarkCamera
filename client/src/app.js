@@ -12,6 +12,7 @@ class App extends Component {
       fuckShenHe : wx.getAccountInfoSync().miniProgram.envVersion !== "release",
       }
   }
+
   componentDidMount() {
     Taro.cloud.init({
       env: "sy-4gecj2zw90583b8b",

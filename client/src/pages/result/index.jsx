@@ -237,6 +237,7 @@ const MergeCanvas = () => {
     await saveImage(mergedImageFileID, info);
   }
   useEffect(() => {
+    console.log('22222: ', config);
     const getData = async () => {
       await Taro.cloud.callFunction({
         name: "addUser",
@@ -248,7 +249,7 @@ const MergeCanvas = () => {
           } else {
             // 免费次数用尽
             if (
-              (res.result.data.times >= 2 + res.result.data.invite_count &&
+              (res.result.data.times >= config.mianfeicishu + res.result.data.invite_count &&
                 res.result.data.type === "default") ||
               (res.result.data.type === "default" && isVip === "true")
             ) {
@@ -662,7 +663,7 @@ const MergeCanvas = () => {
               <View style={{ lineHeight: 1.6 }}>
                 {isVip === "true"
                   ? "该水印为会员专属，请开通会员，会员为"
-                  : "您免费次数用完，请到首页-邀请好友得次数或者开通会员，会员为"}
+                  : "您免费次数用完，请开通会员，会员为"}
                 <Text style={{ color: "red" }}>收费服务</Text>
                 ，请知悉！！！
               </View>

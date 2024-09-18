@@ -337,15 +337,11 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
           <View>
             <Text style={{ fontWeight: "bold" }}>注意事项</Text>
           </View>
-          <View>
-            •
-            如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
-          </View>
           {config.jiaochengtext.map((item, index) => {
             return (
               <View
                 style={{
-                  color: index === 2 || index === 1 ? "#f22c3d" : "#000",
+                  color: index === 0 ? "#f22c3d" : "#000",
                 }}
                 key={index}
               >
