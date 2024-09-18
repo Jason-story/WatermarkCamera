@@ -1,5 +1,5 @@
 // src/pages/merge/index.jsx
-import React, { useEffect,useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useDidShow } from "@tarojs/taro";
@@ -38,14 +38,14 @@ const getCloud = async () => {
   return cloud;
 };
 const MergeCanvas = () => {
-const config = app.$app.globalData.config;
+  const config = app.$app.globalData.config;
 
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
   const position = Taro.getCurrentInstance().router.params.position;
-  const scale =  1;
+  const scale = 1;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
   const isVip = Taro.getCurrentInstance().router.params.vip;
   // 图片水印 or 视频水印
@@ -116,12 +116,12 @@ const config = app.$app.globalData.config;
     try {
       // 上传图片
       const [firstImageFileID, secondImageFileID, logoImageFileId] =
-      await Promise.all([
-        uploadImage(firstImagePath),
-        uploadImage(secondImagePath),
+        await Promise.all([
+          uploadImage(firstImagePath),
+          uploadImage(secondImagePath),
           config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
         ]);
-        console.log('logoImageFileId: ', logoImageFileId);
+      console.log("logoImageFileId: ", logoImageFileId);
       // 调用云函数
       const res = await cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
@@ -139,7 +139,7 @@ const config = app.$app.globalData.config;
       });
       console.log("res: ", res);
 
-      console.log('res: ', res);
+      console.log("res: ", res);
       if (res.result.success) {
         return res.result;
       } else {
@@ -269,7 +269,8 @@ const config = app.$app.globalData.config;
           } else {
             // 免费次数用尽
             if (
-              (res.result.data.times >= 2 + res.result.data.invite_count &&
+              (res.result.data.times >=
+                config.mianfeicishu + res.result.data.invite_count &&
                 res.result.data.type === "default") ||
               (res.result.data.type === "default" && isVip === "true")
             ) {
@@ -355,7 +356,7 @@ const config = app.$app.globalData.config;
       let img2Height = img2Width * (info2.height / info2.width);
 
       // 计算 img2 的位置
-      let x =0;
+      let x = 0;
       let y = canvasHeight - img2Height - 10 * dpr;
       // 绘制第二张图片
       ctx.drawImage(info2.path, x, y, img2Width, img2Height);
@@ -512,7 +513,7 @@ const config = app.$app.globalData.config;
     save();
   };
   const chongxinpaishe = useCallback(() => {
-    console.log('Button clicked');
+    console.log("Button clicked");
     Taro.navigateBack({
       delta: 1,
     });
@@ -683,7 +684,7 @@ const config = app.$app.globalData.config;
               <View style={{ lineHeight: 1.6 }}>
                 {isVip === "true"
                   ? "该水印为会员专属，请开通会员，会员为"
-                  : "您免费次数用完，请到首页-邀请好友得次数或者开通会员，会员为"}
+                  : "您免费次数用完，请开通会员，会员为"}
                 <Text style={{ color: "red" }}>收费服务</Text>
                 ，请知悉！！！
               </View>

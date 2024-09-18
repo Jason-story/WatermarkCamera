@@ -30,9 +30,7 @@ const inviteId = Taro.getCurrentInstance().router.params.id || "";
 
 const UserInfo = ({
   userInfo,
-  avatar,
-  nickname,
-  freeQuota,
+  mianfeicishu,
   totalQuota,
   inviteCount,
   userId,
@@ -120,14 +118,6 @@ const UserInfo = ({
               我的ID <View style={{ fontSize: "12px" }}>(点击复制)</View>
             </View>
             <Text className="value">{userId || "xxx"}</Text>
-          </View>
-          <View className="user-item">
-            <Text className="label">待提现</Text>
-            <Text className="value">{userInfo.mone || "0"}元</Text>
-          </View>
-          <View className="user-item">
-            <Text className="label">邀请获赠总次数</Text>
-            <Text className="value">{inviteCount || 0}</Text>
           </View>
           <View className="user-item">
             <Text className="label">已使用次数/总次数</Text>
