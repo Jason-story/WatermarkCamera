@@ -119,13 +119,25 @@ const UserInfo = ({
             </View>
             <Text className="value">{userId || "xxx"}</Text>
           </View>
+          {/* <View className="user-item">
+            <Text className="label">待提现</Text>
+            <Text className="value">{userInfo.mone || "0"}元</Text>
+          </View> */}
+          {/* <View className="user-item">
+            <Text className="label">邀请获赠总次数</Text>
+            <Text className="value">{inviteCount || 0}</Text>
+          </View> */}
           <View className="user-item">
-            <Text className="label">已使用次数/总次数</Text>
+            <Text className="label">免费次数</Text>
             <Text className="value">
               {userType !== "default"
                 ? "不限量"
-                : (totalQuota || "0") + ("/" + (2 + (inviteCount || 0)))}
+                : app.$app.globalData.config.mianfeicishu}
             </Text>
+          </View>
+          <View className="user-item">
+            <Text className="label">已使用次数</Text>
+            <Text className="value">{totalQuota || 0}</Text>
           </View>
           {userType !== "default" && (
             <View
@@ -198,7 +210,6 @@ const Index = () => {
     userId: "12345678",
   });
   const [data, setData] = useState({});
-
 
   useEffect(() => {
     const getUser = async () => {
