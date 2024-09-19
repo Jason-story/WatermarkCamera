@@ -74,7 +74,7 @@ const UserInfo = ({ userInfo, price }) => {
     return {
       key,
       title: `${title}会员 ${amount - 0.01}元`,
-      price: amount,
+      price: amount-0.01,
     };
   });
 
@@ -147,7 +147,7 @@ const UserInfo = ({ userInfo, price }) => {
       });
       return;
     }
-    const price = vipConfig.find((item) => item.key === selected).price - 0.01;
+    const price = vipConfig.find((item) => item.key === selected).price;
     let plateform = "无";
     wx.getSystemInfo({
       success: function (res) {
