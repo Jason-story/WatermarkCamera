@@ -1,5 +1,5 @@
 // src/pages/merge/index.jsx
-import React, { useEffect,useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useDidShow } from "@tarojs/taro";
@@ -100,12 +100,12 @@ const MergeCanvas = () => {
     try {
       // 上传图片
       const [firstImageFileID, secondImageFileID, logoImageFileId] =
-      await Promise.all([
-        uploadImage(firstImagePath),
-        uploadImage(secondImagePath),
+        await Promise.all([
+          uploadImage(firstImagePath),
+          uploadImage(secondImagePath),
           config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
         ]);
-        console.log('logoImageFileId: ', logoImageFileId);
+      console.log("logoImageFileId: ", logoImageFileId);
       // 调用云函数
       const res = await Taro.cloud.callFunction({
         // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
@@ -122,7 +122,7 @@ const MergeCanvas = () => {
         },
       });
 
-      console.log('res: ', res);
+      console.log("res: ", res);
       if (res.result.success) {
         return res.result;
       } else {
@@ -237,7 +237,7 @@ const MergeCanvas = () => {
     await saveImage(mergedImageFileID, info);
   }
   useEffect(() => {
-    console.log('22222: ', config);
+    console.log("22222: ", config);
     const getData = async () => {
       await Taro.cloud.callFunction({
         name: "addUser",
@@ -249,7 +249,8 @@ const MergeCanvas = () => {
           } else {
             // 免费次数用尽
             if (
-              (res.result.data.times >= config.mianfeicishu + res.result.data.invite_count &&
+              (res.result.data.times >=
+                config.mianfeicishu + res.result.data.invite_count &&
                 res.result.data.type === "default") ||
               (res.result.data.type === "default" && isVip === "true")
             ) {
@@ -396,7 +397,7 @@ const MergeCanvas = () => {
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
 
-    return `${month}.${day}_${hours}.${minutes}.${seconds}`;
+    return `${hours}.${minutes}${userInfo.type !== "default" ? "vip" : ""}`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
@@ -492,7 +493,7 @@ const MergeCanvas = () => {
     save();
   };
   const chongxinpaishe = useCallback(() => {
-    console.log('Button clicked');
+    console.log("Button clicked");
     Taro.navigateBack({
       delta: 1,
     });
