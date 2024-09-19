@@ -48,7 +48,11 @@ const getCloud = async () => {
 };
 
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
-const UserInfo = ({ userInfo, price = { show: false } }) => {
+const UserInfo = ({ userInfo, price }) => {
+  console.log("price: ", price);
+  if (!price) {
+    return;
+  }
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   const config = app.$app.globalData.config;
 
@@ -65,35 +69,16 @@ const UserInfo = ({ userInfo, price = { show: false } }) => {
   useEffect(() => {
     price && setSelected(price.current);
   }, [price]);
-  const vipConfig = [
-    {
-      key: "month",
-      title: "包月会员 " + (price["month"] * 1 - 0.01) + "元",
-      price: price.month,
-    },
-    {
-      key: "threeMonth",
-      title: "三月会员 " + (price["threeMonth"] * 1 - 0.01) + "元",
-      price: price.threeMonth,
-    },
-    {
-      key: "halfYearMonth",
-      title: "半年会员 " + (price["halfYearMonth"] * 1 - 0.01) + "元",
-      price: price.halfYearMonth,
-    },
-    {
-      key: "year",
-      checked: true,
-      title: "包年会员 " + (price["year"] * 1 - 0.01) + "元",
-      price: price.year,
-    },
-    {
-      key: "never",
-      title: "永久会员 " + (price["never"] * 1 - 0.01) + "元",
-      price: price.never,
-    },
-  ];
+  const vipConfig = price?.jiage?.map((item) => {
+    const [key, title, amount] = item.split("|");
+    return {
+      key,
+      title: `${title}会员 ${amount - 0.01}元`,
+      price: amount,
+    };
+  });
 
+  console.log(111, vipConfig);
   const getRandomNumber = (minNum = 1000000000, maxNum = 99999999999999) =>
     parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
 

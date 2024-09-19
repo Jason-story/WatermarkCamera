@@ -261,12 +261,12 @@ const CameraPage = () => {
       //     },
       //   });
       // }
-      cloud.callFunction({
-        name: "getPrice",
-        success: function (res) {
-          setPrice(res.result.data);
-        },
-      });
+      // cloud.callFunction({
+      //   name: "getPrice",
+      //   success: function (res) {
+      //     setPrice(res.result.data);
+      //   },
+      // });
     };
     wx.getSystemInfo({
       success: function (res) {
@@ -1652,11 +1652,12 @@ const CameraPage = () => {
                   />
                 </View>
               )} */}
-              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
+              {/* <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px", color: "#f22c3d" }}>
                   所有水印都无法验真，只是样子比较像，请注意使用风险！
                 </View>
-              </View>
+              </View> */}
+
             </View>
           </AtFloatLayout>
           {/*  +++++++++++++++++++++++  */}
