@@ -1375,7 +1375,7 @@ const CameraPage = () => {
                 <Text>设置</Text>
               </View>
             </View>
-            <View className="tools-bar-inner" style={{ marginLeft: "-90px" }}>
+            <View className="tools-bar-inner" style={{ marginLeft: "-60px" }}>
               <View>
                 <Image
                   src={Arrow}
