@@ -233,7 +233,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin1,
         right: true,
-        logoY: 0.65,
+        logoY: 0.55,
 
         name: "免费-时间天气-1",
         height: locationName.length > 16 ? 120 : 110,
@@ -395,7 +395,7 @@ const generateCanvasConfig = ({
         img: Shuiyin2,
         width: 255,
         // vip: true,
-        logoY: 0.6,
+        logoY: 0.55,
 
         name: "免费-打卡-2",
         height: locationName.length > 16 ? 130 : 110,
@@ -565,7 +565,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin3,
         vip: true,
-        logoY: 0.6,
+        logoY: 0.55,
 
         name: "免费-工程记录-3",
         width: 225, // 280 * 0.75 + 15 - 5

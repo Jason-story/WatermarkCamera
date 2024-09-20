@@ -400,7 +400,7 @@ const MergeCanvas = () => {
       console.error("绘制图片出错:", err);
     }
   };
-  function generateTimestamp() {
+  function generateTimestamp(info) {
     const now = new Date();
 
     // 获取当前时间的时间戳（毫秒）
@@ -417,11 +417,11 @@ const MergeCanvas = () => {
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
 
-    return `${hours}.${minutes}${userInfo.type !== "default" ? "vip" : ""}`;
+    return `副_${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-      const cloudPath = `client/${generateTimestamp()}_${info.openid}.${
+      const cloudPath = `client/${generateTimestamp(info)}_${info.openid}.${
         filePath.match(/\.(\w+)$/)[1]
       }`;
       const res = await cloud.uploadFile({
