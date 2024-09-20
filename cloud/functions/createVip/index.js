@@ -48,7 +48,7 @@ exports.main = async (event, context) => {
         threeMonth: 90,
         halfYearMonth: 180,
         year: 365,
-        never: 99999
+        never: 999999
     };
 
     try {
