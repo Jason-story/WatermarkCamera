@@ -233,7 +233,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin1,
         right: true,
-        logoY: 0.55,
+        logoY: .55,
 
         name: "免费-时间天气-1",
         height: locationName.length > 16 ? 120 : 110,
@@ -395,7 +395,7 @@ const generateCanvasConfig = ({
         img: Shuiyin2,
         width: 255,
         // vip: true,
-        logoY: 0.55,
+        logoY: .55,
 
         name: "免费-打卡-2",
         height: locationName.length > 16 ? 130 : 110,
@@ -470,7 +470,7 @@ const generateCanvasConfig = ({
                   const baseHeight = 100; // 减小20px
                   const lineHeight = 20;
                   const maxLines = 3;
-                  const charsPerLine = 15;
+                  const charsPerLine = 9;
 
                   const getLocationLines = (text) => {
                     const words = text.split("");
@@ -489,7 +489,7 @@ const generateCanvasConfig = ({
                   };
 
                   const lines = getLocationLines(locationName);
-                  let height = baseHeight + (lines - 1) * lineHeight + 5;
+                  let height = baseHeight + (lines - 1) * lineHeight;
                   return height;
                 },
                 color: "rgba(121, 121, 122, .8)",
@@ -548,7 +548,7 @@ const generateCanvasConfig = ({
               lines.slice(0, maxLines).forEach((line, index) => {
                 ctx.fillText(
                   index === 0 ? "地   点: " + line : line,
-                  position[0] + (index === 0 ? 0 : 52), // 65 * 0.75
+                  position[0] + (index === 0 ? 0 : 47), // 65 * 0.75
                   position[1] + index * (fontSize * 1.2)
                 );
               });
@@ -565,15 +565,14 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin3,
         vip: true,
-        logoY: 0.55,
-
+        logoY: .55,
         name: "免费-工程记录-3",
         width: 225, // 280 * 0.75 + 15 - 5
         height: (locationName) => {
-          const baseHeight = 115; // 110 + 5
+          const baseHeight = 110; // 110 + 5
           const lineHeight = 20;
           const maxLines = 3;
-          const charsPerLine = 15;
+          const charsPerLine = 9;
 
           const getLocationLines = (text) => {
             const words = text.split("");
@@ -592,7 +591,7 @@ const generateCanvasConfig = ({
           };
 
           const lines = getLocationLines(locationName);
-          let height = baseHeight + (lines - 1) * lineHeight + 5;
+          let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },
       },
