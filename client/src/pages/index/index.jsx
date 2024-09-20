@@ -1340,7 +1340,8 @@ const CameraPage = () => {
                 <Text>设置</Text>
               </View>
             </View>
-            <View className="tools-bar-inner" style={{ marginLeft: "-90px" }}>
+
+            <View className="tools-bar-inner" style={{ marginLeft: "-60px" }}>
               <View>
                 <Image
                   src={Arrow}
@@ -1348,8 +1349,9 @@ const CameraPage = () => {
                   style={{ width: "50px", height: "50px" }}
                 ></Image>
               </View>
-              <View style={{ fontSize: "14px" }}>
+              <View style={{ fontSize: "13px" }}>
                 <View>微信闪退？</View>
+                <View>保存失败？</View>
                 <View>保存数据？</View>
                 {/* <View>隐藏防伪下标？</View> */}
                 <View>请点击设置</View>
@@ -1547,7 +1549,7 @@ const CameraPage = () => {
             <View className="shuiyin-list">
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
-                  微信闪退请打开此开关
+                  微信闪退、保存失败请打开此开关
                 </View>
                 <Switch
                   style={{ transform: "scale(0.7)" }}
