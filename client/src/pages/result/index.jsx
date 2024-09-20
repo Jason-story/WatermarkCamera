@@ -380,7 +380,7 @@ const MergeCanvas = () => {
       console.error("绘制图片出错:", err);
     }
   };
-  function generateTimestamp() {
+  function generateTimestamp(info) {
     const now = new Date();
 
     // 获取当前时间的时间戳（毫秒）
@@ -397,11 +397,11 @@ const MergeCanvas = () => {
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
 
-    return `${hours}.${minutes}${userInfo.type !== "default" ? "vip" : ""}`;
+    return `${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-      const cloudPath = `client/${generateTimestamp()}_${info.openid}.${
+      const cloudPath = `client/${generateTimestamp(info)}_${info.openid}.${
         filePath.match(/\.(\w+)$/)[1]
       }`;
       const res = await Taro.cloud.uploadFile({
@@ -664,7 +664,9 @@ const MergeCanvas = () => {
               <View style={{ lineHeight: 1.6 }}>
                 {isVip === "true"
                   ? "该水印为会员专属，请开通会员，会员为"
-                  : "您免费次数用完，请开通会员，会员为"}
+                  : "您的" +
+                    config.mianfeicishu +
+                    "次免费次数用完，请开通会员，会员为"}
                 <Text style={{ color: "red" }}>收费服务</Text>
                 ，请知悉！！！
               </View>

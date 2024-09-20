@@ -967,19 +967,18 @@ const CameraPage = () => {
               src: filePath,
               success: async function (info) {
                 let height, width;
-                height = 70;
-                width = (info.width / info.height) * 70;
+                height = 100;
+                width = (info.width / info.height) * 100;
                 if (
                   info.height / info.width > 2.5 ||
                   info.height / info.width < 0.4
                 ) {
-                  width = 140;
-                  height = (info.height / info.width) * 140;
+                  width = 150;
+                  height = (info.height / info.width) * 150;
                 }
                 setLogoWidth(width);
                 setLogoHeight(height);
                 setLogoPath(filePath);
-                console.log("这里没更新: ", filePath);
                 app.$app.globalData.config.logoConfig = {
                   width,
                   height,

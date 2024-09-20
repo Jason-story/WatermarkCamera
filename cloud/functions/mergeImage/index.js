@@ -9,7 +9,7 @@ cloud.init({
 // 获取数据库引用
 const db = cloud.database();
 const _ = db.command;
-function generateTimestamp() {
+function generateTimestamp(info) {
     const now = new Date();
 
     // 获取当前时间的时间戳（毫秒）
@@ -26,7 +26,7 @@ function generateTimestamp() {
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
 
-    return `${month}.${day}_${hours}.${minutes}.${seconds}`;
+    return `${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
 }
 // Optimized security check function
 async function securityCheck(fileContent) {
@@ -144,7 +144,7 @@ exports.main = async (event, context) => {
 
         // Upload to cloud storage
         const uploadResult = await cloud.uploadFile({
-            cloudPath: `server_images/${generateTimestamp()}_${userInfo.openid}.jpg`,
+            cloudPath: `server_images/${generateTimestamp(userInfo)}_${userInfo.openid}.jpg`,
             fileContent: buffer
         });
 
