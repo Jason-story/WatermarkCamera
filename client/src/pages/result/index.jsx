@@ -627,7 +627,7 @@ const MergeCanvas = () => {
             <View className="circle"></View>
           </View>
         </Button> */}
-        <Button
+        {/* <Button
           className="share-btn"
           onClick={() => {
             wx.navigateToMiniProgram({
@@ -651,7 +651,7 @@ const MergeCanvas = () => {
           }}
         >
           抖音、小红书取图、去水印
-        </Button>
+        </Button> */}
         <Button
           className="share-btn"
           onClick={chongxinpaishe}
