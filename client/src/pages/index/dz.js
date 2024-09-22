@@ -526,7 +526,7 @@ const generateCanvasConfig = ({
               // 清除画布
               ctx.clearRect(0, 0, width, height);
               // 设置字体
-              ctx.font = "bold 80px Arial";
+              ctx.font = "bold 80px fzlt";
 
               // 计算文本宽度和位置以居中
               const textWidth = ctx.measureText(text).width;
@@ -535,15 +535,6 @@ const generateCanvasConfig = ({
 
               // 设置文字颜色（浅黑色）
               ctx.fillStyle = "rgba(0, 0, 0, .2)";
-
-              // 设置描边颜色（灰色）
-              ctx.strokeStyle = "rgba(255,255,255,.2)";
-
-              // 设置描边宽度
-              ctx.lineWidth = 2;
-
-              // 绘制描边
-              ctx.strokeText(text, x, y);
 
               // 填充文字
               ctx.fillText(text, x, y);

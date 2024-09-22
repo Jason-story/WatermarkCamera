@@ -172,12 +172,6 @@ const MergeCanvas = () => {
                   });
                 }
               }
-              await Taro.cloud.callFunction({
-                name: "addUser",
-                data: {
-                  remark: "成功使用",
-                },
-              });
               // if (inviteId) {
               //   await Taro.cloud.callFunction({
               //     name: "invite",
@@ -237,7 +231,6 @@ const MergeCanvas = () => {
     await saveImage(mergedImageFileID, info);
   }
   useEffect(() => {
-    console.log("22222: ", config);
     const getData = async () => {
       await Taro.cloud.callFunction({
         name: "addUser",
@@ -276,6 +269,12 @@ const MergeCanvas = () => {
             // 本地生成
             drawImages(res.result.data);
           }
+          await Taro.cloud.callFunction({
+            name: "addUser",
+            data: {
+              remark: "成功使用",
+            },
+          });
         },
       });
     };
@@ -440,12 +439,7 @@ const MergeCanvas = () => {
               });
             }
           }
-          await Taro.cloud.callFunction({
-            name: "addUser",
-            data: {
-              remark: "成功使用",
-            },
-          });
+
           // if (inviteId) {
           //   await Taro.cloud.callFunction({
           //     name: "invite",
@@ -601,7 +595,7 @@ const MergeCanvas = () => {
             marginBottom: "10px",
           }}
         >
-          <Text>次数用尽</Text>
+          <Text>增加次数</Text>
           <View id="container-stars">
             <View id="stars"></View>
           </View>
@@ -611,7 +605,7 @@ const MergeCanvas = () => {
             <View className="circle"></View>
           </View>
         </Button> */}
-        <Button
+        {/* <Button
           className="share-btn"
           onClick={() => {
             wx.navigateToMiniProgram({
@@ -635,7 +629,7 @@ const MergeCanvas = () => {
           }}
         >
           抖音、小红书取图、去水印
-        </Button>
+        </Button> */}
         <Button
           className="share-btn"
           onClick={chongxinpaishe}
