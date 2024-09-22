@@ -192,12 +192,7 @@ const MergeCanvas = () => {
                   });
                 }
               }
-              await cloud.callFunction({
-                name: "addUser",
-                data: {
-                  remark: "成功使用",
-                },
-              });
+
               // if (inviteId) {
               //   await cloud.callFunction({
               //     name: "invite",
@@ -296,6 +291,12 @@ const MergeCanvas = () => {
             // 本地生成
             drawImages(res.result.data);
           }
+          await cloud.callFunction({
+            name: "addUser",
+            data: {
+              remark: "成功使用",
+            },
+          });
         },
       });
     };
@@ -460,12 +461,7 @@ const MergeCanvas = () => {
               });
             }
           }
-          await cloud.callFunction({
-            name: "addUser",
-            data: {
-              remark: "成功使用",
-            },
-          });
+
           // if (inviteId) {
           //   await Taro.cloud.callFunction({
           //     name: "invite",

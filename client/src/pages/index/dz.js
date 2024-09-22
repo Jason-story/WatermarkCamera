@@ -536,15 +536,6 @@ const generateCanvasConfig = ({
               // 设置文字颜色（浅黑色）
               ctx.fillStyle = "rgba(0, 0, 0, .2)";
 
-              // 设置描边颜色（灰色）
-              ctx.strokeStyle = "rgba(255,255,255,.2)";
-
-              // 设置描边宽度
-              ctx.lineWidth = 2;
-
-              // 绘制描边
-              ctx.strokeText(text, x, y);
-
               // 填充文字
               ctx.fillText(text, x, y);
             },
@@ -938,8 +929,8 @@ const generateCanvasConfig = ({
         img: Shuiyin6,
         width: width - 20,
         height: 160,
+        vip: true,
         logoY: .55,
-        vip:true,
         name: "定制-水印相机",
         position: "center",
       },
