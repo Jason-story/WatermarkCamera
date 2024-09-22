@@ -526,7 +526,7 @@ const generateCanvasConfig = ({
               // 清除画布
               ctx.clearRect(0, 0, width, height);
               // 设置字体
-              ctx.font = "bold 80px Arial";
+              ctx.font = "bold 80px fzlt";
 
               // 计算文本宽度和位置以居中
               const textWidth = ctx.measureText(text).width;

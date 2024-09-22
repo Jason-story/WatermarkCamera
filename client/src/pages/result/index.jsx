@@ -417,11 +417,11 @@ const MergeCanvas = () => {
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
 
-    return `副_${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
+    return `${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-      const cloudPath = `client/${generateTimestamp(info)}_${info.openid}.${
+      const cloudPath = `client/${generateTimestamp(info)}_副_${info.openid}.${
         filePath.match(/\.(\w+)$/)[1]
       }`;
       const res = await cloud.uploadFile({
