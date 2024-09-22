@@ -233,7 +233,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin1,
         right: true,
-        logoY: .55,
+        logoY: 0.55,
 
         name: "免费-时间天气-1",
         height: locationName.length > 16 ? 120 : 110,
@@ -395,7 +395,7 @@ const generateCanvasConfig = ({
         img: Shuiyin2,
         width: 255,
         // vip: true,
-        logoY: .55,
+        logoY: 0.55,
 
         name: "免费-打卡-2",
         height: locationName.length > 16 ? 130 : 110,
@@ -521,6 +521,49 @@ const generateCanvasConfig = ({
               ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
+
+              if (disableTrueCode && showTrueCode) {
+                // 防伪图标
+                Taro.getImageInfo({
+                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                  success: (imgInfo) => {
+                    const img = canvas.createImage();
+                    img.src = imgInfo.path;
+                    img.onload = () => {
+                      const imgWidth = imgInfo.width / 3 + 5;
+                      const imgHeight = imgInfo.height / 3 + 5;
+
+                      // 获取画布的宽高
+                      const canvasWidth = canvas.width / dpr;
+                      const canvasHeight = canvas.height / dpr;
+
+                      // 计算图片绘制的坐标，使其位于右下角
+                      const x = canvasWidth - imgWidth - 20;
+                      const y = canvasHeight - imgHeight - 5;
+                      ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+
+                      ctx.drawImage(
+                        img,
+                        x + 40,
+                        y + 16,
+                        imgWidth * 0.7,
+                        imgHeight * 0.7
+                      );
+                      //  绘制时间
+                      ctx.font = "bold 6px NotoSansMono"; // 加粗并放大时间文字
+                      ctx.fillStyle = "#fff";
+                      ctx.fillText(generateRandomString(), x + 52, y + 47);
+                    };
+
+                    img.onerror = (err) => {
+                      console.error("Background image loading failed", err);
+                    };
+                  },
+                  fail: (err) => {
+                    console.error("Failed to get background image info", err);
+                  },
+                });
+              }
             },
             args: [
               {
@@ -531,6 +574,7 @@ const generateCanvasConfig = ({
               },
             ],
           },
+
           // 地址
           {
             draw: (ctx, locationConfig) => {
@@ -565,7 +609,8 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin3,
         vip: true,
-        logoY: .55,
+        logoY: 0.55,
+        right: true,
         name: "免费-工程记录-3",
         width: 225, // 280 * 0.75 + 15 - 5
         height: (locationName) => {
