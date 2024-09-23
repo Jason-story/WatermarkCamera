@@ -228,7 +228,7 @@ const UserInfo = ({ userInfo, price }) => {
                     />
                   </View>
                   <View className="vip-title">
-                    <Text style={{ width: "130px", display: "inline-block" }}>
+                    <Text style={{ width: "160px", display: "inline-block" }}>
                       {item.title}
                     </Text>
                     {item.text && (
