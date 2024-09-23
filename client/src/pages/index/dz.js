@@ -270,7 +270,7 @@ const generateCanvasConfig = ({
         img: Shuiyin4,
         width: width - 20,
         height: 140,
-        logoY: .55,
+        logoY: 0.55,
         name: "定制-水印相机",
         position: "center",
         vip: true,
@@ -470,7 +470,7 @@ const generateCanvasConfig = ({
         vip: true,
         left: true,
         right: true,
-        logoY: .55,
+        logoY: 0.55,
         height: (locationName, hideJw) => {
           const baseHeight = 110; // 减小20px
           const lineHeight = 21.25;
@@ -534,7 +534,7 @@ const generateCanvasConfig = ({
               const y = height / 2 + 10; // 稍微向下偏移以视觉居中
 
               // 设置文字颜色（浅黑色）
-              ctx.fillStyle = "rgba(0, 0, 0, .2)";
+              ctx.fillStyle = "rgba(255, 255, 255, .2)";
 
               // 填充文字
               ctx.fillText(text, x, y);
@@ -682,7 +682,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin7,
         name: "免费-工程记录-3",
-        logoY: .55,
+        logoY: 0.55,
         left: false,
         right: true,
         height: () => {
@@ -930,7 +930,7 @@ const generateCanvasConfig = ({
         width: width - 20,
         height: 160,
         vip: true,
-        logoY: .55,
+        logoY: 0.55,
         name: "定制-水印相机",
         position: "center",
       },
