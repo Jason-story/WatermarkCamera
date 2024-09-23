@@ -70,11 +70,12 @@ const UserInfo = ({ userInfo, price }) => {
     price && setSelected(price.current);
   }, [price]);
   const vipConfig = price?.jiage?.map((item) => {
-    const [key, title, amount] = item.split("|");
+    const [key, title, amount, text = ""] = item.split("|");
     return {
       key,
-      title: `${title}会员 ${amount - 0.01}元`,
+      title: `${title}会员${amount - 0.01}元，`,
       price: amount-0.01,
+      text,
     };
   });
 
@@ -226,7 +227,24 @@ const UserInfo = ({ userInfo, price }) => {
                       checked={price.current === item.key}
                     />
                   </View>
-                  <View className="vip-title">{item.title}</View>
+                  <View className="vip-title">
+                    <Text style={{ width: "130px", display: "inline-block" }}>
+                      {item.title}
+                    </Text>
+                    {item.text && (
+                      <Text
+                        style={{
+                          fontSize: "15px",
+                          fontStyle: "italic",
+                          marginLeft:'-5px',
+                          color: item.key === "year" ? "#f22c3d" : "",
+                        }}
+                      >
+                        {" "}
+                        平均每月{item.text}元{item.key === "year" && "，推荐"}
+                      </Text>
+                    )}
+                  </View>
                 </Label>
               );
             })}
