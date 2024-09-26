@@ -106,7 +106,7 @@ const MergeCanvas = () => {
     const cloudPath = `${fileName}/${Date.now()}-${Math.random()
       .toString(36)
       .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
-    const res = await Taro.cloud.uploadFile({
+    const res = await cloud.uploadFile({
       cloudPath,
       filePath,
     });
@@ -192,7 +192,7 @@ const MergeCanvas = () => {
         });
       } else {
         // 图片合成
-        res = await Taro.cloud.callFunction({
+        res = await cloud.callFunction({
           name: "mergeImage",
           data: {
             firstImageFileID,
@@ -486,7 +486,7 @@ const MergeCanvas = () => {
       const cloudPath = `files/client/${generateTimestamp(info)}_${
         info.openid
       }.${filePath.match(/\.(\w+)$/)[1]}`;
-      const res = await Taro.cloud.uploadFile({
+      const res = await cloud.uploadFile({
         cloudPath,
         filePath,
       });

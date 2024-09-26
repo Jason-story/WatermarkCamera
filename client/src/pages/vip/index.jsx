@@ -429,22 +429,25 @@ const Index = () => {
     Taro.showLoading({
       title: "加载中...",
     });
+    const init = async () => {
+      await getCloud();
+      cloud.callFunction({
+        name: "addUser",
+        success: function (res) {
+          setLoading(true);
+          setUserInfo(res.result.data);
+        },
+      });
+      cloud.callFunction({
+        name: "getPrice",
+        success: function (res) {
+          Taro.hideLoading()
+          setPrice(res.result.data);
+        },
+      });
+    };
+    init();
 
-    cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        setLoading(true);
-        setUserInfo(res.result.data);
-      },
-    });
-
-    cloud.callFunction({
-      name: "getPrice",
-      success: function (res) {
-        setPrice(res.result.data);
-        Taro.hideLoading();
-      },
-    });
   }, []);
   return (
     <View className="index">
