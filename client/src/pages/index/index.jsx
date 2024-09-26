@@ -778,10 +778,10 @@ const CameraPage = () => {
           const path = data.tempFilePath;
           const bg = data.thumbTempFilePath;
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
-          if (fileSizeInMB > 50) {
+          if (fileSizeInMB > 10) {
             Taro.showModal({
               title: "提示",
-              content: "视频过大(大于50M)，请重新选择",
+              content: "视频过大(大于10M)，请重新选择",
               showCancel: false,
             });
             return;

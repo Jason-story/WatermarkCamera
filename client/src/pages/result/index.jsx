@@ -95,6 +95,7 @@ const MergeCanvas = () => {
     return res.fileID;
   }
   async function mergeImages(firstImagePath, secondImagePath, userInfo) {
+    const start = +new Date();
     try {
       // 上传图片
       const [firstImageFileID, secondImageFileID, logoImageFileId] =
@@ -128,6 +129,7 @@ const MergeCanvas = () => {
             // userInfo,
           },
           success: (res) => {
+            console.log("res1111: ", res);
             if (res.data && res.data.file_id) {
               // 处理成功
 
@@ -135,6 +137,8 @@ const MergeCanvas = () => {
               Taro.cloud.downloadFile({
                 fileID: res.data.file_id,
                 success: (res) => {
+                  const end = +new Date();
+                  console.log(11111222, end - start);
                   // res.tempFilePath 是临时文件路径
                   Taro.saveVideoToPhotosAlbum({
                     filePath: res.tempFilePath,
@@ -149,6 +153,7 @@ const MergeCanvas = () => {
                   });
                 },
                 fail: (err) => {
+                  setLoading(false);
                   console.error("下载失败:", err);
                 },
               });
@@ -157,7 +162,13 @@ const MergeCanvas = () => {
             }
           },
           fail: (error) => {
-            Taro.showToast({ title: "处理失败", icon: "none" });
+            console.log("error: ", error);
+            setLoading(false);
+            Taro.showToast({
+              title: "处理超时，请重试",
+              icon: "none",
+              duration: 3000,
+            });
           },
         });
       } else {
@@ -174,15 +185,15 @@ const MergeCanvas = () => {
             userInfo,
           },
         });
-      }
-      if (res?.result?.success) {
-        return res.result;
-      } else {
-        Taro.showToast({
-          title: res.result.error,
-          icon: "error",
-          duration: 5000,
-        });
+        if (res?.result?.success) {
+          return res.result;
+        } else {
+          Taro.showToast({
+            title: res.result.error,
+            icon: "error",
+            duration: 5000,
+          });
+        }
       }
     } catch (error) {
       console.error("合并图片失败:", error);
