@@ -336,7 +336,7 @@ const CameraPage = () => {
       userInfo.type !== "never"
     ) {
       Taro.showToast({
-        title: "此功能只对半年及以上会员开放",
+        title: "此功能只对半年及以上会员开放,最大支持5M视频",
         icon: "none",
         duration: 5000,
       });
@@ -552,7 +552,7 @@ const CameraPage = () => {
       userInfo.type !== "never"
     ) {
       Taro.showToast({
-        title: "此功能只对半年及以上会员开放",
+        title: "此功能只对半年及以上会员开放,最大支持5M视频",
         icon: "none",
         duration: 5000,
       });
@@ -610,6 +610,7 @@ const CameraPage = () => {
       });
     } else {
       // 相册
+      app.$app.globalData.config.isVideo = false;
       Taro.navigateTo({
         url:
           "/pages/result/index?bg=" +
@@ -730,13 +731,14 @@ const CameraPage = () => {
       userInfo.type !== "never"
     ) {
       Taro.showToast({
-        title: "此功能只对半年及以上会员开放",
+        title: "此功能只对半年及以上会员开放,最大支持5M视频",
         icon: "none",
         duration: 5000,
       });
       return;
     }
 
+    console.log('selected: ', selected);
     if (selected === "图片水印") {
       Taro.chooseMedia({
         count: 1,
@@ -778,10 +780,10 @@ const CameraPage = () => {
           const path = data.tempFilePath;
           const bg = data.thumbTempFilePath;
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
-          if (fileSizeInMB > 10) {
+          if (fileSizeInMB > 5) {
             Taro.showModal({
               title: "提示",
-              content: "视频过大(大于10M)，请重新选择",
+              content: "视频过大(大于5M)，请重新选择",
               showCancel: false,
             });
             return;
@@ -1149,7 +1151,7 @@ const CameraPage = () => {
                 </View>
               </View>
             )}
-            {allAuth && (
+            {/* {allAuth && (
               <View
                 className="logo-wrap"
                 style={{
@@ -1205,7 +1207,7 @@ const CameraPage = () => {
                   </View>
                 )}
               </View>
-            )}
+            )} */}
             {allAuth && (
               <View
                 className={
@@ -1580,7 +1582,7 @@ const CameraPage = () => {
                 <View className="txt1">
                   请您用手机的{" "}
                   <Text style={{ fontStyle: "italic" }}>原相机</Text>{" "}
-                  拍摄一段视频后，然后再从相册选择即可。
+                  拍摄一段视频后，然后再从相册选择即可。目前最大支持5M以内视频，请控制视频时长。
                 </View>
               </View>
             </AtModalContent>

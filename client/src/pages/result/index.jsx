@@ -43,7 +43,9 @@ const MergeCanvas = () => {
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("图片检测中. . .");
-  const texts = ["图片检测中. . .", "图片生成中. . .", "图片下载中. . ."];
+  const texts = isVideo
+    ? ["视频检测中. . .", "视频生成中. . .", "视频下载中. . ."]
+    : ["图片检测中. . .", "图片生成中. . .", "图片下载中. . ."];
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -95,7 +97,6 @@ const MergeCanvas = () => {
     return res.fileID;
   }
   async function mergeImages(firstImagePath, secondImagePath, userInfo) {
-    const start = +new Date();
     try {
       // 上传图片
       const [firstImageFileID, secondImageFileID, logoImageFileId] =
@@ -108,6 +109,8 @@ const MergeCanvas = () => {
       let res = "";
       // 视频合成
       if (isVideo) {
+        const start = +new Date();
+
         // 视频合成
         Taro.cloud.callContainer({
           config: {
@@ -128,17 +131,15 @@ const MergeCanvas = () => {
             // scale,
             // userInfo,
           },
+          timeout: 60000,
           success: (res) => {
-            console.log("res1111: ", res);
+            const end = +new Date();
+            console.log(11111222, end - start);
             if (res.data && res.data.file_id) {
               // 处理成功
-
-              // 假设 fileId 是您想要保存的视频文件的 fileId
               Taro.cloud.downloadFile({
                 fileID: res.data.file_id,
                 success: (res) => {
-                  const end = +new Date();
-                  console.log(11111222, end - start);
                   // res.tempFilePath 是临时文件路径
                   Taro.saveVideoToPhotosAlbum({
                     filePath: res.tempFilePath,
@@ -163,6 +164,8 @@ const MergeCanvas = () => {
           },
           fail: (error) => {
             console.log("error: ", error);
+            const end = +new Date();
+            console.log(222333, end - start);
             setLoading(false);
             Taro.showToast({
               title: "处理超时，请重试",
