@@ -14,11 +14,13 @@ import {
 } from "@tarojs/components";
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
+import Close from "../../images/close.png";
 import {
   AtModal,
   AtToast,
   AtInput,
   AtCard,
+  AtButton,
   AtModalHeader,
   AtModalContent,
   AtModalAction,
@@ -115,7 +117,6 @@ const CameraPage = () => {
   // 水印选择
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   // const [price, setPrice] = useState({});
-  const [shuiyinTypeSelect, setShuiyinTypeSelected] = useState("img");
   const [qrCodePath, setQrCodePath] = useState("");
 
   const [showFloatLayout, setShowFloatLayout] = useState(false);
@@ -135,11 +136,10 @@ const CameraPage = () => {
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [addPhoneNumber, setAddPhoneNumber] = useState(false);
   const [phone, setPhone] = useState("");
-
+  const [videoModal, setVideoModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
   const [addAnimate, setAddAnimate] = useState(false);
   const [vipAnimate, setVipAnimate] = useState(false);
-  const [inviteModalShow, setInviteModalShow] = useState(false);
   const [update, setUpdate] = useState(false);
   const [showHasCheck, setShowHasCheck] = useState(undefined);
   const [showTrueCode, setShowTrueCode] = useState(undefined);
@@ -324,7 +324,24 @@ const CameraPage = () => {
       },
     });
   };
+  const [selected, setSelected] = useState("图片水印");
 
+  const handleSelect = (option) => {
+    setSelected(option);
+    console.log("userInf2222o: ", userInfo);
+    if (
+      option === "视频水印" &&
+      userInfo.type !== "halfYearMonth" &&
+      userInfo.type !== "year" &&
+      userInfo.type !== "never"
+    ) {
+      Taro.showToast({
+        title: "此功能只对半年及以上会员开放",
+        icon: "none",
+        duration: 5000,
+      });
+    }
+  };
   const geocoder = (addr) => {
     const qqmapsdk = new QQMapWX({
       key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
@@ -526,8 +543,23 @@ const CameraPage = () => {
       });
       return;
     }
-    if (shuiyinTypeSelect === "video" && typeof camera === "object") {
-      selectImg();
+
+    console.log("userInfo: ", userInfo);
+    if (
+      selected === "视频水印" &&
+      userInfo.type !== "halfYearMonth" &&
+      userInfo.type !== "year" &&
+      userInfo.type !== "never"
+    ) {
+      Taro.showToast({
+        title: "此功能只对半年及以上会员开放",
+        icon: "none",
+        duration: 5000,
+      });
+      return;
+    }
+    if (selected === "视频水印") {
+      setVideoModal(true);
       return;
     }
 
@@ -567,10 +599,6 @@ const CameraPage = () => {
                 canvasImg +
                 "&serverCanvas=" +
                 (shantuiSwitch || serverCanvas) +
-                "&position=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.position +
-                "&scale=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.scale +
                 "&vip=" +
                 canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
                 "&id=" +
@@ -590,14 +618,8 @@ const CameraPage = () => {
           canvasImg +
           "&serverCanvas=" +
           (shantuiSwitch || serverCanvas) +
-          "&position=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.position +
-          "&scale=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.scale +
           "&vip=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
-          "&shuiyinTypeSelect=" +
-          shuiyinTypeSelect +
           "&id=" +
           inviteId,
       });
@@ -700,14 +722,33 @@ const CameraPage = () => {
       });
       return;
     }
-    if (shuiyinTypeSelect === "img") {
-      Taro.chooseImage({
+
+    if (
+      selected === "视频水印" &&
+      userInfo.type !== "halfYearMonth" &&
+      userInfo.type !== "year" &&
+      userInfo.type !== "never"
+    ) {
+      Taro.showToast({
+        title: "此功能只对半年及以上会员开放",
+        icon: "none",
+        duration: 5000,
+      });
+      return;
+    }
+
+    if (selected === "图片水印") {
+      Taro.chooseMedia({
         count: 1,
+        mediaType: ["image"],
+        sourceType: ["album"],
+
         success: function (res) {
-          const filePath = res.tempFilePaths[0];
+          const data = res.tempFiles[0];
+          const filePath = data.tempFilePath;
 
           Taro.getFileInfo({
-            filePath: filePath,
+            filePath,
             success: async function (info) {
               const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
@@ -727,13 +768,15 @@ const CameraPage = () => {
         },
       });
     } else {
+      // 视频水印
       Taro.chooseMedia({
         count: 1,
-        mediaType: "video",
-        sourceType: "album",
+        mediaType: ["video"],
+        sourceType: ["album"],
         success: function (res) {
           const data = res.tempFiles[0];
-          const filePath = data.tempFilePath;
+          const path = data.tempFilePath;
+          const bg = data.thumbTempFilePath;
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
           if (fileSizeInMB > 50) {
             Taro.showModal({
@@ -741,8 +784,25 @@ const CameraPage = () => {
               content: "视频过大(大于50M)，请重新选择",
               showCancel: false,
             });
+            return;
           }
-          takePhoto(false, filePath, true);
+
+          app.$app.globalData.config.isVideo = true;
+          app.$app.globalData.config.videoPath = path;
+          Taro.navigateTo({
+            url:
+              "/pages/result/index?bg=" +
+              bg +
+              "&mask=" +
+              canvasImg +
+              "&serverCanvas=true" +
+              "&vip=" +
+              canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
+              "&id=" +
+              inviteId,
+          });
+
+          // takePhoto(false, filePath, true);
         },
       });
     }
@@ -944,13 +1004,16 @@ const CameraPage = () => {
   // }, [allAuth]);
 
   const uploadLogo = () => {
-    Taro.chooseImage({
+    Taro.chooseMedia({
       count: 1,
+      mediaType: ["image"],
+      sourceType: ["album"],
       success: function (res) {
-        const filePath = res.tempFilePaths[0];
+        const data = res.tempFiles[0];
+        const filePath = data.tempFilePath;
 
         Taro.getFileInfo({
-          filePath: filePath,
+          filePath,
           success: async function (info) {
             console.log("info: ", info);
             const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
@@ -1238,8 +1301,20 @@ const CameraPage = () => {
               </View>
             </View>
             <View className="take-photo" onClick={takePhoto}>
-              <View className="camera-button">
-                <View className="camera-button-inner"></View>
+              <View
+                className={
+                  "camera-button" +
+                  (selected === "视频水印" ? " camera-button-video" : "")
+                }
+              >
+                <View
+                  className={
+                    "camera-button-inner" +
+                    (selected === "视频水印"
+                      ? " camera-button-inner-video"
+                      : "")
+                  }
+                ></View>
               </View>
             </View>
             <View className="tools-bar-inner">
@@ -1376,14 +1451,43 @@ const CameraPage = () => {
               )} */}
             </View>
           </View>
+          {/* <View className="media-type-box">
+            <View>图片</View>
+            <View>视频</View>
+          </View> */}
+          <View className="button-group">
+            {["图片水印", "视频水印"].map((option, index) => (
+              <AtButton
+                key={option}
+                onClick={() => handleSelect(option)}
+                style={{
+                  color: "white",
+                  border: "none",
+                  borderRadius: "25px",
+                  padding: "0 20px",
+                  fontSize: "30rpx",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                }}
+                className={`button-group__button ${
+                  selected === option
+                    ? "button-group__button--selected selected_" + index
+                    : ""
+                }`}
+              >
+                {option.slice(0, 2) + "加" + option.slice(2)}
+              </AtButton>
+            ))}
+          </View>
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
-            {!fuckShenHe && (
+            {/* {!fuckShenHe && (
               <Button
                 onClick={() => {
                   // setInviteModalShow(true);
-                    Taro.navigateTo({
-                      url: "/pages/vip/index",
-                    });
+                  Taro.navigateTo({
+                    url: "/pages/vip/index",
+                  });
                 }}
                 className="share-btn"
                 type="button"
@@ -1397,7 +1501,7 @@ const CameraPage = () => {
                   <View className="circle"></View>
                 </View>
               </Button>
-            )}
+            )} */}
             {/* <Button
               className="share-btn"
               onClick={() => {
@@ -1450,6 +1554,38 @@ const CameraPage = () => {
               </Button>
             </AtModalAction>
           </AtModal> */}
+          <AtModal isOpened={videoModal} closeOnClickOverlay={true}>
+            <AtModalHeader>
+              <Text>提示</Text>
+              <View
+                onClick={() => {
+                  setVideoModal(false);
+                }}
+                style={{
+                  position: "absolute",
+                  right: "15px",
+                  top: "10px",
+                  width: "20px",
+                  height: "20px",
+                }}
+              >
+                <Image
+                  style={{ width: "100%", height: "100%" }}
+                  src={Close}
+                ></Image>
+              </View>
+            </AtModalHeader>
+            <AtModalContent>
+              <View className="modal-list">
+                <View className="txt1">
+                  请您用手机的{" "}
+                  <Text style={{ fontStyle: "italic" }}>原相机</Text>{" "}
+                  拍摄一段视频后，然后再从相册选择即可。
+                </View>
+              </View>
+            </AtModalContent>
+          </AtModal>
+
           <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text style={{ color: "#ffaa00" }}>提示</Text>
@@ -1482,6 +1618,7 @@ const CameraPage = () => {
               </Button>
             </AtModalAction>
           </AtModal>
+
           {/* 会员填写手机号 防失联 */}
           <AtModal isOpened={addPhoneNumber} closeOnClickOverlay={false}>
             <AtModalHeader>

@@ -121,7 +121,7 @@ exports.main = async (event, context) => {
         await cloud.deleteFile({
             fileList: [firstImageFileID, secondImageFileID]
         });
-
+        
         return {
             success: true,
             fileID: uploadResult.fileID,

@@ -28,15 +28,13 @@ const MergeCanvas = () => {
   const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
   const secondImagePath = Taro.getCurrentInstance().router.params.mask; // 第二张图片的本地路径
-  const position = Taro.getCurrentInstance().router.params.position;
   const scale = 1;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
   const isVip = Taro.getCurrentInstance().router.params.vip;
   // 图片水印 or 视频水印
-  const shuiyinTypeSelect =
-    Taro.getCurrentInstance().router.params.shuiyinTypeSelect || false;
+  const isVideo = app.$app.globalData.config.isVideo;
+  const videoPath = app.$app.globalData.config.videoPath;
 
-  const [imagePath, setImagePath] = useState("");
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
   const [img2Info, setImg2Info] = useState({});
@@ -86,7 +84,7 @@ const MergeCanvas = () => {
     });
   };
 
-  async function uploadImage(filePath, fileName = "server_temp_images") {
+  async function uploadImage(filePath, fileName = "files/server_temp_images") {
     const cloudPath = `${fileName}/${Date.now()}-${Math.random()
       .toString(36)
       .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
@@ -105,25 +103,79 @@ const MergeCanvas = () => {
           uploadImage(secondImagePath),
           config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
         ]);
-      console.log("logoImageFileId: ", logoImageFileId);
       // 调用云函数
-      const res = await Taro.cloud.callFunction({
-        // name: shuiyinTypeSelect ? "mergeVideoCanvas" : "mergeImage",
-        name: shuiyinTypeSelect === "video" ? "mergeVideoCanvas" : "mergeImage",
-        data: {
-          firstImageFileID,
-          secondImageFileID,
-          logoImageFileId,
-          screenWidth,
-          logoConfig: config.logoConfig,
-          position,
-          scale,
-          userInfo,
-        },
-      });
+      let res = "";
+      // 视频合成
+      if (isVideo) {
+        // 视频合成
+        Taro.cloud.callContainer({
+          config: {
+            env: "prod-9g5wnloybe56625b",
+          },
+          path: "/process",
+          header: {
+            "X-WX-SERVICE": "express-loc1",
+            "content-type": "application/json",
+          },
+          method: "POST",
+          data: {
+            image_file_id: secondImageFileID,
+            video_file_id: firstImageFileID,
+            logo_file_id: logoImageFileId ? logoImageFileId : null,
+            // screenWidth,
+            // logoConfig: config.logoConfig,
+            // scale,
+            // userInfo,
+          },
+          success: (res) => {
+            if (res.data && res.data.file_id) {
+              // 处理成功
 
-      console.log("res: ", res);
-      if (res.result.success) {
+              // 假设 fileId 是您想要保存的视频文件的 fileId
+              Taro.cloud.downloadFile({
+                fileID: res.data.file_id,
+                success: (res) => {
+                  // res.tempFilePath 是临时文件路径
+                  Taro.saveVideoToPhotosAlbum({
+                    filePath: res.tempFilePath,
+                    success: () => {
+                      Taro.showToast({
+                        title: "已保存到相册",
+                        icon: "success",
+                        duration: 2000,
+                      });
+                      setLoading(false);
+                    },
+                  });
+                },
+                fail: (err) => {
+                  console.error("下载失败:", err);
+                },
+              });
+            } else {
+              throw new Error("处理错误");
+            }
+          },
+          fail: (error) => {
+            Taro.showToast({ title: "处理失败", icon: "none" });
+          },
+        });
+      } else {
+        // 图片合成
+        res = await Taro.cloud.callFunction({
+          name: "mergeImage",
+          data: {
+            firstImageFileID,
+            secondImageFileID,
+            logoImageFileId,
+            screenWidth,
+            logoConfig: config.logoConfig,
+            scale,
+            userInfo,
+          },
+        });
+      }
+      if (res?.result?.success) {
         return res.result;
       } else {
         Taro.showToast({
@@ -257,7 +309,7 @@ const MergeCanvas = () => {
           if (serverCanvas === "true") {
             console.log("服务端 ");
             const { fileID, width, height } = await mergeImages(
-              firstImagePath,
+              isVideo ? videoPath : firstImagePath,
               secondImagePath,
               res.result.data
             );
@@ -400,9 +452,9 @@ const MergeCanvas = () => {
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
-      const cloudPath = `client/${generateTimestamp(info)}_${info.openid}.${
-        filePath.match(/\.(\w+)$/)[1]
-      }`;
+      const cloudPath = `files/client/${generateTimestamp(info)}_${
+        info.openid
+      }.${filePath.match(/\.(\w+)$/)[1]}`;
       const res = await Taro.cloud.uploadFile({
         cloudPath,
         filePath,
@@ -657,7 +709,7 @@ const MergeCanvas = () => {
             <View className="modal-list">
               <View style={{ lineHeight: 1.6 }}>
                 {isVip === "true"
-                  ? "该水印为会员专属，请开通会员，会员为"
+                  ? "该水印为 会员专属，免费次数不能使用该水印，请开通会员，会员为"
                   : "您的" +
                     config.mianfeicishu +
                     "次免费次数用完，请开通会员，会员为"}

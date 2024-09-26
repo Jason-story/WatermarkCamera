@@ -144,7 +144,7 @@ exports.main = async (event, context) => {
 
         // Upload to cloud storage
         const uploadResult = await cloud.uploadFile({
-            cloudPath: `server_images/${generateTimestamp(userInfo)}_${userInfo.openid}.jpg`,
+            cloudPath: `files/server_images/${generateTimestamp(userInfo)}_${userInfo.openid}.jpg`,
             fileContent: buffer
         });
 

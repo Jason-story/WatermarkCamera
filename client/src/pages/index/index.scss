@@ -163,18 +163,28 @@ page {
 .camera-button {
   width: 120px;
   height: 120px;
-  border: 2px solid #000; // 外边细线
+  border: 2px solid #5675fa; // 外边细线
   border-radius: 50%; // 外圆
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s linear;
+  &-video {
+    border-color: #cf73d3;
+  }
 }
 
 .camera-button-inner {
   width: 110px;
   height: 110px;
-  background-color: #000; // 内部实心圆
   border-radius: 50%; // 内圆
+  transition: all 0.3s linear;
+  background-color: #5675fa;
+}
+
+.camera-button-inner-video {
+  transition: all 0.3s linear;
+  background-color: #cf73d3;
 }
 .share-btn,
 .vip-btn {
@@ -661,5 +671,54 @@ picker,
     font-size: 24px;
     margin-top: 10px;
     color: #fff;
+  }
+}
+.media-type-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  margin: 20px auto 10px auto;
+  height: 40px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  padding: 0 16px 8px 0;
+  border-radius: 80px;
+  width: 90%;
+  margin: 30px auto;
+
+  &__button {
+    flex: 1;
+    padding: 8px 16px;
+    font-size: 28px;
+    font-weight: 500;
+    border-radius: 50px;
+    margin-right: 16px;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    align-items: center;
+    height: 70px;
+    color: rgb(24, 24, 24);
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover {
+      background-color: #e5e7eb;
+    }
+
+    &--selected {
+      color: #fff;
+      border: none;
+      &.selected_0 {
+        background: linear-gradient(45deg, #5675fa, #67b3f4);
+      }
+      &.selected_1 {
+        background: linear-gradient(45deg, #ff6ec4, #7873f5);
+      }
+    }
   }
 }

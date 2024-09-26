@@ -30,7 +30,6 @@ const md5 = require("./md5.js");
 const app = getApp();
 
 const UserInfo = ({ userInfo, price }) => {
-  console.log("price: ", price);
   if (!price) {
     return;
   }
@@ -212,19 +211,15 @@ const UserInfo = ({ userInfo, price }) => {
                     />
                   </View>
                   <View className="vip-title">
-                    <Text style={{ width: "130px", display: "inline-block" }}>
-                      {item.title}
-                    </Text>
+                    <Text>{item.title}</Text>
                     {item.text && (
                       <Text
                         style={{
                           fontSize: "15px",
                           fontStyle: "italic",
-                          marginLeft:'-5px',
                           color: item.key === "year" ? "#f22c3d" : "",
                         }}
                       >
-                        {" "}
                         平均每月{item.text}元{item.key === "year" && "，推荐"}
                       </Text>
                     )}
@@ -414,6 +409,10 @@ const Index = () => {
     check();
   });
   useEffect(() => {
+    Taro.showLoading({
+      title: "加载中...",
+    });
+
     Taro.cloud.callFunction({
       name: "addUser",
       success: function (res) {
@@ -421,12 +420,12 @@ const Index = () => {
         setUserInfo(res.result.data);
       },
     });
+
     Taro.cloud.callFunction({
       name: "getPrice",
       success: function (res) {
         setPrice(res.result.data);
-
-        console.log("res.result.data: ", res.result.data);
+        Taro.hideLoading();
       },
     });
   }, []);

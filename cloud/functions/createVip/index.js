@@ -52,8 +52,21 @@ exports.main = async (event, context) => {
     };
 
     try {
+        const currentInfo = await transaction
+            .collection('users')
+            .where({
+                openid
+            })
+            .get();
+
+        const end_time = currentInfo.data[0].end_time;
+
         const currentTime = Date.now(); // 获取当前时间的毫秒时间戳
-        const endTime = currentTime + config[type] * 24 * 60 * 60 * 1000; // 计算结束时间
+        let endTime = currentTime + config[type] * 24 * 60 * 60 * 1000; // 计算结束时间
+
+        if (end_time - currentTime > 0) {
+            endTime = endTime + (end_time - currentTime);
+        }
         // 更新用户信息
         await transaction
             .collection('users')
@@ -101,8 +114,7 @@ exports.main = async (event, context) => {
         }
 
         return {
-            msg: '用户信息更新成功',
- 
+            msg: '用户信息更新成功'
         };
     } catch (error) {
         return {
