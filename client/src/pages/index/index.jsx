@@ -738,7 +738,7 @@ const CameraPage = () => {
       return;
     }
 
-    console.log('selected: ', selected);
+    console.log("selected: ", selected);
     if (selected === "图片水印") {
       Taro.chooseMedia({
         count: 1,
@@ -779,6 +779,7 @@ const CameraPage = () => {
           const data = res.tempFiles[0];
           const path = data.tempFilePath;
           const bg = data.thumbTempFilePath;
+          console.log("data: ", data);
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
           if (fileSizeInMB > 5) {
             Taro.showModal({
@@ -1319,66 +1320,70 @@ const CameraPage = () => {
                 ></View>
               </View>
             </View>
-            <View className="tools-bar-inner">
-              <View
-                className={
-                  "xiangce kefu vip " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
+            {!fuckShenHe && (
+              <View className="tools-bar-inner">
+                {
+                  <View
+                    className={
+                      "xiangce kefu vip " +
+                      (vipAnimate || addAnimate ? "button-animate " : "")
+                    }
+                  >
+                    <Button
+                      onClick={() => {
+                        Taro.navigateTo({
+                          url:
+                            "/pages/vip/index?type=" +
+                            userInfo.type +
+                            "&id=" +
+                            inviteId,
+                        });
+                      }}
+                      style={{
+                        background: "none",
+                        color: "inherit",
+                        border: "none",
+                        padding: 0,
+                        font: "inherit",
+                        cursor: "pointer",
+                        outline: "none",
+                        height: "39px",
+                      }}
+                    >
+                      <Image src={VipImg} className="xiangceIcon"></Image>
+                    </Button>
+                    <Text>会员</Text>
+                  </View>
                 }
-              >
-                <Button
-                  onClick={() => {
-                    Taro.navigateTo({
-                      url:
-                        "/pages/vip/index?type=" +
-                        userInfo.type +
-                        "&id=" +
-                        inviteId,
-                    });
-                  }}
-                  style={{
-                    background: "none",
-                    color: "inherit",
-                    border: "none",
-                    padding: 0,
-                    font: "inherit",
-                    cursor: "pointer",
-                    outline: "none",
-                    height: "39px",
-                  }}
+                <View
+                  className={
+                    "xiangce kefu " +
+                    (vipAnimate || addAnimate ? "button-animate " : "")
+                  }
                 >
-                  <Image src={VipImg} className="xiangceIcon"></Image>
-                </Button>
-                <Text>会员</Text>
+                  <Button
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: "/pages/me/index",
+                      });
+                    }}
+                    style={{
+                      background: "none",
+                      color: "inherit",
+                      border: "none",
+                      padding: 0,
+                      font: "inherit",
+                      cursor: "pointer",
+                      outline: "none",
+                      height: "39px",
+                    }}
+                  >
+                    <Image src={KefuIcon} className="xiangceIcon"></Image>
+                  </Button>
+                  <Text>我的</Text>
+                </View>
               </View>
-              <View
-                className={
-                  "xiangce kefu " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Button
-                  onClick={() => {
-                    Taro.navigateTo({
-                      url: "/pages/me/index",
-                    });
-                  }}
-                  style={{
-                    background: "none",
-                    color: "inherit",
-                    border: "none",
-                    padding: 0,
-                    font: "inherit",
-                    cursor: "pointer",
-                    outline: "none",
-                    height: "39px",
-                  }}
-                >
-                  <Image src={KefuIcon} className="xiangceIcon"></Image>
-                </Button>
-                <Text>我的</Text>
-              </View>
-            </View>
+            )}
           </View>
           {/* ------- */}
           <View className="tools-bar" style={{ marginTop: "-15px" }}>
@@ -1458,29 +1463,34 @@ const CameraPage = () => {
             <View>视频</View>
           </View> */}
           <View className="button-group">
-            {["图片水印", "视频水印"].map((option, index) => (
-              <AtButton
-                key={option}
-                onClick={() => handleSelect(option)}
-                style={{
-                  color: "white",
-                  border: "none",
-                  borderRadius: "25px",
-                  padding: "0 20px",
-                  fontSize: "30rpx",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                }}
-                className={`button-group__button ${
-                  selected === option
-                    ? "button-group__button--selected selected_" + index
-                    : ""
-                }`}
-              >
-                {option.slice(0, 2) + "加" + option.slice(2)}
-              </AtButton>
-            ))}
+            {["图片水印", "视频水印"].map((option, index) => {
+              if (fuckShenHe) {
+                return null;
+              }
+              return (
+                <AtButton
+                  key={option}
+                  onClick={() => handleSelect(option)}
+                  style={{
+                    color: "white",
+                    border: "none",
+                    borderRadius: "25px",
+                    padding: "0 20px",
+                    fontSize: "30rpx",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                  }}
+                  className={`button-group__button ${
+                    selected === option
+                      ? "button-group__button--selected selected_" + index
+                      : ""
+                  }`}
+                >
+                  {option.slice(0, 2) + "加" + option.slice(2)}
+                </AtButton>
+              );
+            })}
           </View>
           <View className="bottom-btns" style={{ marginTop: "5px" }}>
             {/* {!fuckShenHe && (
