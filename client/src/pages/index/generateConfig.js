@@ -608,7 +608,7 @@ const generateCanvasConfig = ({
           },
         ],
         img: Shuiyin3,
-        vip: true,
+        // vip: true,
         logoY: 0.55,
         right: true,
         name: "免费-工程记录-3",
