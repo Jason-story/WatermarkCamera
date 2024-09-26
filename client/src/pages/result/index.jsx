@@ -124,11 +124,17 @@ const MergeCanvas = () => {
       // 调用云函数
       let res = "";
       // 视频合成
+      console.log('12312312: ', isVideo);
       if (isVideo) {
         const start = +new Date();
-
+        const ytg = await new Taro.cloud.Cloud({
+          resourceAppid: config.resourceAppid,
+          resourceEnv: "prod-9g5wnloybe56625b",
+        });
+        await ytg.init();
+        console.log('ytg: ', ytg);
         // 视频合成
-        cloud.callContainer({
+        await ytg.callContainer({
           config: {
             env: "prod-9g5wnloybe56625b",
           },
