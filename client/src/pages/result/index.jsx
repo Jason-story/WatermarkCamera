@@ -124,15 +124,13 @@ const MergeCanvas = () => {
       // 调用云函数
       let res = "";
       // 视频合成
-      console.log('12312312: ', isVideo);
       if (isVideo) {
         const start = +new Date();
         const ytg = await new Taro.cloud.Cloud({
-          resourceAppid: config.resourceAppid,
+          resourceAppid: "wx785efc584be4265b",
           resourceEnv: "prod-9g5wnloybe56625b",
         });
         await ytg.init();
-        console.log('ytg: ', ytg);
         // 视频合成
         await ytg.callContainer({
           config: {
@@ -148,6 +146,7 @@ const MergeCanvas = () => {
             image_file_id: secondImageFileID,
             video_file_id: firstImageFileID,
             logo_file_id: logoImageFileId ? logoImageFileId : null,
+            type: "副",
             // screenWidth,
             // logoConfig: config.logoConfig,
             // scale,
@@ -484,7 +483,9 @@ const MergeCanvas = () => {
     const hours = String(beijingTime.getUTCHours()).padStart(2, "0");
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
-    return `${hours}.${minutes}.${seconds}.${info.type !== "default" ? "vip" : ""}`;
+    return `${hours}.${minutes}.${seconds}.${
+      info.type !== "default" ? "vip" : ""
+    }`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
