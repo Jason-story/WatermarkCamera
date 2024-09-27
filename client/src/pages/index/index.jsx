@@ -176,6 +176,8 @@ const CameraPage = () => {
   const [logoPath, setLogoPath] = useState("");
   const [logoWidth, setLogoWidth] = useState(0);
   const [logoHeight, setLogoHeight] = useState(0);
+  const [rateModal, setRateModal] = useState(false);
+
   let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   let isWeatherEdited = false;
@@ -194,7 +196,13 @@ const CameraPage = () => {
     const weekday = date.getDay(); // 获取星期几的数字表示，0代表星期日，1代表星期一，依此类推
     return weekDays[weekday];
   }
-
+  useEffect(() => {
+    const phoneInputed = Taro.getStorageSync("phoneInputed");
+    const showRateModalStorage = Taro.getStorageSync("showRateModalStorage");
+    if (phoneInputed && !showRateModalStorage) {
+      setRateModal(true);
+    }
+  }, []);
   useEffect(() => {
     // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
@@ -357,11 +365,11 @@ const CameraPage = () => {
   const [selected, setSelected] = useState("图片水印");
 
   const handleSelect = (option) => {
-    setSelected(option);
-    console.log("userInf2222o: ", userInfo);
-    if(option === '图片水印'){
+    if (option === "图片水印") {
       app.$app.globalData.config.isVideo = false;
     }
+    setSelected(option);
+
     if (
       option === "视频水印" &&
       userInfo.type !== "halfYearMonth" &&
@@ -1357,8 +1365,8 @@ const CameraPage = () => {
                 ></View>
               </View>
             </View>
-            {!fuckShenHe && (
-              <View className="tools-bar-inner">
+            <View className="tools-bar-inner">
+              {
                 <View
                   className={
                     "xiangce kefu vip " +
@@ -1390,35 +1398,35 @@ const CameraPage = () => {
                   </Button>
                   <Text>会员</Text>
                 </View>
-                <View
-                  className={
-                    "xiangce kefu " +
-                    (vipAnimate || addAnimate ? "button-animate " : "")
-                  }
+              }
+              <View
+                className={
+                  "xiangce kefu " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Button
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: "/pages/me/index",
+                    });
+                  }}
+                  style={{
+                    background: "none",
+                    color: "inherit",
+                    border: "none",
+                    padding: 0,
+                    font: "inherit",
+                    cursor: "pointer",
+                    outline: "none",
+                    height: "39px",
+                  }}
                 >
-                  <Button
-                    onClick={() => {
-                      Taro.navigateTo({
-                        url: "/pages/me/index",
-                      });
-                    }}
-                    style={{
-                      background: "none",
-                      color: "inherit",
-                      border: "none",
-                      padding: 0,
-                      font: "inherit",
-                      cursor: "pointer",
-                      outline: "none",
-                      height: "39px",
-                    }}
-                  >
-                    <Image src={KefuIcon} className="xiangceIcon"></Image>
-                  </Button>
-                  <Text>我的</Text>
-                </View>
+                  <Image src={KefuIcon} className="xiangceIcon"></Image>
+                </Button>
+                <Text>我的</Text>
               </View>
-            )}
+            </View>
           </View>
           {/* ------- */}
           <View className="tools-bar" style={{ marginTop: "-15px" }}>
@@ -1632,6 +1640,42 @@ const CameraPage = () => {
             </AtModalContent>
           </AtModal>
 
+          {/* 评价提示 开始 */}
+          <AtModal isOpened={rateModal} closeOnClickOverlay={false}>
+            <AtModalHeader>
+              <Text>提示</Text>
+              <View
+                onClick={() => {
+                  setRateModal(false);
+                  Taro.setStorage({
+                    key: "showRateModalStorage",
+                    data: "true",
+                  });
+                }}
+                style={{
+                  position: "absolute",
+                  right: "15px",
+                  top: "10px",
+                  width: "20px",
+                  height: "20px",
+                }}
+              >
+                <Image
+                  style={{ width: "100%", height: "100%" }}
+                  src={Close}
+                ></Image>
+              </View>
+            </AtModalHeader>
+            <AtModalContent>
+              <View className="modal-list">
+                <View className="txt1">
+                  尊敬的会员，为了更好的服务，麻烦您点击 右上角 - 体验评分
+                  给一个 文字 ➕ 五星好评，感谢！
+                </View>
+              </View>
+            </AtModalContent>
+          </AtModal>
+          {/* 评价提示结束 */}
           <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text style={{ color: "#ffaa00" }}>提示</Text>
@@ -1698,14 +1742,19 @@ const CameraPage = () => {
               </Button>
               <Button
                 style={{ flex: 1 }}
-                onClick={() => {
-                  Taro.cloud.callFunction({
+                onClick={async () => {
+                  setAddPhoneNumber(false);
+
+                  if (!phone) {
+                    return;
+                  }
+                  await Taro.cloud.callFunction({
                     name: "addUser",
                     data: {
                       phone,
                     },
                   });
-                  setAddPhoneNumber(false);
+                  Taro.setStorage({ key: "phoneInputed", data: true });
                 }}
               >
                 提交
