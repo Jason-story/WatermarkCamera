@@ -84,12 +84,10 @@ function getCacheSize(path) {
 
 function clearCacheIfNeeded(path) {
   const totalSize = getCacheSize(path);
-  console.log("缓存大小:", totalSize + "KB");
   if (totalSize > CACHE_LIMIT) {
     // 如果缓存超过限制，删除缓存
     try {
       fs.rmdirSync(path, true); // 递归删除整个目录
-      console.log("缓存已清理");
     } catch (error) {
       console.error("清理缓存失败:", error);
     }
@@ -219,12 +217,10 @@ const CameraPage = () => {
             success(res) {
               if (res.statusCode === 200) {
                 // 成功下载，设置图片路径到本地路径
-                console.log("res.tempFilePath: ", res.tempFilePath);
                 setQrCodePath(res.tempFilePath);
               }
             },
             fail(err) {
-              console.log("二维码下载失败：", err);
             },
           });
         },
@@ -545,7 +541,6 @@ const CameraPage = () => {
     });
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
-    console.log('path: ', path);
     console.log("canvasImg: ", canvasImg);
 
     if (!allAuth) {
@@ -714,7 +709,6 @@ const CameraPage = () => {
       source:
         'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-13/16741726192400525_NotoSansMono.ttf?sign=e538c8b4afae718262ea3eb01d7fc9f1&t=1726192401")',
       success: (res) => {
-        console.log("res: ", res);
         drawMask();
       },
       fail: (err) => {
@@ -750,7 +744,6 @@ const CameraPage = () => {
       return;
     }
 
-    console.log("selected: ", selected);
     if (selected === "图片水印") {
       Taro.chooseMedia({
         count: 1,
@@ -760,7 +753,6 @@ const CameraPage = () => {
         success: function (res) {
           const data = res.tempFiles[0];
           const filePath = data.tempFilePath;
-          console.log('filePath: ', filePath);
 
           Taro.getFileInfo({
             filePath,
@@ -792,7 +784,6 @@ const CameraPage = () => {
           const data = res.tempFiles[0];
           const path = data.tempFilePath;
           const bg = data.thumbTempFilePath;
-          console.log("data: ", data);
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
           if (fileSizeInMB > 5) {
             Taro.showModal({
@@ -1031,7 +1022,6 @@ const CameraPage = () => {
         Taro.getFileInfo({
           filePath,
           success: async function (info) {
-            console.log("info: ", info);
             const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
             if (fileSizeInMB > 2) {

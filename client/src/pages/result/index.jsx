@@ -130,7 +130,6 @@ const MergeCanvas = () => {
           timeout: 60000,
           success: (res) => {
             const end = +new Date();
-            console.log(11111222, end - start);
             if (res.data && res.data.file_id) {
               // 处理成功
               Taro.cloud.downloadFile({
@@ -159,9 +158,7 @@ const MergeCanvas = () => {
             }
           },
           fail: (error) => {
-            console.log("error: ", error);
             const end = +new Date();
-            console.log(222333, end - start);
             setLoading(false);
             Taro.showToast({
               title: "处理超时，请重试",
@@ -185,7 +182,6 @@ const MergeCanvas = () => {
           },
         });
         if (res?.result?.success) {
-          console.log('res.result: ', res.result);
           return res.result;
         } else {
           Taro.showToast({
@@ -292,8 +288,6 @@ const MergeCanvas = () => {
   };
   // 假设这个函数在成功合并图片后被调用
   async function handleMergedImage(mergedImageFileID, info) {
-    console.log('mergedImageFileID: ', mergedImageFileID);
-    console.log('info: ', info);
     await saveImage(mergedImageFileID, info);
   }
   useEffect(() => {
@@ -516,7 +510,6 @@ const MergeCanvas = () => {
         },
         fail: (error) => {
           setLoading(false);
-
           console.log("保存失败", error);
           Taro.showToast({
             title: "保存失败",
@@ -552,7 +545,6 @@ const MergeCanvas = () => {
     save();
   };
   const chongxinpaishe = useCallback(() => {
-    console.log("Button clicked");
     Taro.navigateBack({
       delta: 1,
     });
