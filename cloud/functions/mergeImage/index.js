@@ -25,8 +25,8 @@ function generateTimestamp(info) {
     const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+    return `${hours}.${minutes}.${seconds}.${info.type !== "default" ? "vip" : ""}`;
 
-    return `${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
 }
 // Optimized security check function
 async function securityCheck(fileContent) {

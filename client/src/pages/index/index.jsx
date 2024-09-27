@@ -545,6 +545,7 @@ const CameraPage = () => {
     });
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
+    console.log('path: ', path);
     console.log("canvasImg: ", canvasImg);
 
     if (!allAuth) {
@@ -759,6 +760,7 @@ const CameraPage = () => {
         success: function (res) {
           const data = res.tempFiles[0];
           const filePath = data.tempFilePath;
+          console.log('filePath: ', filePath);
 
           Taro.getFileInfo({
             filePath,

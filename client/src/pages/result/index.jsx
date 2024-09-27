@@ -185,6 +185,7 @@ const MergeCanvas = () => {
           },
         });
         if (res?.result?.success) {
+          console.log('res.result: ', res.result);
           return res.result;
         } else {
           Taro.showToast({
@@ -234,6 +235,7 @@ const MergeCanvas = () => {
                   });
                 }
               }
+
               // if (inviteId) {
               //   await Taro.cloud.callFunction({
               //     name: "invite",
@@ -290,6 +292,8 @@ const MergeCanvas = () => {
   };
   // 假设这个函数在成功合并图片后被调用
   async function handleMergedImage(mergedImageFileID, info) {
+    console.log('mergedImageFileID: ', mergedImageFileID);
+    console.log('info: ', info);
     await saveImage(mergedImageFileID, info);
   }
   useEffect(() => {
@@ -457,8 +461,7 @@ const MergeCanvas = () => {
     const hours = String(beijingTime.getUTCHours()).padStart(2, "0");
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
-
-    return `${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
+    return `${hours}.${minutes}.${seconds}.${info.type !== "default" ? "vip" : ""}`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
