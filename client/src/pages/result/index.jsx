@@ -126,10 +126,6 @@ const MergeCanvas = () => {
             image_file_id: secondImageFileID,
             video_file_id: firstImageFileID,
             logo_file_id: logoImageFileId ? logoImageFileId : null,
-            // screenWidth,
-            // logoConfig: config.logoConfig,
-            // scale,
-            // userInfo,
           },
           timeout: 60000,
           success: (res) => {
