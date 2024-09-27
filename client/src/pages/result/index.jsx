@@ -190,7 +190,7 @@ const MergeCanvas = () => {
             console.log(222333, end - start);
             setLoading(false);
             Taro.showToast({
-              title: "处理超时，请重试",
+              title: "处理超时，请减小视频大小后重试",
               icon: "none",
               duration: 3000,
             });
@@ -484,8 +484,7 @@ const MergeCanvas = () => {
     const hours = String(beijingTime.getUTCHours()).padStart(2, "0");
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
-
-    return `${hours}.${minutes}${info.type !== "default" ? "vip" : ""}`;
+    return `${hours}.${minutes}.${seconds}.${info.type !== "default" ? "vip" : ""}`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
