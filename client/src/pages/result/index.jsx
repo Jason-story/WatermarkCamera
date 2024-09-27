@@ -167,7 +167,6 @@ const MergeCanvas = () => {
             });
           },
         });
-
       } else {
         // 图片合成
         res = await Taro.cloud.callFunction({
@@ -193,6 +192,12 @@ const MergeCanvas = () => {
         }
       }
     } catch (error) {
+      setLoading(false);
+      Taro.showToast({
+        title: "合并图片失败",
+        icon: "error",
+        duration: 3000,
+      });
       console.error("合并图片失败:", error);
       throw error;
     }
@@ -456,7 +461,9 @@ const MergeCanvas = () => {
     const hours = String(beijingTime.getUTCHours()).padStart(2, "0");
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
-    return `${hours}.${minutes}.${seconds}.${info.type !== "default" ? "vip" : ""}`;
+    return `${hours}.${minutes}.${seconds}.${
+      info.type !== "default" ? "vip" : ""
+    }`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
     async function uploadImage(filePath) {
