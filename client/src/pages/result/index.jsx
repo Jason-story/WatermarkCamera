@@ -161,12 +161,13 @@ const MergeCanvas = () => {
             const end = +new Date();
             setLoading(false);
             Taro.showToast({
-              title: "处理超时，请重试",
+              title: "处理超时，请减小视频大小后重试",
               icon: "none",
               duration: 3000,
             });
           },
         });
+
       } else {
         // 图片合成
         res = await Taro.cloud.callFunction({
