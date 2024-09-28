@@ -15,6 +15,7 @@ import {
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Close from "../../images/close.png";
+
 import {
   AtModal,
   AtToast,
@@ -47,7 +48,7 @@ import Shuiyin5 from "../../images/shuiyin-5.png";
 import Shuiyin6 from "../../images/shuiyin-6.png";
 import AddMyApp from "../../images/add-my-app.png";
 import Arrow from "../../images/left-arrow.png";
-import AddPic from "../../images/add-pic.png";
+import VideoImg from "../../images/video.png";
 import Jianhao from "../../images/jianhao.png";
 
 import "./index.scss";
@@ -220,8 +221,7 @@ const CameraPage = () => {
                 setQrCodePath(res.tempFilePath);
               }
             },
-            fail(err) {
-            },
+            fail(err) {},
           });
         },
       });
@@ -343,7 +343,7 @@ const CameraPage = () => {
       userInfo.type !== "never"
     ) {
       Taro.showToast({
-        title: "此功能只对半年及以上会员开放,最大支持5M视频",
+        title: "此功能只对半年及以上会员开放,最大支持50M视频",
         icon: "none",
         duration: 5000,
       });
@@ -559,7 +559,7 @@ const CameraPage = () => {
       userInfo.type !== "never"
     ) {
       Taro.showToast({
-        title: "此功能只对半年及以上会员开放,最大支持5M视频",
+        title: "此功能只对半年及以上会员开放,最大支持50M视频",
         icon: "none",
         duration: 5000,
       });
@@ -737,7 +737,7 @@ const CameraPage = () => {
       userInfo.type !== "never"
     ) {
       Taro.showToast({
-        title: "此功能只对半年及以上会员开放,最大支持5M视频",
+        title: "此功能只对半年及以上会员开放,最大支持50M视频",
         icon: "none",
         duration: 5000,
       });
@@ -785,10 +785,10 @@ const CameraPage = () => {
           const path = data.tempFilePath;
           const bg = data.thumbTempFilePath;
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
-          if (fileSizeInMB > 5) {
+          if (fileSizeInMB > 50) {
             Taro.showModal({
               title: "提示",
-              content: "视频过大(大于5M)，请重新选择",
+              content: "视频过大(大于50M)，请重新选择",
               showCancel: false,
             });
             return;
@@ -1099,8 +1099,11 @@ const CameraPage = () => {
 
             {!allAuth && (
               <View className="auth-box">
+                <View style={{ marginBottom: "30px" }}>
+                  小程序支持用户自定义水印时间、地点、经纬度等信息。同时也支持给视频添加水印。
+                </View>
                 <View>
-                  需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行，请在底部授权弹窗选择同意或者点击右上角-设置授权后刷新即可
+                  需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行。{" "}
                 </View>
                 <Button
                   className="share-btn"
@@ -1424,15 +1427,24 @@ const CameraPage = () => {
               </View>
             </View>
 
-            <View className="tools-bar-inner" style={{ marginLeft: "-60px" }}>
+            <View
+              className="tools-bar-inner"
+              style={{
+                position: "absolute",
+                left: "48%",
+                transform: "translateX(-50%)",
+                width: "auto !important",
+                padding: 0,
+              }}
+            >
               <View>
                 <Image
                   src={Arrow}
                   className="leftArrow"
-                  style={{ width: "50px", height: "50px" }}
+                  style={{ width: "25px", height: "25px" }}
                 ></Image>
               </View>
-              <View style={{ fontSize: "13px" }}>
+              <View style={{ fontSize: "12px", marginLeft: "5px" }}>
                 <View>微信闪退？</View>
                 <View>保存失败？</View>
                 <View>保存数据？</View>
@@ -1457,6 +1469,41 @@ const CameraPage = () => {
                   }}
                 ></Image>
               )} */}
+            </View>
+            <View className="tools-bar-inner">
+              <View
+                className={
+                  "kefu vip xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Image
+                  src={VideoImg}
+                  className="xiangceIcon"
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: "/pages/video/index",
+                    });
+                  }}
+                ></Image>
+                <Text>视频</Text>
+              </View>
+              {/* <View
+                className={
+                  "xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Image
+                  src={Setting}
+                  className="xiangceIcon"
+                  onClick={() => {
+                    setShowSetting(!showSetting);
+                    setShowSettingFloatLayout(!showSettingFloatLayout);
+                  }}
+                ></Image>
+                <Text>设置</Text>
+              </View> */}
             </View>
           </View>
           {/* <View className="media-type-box">
@@ -1591,9 +1638,8 @@ const CameraPage = () => {
             <AtModalContent>
               <View className="modal-list">
                 <View className="txt1">
-                  请您用手机的{" "}
-                  <Text style={{ fontStyle: "italic" }}>原相机</Text>{" "}
-                  拍摄一段视频后，然后再从相册选择即可。目前最大支持5M以内视频，请控制视频时长。
+                  请您用手机的 原相机
+                  拍摄一段视频后，然后再从相册选择即可。目前最大支持50M以内视频，请控制视频时长。
                 </View>
               </View>
             </AtModalContent>

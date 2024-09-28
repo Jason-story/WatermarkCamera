@@ -185,10 +185,10 @@ const UserInfo = ({ userInfo, price }) => {
             <Text style={{ fontWeight: "bold" }}>会员权益</Text>
           </View>
           <View>• 无限使用次数</View>
-          <View>• 解锁会员专属水印</View>
+          <View>• 解锁视频水印功能(需半年及以上会员)</View>
           <View>• 高清水印图片</View>
           <View>• 去掉除封面广告之外的一切广告</View>
-          <View>• 客服支持</View>
+          <View>• 添加微信，随时提供客服支持</View>
         </View>
       ) : (
         "暂无"
