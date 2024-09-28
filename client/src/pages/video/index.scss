@@ -1,0 +1,89 @@
+.qr-code-page {
+  padding: 20px;
+  .user-details {
+    width: 100%;
+    font-size: 28px;
+    view {
+      margin-top: 10px;
+      margin-top: 16px;
+    }
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 0;
+      border-bottom: 1px solid #ddd;
+
+      .label {
+        font-size: 32px;
+        color: #333;
+      }
+
+      .value {
+        font-size: 32px;
+        color: #333;
+      }
+    }
+
+    .user-item:last-child {
+    }
+  }
+  .title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .qr-code-container {
+    display: flex;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+
+  .qr-code-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 50%;
+    margin-bottom: 20px;
+
+    .qr-code-name {
+      font-size: 30px;
+      margin-right: 10px;
+    }
+
+    .qr-code-image {
+      margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+
+    .save-button {
+      font-size: 26px;
+    }
+  }
+
+  .instruction {
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+  }
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 两列布局 */
+  gap: 20px; /* 列间和行间距都是20px */
+  padding: 40px 0; /* 给整个grid添加内边距 */
+}
+
+.video-item {
+  width: 100%;
+}
+
+.video-player {
+  width: 100%;
+  height: auto;
+  max-height: 50vh; /* 限制最大高度，避免在某些情况下视频过大 */
+}

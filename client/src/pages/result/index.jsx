@@ -1,4 +1,3 @@
-// src/pages/merge/index.jsx
 import React, { useEffect, useCallback, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
@@ -50,6 +49,7 @@ const MergeCanvas = () => {
   // 图片水印 or 视频水印
   const isVideo = app.$app.globalData.config.isVideo;
   const videoPath = app.$app.globalData.config.videoPath;
+  const [videoModal, setVideoModal] = useState(false);
 
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
@@ -60,7 +60,7 @@ const MergeCanvas = () => {
   const [loading, setLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("图片检测中. . .");
   const texts = isVideo
-    ? ["视频检测中. . .", "视频生成中. . .", "视频下载中. . ."]
+    ? ["视频上传中. . .", "视频上传中. . .", "视频上传中. . ."]
     : ["图片检测中. . .", "图片生成中. . .", "图片下载中. . ."];
   const [index, setIndex] = useState(0);
 
@@ -126,18 +126,20 @@ const MergeCanvas = () => {
       // 视频合成
       if (isVideo) {
         const start = +new Date();
+        console.log("userInfo: ", userInfo);
         const ytg = await new Taro.cloud.Cloud({
           resourceAppid: "wx785efc584be4265b",
           resourceEnv: "prod-9g5wnloybe56625b",
         });
         await ytg.init();
         // 视频合成
-        await ytg.callContainer({
+        ytg.callContainer({
           config: {
             env: "prod-9g5wnloybe56625b",
           },
           path: "/process",
           header: {
+            // "X-WX-SERVICE": "merge-video",
             "X-WX-SERVICE": "express-loc1",
             "content-type": "application/json",
           },
@@ -146,47 +148,18 @@ const MergeCanvas = () => {
             image_file_id: secondImageFileID,
             video_file_id: firstImageFileID,
             logo_file_id: logoImageFileId ? logoImageFileId : null,
-            type: "副",
-            // screenWidth,
-            // logoConfig: config.logoConfig,
-            // scale,
-            // userInfo,
+            openid: userInfo.openid,
           },
-          timeout: 60000,
           success: (res) => {
-            const end = +new Date();
-            console.log(11111222, end - start);
-            if (res.data && res.data.file_id) {
-              // 处理成功
-              cloud.downloadFile({
-                fileID: res.data.file_id,
-                success: (res) => {
-                  // res.tempFilePath 是临时文件路径
-                  Taro.saveVideoToPhotosAlbum({
-                    filePath: res.tempFilePath,
-                    success: () => {
-                      Taro.showToast({
-                        title: "已保存到相册",
-                        icon: "success",
-                        duration: 2000,
-                      });
-                      setLoading(false);
-                    },
-                  });
-                },
-                fail: (err) => {
-                  setLoading(false);
-                  console.error("下载失败:", err);
-                },
-              });
+            setLoading(false);
+            if (res.data && res.data.taskId) {
+              setVideoModal(true);
             } else {
               throw new Error("处理错误");
             }
           },
           fail: (error) => {
-            console.log("error: ", error);
             const end = +new Date();
-            console.log(222333, end - start);
             setLoading(false);
             Taro.showToast({
               title: "处理超时，请减小视频大小后重试",
@@ -197,7 +170,7 @@ const MergeCanvas = () => {
         });
       } else {
         // 图片合成
-        res = await cloud.callFunction({
+        res = await Taro.cloud.callFunction({
           name: "mergeImage",
           data: {
             firstImageFileID,
@@ -220,6 +193,12 @@ const MergeCanvas = () => {
         }
       }
     } catch (error) {
+      setLoading(false);
+      Taro.showToast({
+        title: "处理失败，请重试",
+        icon: "error",
+        duration: 3000,
+      });
       console.error("合并图片失败:", error);
       throw error;
     }
@@ -540,7 +519,6 @@ const MergeCanvas = () => {
         },
         fail: (error) => {
           setLoading(false);
-
           console.log("保存失败", error);
           Taro.showToast({
             title: "保存失败",
@@ -576,7 +554,6 @@ const MergeCanvas = () => {
     save();
   };
   const chongxinpaishe = useCallback(() => {
-    console.log("Button clicked");
     Taro.navigateBack({
       delta: 1,
     });
@@ -776,6 +753,35 @@ const MergeCanvas = () => {
               <Text>查看会员权益</Text>
             </Button>
           </AtModalAction>
+        </AtModal>
+        <AtModal isOpened={videoModal} closeOnClickOverlay={true}>
+          <AtModalHeader>
+            <Text>提示</Text>
+            <View
+              onClick={() => {
+                setVideoModal(false);
+              }}
+              style={{
+                position: "absolute",
+                right: "15px",
+                top: "10px",
+                width: "20px",
+                height: "20px",
+              }}
+            >
+              <Image
+                style={{ width: "100%", height: "100%" }}
+                src={Close}
+              ></Image>
+            </View>
+          </AtModalHeader>
+          <AtModalContent>
+            <View className="modal-list">
+              <View className="txt1">
+                视频生成中，请您2~3分钟后到 首页 - 视频 页面中查看下载。
+              </View>
+            </View>
+          </AtModalContent>
         </AtModal>
       </View>
     </View>

@@ -44,7 +44,7 @@ const QRCodePage = () => {
               showMenuByLongpress={true}
               style={{
                 width: "calc(45vw)",
-                height: "calc(60vw)",
+                height: "calc(45vw * 2.17)",
                 margin: "10px 0",
               }}
             />
