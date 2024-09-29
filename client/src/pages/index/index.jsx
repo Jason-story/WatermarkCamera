@@ -808,6 +808,7 @@ const CameraPage = () => {
       });
     } else {
       // 视频水印
+      console.log('222222222222223333333 ');
       Taro.chooseMedia({
         count: 1,
         mediaType: ["video"],
@@ -842,6 +843,9 @@ const CameraPage = () => {
           });
 
           // takePhoto(false, filePath, true);
+        },
+        fail: (err) => {
+          console.log("33333333: ", err);
         },
       });
     }

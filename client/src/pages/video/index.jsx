@@ -11,6 +11,7 @@ import {
 } from "@tarojs/components";
 import "./index.scss";
 const app = getApp();
+import { appConfigs } from "../../appConfig.js";
 
 let cloud = "";
 const appid = Taro.getAccountInfoSync().miniProgram.appId;

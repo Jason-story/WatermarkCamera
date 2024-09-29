@@ -3,6 +3,8 @@ import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useDidShow } from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
+import Close from "../../images/close.png";
+
 import {
   AtButton,
   AtModal,
