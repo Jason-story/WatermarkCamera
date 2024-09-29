@@ -42,11 +42,14 @@ const QRCodePage = () => {
       await getCloud();
       cloud.callFunction({
         name: "getMyVideos",
-        success: function (res) {
+        success: async function (res) {
           Taro.hideLoading();
-          console.log("res.result.data: ", res.result);
           if (res.result?.data?.length > 0) {
             setFiles(res.result.data);
+            console.log("res.resuassdfsdlt.data : ", res.result);
+            const temp = await cloud.getTempFileURL({fileList:res.result.data})
+            console.log('temp: ', temp);
+            setTempUrl(temp.fileList)
           }
         },
       });
@@ -56,6 +59,7 @@ const QRCodePage = () => {
   }, []);
 
   const [videoAspectRatio, setVideoAspectRatio] = useState({});
+  const [tempUrl, setTempUrl] = useState([]);
 
   useEffect(() => {
     files.forEach((item, index) => {
@@ -123,7 +127,7 @@ const QRCodePage = () => {
             return (
               <View key={index} className="video-item">
                 <Video
-                  src={item}
+                  src={tempUrl[index]?.tempFileURL}
                   className="video-player"
                   style={{
                     borderRadius: "10px",

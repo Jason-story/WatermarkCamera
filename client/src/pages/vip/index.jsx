@@ -69,12 +69,12 @@ const UserInfo = ({ userInfo, price }) => {
   useEffect(() => {
     price && setSelected(price.current);
   }, [price]);
-  const vipConfig = price?.jiage?.map((item) => {
+  const vipConfig = price?.jiage2?.map((item) => {
     const [key, title, amount, text = ""] = item.split("|");
     return {
       key,
-      title: `${title}会员${amount - 0.01}元，`,
-      price: amount-0.01,
+      title: `${title}会员${amount}元，`,
+      price: amount,
       text,
     };
   });
