@@ -1,4 +1,5 @@
 import Taro from "@tarojs/taro";
+import Gaoding from "../../images/gaoding.png";
 
 const generateCanvasConfig = ({
   hours,
@@ -616,6 +617,271 @@ const generateCanvasConfig = ({
         height: (locationName) => {
           const baseHeight = 110; // 110 + 5
           const lineHeight = 20;
+          const maxLines = 3;
+          const charsPerLine = 9;
+
+          const getLocationLines = (text) => {
+            const words = text.split("");
+            let lines = 1;
+            let currentLineLength = 0;
+            for (const word of words) {
+              if (currentLineLength + 1 > charsPerLine) {
+                lines++;
+                currentLineLength = 1;
+              } else {
+                currentLineLength++;
+              }
+              if (lines === maxLines) break;
+            }
+            return lines;
+          };
+
+          const lines = getLocationLines(locationName);
+          let height = baseHeight + (lines - 1) * lineHeight;
+          return height;
+        },
+      },
+    ],
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    // 44444444444
+    [
+      {
+        path: [
+          // 红色背景矩形
+          {
+            draw: (ctx) => {
+              Taro.getImageInfo({
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-29/12521727621041352_gaoding.png?sign=e0004097836f34ddd53dda4a9a8ee10d&t=1727621042",
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = imgInfo.path;
+                  img.onload = () => {
+                    console.log("imgInfo: ", imgInfo);
+                    const imgWidth = imgInfo.width / 3 + 5;
+                    const imgHeight = imgInfo.height / 3 + 5;
+                    // 获取画布的宽高
+                    ctx.drawImage(img, 10, 40, imgWidth * 0.7, imgHeight * 0.7);
+                  };
+                  img.onerror = (err) => {
+                    console.error("Background image loading failed", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("Failed to get background image info", err);
+                },
+              });
+            },
+            args: [],
+          },
+          // 背景
+          {
+            draw: (ctx, rectConfig) => {
+              const { width, color, text } = rectConfig;
+              const height = rectConfig.height();
+              const radius = 6; // 圆角半径
+
+              // 设置矩形的颜色
+              ctx.fillStyle = color;
+
+              // 绘制一个带 6px 圆角的矩形
+              ctx.beginPath();
+              ctx.moveTo(10 + radius, 105); // 左上角圆角开始
+              ctx.lineTo(width + 10 - radius, 105); // 顶部直线
+              ctx.arcTo(width + 10, 105, width + 10, 105 + radius, radius); // 右上角圆角
+              ctx.lineTo(width + 10, height - radius); // 右侧直线
+              ctx.arcTo(width + 10, height, width + 10 - radius, height, radius); // 右下角圆角
+              ctx.lineTo(10 + radius, height); // 底部直线
+              ctx.arcTo(10, height, 10, height - radius, radius); // 左下角圆角
+              ctx.lineTo(10, 105 + radius); // 左侧直线
+              ctx.arcTo(10, 105, 10 + radius, 105, radius); // 左上角圆角
+              ctx.closePath();
+              ctx.fill();
+
+
+              // 绘制顶部带圆角的红色背景
+              ctx.fillStyle = "#b92629";
+              ctx.beginPath();
+              ctx.moveTo(10 + radius, 105); // 左上角圆角开始
+              ctx.lineTo(width + 10 - radius, 105); // 顶部直线
+              ctx.arcTo(width + 10, 105, width + 10, 105 + radius, radius); // 右上角圆角
+              ctx.lineTo(width + 10, 129); // 右侧直线
+              ctx.lineTo(10, 129); // 底部直线（无圆角）
+              ctx.lineTo(10, 105 + radius); // 左侧直线
+              ctx.arcTo(10, 105, 10 + radius, 105, radius); // 左上角圆角
+              ctx.closePath();
+              ctx.fill();
+
+              // 在红色背景中居中显示文字
+              ctx.fillStyle = "white";
+              ctx.font = "bold 12px fzlt";
+              const textWidth = ctx.measureText(text).width;
+              const textX = (width - textWidth) / 2 + 10;
+              const textY = 121;
+              ctx.fillText(text, textX, textY);
+            },
+            args: [
+              {
+                width: 152,
+                height: () => {
+                  const baseHeight = 190; // 80 + 150
+                  const lineHeight = 16;
+                  const maxLines = 3;
+                  const charsPerLine = 9;
+
+                  const getLocationLines = (text) => {
+                    const words = text.split("");
+                    let lines = 1;
+                    let currentLineLength = 0;
+                    for (const word of words) {
+                      if (currentLineLength + 1 > charsPerLine) {
+                        lines++;
+                        currentLineLength = 1;
+                      } else {
+                        currentLineLength++;
+                      }
+                      if (lines === maxLines) break;
+                    }
+                    return lines;
+                  };
+
+                  const lines = getLocationLines(locationName);
+                  let height = baseHeight + (lines - 1) * lineHeight;
+                  return height;
+                },
+                color: "rgba(0, 0, 0, .2)",
+                text: "欢度国庆",
+              },
+            ],
+          },
+
+          // 时间
+          {
+            draw: (ctx, config) => {
+              let { fontSize, color, text, position } = config;
+              ctx.font = `${fontSize}px fzlt`;
+              ctx.fillStyle = color;
+              ctx.fillText(text, ...position);
+            },
+            args: [
+              {
+                fontSize: 11,
+                color: "#fff",
+                text: `时   间: ${year}.${month}.${day}  ${hours}:${minutes}`,
+                position: [17, 148],
+              },
+            ],
+          },
+          // 天气
+          {
+            draw: (ctx, weatherConfig) => {
+              const { fontSize, color, text, position } = weatherConfig;
+              ctx.font = `${fontSize}px fzlt`;
+              ctx.fillStyle = color;
+              ctx.fillText(text, ...position);
+
+              if (disableTrueCode && showTrueCode) {
+                // 防伪图标
+                Taro.getImageInfo({
+                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                  success: (imgInfo) => {
+                    const img = canvas.createImage();
+                    img.src = imgInfo.path;
+                    img.onload = () => {
+                      const imgWidth = imgInfo.width / 3 + 4;
+                      const imgHeight = imgInfo.height / 3 + 4;
+
+                      // 获取画布的宽高
+                      const canvasWidth = canvas.width / dpr;
+                      const canvasHeight = canvas.height / dpr;
+
+                      // 计算图片绘制的坐标，使其位于右下角
+                      const x = canvasWidth - imgWidth - 16;
+                      const y = canvasHeight - imgHeight - 4;
+                      ctx.clearRect(x + 32, y + 13, imgWidth, imgHeight);
+
+                      ctx.drawImage(
+                        img,
+                        x + 42,
+                        y + 23,
+                        imgWidth * 0.56,
+                        imgHeight * 0.56
+                      );
+                      //  绘制时间
+                      ctx.font = "bold 5px NotoSansMono"; // 加粗并放大时间文字
+                      ctx.fillStyle = "#fff";
+                      ctx.fillText(generateRandomString(), x + 52, y + 48);
+                    };
+
+                    img.onerror = (err) => {
+                      console.error("Background image loading failed", err);
+                    };
+                  },
+                  fail: (err) => {
+                    console.error("Failed to get background image info", err);
+                  },
+                });
+              }
+            },
+            args: [
+              {
+                fontSize: 11,
+                color: "#fff",
+                text: "天   气: " + (weather ? weather + "℃" : "刷新重试"),
+                position: [17, 163],
+              },
+            ],
+          },
+
+          // 地址
+          {
+            draw: (ctx, locationConfig) => {
+              const { fontSize, color, text, position } = locationConfig;
+              ctx.font = `${fontSize}px fzlt`;
+              ctx.fillStyle = color;
+
+              const maxCharsPerLine = 9;
+              const lines = [];
+              for (let i = 0; i < text.length; i += maxCharsPerLine) {
+                lines.push(text.slice(i, i + maxCharsPerLine));
+              }
+
+              const maxLines = 4;
+              lines.slice(0, maxLines).forEach((line, index) => {
+                ctx.fillText(
+                  index === 0 ? "地   点: " + line : line,
+                  position[0] + (index === 0 ? 0 : 38),
+                  position[1] + index * (fontSize * 1.2)
+                );
+              });
+            },
+            args: [
+              {
+                fontSize: 11,
+                color: "#fff",
+                text: locationName,
+                position: [17, 178],
+              },
+            ],
+          },
+        ],
+        img: Gaoding,
+        logoY: 0.55,
+        right: true,
+        name: "免费-工程记录-3",
+        width: 180,
+        height: (locationName) => {
+          const baseHeight = 190; // 88 + 150
+          const lineHeight = 16;
           const maxLines = 3;
           const charsPerLine = 9;
 
