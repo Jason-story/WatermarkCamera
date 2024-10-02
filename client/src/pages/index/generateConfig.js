@@ -19,6 +19,7 @@ const generateCanvasConfig = ({
   Shuiyin1,
   Shuiyin2,
   Shuiyin3,
+  showHasCheck,
   showTrueCode,
   disableTrueCode,
 }) => {
@@ -95,6 +96,43 @@ const generateCanvasConfig = ({
                       ctx.font = "bold 6px NotoSansMono";
                       ctx.fillStyle = "#fff";
                       ctx.fillText(generateRandomString(), x + 52, y + 47);
+                    };
+                    img.onerror = (err) => {
+                      console.error("Background image loading failed", err);
+                    };
+                  },
+                  fail: (err) => {
+                    console.error("Failed to get background image info", err);
+                  },
+                });
+              }
+              if (disableTrueCode && showHasCheck) {
+                // 绘制下标 (保持不变)
+                ctx.font = "bold 10px sans-serif";
+                ctx.fillStyle = "#c9cbcd";
+                ctx.fillText(
+                  `今日水印相机已验证 | 时间地点真实`,
+                  26,
+                  91
+                );
+              }
+              if (disableTrueCode && showHasCheck) {
+                Taro.getImageInfo({
+                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-12/13441726111234517_dunpai.png?sign=514ded73808869d7fabfb57718e5a742&t=1726111236",
+                  success: (imgInfo) => {
+                    const img = canvas.createImage();
+                    img.src = imgInfo.path;
+                    img.onload = () => {
+                      const imgWidth = imgInfo.width / 3 + 5;
+                      const imgHeight = imgInfo.height / 3 + 5;
+
+                      ctx.drawImage(
+                        img,
+                        9,
+                        80,
+                        imgWidth * 0.65,
+                        imgHeight * 0.65
+                      );
                     };
                     img.onerror = (err) => {
                       console.error("Background image loading failed", err);
@@ -234,7 +272,7 @@ const generateCanvasConfig = ({
         right: true,
         logoY: 0.55,
         name: "免费-时间天气-1",
-        height: locationName.length > 16 ? 96 : 88, // Adjusted from 120 and 110
+        height: locationName.length > 16 ? 105 : 95, // Adjusted from 120 and 110
       }
     ],
 
@@ -424,7 +462,7 @@ const generateCanvasConfig = ({
               ctx.closePath();
               ctx.fill();
               // 绘制顶部带圆角的蓝色背景
-              ctx.fillStyle = "rgba(28, 157, 248,.4)";
+              ctx.fillStyle = "rgba(28, 125, 230,.75)";
               ctx.beginPath();
               ctx.moveTo(radius + 7.5, 3.75);
               ctx.lineTo(width - radius + 7.5, 3.75);

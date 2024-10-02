@@ -574,7 +574,16 @@ const CameraPage = () => {
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
     console.log("canvasImg: ", canvasImg);
-
+    // Taro.saveImageToPhotosAlbum({
+    //   filePath: canvasImg,
+    //   success: async () => {
+    //     Taro.showToast({
+    //       title: "已保存到相册",
+    //       icon: "success",
+    //       duration: 2000,
+    //     });
+    //   },
+    // });
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -808,7 +817,7 @@ const CameraPage = () => {
       });
     } else {
       // 视频水印
-      console.log('222222222222223333333 ');
+      console.log("222222222222223333333 ");
       Taro.chooseMedia({
         count: 1,
         mediaType: ["video"],
