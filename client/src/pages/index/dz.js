@@ -335,18 +335,6 @@ const generateCanvasConfig = ({
                       14.96,
                       dateY
                     );
-
-                    if (disableTrueCode && showHasCheck) {
-                      // 绘制下标 (保持不变)
-                      ctx.font = "bold 11px sans-serif";
-                      ctx.fillStyle = "#c9cbcd";
-                      ctx.fillText(
-                        `今日水印相机已验证 | 时间地点真实`,
-                        28,
-                        126
-                      );
-                    }
-
                     // 绘制黄线（不包含经纬度部分）
                     ctx.lineWidth = 2.04; // 2.55 * 0.8
                     ctx.strokeStyle = "#fdc144";
@@ -363,6 +351,16 @@ const generateCanvasConfig = ({
                   console.error("Failed to get background image info", err);
                 },
               });
+              if (disableTrueCode && showHasCheck) {
+                // 绘制下标 (保持不变)
+                ctx.font = "bold 10px sans-serif";
+                ctx.fillStyle = "#c9cbcd";
+                ctx.fillText(
+                  `今日水印相机已验证 | 时间地点真实`,
+                  28,
+                  86
+                );
+              }
               // 小盾牌图片 (保持不变)
               if (disableTrueCode && showHasCheck) {
                 Taro.getImageInfo({
@@ -377,9 +375,9 @@ const generateCanvasConfig = ({
                       ctx.drawImage(
                         img,
                         9,
-                        114,
-                        imgWidth * 0.8,
-                        imgHeight * 0.8
+                        75,
+                        imgWidth * 0.65,
+                        imgHeight * 0.65
                       );
                     };
                     img.onerror = (err) => {
