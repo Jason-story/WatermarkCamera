@@ -542,7 +542,16 @@ const CameraPage = () => {
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
     console.log("canvasImg: ", canvasImg);
-
+    // Taro.saveImageToPhotosAlbum({
+    //   filePath: canvasImg,
+    //   success: async () => {
+    //     Taro.showToast({
+    //       title: "已保存到相册",
+    //       icon: "success",
+    //       duration: 2000,
+    //     });
+    //   },
+    // });
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",

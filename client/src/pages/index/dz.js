@@ -79,7 +79,7 @@ const generateCanvasConfig = ({
     [
       {
         path: [
-          // 时间
+          // Time
           {
             draw: (ctx, textConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -87,7 +87,6 @@ const generateCanvasConfig = ({
               const { fontSize, color, text, position } = textConfig;
               ctx.font = `${fontSize}px fzlt`;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              // 添加阴影效果
               ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
               ctx.shadowOffsetX = 1;
               ctx.shadowOffsetY = 8;
@@ -95,52 +94,44 @@ const generateCanvasConfig = ({
 
               ctx.fillStyle = color;
 
-              // 获取文本宽度
               const textWidth = ctx.measureText(text).width;
-
-              // 计算居中位置
-              const canvasWidth = width - 20; // 假设你知道 canvas 的宽度
+              const canvasWidth = canvas.width / dpr;
               const xPosition = (canvasWidth - textWidth) / 2;
-              const yPosition = position[1]; // 保持 y 位置不变
+              const yPosition = position[1];
 
-              // 绘制文本
               ctx.fillText(text, xPosition, yPosition);
             },
             args: [
               {
-                fontSize: 52,
+                fontSize: 41.6,
                 color: "white",
                 text: `${hours}:${minutes}`,
-                position: [0, 58], // position 数组的 x 值在计算居中时被忽略
+                position: [0, 46.4],
               },
             ],
           },
 
-          // 日期
+          // Date and Location
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
               const maxLocationLength = 14;
-              const canvasWidth = width - 20; // Assuming you know the canvas width
+              const canvasWidth = canvas.width / dpr;
 
-              // Split text
               const parts = text.split("@");
               const beforeMarker = parts[0].split(weekly);
               const datePart = beforeMarker[0].trim() + "  ";
               const weeklyPart = weekly + " ";
               const locationName = parts[1].trim();
 
-              // Set font and style
               ctx.font = `${fontSize}px 黑体`;
               ctx.fillStyle = color;
 
-              // Calculate widths
               const dateWidth = ctx.measureText(datePart).width;
               const weeklyWidth = ctx.measureText(weeklyPart).width;
-              const markerWidth = 18; // Assuming the icon width is 18px
+              const markerWidth = 14.4;
               const firstPartWidth = dateWidth + weeklyWidth + markerWidth;
 
-              // Handle long location names
               let firstLine, secondLine;
               if (locationName.length > maxLocationLength) {
                 firstLine = locationName.slice(0, maxLocationLength);
@@ -153,7 +144,6 @@ const generateCanvasConfig = ({
               const firstLineWidth = ctx.measureText(firstLine).width;
               const secondLineWidth = ctx.measureText(secondLine).width;
 
-              // Calculate total width and center position
               const totalWidth = Math.max(
                 firstPartWidth + firstLineWidth,
                 firstPartWidth + secondLineWidth
@@ -161,49 +151,41 @@ const generateCanvasConfig = ({
               const xPosition = (canvasWidth - totalWidth) / 2;
               let yPosition = position[1];
 
-              // Draw date part
               ctx.font = `${fontSize}px 黑体`;
               ctx.fillText(datePart, xPosition, yPosition);
 
-              // Draw weekly part
               ctx.font = `bold ${fontSize}px 黑体`;
               ctx.fillText(weeklyPart, xPosition + dateWidth, yPosition);
 
-              // Draw custom icon
               Taro.getImageInfo({
                 src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/11081726462338263_icon2.png?sign=4578fa27e2486fd9f014a43390cab42a&t=1726462338",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
                   img.onload = () => {
-                    const iconSize = 28; // Adjust this value as needed
-                    // 添加阴影效果
-
+                    const iconSize = 22.4;
                     ctx.shadowColor = "none";
                     ctx.shadowOffsetX = 0;
                     ctx.shadowOffsetY = 0;
                     ctx.shadowBlur = 0;
                     ctx.drawImage(
                       img,
-                      xPosition + dateWidth + weeklyWidth - 5,
-                      yPosition - iconSize + 5,
+                      xPosition + dateWidth + weeklyWidth - 4,
+                      yPosition - iconSize + 4,
                       iconSize,
                       iconSize * 1.12
                     );
 
-                    // Draw location name
                     ctx.font = `bold ${fontSize}px 黑体`;
-                    const locationX = xPosition + firstPartWidth + 4;
-                    // 添加阴影效果
+                    const locationX = xPosition + firstPartWidth + 3.2;
                     ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
                     ctx.shadowOffsetX = 2;
                     ctx.shadowOffsetY = 4;
                     ctx.shadowBlur = 4;
                     ctx.fillText(firstLine, locationX, yPosition);
 
-                    // Draw second line if needed
                     if (secondLine) {
-                      yPosition += fontSize + 4; // Add some spacing between lines
+                      yPosition += fontSize + 3.2;
                       ctx.fillText(secondLine, locationX, yPosition);
                     }
                   };
@@ -212,22 +194,21 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 14,
+                fontSize: 11.2,
                 color: "white",
                 text: `${year}.${month}.${day}  ${weekly} @ ${
                   locationName || "加载中..."
                 }`,
-                position: [0, 99],
+                position: [0, 79.2],
               },
             ],
           },
-          // 水印相机
+          // Watermark camera (unchanged)
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              // 绘制图片
               Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345", // 替换为你的图片路径
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
@@ -235,11 +216,9 @@ const generateCanvasConfig = ({
                     const imgWidth = imgInfo.width / 3 + 5;
                     const imgHeight = imgInfo.height / 3 + 5;
 
-                    // 获取画布的宽高
                     const canvasWidth = canvas.width / dpr;
                     const canvasHeight = canvas.height / dpr;
 
-                    // 计算图片绘制的坐标，使其位于右下角
                     const x = canvasWidth - imgWidth;
                     const y = canvasHeight - imgHeight + 16;
                     ctx.shadowColor = "none";
@@ -249,32 +228,32 @@ const generateCanvasConfig = ({
                     ctx.drawImage(img, x, y, imgWidth, imgHeight);
                   };
                   img.onerror = (err) => {
-                    console.error("图片加载失败", err);
+                    console.error("Image loading failed", err);
                   };
                 },
                 fail: (err) => {
-                  console.error("获取图片信息失败", err);
+                  console.error("Failed to get image information", err);
                 },
               });
             },
             args: [
               {
-                fontSize: 15.3,
-                color: "rgba(255, 255, 255, 0.8)", // 使用带透明度的白色作为文字颜色
+                fontSize: 12.24,
+                color: "rgba(255, 255, 255, 0.8)",
                 text: `水印相机`,
-                position: [0, 103],
+                position: [0, 82.4],
               },
             ],
           },
         ],
         img: Shuiyin4,
         width: width - 20,
-        height: 140,
+        height: 112,
         logoY: 0.55,
         name: "定制-水印相机",
         position: "center",
         // vip: true,
-      },
+      }
     ],
     // 1111111111111 end
     // 1111111111111 end
@@ -299,8 +278,8 @@ const generateCanvasConfig = ({
               ctx.clearRect(0, 0, canvas.width, canvas.height);
 
               const { width } = rectConfig;
-              const imgHeight = 34;
-              const lineHeight = 21.25;
+              const imgHeight = 34 * 0.8;
+              const lineHeight = 21.25 * 0.8;
               const maxLines = 2;
               const charsPerLine = 20;
 
@@ -327,24 +306,24 @@ const generateCanvasConfig = ({
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
                   img.onload = () => {
-                    ctx.drawImage(img, 8.5, 0, width, imgHeight);
+                    ctx.drawImage(img, 8.5 * 0.8, 0, width * 0.8, imgHeight);
 
-                    // 绘制时间
-                    ctx.font = "bold 24px sans-serif"; // 加粗并放大时间文字
-                    const gradient = ctx.createLinearGradient(65, 3.6, 65, 25);
+                    // 绘制时间（调整大小为原来的0.7倍）
+                    ctx.font = "bold 16px sans-serif"; // 24 * 0.7
+                    const gradient = ctx.createLinearGradient(65 * 0.7, 3.6 * 0.7, 65 * 0.7, 25 * 0.7);
                     gradient.addColorStop(0, "#497cbd");
                     gradient.addColorStop(1, "#000");
                     ctx.fillStyle = gradient;
-                    ctx.fillText(`${hours}:${minutes}`, 65, 25);
+                    ctx.fillText(`${hours}:${minutes}`, 62 * 0.7, 28 * 0.7);
 
                     // 绘制位置名称
-                    ctx.font = "bold 13.6px sans-serif"; // 加粗位置名称文字
+                    ctx.font = "bold 10.88px sans-serif"; // 13.6 * 0.8
                     ctx.fillStyle = "white";
-                    let y = 65.25; // 增加距离线边的距离10px
+                    let y = 52.2; // (65.25 * 0.8)
                     let remainingText = locationName;
                     for (let i = 0; i < locationLines; i++) {
                       const line = remainingText.substring(0, charsPerLine);
-                      ctx.fillText(line, 18.7, y);
+                      ctx.fillText(line, 14.96, y); // 18.7 * 0.8
                       remainingText = remainingText.substring(charsPerLine);
                       y += lineHeight;
                     }
@@ -353,13 +332,13 @@ const generateCanvasConfig = ({
                     const dateY = y;
                     ctx.fillText(
                       `${year}年${month}月${day}日 ${weekly}`,
-                      18.7,
+                      14.96,
                       dateY
                     );
 
                     if (disableTrueCode && showHasCheck) {
-                      // 绘制下标
-                      ctx.font = "bold 11px sans-serif"; // 加粗位置名称文字
+                      // 绘制下标 (保持不变)
+                      ctx.font = "bold 11px sans-serif";
                       ctx.fillStyle = "#c9cbcd";
                       ctx.fillText(
                         `今日水印相机已验证 | 时间地点真实`,
@@ -369,11 +348,11 @@ const generateCanvasConfig = ({
                     }
 
                     // 绘制黄线（不包含经纬度部分）
-                    ctx.lineWidth = 2.55;
+                    ctx.lineWidth = 2.04; // 2.55 * 0.8
                     ctx.strokeStyle = "#fdc144";
                     ctx.beginPath();
-                    ctx.moveTo(11.9, 52.5);
-                    ctx.lineTo(11.9, dateY);
+                    ctx.moveTo(9.52, 42); // 11.9 * 0.8, 52.5 * 0.8
+                    ctx.lineTo(9.52, dateY);
                     ctx.stroke();
                   };
                   img.onerror = (err) => {
@@ -384,7 +363,7 @@ const generateCanvasConfig = ({
                   console.error("Failed to get background image info", err);
                 },
               });
-              // 小盾牌图片
+              // 小盾牌图片 (保持不变)
               if (disableTrueCode && showHasCheck) {
                 Taro.getImageInfo({
                   src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-12/13441726111234517_dunpai.png?sign=514ded73808869d7fabfb57718e5a742&t=1726111236",
@@ -395,7 +374,6 @@ const generateCanvasConfig = ({
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
 
-                      // 获取画布的宽高
                       ctx.drawImage(
                         img,
                         9,
@@ -414,7 +392,7 @@ const generateCanvasConfig = ({
                 });
               }
               if (disableTrueCode && showTrueCode) {
-                // 防伪图标
+                // 防伪图标 (保持不变)
                 Taro.getImageInfo({
                   src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
                   success: (imgInfo) => {
@@ -424,11 +402,9 @@ const generateCanvasConfig = ({
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
 
-                      // 获取画布的宽高
                       const canvasWidth = canvas.width / dpr;
                       const canvasHeight = canvas.height / dpr;
 
-                      // 计算图片绘制的坐标，使其位于右下角
                       const x = canvasWidth - imgWidth - 20;
                       const y = canvasHeight - imgHeight - 5;
                       ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
@@ -441,7 +417,7 @@ const generateCanvasConfig = ({
                         imgHeight * 0.7
                       );
                       //  绘制时间
-                      ctx.font = "bold 6px NotoSansMono"; // 加粗并放大时间文字
+                      ctx.font = "bold 6px NotoSansMono";
                       ctx.fillStyle = "#fff";
                       ctx.fillText(generateRandomString(), x + 52, y + 47);
                     };
@@ -459,21 +435,20 @@ const generateCanvasConfig = ({
 
             args: [
               {
-                width: 127.5,
+                width: 102, // 127.5 * 0.8
               },
             ],
           },
         ],
         img: Shuiyin5,
-        width: 255,
+        width: 204, // 255 * 0.8
         name: "定制-今日水印相机-打卡",
-        // vip: true,
         left: true,
         right: true,
         logoY: 0.55,
         height: (locationName, hideJw) => {
-          const baseHeight = 110; // 减小20px
-          const lineHeight = 21.25;
+          const baseHeight = 88; // 110 * 0.8
+          const lineHeight = 17; // 21.25 * 0.8
           const maxLines = 2;
           const charsPerLine = 15;
           const getLocationLines = (text) => {
@@ -496,7 +471,7 @@ const generateCanvasConfig = ({
           let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },
-      },
+      }
     ],
     // 2222222222222 end
     // 2222222222222 end
@@ -526,12 +501,12 @@ const generateCanvasConfig = ({
               // 清除画布
               ctx.clearRect(0, 0, width, height);
               // 设置字体
-              ctx.font = "bold 80px fzlt";
+              ctx.font = "bold 56px fzlt"; // Reduced from 80px
 
               // 计算文本宽度和位置以居中
               const textWidth = ctx.measureText(text).width;
               const x = (width - textWidth) / 2;
-              const y = height / 2 + 10; // 稍微向下偏移以视觉居中
+              const y = height / 2 + 7; // Adjusted from 10
 
               // 设置文字颜色（浅黑色）
               ctx.fillStyle = "rgba(255, 255, 255, .2)";
@@ -561,10 +536,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 16,
+                fontSize: 11, // Reduced from 16
                 color: "white",
                 text: hideJw ? "经度: " + (latitude * 1)?.toFixed(5) : "",
-                position: [10, transformCoords(100)], // Adjusted position
+                position: [7, transformCoords(70)], // Adjusted from [10, transformCoords(100)]
               },
             ],
           },
@@ -582,10 +557,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 16,
+                fontSize: 11, // Reduced from 16
                 color: "white",
                 text: hideJw ? "纬度: " + (longitude * 1)?.toFixed(5) : "",
-                position: [10, transformCoords(75)], // Adjusted position
+                position: [7, transformCoords(52)], // Adjusted from [10, transformCoords(75)]
               },
             ],
           },
@@ -607,17 +582,17 @@ const generateCanvasConfig = ({
               lines.slice(0, maxLines).forEach((line, index) => {
                 ctx.fillText(
                   index === 0 ? "地址: " + line : line,
-                  position[0] + (index === 0 ? 0 : 42), // 65 * 0.75
+                  position[0] + (index === 0 ? 0 : 29), // Adjusted from 42
                   position[1] + index * (fontSize * 1.25)
                 );
               });
             },
             args: [
               {
-                fontSize: 16,
+                fontSize: 11, // Reduced from 16
                 color: "#fff",
                 text: locationName,
-                position: [10, transformCoords(25)], // Adjusted position
+                position: [7, transformCoords(17)], // Adjusted from [10, transformCoords(25)]
               },
             ],
           },
@@ -629,7 +604,7 @@ const generateCanvasConfig = ({
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
               if (disableTrueCode && showTrueCode) {
-                // 防伪图标
+                // 防伪图标 (unchanged)
                 Taro.getImageInfo({
                   src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
                   success: (imgInfo) => {
@@ -672,10 +647,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 16, // 18 * 0.75
+                fontSize: 11, // Reduced from 16
                 color: "#fff",
                 text: `时间: ${year}.${month}.${day}  ${hours}:${minutes}`,
-                position: [10, transformCoords(50)], // Adjusted position
+                position: [7, transformCoords(35)], // Adjusted from [10, transformCoords(50)]
               },
             ],
           },
@@ -688,7 +663,7 @@ const generateCanvasConfig = ({
         height: () => {
           return (width * 4) / 3;
         },
-      },
+      }
     ],
     // 33333333333333 end
     // 33333333333333 end
@@ -717,8 +692,8 @@ const generateCanvasConfig = ({
               // 添加阴影效果
               ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
               ctx.shadowOffsetX = 1;
-              ctx.shadowOffsetY = 8;
-              ctx.shadowBlur = 3;
+              ctx.shadowOffsetY = 6; // Adjusted from 8
+              ctx.shadowBlur = 2; // Adjusted from 3
 
               // 分割小时和分钟
               const [hours, minutes] = text.split(":");
@@ -726,23 +701,23 @@ const generateCanvasConfig = ({
               // 计算各部分的宽度
               const hoursWidth = ctx.measureText(hours).width;
               const minutesWidth = ctx.measureText(minutes).width;
-              const dotRadius = 4; // 缩小的圆点半径
-              const dotSpacing = 20; // 两个圆点的垂直间距
+              const dotRadius = 3; // Adjusted from 4
+              const dotSpacing = 16; // Adjusted from 20
               const totalWidth =
-                hoursWidth + minutesWidth + dotRadius * 2 + fontSize / 4; // 总宽度
+                hoursWidth + minutesWidth + dotRadius * 2 + fontSize / 4;
 
               // 计算居中位置
-              const canvasWidth = width - 20; // 假设你知道 canvas 的宽度
+              const canvasWidth = width - 20;
               const xPosition = (canvasWidth - totalWidth) / 2;
-              const yPosition = position[1]; // 保持 y 位置不变
+              const yPosition = position[1];
 
               // 绘制小时部分
               ctx.fillStyle = color;
               ctx.fillText(hours, xPosition, yPosition);
 
               // 计算圆点的中心位置
-              const dotXPosition = xPosition + hoursWidth + fontSize / 8; // 水平居中
-              const dotYCenter = yPosition - fontSize / 4; // 垂直居中
+              const dotXPosition = xPosition + hoursWidth + fontSize / 8;
+              const dotYCenter = yPosition - fontSize / 4;
 
               // 绘制两个垂直居中的圆点
               ctx.fillStyle = "#fac92e";
@@ -750,8 +725,8 @@ const generateCanvasConfig = ({
               // 上圆点
               ctx.beginPath();
               ctx.arc(
-                dotXPosition + 7,
-                dotYCenter - dotSpacing / 2 - 5,
+                dotXPosition + 6, // Adjusted from 7
+                dotYCenter - dotSpacing / 2 - 4, // Adjusted from 5
                 dotRadius,
                 0,
                 Math.PI * 2
@@ -761,8 +736,8 @@ const generateCanvasConfig = ({
               // 下圆点
               ctx.beginPath();
               ctx.arc(
-                dotXPosition + 7,
-                dotYCenter + dotSpacing / 2 - 5,
+                dotXPosition + 6, // Adjusted from 7
+                dotYCenter + dotSpacing / 2 - 4, // Adjusted from 5
                 dotRadius,
                 0,
                 Math.PI * 2
@@ -779,10 +754,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 52,
+                fontSize: 42, // Adjusted from 52
                 color: "white",
                 text: `${hours}:${minutes}`,
-                position: [0, 70], // position 数组的 x 值在计算居中时被忽略
+                position: [0, 56], // Adjusted from 70
               },
             ],
           },
@@ -790,7 +765,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              const canvasWidth = width - 20; // Assuming you know the canvas width
+              const canvasWidth = width - 20;
 
               // Split text
               const parts = text.split("@");
@@ -821,18 +796,18 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 15,
+                fontSize: 12, // Adjusted from 15
                 color: "white",
                 text: `${year}年${month}月${day}日  ${weekly}`,
-                position: [0, 100],
+                position: [0, 80], // Adjusted from 100
               },
             ],
           },
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              const maxCharsPerLine = 20; // 每行最多20个字符
-              const canvasWidth = width - 20; // 假设你已经知道canvas的宽度
+              const maxCharsPerLine = 20;
+              const canvasWidth = width - 20;
 
               // 提取locationName
               const parts = text.split("@");
@@ -866,27 +841,27 @@ const generateCanvasConfig = ({
 
               // 如果有第二行，绘制第二行，并且独立居中
               if (secondLine) {
-                yPosition += fontSize + 7; // 增加行间距
+                yPosition += fontSize + 6; // Adjusted from 7
                 ctx.fillText(secondLine, xPositionSecondLine, yPosition);
               }
             },
             args: [
               {
-                fontSize: 15,
+                fontSize: 12, // Adjusted from 15
                 color: "white",
                 text: `@ ${locationName}`,
-                position: [0, 126],
+                position: [0, 101], // Adjusted from 126
               },
             ],
           },
 
-          // 水印相机
+          // 水印相机 (unchanged)
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
               // 绘制图片
               Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345", // 替换为你的图片路径
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
@@ -919,7 +894,7 @@ const generateCanvasConfig = ({
             args: [
               {
                 fontSize: 15.3,
-                color: "rgba(255, 255, 255, 0.8)", // 使用带透明度的白色作为文字颜色
+                color: "rgba(255, 255, 255, 0.8)",
                 text: `水印相机`,
                 position: [0, 103],
               },
@@ -928,12 +903,11 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin6,
         width: width - 20,
-        height: 160,
-        // vip: true,
+        height: 128, // Adjusted from 160
         logoY: 0.55,
         name: "定制-水印相机",
         position: "center",
-      },
+      }
     ],
     // 4444444444444 end
     // 4444444444444 end
