@@ -50,7 +50,7 @@ exports.main = async (event) => {
         newCloudPath[0] = newFileName;
         newCloudPath = newCloudPath.reverse().join('/');
         const cloudNewImg = await cloud.uploadFile({
-            cloudPath: '/files/zphs/' + newCloudPath,
+            cloudPath: 'files/zphs/' + newCloudPath,
             fileContent: data //base64 to buffer
         });
         return { fileID: cloudNewImg.fileID, errCode: 0 };
