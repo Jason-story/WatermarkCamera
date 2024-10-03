@@ -253,7 +253,7 @@ const generateCanvasConfig = ({
         name: "定制-水印相机",
         position: "center",
         // vip: true,
-      }
+      },
     ],
     // 1111111111111 end
     // 1111111111111 end
@@ -276,6 +276,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, rectConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
+              console.log("canvas.height: ", canvas.height);
 
               const { width } = rectConfig;
               const imgHeight = 34 * 0.8;
@@ -310,7 +311,12 @@ const generateCanvasConfig = ({
 
                     // 绘制时间（调整大小为原来的0.7倍）
                     ctx.font = "bold 16px sans-serif"; // 24 * 0.7
-                    const gradient = ctx.createLinearGradient(65 * 0.7, 3.6 * 0.7, 65 * 0.7, 25 * 0.7);
+                    const gradient = ctx.createLinearGradient(
+                      65 * 0.7,
+                      3.6 * 0.7,
+                      65 * 0.7,
+                      25 * 0.7
+                    );
                     gradient.addColorStop(0, "#497cbd");
                     gradient.addColorStop(1, "#000");
                     ctx.fillStyle = gradient;
@@ -342,6 +348,100 @@ const generateCanvasConfig = ({
                     ctx.moveTo(9.52, 42); // 11.9 * 0.8, 52.5 * 0.8
                     ctx.lineTo(9.52, dateY);
                     ctx.stroke();
+
+                    if (disableTrueCode && showHasCheck) {
+                      // 绘制下标 (移动到左下角)
+                      ctx.font = "bold 10px sans-serif";
+                      ctx.fillStyle = "#c9cbcd";
+                      ctx.fillText(
+                        `今日水印相机已验证 | 时间地点真实`,
+                        28,
+                        canvas.height / dpr-2
+                      );
+
+                      // 小盾牌图片 (移动到左下角)
+                      Taro.getImageInfo({
+                        src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-12/13441726111234517_dunpai.png?sign=514ded73808869d7fabfb57718e5a742&t=1726111236",
+                        success: (imgInfo) => {
+                          const img = canvas.createImage();
+                          img.src = imgInfo.path;
+                          img.onload = () => {
+                            const imgWidth = imgInfo.width / 3 + 5;
+                            const imgHeight = imgInfo.height / 3 + 5;
+
+                            ctx.drawImage(
+                              img,
+                              9,
+                              canvas.height / dpr - imgHeight * 0.65 + 1,
+                              imgWidth * 0.65,
+                              imgHeight * 0.65
+                            );
+                          };
+                          img.onerror = (err) => {
+                            console.error(
+                              "Background image loading failed",
+                              err
+                            );
+                          };
+                        },
+                        fail: (err) => {
+                          console.error(
+                            "Failed to get background image info",
+                            err
+                          );
+                        },
+                      });
+                    }
+
+                    if (disableTrueCode && showTrueCode) {
+                      // 防伪图标 (保持不变)
+                      Taro.getImageInfo({
+                        src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                        success: (imgInfo) => {
+                          const img = canvas.createImage();
+                          img.src = imgInfo.path;
+                          img.onload = () => {
+                            const imgWidth = imgInfo.width / 3 + 5;
+                            const imgHeight = imgInfo.height / 3 + 5;
+
+                            const canvasWidth = canvas.width / dpr;
+                            const canvasHeight = canvas.height / dpr;
+
+                            const x = canvasWidth - imgWidth - 20;
+                            const y = canvasHeight - imgHeight - 5;
+                            ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+
+                            ctx.drawImage(
+                              img,
+                              x + 40,
+                              y + 16,
+                              imgWidth * 0.7,
+                              imgHeight * 0.7
+                            );
+                            //  绘制时间
+                            ctx.font = "bold 6px NotoSansMono";
+                            ctx.fillStyle = "#fff";
+                            ctx.fillText(
+                              generateRandomString(),
+                              x + 52,
+                              y + 47
+                            );
+                          };
+                          img.onerror = (err) => {
+                            console.error(
+                              "Background image loading failed",
+                              err
+                            );
+                          };
+                        },
+                        fail: (err) => {
+                          console.error(
+                            "Failed to get background image info",
+                            err
+                          );
+                        },
+                      });
+                    }
                   };
                   img.onerror = (err) => {
                     console.error("Background image loading failed", err);
@@ -351,84 +451,6 @@ const generateCanvasConfig = ({
                   console.error("Failed to get background image info", err);
                 },
               });
-              if (disableTrueCode && showHasCheck) {
-                // 绘制下标 (保持不变)
-                ctx.font = "bold 10px sans-serif";
-                ctx.fillStyle = "#c9cbcd";
-                ctx.fillText(
-                  `今日水印相机已验证 | 时间地点真实`,
-                  28,
-                  86
-                );
-              }
-              // 小盾牌图片 (保持不变)
-              if (disableTrueCode && showHasCheck) {
-                Taro.getImageInfo({
-                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-12/13441726111234517_dunpai.png?sign=514ded73808869d7fabfb57718e5a742&t=1726111236",
-                  success: (imgInfo) => {
-                    const img = canvas.createImage();
-                    img.src = imgInfo.path;
-                    img.onload = () => {
-                      const imgWidth = imgInfo.width / 3 + 5;
-                      const imgHeight = imgInfo.height / 3 + 5;
-
-                      ctx.drawImage(
-                        img,
-                        9,
-                        75,
-                        imgWidth * 0.65,
-                        imgHeight * 0.65
-                      );
-                    };
-                    img.onerror = (err) => {
-                      console.error("Background image loading failed", err);
-                    };
-                  },
-                  fail: (err) => {
-                    console.error("Failed to get background image info", err);
-                  },
-                });
-              }
-              if (disableTrueCode && showTrueCode) {
-                // 防伪图标 (保持不变)
-                Taro.getImageInfo({
-                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
-                  success: (imgInfo) => {
-                    const img = canvas.createImage();
-                    img.src = imgInfo.path;
-                    img.onload = () => {
-                      const imgWidth = imgInfo.width / 3 + 5;
-                      const imgHeight = imgInfo.height / 3 + 5;
-
-                      const canvasWidth = canvas.width / dpr;
-                      const canvasHeight = canvas.height / dpr;
-
-                      const x = canvasWidth - imgWidth - 20;
-                      const y = canvasHeight - imgHeight - 5;
-                      ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
-
-                      ctx.drawImage(
-                        img,
-                        x + 40,
-                        y + 16,
-                        imgWidth * 0.7,
-                        imgHeight * 0.7
-                      );
-                      //  绘制时间
-                      ctx.font = "bold 6px NotoSansMono";
-                      ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(), x + 52, y + 47);
-                    };
-
-                    img.onerror = (err) => {
-                      console.error("Background image loading failed", err);
-                    };
-                  },
-                  fail: (err) => {
-                    console.error("Failed to get background image info", err);
-                  },
-                });
-              }
             },
 
             args: [
@@ -469,7 +491,7 @@ const generateCanvasConfig = ({
           let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },
-      }
+      },
     ],
     // 2222222222222 end
     // 2222222222222 end
@@ -661,7 +683,7 @@ const generateCanvasConfig = ({
         height: () => {
           return (width * 4) / 3;
         },
-      }
+      },
     ],
     // 33333333333333 end
     // 33333333333333 end
@@ -905,7 +927,7 @@ const generateCanvasConfig = ({
         logoY: 0.55,
         name: "定制-水印相机",
         position: "center",
-      }
+      },
     ],
     // 4444444444444 end
     // 4444444444444 end
