@@ -62,7 +62,7 @@ const dayD = String(now.getDate()).padStart(2, "0");
 const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
-
+const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
 const fs = wx.getFileSystemManager();
 const CACHE_LIMIT = 30 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
 function getCacheSize(path) {
@@ -112,6 +112,7 @@ const CameraPage = () => {
   const [hours, setHours] = useState(hoursD);
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
+  app.$app.globalData.zphsId = zphsId;
 
   // 水印选择
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
@@ -150,7 +151,6 @@ const CameraPage = () => {
   const [rateModal, setRateModal] = useState(false);
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
-
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -168,6 +168,8 @@ const CameraPage = () => {
     return weekDays[weekday];
   }
   useEffect(() => {
+
+
     const phoneInputed = Taro.getStorageSync("phoneInputed");
     const showRateModalStorage = Taro.getStorageSync("showRateModalStorage");
     if (phoneInputed && !showRateModalStorage) {
