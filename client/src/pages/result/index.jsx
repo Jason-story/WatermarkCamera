@@ -465,7 +465,7 @@ const MergeCanvas = () => {
     const minutes = String(beijingTime.getUTCMinutes()).padStart(2, "0");
     const seconds = String(beijingTime.getUTCSeconds()).padStart(2, "0");
     return `${hours}.${minutes}.${seconds}.${
-      info.type !== "default" ? "vip" : ""
+      info.type !== "default" ? "vip_副" : "副"
     }`;
   }
   const clientCanvasSaveImage = async (tempFilePath, info) => {
