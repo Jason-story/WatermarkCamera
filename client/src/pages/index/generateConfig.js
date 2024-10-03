@@ -106,17 +106,18 @@ const generateCanvasConfig = ({
                   },
                 });
               }
+
               if (disableTrueCode && showHasCheck) {
-                // 绘制下标 (保持不变)
+                // 绘制下标 (移动到左下角)
                 ctx.font = "bold 10px sans-serif";
                 ctx.fillStyle = "#c9cbcd";
                 ctx.fillText(
                   `今日水印相机已验证 | 时间地点真实`,
-                  26,
-                  91
+                  28,
+                  canvas.height / dpr - 2
                 );
-              }
-              if (disableTrueCode && showHasCheck) {
+
+                // 小盾牌图片 (移动到左下角)
                 Taro.getImageInfo({
                   src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-12/13441726111234517_dunpai.png?sign=514ded73808869d7fabfb57718e5a742&t=1726111236",
                   success: (imgInfo) => {
@@ -125,11 +126,10 @@ const generateCanvasConfig = ({
                     img.onload = () => {
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
-
                       ctx.drawImage(
                         img,
                         9,
-                        80,
+                        canvas.height / dpr - imgHeight * 0.65 + 1,
                         imgWidth * 0.65,
                         imgHeight * 0.65
                       );
@@ -273,7 +273,7 @@ const generateCanvasConfig = ({
         logoY: 0.55,
         name: "免费-时间天气-1",
         height: locationName.length > 16 ? 105 : 95, // Adjusted from 120 and 110
-      }
+      },
     ],
 
     [
@@ -433,7 +433,7 @@ const generateCanvasConfig = ({
         logoY: 0.55,
         name: "免费-打卡-2",
         height: locationName.length > 16 ? 104 : 88, // Adjusted from 130 and 110
-      }
+      },
     ],
     [
       {
@@ -454,15 +454,27 @@ const generateCanvasConfig = ({
               ctx.lineTo(width - radius + 7.5, 3.75);
               ctx.arcTo(width + 7.5, 3.75, width + 7.5, radius + 3.75, radius);
               ctx.lineTo(width + 7.5, height - radius + 3.75);
-              ctx.arcTo(width + 7.5, height + 3.75, width - radius + 7.5, height + 3.75, radius);
+              ctx.arcTo(
+                width + 7.5,
+                height + 3.75,
+                width - radius + 7.5,
+                height + 3.75,
+                radius
+              );
               ctx.lineTo(radius + 7.5, height + 3.75);
-              ctx.arcTo(7.5, height + 3.75, 7.5, height - radius + 3.75, radius);
+              ctx.arcTo(
+                7.5,
+                height + 3.75,
+                7.5,
+                height - radius + 3.75,
+                radius
+              );
               ctx.lineTo(7.5, radius + 3.75);
               ctx.arcTo(7.5, 3.75, radius + 7.5, 3.75, radius);
               ctx.closePath();
               ctx.fill();
               // 绘制顶部带圆角的蓝色背景
-              ctx.fillStyle = "rgba(28, 125, 230,.75)";
+              ctx.fillStyle = "rgba(23,120,226,.85)";
               ctx.beginPath();
               ctx.moveTo(radius + 7.5, 3.75);
               ctx.lineTo(width - radius + 7.5, 3.75);
@@ -662,9 +674,7 @@ const generateCanvasConfig = ({
           let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },
-      }
-
-
+      },
     ],
     // 44444444444
     // 44444444444
@@ -723,14 +733,19 @@ const generateCanvasConfig = ({
               ctx.lineTo(width + 10 - radius, 105); // 顶部直线
               ctx.arcTo(width + 10, 105, width + 10, 105 + radius, radius); // 右上角圆角
               ctx.lineTo(width + 10, height - radius); // 右侧直线
-              ctx.arcTo(width + 10, height, width + 10 - radius, height, radius); // 右下角圆角
+              ctx.arcTo(
+                width + 10,
+                height,
+                width + 10 - radius,
+                height,
+                radius
+              ); // 右下角圆角
               ctx.lineTo(10 + radius, height); // 底部直线
               ctx.arcTo(10, height, 10, height - radius, radius); // 左下角圆角
               ctx.lineTo(10, 105 + radius); // 左侧直线
               ctx.arcTo(10, 105, 10 + radius, 105, radius); // 左上角圆角
               ctx.closePath();
               ctx.fill();
-
 
               // 绘制顶部带圆角的红色背景
               ctx.fillStyle = "#b92629";
