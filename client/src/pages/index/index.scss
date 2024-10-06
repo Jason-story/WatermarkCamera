@@ -26,13 +26,33 @@ page {
   bottom: 0;
   left: 0;
 }
+.editTips {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 42px;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.4);
+  animation: fadeOut 1s ease-in-out 5s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
 .mask-box {
   position: absolute;
   bottom: 15px;
   left: 0;
   width: 100%;
   &.top {
-    bottom: 45%;
+    bottom: 50%;
   }
 }
 .camera-btns {
@@ -319,10 +339,9 @@ page {
   height: 70rpx;
 }
 .shuiyin-list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 .extra-view {
   ad-custom {
@@ -333,9 +352,8 @@ page {
 
 .shuiyin-item {
   position: relative;
-  width: 48%;
+  width: 100%;
   border-radius: 16px;
-  margin-bottom: 40px;
   height: 200px;
   background: #aaa;
   overflow: hidden;
@@ -346,6 +364,9 @@ page {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .shuiyin-item-img {
     display: flex;
@@ -367,11 +388,8 @@ page {
     top: 0;
   }
   button {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
     display: inline-block;
-    padding: 0px 30px;
+    padding: 5px 30px;
     background-color: #ff6347; /* 橙红色背景 */
     color: #fff; /* 白色文字 */
     border: none;

@@ -63,6 +63,7 @@ const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
+console.log("zphsId: ", zphsId);
 const fs = wx.getFileSystemManager();
 const CACHE_LIMIT = 30 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
 function getCacheSize(path) {
@@ -168,8 +169,6 @@ const CameraPage = () => {
     return weekDays[weekday];
   }
   useEffect(() => {
-
-
     const phoneInputed = Taro.getStorageSync("phoneInputed");
     const showRateModalStorage = Taro.getStorageSync("showRateModalStorage");
     if (phoneInputed && !showRateModalStorage) {
@@ -481,6 +480,23 @@ const CameraPage = () => {
     permissions.writePhotosAlbum,
   ]);
 
+  const refreshCurrentPage = () => {
+    const currentPages = Taro.getCurrentPages();
+    const currentPage = currentPages[currentPages.length - 1];
+    const { route, options } = currentPage;
+
+    // 构建带参数的路径
+    const params = Object.keys(options)
+      .map((key) => `${key}=${options[key]}`)
+      .join("&");
+    const url = params ? `/${route}?${params}` : `/${route}`;
+    Taro.setStorageSync("noReload", "true");
+    const result = Taro.getStorageSync("noReload");
+    // 重定向到当前页面，保留参数
+    Taro.redirectTo({
+      url: url,
+    });
+  };
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
@@ -492,6 +508,11 @@ const CameraPage = () => {
         authSetting["scope.userLocation"]
       ) {
         setAllAuth(true);
+        const result = Taro.getStorageSync("noReload");
+        if (!result) {
+          // 在需要刷新的地方调用这个函数
+          refreshCurrentPage();
+        }
       } else {
         setAllAuth(false);
       }
@@ -903,7 +924,10 @@ const CameraPage = () => {
             canvas.width = res[0].width * dpr;
             canvas.height = res[0].height * dpr;
             // 设置边框样式
-
+            // canvas.addEventListener("touchstart", () => {
+            //   console.log(4444)
+            //   setEdit(true);
+            // });
             ctx.scale(dpr, dpr);
             setCanvasConfigState(canvasConfig);
 
@@ -1226,6 +1250,8 @@ const CameraPage = () => {
                 )}
               </View>
             )} */}
+            {allAuth && <View className="editTips">点击水印可编辑信息</View>}
+
             {allAuth && (
               <View
                 className={
@@ -1235,6 +1261,10 @@ const CameraPage = () => {
               >
                 <Canvas
                   id="fishCanvas"
+                  onTouchStart={(e) => {
+                    setShowFloatLayout(!showFloatLayout);
+                    setEdit(true);
+                  }}
                   type="2d"
                   // className={canvasImg ? "hideCanvas" : ""}
                   style={{
@@ -2109,7 +2139,13 @@ const CameraPage = () => {
               </View>
             )}
             {!edit && (
-              <Text style={{ display: "block", textAlign: "center" }}>
+              <Text
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  marginTop: "20px",
+                }}
+              >
                 更多样式开发中...
               </Text>
             )}
