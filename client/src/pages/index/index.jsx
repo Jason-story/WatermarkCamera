@@ -1858,7 +1858,7 @@ const CameraPage = () => {
               setShowSettingFloatLayout(!showSettingFloatLayout);
             }}
           >
-            <View className="shuiyin-list">
+            <View className="shuiyin-list shuiyin-list-no-grid">
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
                   微信闪退、保存失败请打开此开关
