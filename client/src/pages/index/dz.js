@@ -1,6 +1,5 @@
 import Taro from "@tarojs/taro";
 import Shuiyin7 from "../../images/shuiyin-7.png";
-console.log("Shuiyin7: ", Shuiyin7);
 const generateCanvasConfig = ({
   hours,
   minutes,
@@ -276,7 +275,6 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, rectConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              console.log("canvas.height: ", canvas.height);
 
               const { width } = rectConfig;
               const imgHeight = 34 * 0.8;

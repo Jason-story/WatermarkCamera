@@ -498,7 +498,23 @@ const CameraPage = () => {
     // 执行权限检查后的后续操作
     getAuth();
   };
+  const refreshCurrentPage = () => {
+    const currentPages = Taro.getCurrentPages();
+    const currentPage = currentPages[currentPages.length - 1];
+    const { route, options } = currentPage;
 
+    // 构建带参数的路径
+    const params = Object.keys(options)
+      .map((key) => `${key}=${options[key]}`)
+      .join("&");
+    const url = params ? `/${route}?${params}` : `/${route}`;
+    Taro.setStorageSync("noReload", "true");
+    const result = Taro.getStorageSync("noReload");
+    // 重定向到当前页面，保留参数
+    Taro.redirectTo({
+      url: url,
+    });
+  };
   useEffect(() => {
     const context = createCameraContext();
     checkPermissions();
@@ -522,6 +538,11 @@ const CameraPage = () => {
         authSetting["scope.userLocation"]
       ) {
         setAllAuth(true);
+        const result = Taro.getStorageSync("noReload");
+        if (!result) {
+          // 在需要刷新的地方调用这个函数
+          refreshCurrentPage();
+        }
       } else {
         setAllAuth(false);
       }
@@ -1265,6 +1286,7 @@ const CameraPage = () => {
                 )}
               </View>
             )} */}
+            {allAuth && <View className="editTips">点击水印可编辑信息</View>}
             {allAuth && (
               <View
                 className={
@@ -1275,6 +1297,10 @@ const CameraPage = () => {
                 <Canvas
                   id="fishCanvas"
                   type="2d"
+                  onTouchStart={(e) => {
+                    setShowFloatLayout(!showFloatLayout);
+                    setEdit(true);
+                  }}
                   // className={canvasImg ? "hideCanvas" : ""}
                   style={{
                     width: screenWidth,
@@ -1978,10 +2004,8 @@ const CameraPage = () => {
                 })}
               </View>
             ) : (
-              <View className="shuiyin-list">
+              <View className="shuiyin-list shuiyin-list-no-grid">
                 <View className="input-item">
-                  {/* <Switch checked={showInput} onChange={handleSwitchChange} /> */}
-                  {/* {showInput && <Input placeholder="请输入内容" />} */}
                   <AtCard title="时间">
                     <Picker
                       mode="date"
@@ -2146,7 +2170,13 @@ const CameraPage = () => {
               </View>
             )}
             {!edit && (
-              <Text style={{ display: "block", textAlign: "center" }}>
+              <Text
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  marginTop: "20px",
+                }}
+              >
                 更多样式开发中...
               </Text>
             )}
