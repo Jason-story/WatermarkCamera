@@ -492,6 +492,7 @@ const CameraPage = () => {
     const url = params ? `/${route}?${params}` : `/${route}`;
     Taro.setStorageSync("noReload", "true");
     const result = Taro.getStorageSync("noReload");
+    console.log("result2222: ", result);
     // 重定向到当前页面，保留参数
     Taro.redirectTo({
       url: url,
@@ -509,7 +510,9 @@ const CameraPage = () => {
       ) {
         setAllAuth(true);
         const result = Taro.getStorageSync("noReload");
+        console.log("result: ", result);
         if (!result) {
+          console.log(222222);
           // 在需要刷新的地方调用这个函数
           refreshCurrentPage();
         }
@@ -518,6 +521,19 @@ const CameraPage = () => {
       }
     });
   };
+
+  useEffect(() => {
+    if (allAuth) {
+      setTimeout(() => {
+        Taro.showToast({
+          title: "点击水印可编辑时间地点",
+          icon: "none",
+          duration: 7000,
+        });
+      }, 1000);
+    }
+  }, [allAuth]);
+
   useEffect(() => {
     cameraContext?.setZoom({
       zoom: zoomLevel,
@@ -1250,7 +1266,6 @@ const CameraPage = () => {
                 )}
               </View>
             )} */}
-            {allAuth && <View className="editTips">点击水印可编辑信息</View>}
 
             {allAuth && (
               <View
