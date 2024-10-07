@@ -1,5 +1,12 @@
 import Taro from "@tarojs/taro";
 import Shuiyin7 from "../../images/shuiyin-7.png";
+import Dunpai from "../../images/dunpai.png";
+import Icon2 from "../../images/icon-2.png";
+import Icon1 from "../../images/icon-1.png";
+import Icon3 from "../../images/icon-3.png";
+import Shuiyinxiangji from "../../images/shuiyinxiangji.png";
+console.log('Shuiyinxiangji: ', Shuiyinxiangji);
+
 const generateCanvasConfig = ({
   hours,
   minutes,
@@ -157,10 +164,11 @@ const generateCanvasConfig = ({
               ctx.fillText(weeklyPart, xPosition + dateWidth, yPosition);
 
               Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/11081726462338263_icon2.png?sign=4578fa27e2486fd9f014a43390cab42a&t=1726462338",
+                src: Icon3,
                 success: (imgInfo) => {
+                  console.log('imgInfo: ', imgInfo);
                   const img = canvas.createImage();
-                  img.src = imgInfo.path;
+                  img.src = "/" + imgInfo.path;
                   img.onload = () => {
                     const iconSize = 22.4;
                     ctx.shadowColor = "none";
@@ -207,10 +215,11 @@ const generateCanvasConfig = ({
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
               Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
+                src: 'https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345',
                 success: (imgInfo) => {
+                  console.log('imgI222nfo: ', imgInfo);
                   const img = canvas.createImage();
-                  img.src = imgInfo.path;
+                  img.src =imgInfo.path;
                   img.onload = () => {
                     const imgWidth = imgInfo.width / 3 + 5;
                     const imgHeight = imgInfo.height / 3 + 5;
@@ -300,10 +309,10 @@ const generateCanvasConfig = ({
 
               const locationLines = getLocationLines(locationName);
               Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/13341726462341850_icon1.png?sign=f4b48a7312ef5d6222435285e88fd0c1&t=1726462342",
+                src: Icon1,
                 success: (imgInfo) => {
                   const img = canvas.createImage();
-                  img.src = imgInfo.path;
+                  img.src = "/" + imgInfo.path;
                   img.onload = () => {
                     ctx.drawImage(img, 8.5 * 0.8, 0, width * 0.8, imgHeight);
 
@@ -354,15 +363,15 @@ const generateCanvasConfig = ({
                       ctx.fillText(
                         `今日水印相机已验证 | 时间地点真实`,
                         28,
-                        canvas.height / dpr-2
+                        canvas.height / dpr - 2
                       );
 
                       // 小盾牌图片 (移动到左下角)
                       Taro.getImageInfo({
-                        src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-12/13441726111234517_dunpai.png?sign=514ded73808869d7fabfb57718e5a742&t=1726111236",
+                        src: Dunpai,
                         success: (imgInfo) => {
                           const img = canvas.createImage();
-                          img.src = imgInfo.path;
+                          img.src = "/" + imgInfo.path;
                           img.onload = () => {
                             const imgWidth = imgInfo.width / 3 + 5;
                             const imgHeight = imgInfo.height / 3 + 5;
@@ -394,10 +403,10 @@ const generateCanvasConfig = ({
                     if (disableTrueCode && showTrueCode) {
                       // 防伪图标 (保持不变)
                       Taro.getImageInfo({
-                        src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                        src: Icon2,
                         success: (imgInfo) => {
                           const img = canvas.createImage();
-                          img.src = imgInfo.path;
+                          img.src = "/" + imgInfo.path;
                           img.onload = () => {
                             const imgWidth = imgInfo.width / 3 + 5;
                             const imgHeight = imgInfo.height / 3 + 5;
@@ -624,10 +633,10 @@ const generateCanvasConfig = ({
               if (disableTrueCode && showTrueCode) {
                 // 防伪图标 (unchanged)
                 Taro.getImageInfo({
-                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                  src: Icon2,
                   success: (imgInfo) => {
                     const img = canvas.createImage();
-                    img.src = imgInfo.path;
+                    img.src = "/" + imgInfo.path;
                     img.onload = () => {
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
@@ -879,7 +888,7 @@ const generateCanvasConfig = ({
               const { fontSize, color, text, position } = config;
               // 绘制图片
               Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
+                src: 'https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345',
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
