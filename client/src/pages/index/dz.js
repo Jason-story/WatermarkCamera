@@ -4,8 +4,6 @@ import Dunpai from "../../images/dunpai.png";
 import Icon2 from "../../images/icon-2.png";
 import Icon1 from "../../images/icon-1.png";
 import Icon3 from "../../images/icon-3.png";
-import Shuiyinxiangji from "../../images/shuiyinxiangji.png";
-console.log('Shuiyinxiangji: ', Shuiyinxiangji);
 
 const generateCanvasConfig = ({
   hours,
