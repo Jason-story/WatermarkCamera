@@ -1,6 +1,9 @@
 import Taro from "@tarojs/taro";
-import Gaoding from "../../images/gaoding.png";
-
+import Mk1 from "../../images/mk-1.png";
+import Dunpai from "../../images/dunpai.png";
+import Icon2 from "../../images/icon-2.png";
+import Mk2 from "../../images/mk-2.png";
+import Shuiyin8 from "../../images/shuiyin-8.png";
 const generateCanvasConfig = ({
   hours,
   minutes,
@@ -23,7 +26,7 @@ const generateCanvasConfig = ({
   showTrueCode,
   disableTrueCode,
 }) => {
-  function generateRandomString() {
+  function generateRandomString(length) {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 大写字母
     const numbers = "0123456789"; // 数字
     let result = [];
@@ -56,6 +59,277 @@ const generateCanvasConfig = ({
   }
 
   return [
+    // 马克
+    // 马克
+    // 马克
+    // 马克
+    // 马克
+    // 马克
+    // 马克
+    [
+      {
+        path: [
+          {
+            draw: (ctx, rectConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+              const { width } = rectConfig;
+              const lineHeight = 21.25 * 0.8;
+              const maxLines = 2;
+              const charsPerLine = 20;
+
+              const getLocationLines = (text) => {
+                const words = text.split("");
+                let lines = 1;
+                let currentLineLength = 0;
+                for (const word of words) {
+                  if (currentLineLength + 1 > charsPerLine) {
+                    lines++;
+                    currentLineLength = 1;
+                  } else {
+                    currentLineLength++;
+                  }
+                  if (lines === maxLines) break;
+                }
+                return lines;
+              };
+
+              const locationLines = getLocationLines(locationName);
+              Taro.getImageInfo({
+                src: Mk1,
+                success: (imgInfo) => {
+                  console.log("imgInfo: ", imgInfo);
+                  const img = canvas.createImage();
+                  img.src = "/" + imgInfo.path;
+                  img.onload = () => {
+                    ctx.drawImage(
+                      img,
+                      10,
+                      0,
+                      img.width / 2.8,
+                      img.height / 2.8
+                    );
+                    // 绘制时间（调整大小为原来的0.7倍）
+                    ctx.font = "bold 16px sans-serif"; // 24 * 0.7
+                    ctx.fillStyle = "#21c3a2";
+                    ctx.fillText(`${hours}:${minutes}`, 71, 22);
+
+                    // // 绘制位置名称
+                    // ctx.font = "bold 10.88px sans-serif"; // 13.6 * 0.8
+                    // ctx.fillStyle = "white";
+                    // let y = 52.2; // (65.25 * 0.8)
+                    // let remainingText = locationName;
+                    // for (let i = 0; i < locationLines; i++) {
+                    //   const line = remainingText.substring(0, charsPerLine);
+                    //   ctx.fillText(line, 14.96, y); // 18.7 * 0.8
+                    //   remainingText = remainingText.substring(charsPerLine);
+                    //   y += lineHeight;
+                    // }
+                    ctx.fillStyle = "#fff";
+                    ctx.font = "bold 18px sans-serif"; // 24 * 0.7
+
+                    // 绘制日期
+                    ctx.fillText(
+                      `${year}/${month}/${day} ${weekly}`,
+                      10,
+                      img.height / 2.8 + 22
+                    );
+                    // // 绘制黄线（不包含经纬度部分）
+                    // ctx.lineWidth = 2.04; // 2.55 * 0.8
+                    // ctx.strokeStyle = "#fdc144";
+                    // ctx.beginPath();
+                    // ctx.moveTo(9.52, 42); // 11.9 * 0.8, 52.5 * 0.8
+                    // ctx.lineTo(9.52, dateY);
+                    // ctx.stroke();
+
+                    if (disableTrueCode && showHasCheck) {
+                      // 绘制下标 (移动到左下角)
+                      ctx.font = "bold 10px sans-serif";
+                      ctx.fillStyle = "#c9cbcd";
+                      ctx.fillText(
+                        `马克相机已验证照片真实性`,
+                        28,
+                        canvas.height / dpr - 2
+                      );
+
+                      // 小盾牌图片 (移动到左下角)
+                      Taro.getImageInfo({
+                        src: Dunpai,
+                        success: (imgInfo) => {
+                          const img = canvas.createImage();
+                          img.src = "/" + imgInfo.path;
+                          img.onload = () => {
+                            const imgWidth = imgInfo.width / 3 + 5;
+                            const imgHeight = imgInfo.height / 3 + 5;
+
+                            ctx.drawImage(
+                              img,
+                              9,
+                              canvas.height / dpr - imgHeight * 0.65 + 1,
+                              imgWidth * 0.65,
+                              imgHeight * 0.65
+                            );
+                          };
+                          img.onerror = (err) => {
+                            console.error(
+                              "Background image loading failed",
+                              err
+                            );
+                          };
+                        },
+                        fail: (err) => {
+                          console.error(
+                            "Failed to get background image info",
+                            err
+                          );
+                        },
+                      });
+                    }
+
+                    if (disableTrueCode && showTrueCode) {
+                      // 防伪图标 (保持不变)
+                      Taro.getImageInfo({
+                        src: Mk2,
+                        success: (imgInfo) => {
+                          console.log("imgInfo: ", imgInfo);
+                          const img = canvas.createImage();
+                          img.src = "/" + imgInfo.path;
+                          img.onload = () => {
+                            const imgWidth = (imgInfo.width / dpr) * 0.5;
+                            const imgHeight = (imgInfo.height / dpr) * 0.5;
+                            console.log("imgHeight: ", imgHeight);
+
+                            const canvasWidth = canvas.width / dpr;
+                            const canvasHeight = canvas.height / dpr;
+                            console.log("canvasHeight: ", canvasHeight);
+
+                            const x = canvasWidth - imgWidth;
+                            console.log("x: ", x);
+                            const y = canvasHeight - imgHeight;
+                            console.log("y: ", y);
+
+                            ctx.drawImage(
+                              img,
+                              x - 10,
+                              y - 10,
+                              imgWidth,
+                              imgHeight
+                            );
+                            //  绘制时间
+                            ctx.font = "bold 7px NotoSansMono";
+                            ctx.fillStyle = "#fff";
+                            ctx.clearRect(x - 35, 11, 100, 30);
+
+                            ctx.fillText(
+                              "防伪 " + generateRandomString(),
+                              x - 35,
+                              108
+                            );
+                          };
+                          img.onerror = (err) => {
+                            console.error(
+                              "Background image loading failed",
+                              err
+                            );
+                          };
+                        },
+                        fail: (err) => {
+                          console.error(
+                            "Failed to get background image info",
+                            err
+                          );
+                        },
+                      });
+                    }
+                  };
+                  img.onerror = (err) => {
+                    console.error("Background image loading failed", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("Failed to get background image info", err);
+                },
+              });
+            },
+            args: [
+              {
+                width: 120, // 127.5 * 0.8
+              },
+            ],
+          },
+          // 地址
+          {
+            draw: (ctx, locationConfig) => {
+              const { fontSize, color, text, position } = locationConfig;
+              ctx.font = `${fontSize}px fzlt`;
+              ctx.fillStyle = color;
+
+              const maxCharsPerLine = 15;
+              const lines = [];
+              for (let i = 0; i < text.length; i += maxCharsPerLine) {
+                lines.push(text.slice(i, i + maxCharsPerLine));
+              }
+
+              const maxLines = 2;
+              const circleRadius = 4; // 白色圆点的半径
+              const circleOffset = 10; // 圆点和文字之间的距离
+
+              lines.slice(0, maxLines).forEach((line, index) => {
+                if (index === 0) {
+                  // 保存当前的填充样式
+                  const currentFillStyle = ctx.fillStyle;
+
+                  // 绘制白色圆点
+                  ctx.beginPath();
+                  ctx.arc(
+                    position[0] + circleRadius,
+                    69, // 调整圆点的垂直位置
+                    circleRadius,
+                    0,
+                    2 * Math.PI
+                  );
+                  ctx.fillStyle = "white";
+                  ctx.fill();
+
+                  // 恢复原来的填充样式用于文字
+                  ctx.fillStyle = currentFillStyle;
+                }
+
+                ctx.font = "bold 14px NotoSansMono";
+                ctx.fillText(
+                  line,
+                  position[0] +
+                    (index === 0
+                      ? circleRadius * 2 + circleOffset
+                      : circleRadius * 2 + circleOffset),
+                  position[1] + index * (fontSize * 1.2) + fontSize / 2 // 调整垂直位置
+                );
+              });
+
+
+
+            },
+            args: [
+              {
+                fontSize: 14, // 原来的13.5 * 0.75
+                color: "#fff",
+                text: locationName,
+                position: [20, 67], // 原来的21.25 * 0.75, 91.25 * 0.75
+              },
+            ],
+          },
+        ],
+        img: Shuiyin8,
+        width: 204, // 255 * 0.8
+        name: "定制-今日水印相机-打卡",
+        left: true,
+        right: true,
+        logoY: 0.55,
+        height: () => {
+          return 110;
+        },
+      },
+    ],
     [
       {
         path: [
@@ -68,10 +342,10 @@ const generateCanvasConfig = ({
               if (disableTrueCode && showTrueCode) {
                 // 防伪图标 (unchanged)
                 Taro.getImageInfo({
-                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                  src: Icon2,
                   success: (imgInfo) => {
                     const img = canvas.createImage();
-                    img.src = imgInfo.path;
+                    img.src = "/" + imgInfo.path;
                     img.onload = () => {
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
@@ -119,10 +393,10 @@ const generateCanvasConfig = ({
 
                 // 小盾牌图片 (移动到左下角)
                 Taro.getImageInfo({
-                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-12/13441726111234517_dunpai.png?sign=514ded73808869d7fabfb57718e5a742&t=1726111236",
+                  src: Dunpai,
                   success: (imgInfo) => {
                     const img = canvas.createImage();
-                    img.src = imgInfo.path;
+                    img.src = "/" + imgInfo.path;
                     img.onload = () => {
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
@@ -564,10 +838,10 @@ const generateCanvasConfig = ({
 
               if (disableTrueCode && showTrueCode) {
                 Taro.getImageInfo({
-                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
+                  src: Icon2,
                   success: (imgInfo) => {
                     const img = canvas.createImage();
-                    img.src = imgInfo.path;
+                    img.src = "/" + imgInfo.path;
                     img.onload = () => {
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
@@ -653,276 +927,6 @@ const generateCanvasConfig = ({
           const lineHeight = 15; // 原来的20 * 0.75
           const maxLines = 3;
           const charsPerLine = 9; // 原来的9 * 0.75
-
-          const getLocationLines = (text) => {
-            const words = text.split("");
-            let lines = 1;
-            let currentLineLength = 0;
-            for (const word of words) {
-              if (currentLineLength + 1 > charsPerLine) {
-                lines++;
-                currentLineLength = 1;
-              } else {
-                currentLineLength++;
-              }
-              if (lines === maxLines) break;
-            }
-            return lines;
-          };
-
-          const lines = getLocationLines(locationName);
-          let height = baseHeight + (lines - 1) * lineHeight;
-          return height;
-        },
-      },
-    ],
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    // 44444444444
-    [
-      {
-        path: [
-          // 红色背景矩形
-          {
-            draw: (ctx) => {
-              Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-29/12521727621041352_gaoding.png?sign=e0004097836f34ddd53dda4a9a8ee10d&t=1727621042",
-                success: (imgInfo) => {
-                  const img = canvas.createImage();
-                  img.src = imgInfo.path;
-                  img.onload = () => {
-                    console.log("imgInfo: ", imgInfo);
-                    const imgWidth = imgInfo.width / 3 + 5;
-                    const imgHeight = imgInfo.height / 3 + 5;
-                    // 获取画布的宽高
-                    ctx.drawImage(img, 10, 40, imgWidth * 0.7, imgHeight * 0.7);
-                  };
-                  img.onerror = (err) => {
-                    console.error("Background image loading failed", err);
-                  };
-                },
-                fail: (err) => {
-                  console.error("Failed to get background image info", err);
-                },
-              });
-            },
-            args: [],
-          },
-          // 背景
-          {
-            draw: (ctx, rectConfig) => {
-              const { width, color, text } = rectConfig;
-              const height = rectConfig.height();
-              const radius = 6; // 圆角半径
-
-              // 设置矩形的颜色
-              ctx.fillStyle = color;
-
-              // 绘制一个带 6px 圆角的矩形
-              ctx.beginPath();
-              ctx.moveTo(10 + radius, 105); // 左上角圆角开始
-              ctx.lineTo(width + 10 - radius, 105); // 顶部直线
-              ctx.arcTo(width + 10, 105, width + 10, 105 + radius, radius); // 右上角圆角
-              ctx.lineTo(width + 10, height - radius); // 右侧直线
-              ctx.arcTo(
-                width + 10,
-                height,
-                width + 10 - radius,
-                height,
-                radius
-              ); // 右下角圆角
-              ctx.lineTo(10 + radius, height); // 底部直线
-              ctx.arcTo(10, height, 10, height - radius, radius); // 左下角圆角
-              ctx.lineTo(10, 105 + radius); // 左侧直线
-              ctx.arcTo(10, 105, 10 + radius, 105, radius); // 左上角圆角
-              ctx.closePath();
-              ctx.fill();
-
-              // 绘制顶部带圆角的红色背景
-              ctx.fillStyle = "#b92629";
-              ctx.beginPath();
-              ctx.moveTo(10 + radius, 105); // 左上角圆角开始
-              ctx.lineTo(width + 10 - radius, 105); // 顶部直线
-              ctx.arcTo(width + 10, 105, width + 10, 105 + radius, radius); // 右上角圆角
-              ctx.lineTo(width + 10, 129); // 右侧直线
-              ctx.lineTo(10, 129); // 底部直线（无圆角）
-              ctx.lineTo(10, 105 + radius); // 左侧直线
-              ctx.arcTo(10, 105, 10 + radius, 105, radius); // 左上角圆角
-              ctx.closePath();
-              ctx.fill();
-
-              // 在红色背景中居中显示文字
-              ctx.fillStyle = "white";
-              ctx.font = "bold 12px fzlt";
-              const textWidth = ctx.measureText(text).width;
-              const textX = (width - textWidth) / 2 + 10;
-              const textY = 121;
-              ctx.fillText(text, textX, textY);
-            },
-            args: [
-              {
-                width: 152,
-                height: () => {
-                  const baseHeight = 190; // 80 + 150
-                  const lineHeight = 16;
-                  const maxLines = 3;
-                  const charsPerLine = 9;
-
-                  const getLocationLines = (text) => {
-                    const words = text.split("");
-                    let lines = 1;
-                    let currentLineLength = 0;
-                    for (const word of words) {
-                      if (currentLineLength + 1 > charsPerLine) {
-                        lines++;
-                        currentLineLength = 1;
-                      } else {
-                        currentLineLength++;
-                      }
-                      if (lines === maxLines) break;
-                    }
-                    return lines;
-                  };
-
-                  const lines = getLocationLines(locationName);
-                  let height = baseHeight + (lines - 1) * lineHeight;
-                  return height;
-                },
-                color: "rgba(0, 0, 0, .2)",
-                text: "欢度国庆",
-              },
-            ],
-          },
-
-          // 时间
-          {
-            draw: (ctx, config) => {
-              let { fontSize, color, text, position } = config;
-              ctx.font = `${fontSize}px fzlt`;
-              ctx.fillStyle = color;
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 11,
-                color: "#fff",
-                text: `时   间: ${year}.${month}.${day}  ${hours}:${minutes}`,
-                position: [17, 148],
-              },
-            ],
-          },
-          // 天气
-          {
-            draw: (ctx, weatherConfig) => {
-              const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `${fontSize}px fzlt`;
-              ctx.fillStyle = color;
-              ctx.fillText(text, ...position);
-
-              if (disableTrueCode && showTrueCode) {
-                // 防伪图标
-                Taro.getImageInfo({
-                  src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-10/17411725974764701_1.png?sign=4777daa729f670031bf698914738576e&t=1725974766",
-                  success: (imgInfo) => {
-                    const img = canvas.createImage();
-                    img.src = imgInfo.path;
-                    img.onload = () => {
-                      const imgWidth = imgInfo.width / 3 + 4;
-                      const imgHeight = imgInfo.height / 3 + 4;
-
-                      // 获取画布的宽高
-                      const canvasWidth = canvas.width / dpr;
-                      const canvasHeight = canvas.height / dpr;
-
-                      // 计算图片绘制的坐标，使其位于右下角
-                      const x = canvasWidth - imgWidth - 16;
-                      const y = canvasHeight - imgHeight - 4;
-                      ctx.clearRect(x + 32, y + 13, imgWidth, imgHeight);
-
-                      ctx.drawImage(
-                        img,
-                        x + 42,
-                        y + 23,
-                        imgWidth * 0.56,
-                        imgHeight * 0.56
-                      );
-                      //  绘制时间
-                      ctx.font = "bold 5px NotoSansMono"; // 加粗并放大时间文字
-                      ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(), x + 52, y + 48);
-                    };
-
-                    img.onerror = (err) => {
-                      console.error("Background image loading failed", err);
-                    };
-                  },
-                  fail: (err) => {
-                    console.error("Failed to get background image info", err);
-                  },
-                });
-              }
-            },
-            args: [
-              {
-                fontSize: 11,
-                color: "#fff",
-                text: "天   气: " + (weather ? weather + "℃" : "刷新重试"),
-                position: [17, 163],
-              },
-            ],
-          },
-
-          // 地址
-          {
-            draw: (ctx, locationConfig) => {
-              const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `${fontSize}px fzlt`;
-              ctx.fillStyle = color;
-
-              const maxCharsPerLine = 9;
-              const lines = [];
-              for (let i = 0; i < text.length; i += maxCharsPerLine) {
-                lines.push(text.slice(i, i + maxCharsPerLine));
-              }
-
-              const maxLines = 4;
-              lines.slice(0, maxLines).forEach((line, index) => {
-                ctx.fillText(
-                  index === 0 ? "地   点: " + line : line,
-                  position[0] + (index === 0 ? 0 : 38),
-                  position[1] + index * (fontSize * 1.2)
-                );
-              });
-            },
-            args: [
-              {
-                fontSize: 11,
-                color: "#fff",
-                text: locationName,
-                position: [17, 178],
-              },
-            ],
-          },
-        ],
-        img: Gaoding,
-        logoY: 0.55,
-        right: true,
-        name: "免费-工程记录-3",
-        width: 180,
-        height: (locationName) => {
-          const baseHeight = 190; // 88 + 150
-          const lineHeight = 16;
-          const maxLines = 3;
-          const charsPerLine = 9;
 
           const getLocationLines = (text) => {
             const words = text.split("");
