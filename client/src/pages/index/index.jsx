@@ -549,6 +549,18 @@ const CameraPage = () => {
     });
   };
   useEffect(() => {
+    if (allAuth) {
+      setTimeout(() => {
+        Taro.showToast({
+          title: "点击水印可编辑时间地点",
+          icon: "none",
+          duration: 7000,
+        });
+      }, 1000);
+    }
+  }, [allAuth]);
+
+  useEffect(() => {
     cameraContext?.setZoom({
       zoom: zoomLevel,
       success: () => {
@@ -1286,7 +1298,6 @@ const CameraPage = () => {
                 )}
               </View>
             )} */}
-            {allAuth && <View className="editTips">点击水印可编辑信息</View>}
             {allAuth && (
               <View
                 className={
