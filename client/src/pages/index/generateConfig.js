@@ -1,6 +1,7 @@
 import Taro from "@tarojs/taro";
 import Mk1 from "../../images/mk-1.png";
 import Dunpai from "../../images/dunpai.png";
+import Dunpai2 from "../../images/dunpai-2.png";
 import Icon2 from "../../images/icon-2.png";
 import Mk2 from "../../images/mk-2.png";
 import Shuiyin8 from "../../images/shuiyin-8.png";
@@ -98,7 +99,6 @@ const generateCanvasConfig = ({
               Taro.getImageInfo({
                 src: Mk1,
                 success: (imgInfo) => {
-                  console.log("imgInfo: ", imgInfo);
                   const img = canvas.createImage();
                   img.src = "/" + imgInfo.path;
                   img.onload = () => {
@@ -113,35 +113,14 @@ const generateCanvasConfig = ({
                     ctx.font = "bold 16px sans-serif"; // 24 * 0.7
                     ctx.fillStyle = "#21c3a2";
                     ctx.fillText(`${hours}:${minutes}`, 71, 22);
-
-                    // // 绘制位置名称
-                    // ctx.font = "bold 10.88px sans-serif"; // 13.6 * 0.8
-                    // ctx.fillStyle = "white";
-                    // let y = 52.2; // (65.25 * 0.8)
-                    // let remainingText = locationName;
-                    // for (let i = 0; i < locationLines; i++) {
-                    //   const line = remainingText.substring(0, charsPerLine);
-                    //   ctx.fillText(line, 14.96, y); // 18.7 * 0.8
-                    //   remainingText = remainingText.substring(charsPerLine);
-                    //   y += lineHeight;
-                    // }
                     ctx.fillStyle = "#fff";
                     ctx.font = "bold 18px sans-serif"; // 24 * 0.7
-
                     // 绘制日期
                     ctx.fillText(
                       `${year}/${month}/${day} ${weekly}`,
                       10,
                       img.height / 2.8 + 22
                     );
-                    // // 绘制黄线（不包含经纬度部分）
-                    // ctx.lineWidth = 2.04; // 2.55 * 0.8
-                    // ctx.strokeStyle = "#fdc144";
-                    // ctx.beginPath();
-                    // ctx.moveTo(9.52, 42); // 11.9 * 0.8, 52.5 * 0.8
-                    // ctx.lineTo(9.52, dateY);
-                    // ctx.stroke();
-
                     if (disableTrueCode && showHasCheck) {
                       // 绘制下标 (移动到左下角)
                       ctx.font = "bold 10px sans-serif";
@@ -151,7 +130,6 @@ const generateCanvasConfig = ({
                         28,
                         canvas.height / dpr - 2
                       );
-
                       // 小盾牌图片 (移动到左下角)
                       Taro.getImageInfo({
                         src: Dunpai,
@@ -191,23 +169,15 @@ const generateCanvasConfig = ({
                       Taro.getImageInfo({
                         src: Mk2,
                         success: (imgInfo) => {
-                          console.log("imgInfo: ", imgInfo);
                           const img = canvas.createImage();
                           img.src = "/" + imgInfo.path;
                           img.onload = () => {
                             const imgWidth = (imgInfo.width / dpr) * 0.5;
                             const imgHeight = (imgInfo.height / dpr) * 0.5;
-                            console.log("imgHeight: ", imgHeight);
-
                             const canvasWidth = canvas.width / dpr;
                             const canvasHeight = canvas.height / dpr;
-                            console.log("canvasHeight: ", canvasHeight);
-
                             const x = canvasWidth - imgWidth;
-                            console.log("x: ", x);
                             const y = canvasHeight - imgHeight;
-                            console.log("y: ", y);
-
                             ctx.drawImage(
                               img,
                               x - 10,
@@ -219,7 +189,6 @@ const generateCanvasConfig = ({
                             ctx.font = "bold 7px NotoSansMono";
                             ctx.fillStyle = "#fff";
                             ctx.clearRect(x - 35, 11, 100, 30);
-
                             ctx.fillText(
                               "防伪 " + generateRandomString(),
                               x - 35,
@@ -264,7 +233,7 @@ const generateCanvasConfig = ({
               ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
 
-              const maxCharsPerLine = 15;
+              const maxCharsPerLine = 20;
               const lines = [];
               for (let i = 0; i < text.length; i += maxCharsPerLine) {
                 lines.push(text.slice(i, i + maxCharsPerLine));
@@ -305,9 +274,6 @@ const generateCanvasConfig = ({
                   position[1] + index * (fontSize * 1.2) + fontSize / 2 // 调整垂直位置
                 );
               });
-
-
-
             },
             args: [
               {
@@ -387,13 +353,13 @@ const generateCanvasConfig = ({
                 ctx.fillStyle = "#c9cbcd";
                 ctx.fillText(
                   `今日水印相机已验证 | 时间地点真实`,
-                  28,
+                  26,
                   canvas.height / dpr - 2
                 );
 
                 // 小盾牌图片 (移动到左下角)
                 Taro.getImageInfo({
-                  src: Dunpai,
+                  src: Dunpai2,
                   success: (imgInfo) => {
                     const img = canvas.createImage();
                     img.src = "/" + imgInfo.path;
@@ -544,7 +510,10 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin1,
         right: true,
+        left: true,
         logoY: 0.55,
+        jingweidu: true,
+        weather: true,
         name: "免费-时间天气-1",
         height: locationName.length > 16 ? 105 : 95, // Adjusted from 120 and 110
       },
@@ -706,6 +675,7 @@ const generateCanvasConfig = ({
         width: 204, // Adjusted from 255
         logoY: 0.55,
         name: "免费-打卡-2",
+        jingweidu: true,
         height: locationName.length > 16 ? 104 : 88, // Adjusted from 130 and 110
       },
     ],
@@ -748,7 +718,7 @@ const generateCanvasConfig = ({
               ctx.closePath();
               ctx.fill();
               // 绘制顶部带圆角的蓝色背景
-              ctx.fillStyle = "rgba(23,120,226,.85)";
+              ctx.fillStyle = "rgba(31,114,251,.8)";
               ctx.beginPath();
               ctx.moveTo(radius + 7.5, 3.75);
               ctx.lineTo(width - radius + 7.5, 3.75);
@@ -919,6 +889,9 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin3,
         logoY: 0.55,
+        right: true,
+        title: true,
+        weather: true,
         right: true,
         name: "免费-工程记录-3",
         width: 168.75, // 原来的225 * 0.75

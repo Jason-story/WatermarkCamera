@@ -1,11 +1,9 @@
 import Taro from "@tarojs/taro";
 import Shuiyin7 from "../../images/shuiyin-7.png";
-import Dunpai from "../../images/dunpai.png";
+import Dunpai2 from "../../images/dunpai-2.png";
 import Icon2 from "../../images/icon-2.png";
 import Icon1 from "../../images/icon-1.png";
 import Icon3 from "../../images/icon-3.png";
-import Shuiyinxiangji from "../../images/shuiyinxiangji.png";
-console.log('Shuiyinxiangji: ', Shuiyinxiangji);
 
 const generateCanvasConfig = ({
   hours,
@@ -74,14 +72,6 @@ const generateCanvasConfig = ({
   }
 
   return [
-    // 1111111111111 start
-    // 1111111111111 start
-    // 1111111111111 start
-    // 1111111111111 start
-    // 1111111111111 start
-    // 1111111111111 start
-    // 1111111111111 start
-    // 1111111111111 start
     [
       {
         path: [
@@ -263,21 +253,6 @@ const generateCanvasConfig = ({
         // vip: true,
       },
     ],
-    // 1111111111111 end
-    // 1111111111111 end
-    // 1111111111111 end
-    // 1111111111111 end
-    // 1111111111111 end
-    // 1111111111111 end
-    // 1111111111111 end
-    // 1111111111111 end
-
-    // 2222222222222 start
-    // 2222222222222 start
-    // 2222222222222 start
-    // 2222222222222 start
-    // 2222222222222 start
-    // 2222222222222 start
     [
       {
         path: [
@@ -344,7 +319,7 @@ const generateCanvasConfig = ({
                     // 绘制日期
                     const dateY = y;
                     ctx.fillText(
-                      `${year}年${month}月${day}日 ${weekly}`,
+                      `${year}.${month}.${day} ${weekly}`,
                       14.96,
                       dateY
                     );
@@ -362,13 +337,13 @@ const generateCanvasConfig = ({
                       ctx.fillStyle = "#c9cbcd";
                       ctx.fillText(
                         `今日水印相机已验证 | 时间地点真实`,
-                        28,
+                        26,
                         canvas.height / dpr - 2
                       );
 
                       // 小盾牌图片 (移动到左下角)
                       Taro.getImageInfo({
-                        src: Dunpai,
+                        src: Dunpai2,
                         success: (imgInfo) => {
                           const img = canvas.createImage();
                           img.src = "/" + imgInfo.path;
@@ -468,7 +443,7 @@ const generateCanvasConfig = ({
           },
         ],
         img: Shuiyin5,
-        width: 204, // 255 * 0.8
+        width: 204,
         name: "定制-今日水印相机-打卡",
         left: true,
         right: true,
@@ -500,22 +475,6 @@ const generateCanvasConfig = ({
         },
       },
     ],
-    // 2222222222222 end
-    // 2222222222222 end
-    // 2222222222222 end
-    // 2222222222222 end
-    // 2222222222222 end
-    // 2222222222222 end
-    // 2222222222222 end
-    // 2222222222222 end
-
-    // 3333333333333 start
-    // 3333333333333 start
-    // 3333333333333 start
-    // 3333333333333 start
-    // 3333333333333 start
-    // 3333333333333 start
-
     [
       {
         path: [
@@ -685,25 +644,13 @@ const generateCanvasConfig = ({
         img: Shuiyin7,
         name: "免费-工程记录-3",
         logoY: 0.55,
-        left: false,
         right: true,
+        jingweidu:true,
         height: () => {
           return (width * 4) / 3;
         },
       },
     ],
-    // 33333333333333 end
-    // 33333333333333 end
-    // 33333333333333 end
-    // 33333333333333 end
-    // 33333333333333 end
-    // 33333333333333 end
-    // 33333333333333 end
-
-    // 44444444444444 start
-    // 44444444444444 start
-    // 44444444444444 start
-    // 44444444444444 start
     [
       {
         path: [
@@ -936,12 +883,6 @@ const generateCanvasConfig = ({
         position: "center",
       },
     ],
-    // 4444444444444 end
-    // 4444444444444 end
-    // 4444444444444 end
-    // 4444444444444 end
-    // 4444444444444 end
-    // 4444444444444 end
   ];
 };
 export default generateCanvasConfig;
