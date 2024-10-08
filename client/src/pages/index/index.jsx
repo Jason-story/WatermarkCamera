@@ -581,16 +581,16 @@ const CameraPage = () => {
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
     console.log("canvasImg: ", canvasImg);
-    Taro.saveImageToPhotosAlbum({
-      filePath: canvasImg,
-      success: async () => {
-        Taro.showToast({
-          title: "已保存到相册",
-          icon: "success",
-          duration: 2000,
-        });
-      },
-    });
+    // Taro.saveImageToPhotosAlbum({
+    //   filePath: canvasImg,
+    //   success: async () => {
+    //     Taro.showToast({
+    //       title: "已保存到相册",
+    //       icon: "success",
+    //       duration: 2000,
+    //     });
+    //   },
+    // });
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -1120,6 +1120,7 @@ const CameraPage = () => {
         canvasConfigState[currentShuiyinIndex]?.[0].logoY;
     }
   }, [currentShuiyinIndex]);
+
   return (
     <View className="container">
       {userInfo.black ? (
@@ -1731,7 +1732,7 @@ const CameraPage = () => {
               <View className="modal-list">
                 <View className="txt1">
                   尊敬的会员，为了更好的服务，麻烦您点击 右上角 - 体验评分
-                  给一个 文字 ➕ 五星好评，感谢！
+                  给一个 文字 + 五星好评，感谢！
                 </View>
               </View>
             </AtModalContent>
@@ -1865,67 +1866,8 @@ const CameraPage = () => {
                   }}
                 />
               </View>
-              {/* {disableTrueCode && (
-                <View className="shantui-btns" style={{ marginBottom: "10px" }}>
-                  <View style={{ marginRight: "10px" }}>
-                    是否需要左下角已验证下标
-                  </View>
-                  <Switch
-                    style={{
-                      transform: "scale(0.7)",
-                      opacity: !canvasConfigState[currentShuiyinIndex]?.[0]
-                        ?.left
-                        ? 0.2
-                        : 1,
-                    }}
-                    checked={showHasCheck}
-                    disabled={
-                      !canvasConfigState[currentShuiyinIndex]?.[0]?.left
-                    }
-                    onChange={(e) => {
-                      setShowHasCheck(e.detail.value);
-                    }}
-                  />
-                </View>
-              )}
-              {disableTrueCode && (
-                <View className="shantui-btns" style={{ marginBottom: "10px" }}>
-                  <View style={{ marginRight: "10px" }}>
-                    是否需要右下角防伪码下标
-                  </View>
-                  <Switch
-                    style={{
-                      transform: "scale(0.7)",
-                      opacity: !canvasConfigState[currentShuiyinIndex]?.[0]
-                        ?.right
-                        ? 0.2
-                        : 1,
-                    }}
-                    checked={showTrueCode}
-                    disabled={
-                      !canvasConfigState[currentShuiyinIndex]?.[0]?.right
-                    }
-                    onChange={(e) => {
-                      setShowTrueCode(e.detail.value);
-                    }}
-                  />
-                </View>
-              )} */}
-              {/* <View className="shantui-btns" style={{ marginBottom: "10px" }}>
-                <View style={{ marginRight: "10px", color: "#f22c3d" }}>
-                  所有水印都无法验真，只是样子比较像，请注意使用风险！
-                </View>
-              </View> */}
             </View>
           </AtFloatLayout>
-          {/*  +++++++++++++++++++++++  */}
-          {/*  +++++++++++++++++++++++  */}
-          {/*  +++++++++++++++++++++++  */}
-          {/*  +++++++++++++++++++++++  */}
-          {/*  +++++++++++++++++++++++  */}
-          {/*  +++++++++++++++++++++++  */}
-          {/*  +++++++++++++++++++++++  */}
-          {/*  +++++++++++++++++++++++  */}
           <AtFloatLayout
             isOpened={showFloatLayout}
             title="水印选择、修改"
@@ -1987,8 +1929,6 @@ const CameraPage = () => {
             ) : (
               <View className="shuiyin-list shuiyin-list-no-grid">
                 <View className="input-item">
-                  {/* <Switch checked={showInput} onChange={handleSwitchChange} /> */}
-                  {/* {showInput && <Input placeholder="请输入内容" />} */}
                   <AtCard title="时间">
                     <Picker
                       mode="date"
@@ -2028,128 +1968,136 @@ const CameraPage = () => {
                       ></Input>
                     </View>
                   </AtCard>
-                  {disableTrueCode && (
-                    <AtCard title="左下角已验证下标">
-                      <View className="picker" style={{ height: "50px" }}>
-                        <Text>是否显示： </Text>
+                  {disableTrueCode &&
+                    canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
+                      <AtCard title="左下角已验证下标">
+                        <View className="picker" style={{ height: "50px" }}>
+                          <Text>是否显示： </Text>
 
-                        <Switch
-                          style={{
-                            transform: "scale(0.7)",
-                            opacity: !canvasConfigState[
-                              currentShuiyinIndex
-                            ]?.[0]?.left
-                              ? 0.2
-                              : 1,
+                          <Switch
+                            style={{
+                              transform: "scale(0.7)",
+                              opacity: !canvasConfigState[
+                                currentShuiyinIndex
+                              ]?.[0]?.left
+                                ? 0.2
+                                : 1,
+                            }}
+                            checked={showHasCheck}
+                            onChange={(e) => {
+                              setShowHasCheck(e.detail.value);
+                            }}
+                          />
+                        </View>
+                      </AtCard>
+                    )}
+                  {disableTrueCode &&
+                    canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
+                      <AtCard title="右下角防伪下标">
+                        <View className="picker" style={{ height: "50px" }}>
+                          <Text>是否显示： </Text>
+                          <Switch
+                            style={{
+                              transform: "scale(0.7)",
+                              opacity: !canvasConfigState[
+                                currentShuiyinIndex
+                              ]?.[0]?.right
+                                ? 0.2
+                                : 1,
+                            }}
+                            checked={showTrueCode}
+                            disabled={
+                              !canvasConfigState[currentShuiyinIndex]?.[0]
+                                ?.right
+                            }
+                            onChange={(e) => {
+                              setShowTrueCode(e.detail.value);
+                            }}
+                          />
+                        </View>
+                      </AtCard>
+                    )}
+                  {canvasConfigState[currentShuiyinIndex]?.[0]?.title && (
+                    <AtCard title="标题">
+                      <View className="picker">
+                        <Text>标题： </Text>
+                        <Input
+                          className="input"
+                          value={title}
+                          maxlength={8}
+                          clear={true}
+                          onInput={(e) => {
+                            debounce(setTitle(e.detail.value), 100);
                           }}
-                          checked={showHasCheck}
-                          disabled={
-                            !canvasConfigState[currentShuiyinIndex]?.[0]?.left
-                          }
-                          onChange={(e) => {
-                            setShowHasCheck(e.detail.value);
-                          }}
-                        />
+                        ></Input>
                       </View>
                     </AtCard>
                   )}
-                  {disableTrueCode && (
-                    <AtCard title="右下角防伪下标">
-                      <View className="picker" style={{ height: "50px" }}>
-                        <Text>是否显示： </Text>
-                        <Switch
-                          style={{
-                            transform: "scale(0.7)",
-                            opacity: !canvasConfigState[
-                              currentShuiyinIndex
-                            ]?.[0]?.right
-                              ? 0.2
-                              : 1,
+                  {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
+                    <AtCard title="天气">
+                      <View className="picker">
+                        <Text>天气&温度： </Text>
+                        <Input
+                          className="input"
+                          value={weather}
+                          maxlength={8}
+                          clear={true}
+                          onInput={(e) => {
+                            isWeatherEdited = true;
+                            debounce(setWeather(e.detail.value), 100);
                           }}
-                          checked={showTrueCode}
-                          disabled={
-                            !canvasConfigState[currentShuiyinIndex]?.[0]?.right
-                          }
-                          onChange={(e) => {
-                            setShowTrueCode(e.detail.value);
-                          }}
-                        />
+                        ></Input>
                       </View>
                     </AtCard>
                   )}
-                  <AtCard title="标题">
-                    <View className="picker">
-                      <Text>标题： </Text>
-                      <Input
-                        className="input"
-                        value={title}
-                        maxlength={8}
-                        clear={true}
-                        onInput={(e) => {
-                          debounce(setTitle(e.detail.value), 100);
-                        }}
-                      ></Input>
-                    </View>
-                  </AtCard>
-                  <AtCard title="天气">
-                    <View className="picker">
-                      <Text>天气&温度： </Text>
-                      <Input
-                        className="input"
-                        value={weather}
-                        maxlength={8}
-                        clear={true}
-                        onInput={(e) => {
-                          isWeatherEdited = true;
-                          debounce(setWeather(e.detail.value), 100);
-                        }}
-                      ></Input>
-                    </View>
-                  </AtCard>
 
-                  <AtCard title="经纬度">
-                    <View className="picker" style={{ height: "50px" }}>
-                      <Text>是否显示： </Text>
+                  {canvasConfigState[currentShuiyinIndex]?.[0]?.jingweidu && (
+                    <>
+                      <AtCard title="经纬度">
+                        <View className="picker" style={{ height: "50px" }}>
+                          <Text>是否显示： </Text>
 
-                      <Switch
-                        style={{ transform: "scale(0.7)" }}
-                        checked={hideJw}
-                        onChange={(e) => {
-                          setHideJw(e.detail.value);
-                        }}
-                      />
-                    </View>
-                  </AtCard>
-                  <AtCard title="经度">
-                    <View className="picker">
-                      <Text>经度： </Text>
-                      <Input
-                        className="input"
-                        value={longitude}
-                        maxlength={14}
-                        clear={true}
-                        type="number"
-                        onInput={(e) => {
-                          debounce(setLongitude(e.detail.value), 100);
-                        }}
-                      ></Input>
-                    </View>
-                  </AtCard>
-                  <AtCard title="纬度">
-                    <View className="picker">
-                      <Text>纬度： </Text>
-                      <Input
-                        className="input"
-                        value={latitude}
-                        type="number"
-                        maxlength={14}
-                        clear={true}
-                        onInput={(e) => {
-                          debounce(setLatitude(e.detail.value), 100);
-                        }}
-                      ></Input>
-                    </View>
-                  </AtCard>
+                          <Switch
+                            style={{ transform: "scale(0.7)" }}
+                            checked={hideJw}
+                            onChange={(e) => {
+                              setHideJw(e.detail.value);
+                            }}
+                          />
+                        </View>
+                      </AtCard>
+                      <AtCard title="经度">
+                        <View className="picker">
+                          <Text>经度： </Text>
+                          <Input
+                            className="input"
+                            value={longitude}
+                            maxlength={14}
+                            clear={true}
+                            type="number"
+                            onInput={(e) => {
+                              debounce(setLongitude(e.detail.value), 100);
+                            }}
+                          ></Input>
+                        </View>
+                      </AtCard>
+                      <AtCard title="纬度">
+                        <View className="picker">
+                          <Text>纬度： </Text>
+                          <Input
+                            className="input"
+                            value={latitude}
+                            type="number"
+                            maxlength={14}
+                            clear={true}
+                            onInput={(e) => {
+                              debounce(setLatitude(e.detail.value), 100);
+                            }}
+                          ></Input>
+                        </View>
+                      </AtCard>
+                    </>
+                  )}
                 </View>
               </View>
             )}
@@ -2161,7 +2109,7 @@ const CameraPage = () => {
                   marginTop: "20px",
                 }}
               >
-                更多样式开发中...
+                更多水印样式开发中...
               </Text>
             )}
           </AtFloatLayout>
