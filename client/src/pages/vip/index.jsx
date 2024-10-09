@@ -73,7 +73,7 @@ const UserInfo = ({ userInfo, price }) => {
     const [key, title, amount, text = ""] = item.split("|");
     return {
       key,
-      title: `${title}会员${amount}元，`,
+      title: `${title}会员${amount}元`,
       price: amount,
       text,
     };
@@ -227,17 +227,26 @@ const UserInfo = ({ userInfo, price }) => {
                       checked={price.current === item.key}
                     />
                   </View>
-                  <View className="vip-title">
+                  <View
+                    className="vip-title"
+                    style={{
+                      color: item.key === price.current ? "#f22c3d" : "",
+                    }}
+                  >
                     <Text>{item.title}</Text>
                     {item.text && (
                       <Text
                         style={{
                           fontSize: "15px",
                           fontStyle: "italic",
-                          color: item.key === "year" ? "#f22c3d" : "",
                         }}
                       >
-                        平均每月{item.text}元{item.key === "year" && "，推荐"}
+                        {item.key !== "1day" &&
+                          item.key !== "never" &&
+                          "，平均每月" +
+                            item.text +
+                            "元" +
+                            (item.key === "year" ? "，推荐" : "")}
                       </Text>
                     )}
                   </View>
@@ -250,6 +259,16 @@ const UserInfo = ({ userInfo, price }) => {
       <View style={{ width: "100%", marginTop: "20px" }}>
         {fuckShenHe === false && (
           <View>
+            <View
+              style={{
+                color: "#f22c",
+                fontSize: "14px",
+                textAlign: "center",
+                marginBottom: "5px",
+              }}
+            >
+              为防止失联，开通会员后，请输入正确的手机号。
+            </View>
             <Button
               style={{
                 background: "linear-gradient(45deg,#536DFE, #64B5F6)",
@@ -407,7 +426,7 @@ const Index = () => {
           ) {
             Taro.showModal({
               title: "提示",
-              content: "购买成功，请重新进入小程序，客服微信 Jason_sory",
+              content: "购买成功",
               showCancel: false,
               success: (res) => {
                 if (res.confirm) {
@@ -441,13 +460,12 @@ const Index = () => {
       cloud.callFunction({
         name: "getPrice",
         success: function (res) {
-          Taro.hideLoading()
+          Taro.hideLoading();
           setPrice(res.result.data);
         },
       });
     };
     init();
-
   }, []);
   return (
     <View className="index">
