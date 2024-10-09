@@ -36,6 +36,7 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
+    
   },
   "simulatorPluginLibVersion": {},
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
