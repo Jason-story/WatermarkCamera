@@ -172,8 +172,8 @@ const generateCanvasConfig = ({
                           const img = canvas.createImage();
                           img.src = "/" + imgInfo.path;
                           img.onload = () => {
-                            const imgWidth = (imgInfo.width / dpr) * 0.5;
-                            const imgHeight = (imgInfo.height / dpr) * 0.5;
+                            const imgWidth = (imgInfo.width / 3) * 0.5;
+                            const imgHeight = (imgInfo.height / 3) * 0.5;
                             const canvasWidth = canvas.width / dpr;
                             const canvasHeight = canvas.height / dpr;
                             const x = canvasWidth - imgWidth;
