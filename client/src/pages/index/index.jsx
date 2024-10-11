@@ -1215,6 +1215,63 @@ const CameraPage = () => {
                 </View>
               </View>
             )}
+ {allAuth && (
+              <View
+                className="logo-wrap"
+                style={{
+                  top:
+                    showFloatLayout || showSettingFloatLayout
+                      ? (canvasConfigState[currentShuiyinIndex]?.[0].logoY -
+                          0.45) *
+                          ((screenWidth / 3) * 4) +
+                        "px"
+                      : canvasConfigState[currentShuiyinIndex]?.[0].logoY *
+                          ((screenWidth / 3) * 4) +
+                        "px",
+                }}
+                onClick={() => {
+                  uploadLogo();
+                }}
+              >
+                {logoPath && (
+                  <Image
+                    src={Jianhao}
+                    onClick={(e) => {
+                      setLogoPath("");
+                      app.$app.globalData.config.logoConfig = null;
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                    style={{
+                      position: "absolute",
+                      right: "-13px",
+                      top: "-13px",
+                      width: "26px",
+                      height: "26px",
+                    }}
+                  ></Image>
+                )}
+                {logoPath ? (
+                  <Image
+                    className="logo"
+                    src={logoPath}
+                    style={{
+                      height: logoHeight + "px",
+                      width: logoWidth + "px",
+                    }}
+                  ></Image>
+                ) : (
+                  <View className="add-pic-wrap">
+                    <Image
+                      className="add-pic"
+                      src={AddPic}
+                      style={{ width: "50px", height: "50px" }}
+                    ></Image>
+                    <Text>上传logo</Text>
+                  </View>
+                )}
+              </View>
+            )}
 
             {allAuth && (
               <View

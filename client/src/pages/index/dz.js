@@ -247,7 +247,7 @@ const generateCanvasConfig = ({
         img: Shuiyin4,
         width: width - 20,
         height: 112,
-        logoY: 0.55,
+        logoY: 0.6,
         name: "定制-水印相机",
         position: "center",
         // vip: true,
@@ -447,7 +447,7 @@ const generateCanvasConfig = ({
         name: "定制-今日水印相机-打卡",
         left: true,
         right: true,
-        logoY: 0.55,
+        logoY: 0.6,
         height: (locationName, hideJw) => {
           const baseHeight = 88; // 110 * 0.8
           const lineHeight = 17; // 21.25 * 0.8
@@ -643,7 +643,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin7,
         name: "免费-工程记录-3",
-        logoY: 0.55,
+        logoY: 0.6,
         right: true,
         jingweidu:true,
         height: () => {
@@ -878,7 +878,7 @@ const generateCanvasConfig = ({
         img: Shuiyin6,
         width: width - 20,
         height: 128, // Adjusted from 160
-        logoY: 0.55,
+        logoY: 0.6,
         name: "定制-水印相机",
         position: "center",
       },
