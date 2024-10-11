@@ -290,7 +290,7 @@ const generateCanvasConfig = ({
         name: "定制-今日水印相机-打卡",
         left: true,
         right: true,
-        logoY: 0.55,
+        logoY: 0.6,
         height: () => {
           return 110;
         },
@@ -511,7 +511,7 @@ const generateCanvasConfig = ({
         img: Shuiyin1,
         right: true,
         left: true,
-        logoY: 0.55,
+        logoY: 0.6,
         jingweidu: true,
         weather: true,
         name: "免费-时间天气-1",
@@ -673,7 +673,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin2,
         width: 204, // Adjusted from 255
-        logoY: 0.55,
+        logoY: 0.6,
         name: "免费-打卡-2",
         jingweidu: true,
         height: locationName.length > 16 ? 104 : 88, // Adjusted from 130 and 110
@@ -888,7 +888,7 @@ const generateCanvasConfig = ({
           },
         ],
         img: Shuiyin3,
-        logoY: 0.55,
+        logoY: 0.6,
         right: true,
         title: true,
         weather: true,
