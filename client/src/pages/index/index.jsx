@@ -50,6 +50,7 @@ import AddMyApp from "../../images/add-my-app.png";
 import Arrow from "../../images/left-arrow.png";
 import VideoImg from "../../images/video.png";
 import Jianhao from "../../images/jianhao.png";
+import AddPic from "../../images/add-pic.png";
 
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
@@ -1210,7 +1211,8 @@ const CameraPage = () => {
                 </View>
               </View>
             )}
-            {/* {allAuth && (
+
+            {allAuth && (
               <View
                 className="logo-wrap"
                 style={{
@@ -1266,7 +1268,7 @@ const CameraPage = () => {
                   </View>
                 )}
               </View>
-            )} */}
+            )}
 
             {allAuth && (
               <View
