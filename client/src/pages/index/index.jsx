@@ -1797,17 +1797,6 @@ const CameraPage = () => {
                           </View>
                         )}
                       </View>
-                      {index === 1 && userInfo.type === "default" && (
-                        <View
-                          className="extra-view"
-                          style={{ width: "100%!important" }}
-                        >
-                          <AdCustom
-                            unitId="adunit-d0875afa048b3342"
-                            style={{ width: "100%!important" }}
-                          />
-                        </View>
-                      )}
                     </React.Fragment>
                   );
                 })}
