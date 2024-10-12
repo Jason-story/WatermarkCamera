@@ -1704,7 +1704,7 @@ const CameraPage = () => {
                   if (!phone) {
                     return;
                   }
-                  await Taro.cloud.callFunction({
+                  await cloud.callFunction({
                     name: "addUser",
                     data: {
                       phone,
@@ -1713,6 +1713,7 @@ const CameraPage = () => {
                   Taro.setStorage({ key: "phoneInputed", data: true });
                 }}
               >
+
                 提交
               </Button>
             </AtModalAction>

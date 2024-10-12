@@ -172,7 +172,7 @@ const MergeCanvas = () => {
         });
       } else {
         // 图片合成
-        res = await Taro.cloud.callFunction({
+        res = await cloud.callFunction({
           name: "mergeImage",
           data: {
             firstImageFileID,
@@ -193,13 +193,30 @@ const MergeCanvas = () => {
             duration: 5000,
           });
         }
+
       }
     } catch (error) {
       setLoading(false);
-      Taro.showToast({
-        title: "处理失败，请重试",
-        icon: "error",
-        duration: 3000,
+      // Taro.showToast({
+      //   title: "处理失败，请重试",
+      //   icon: "error",
+      //   duration: 3000,
+      // });
+      Taro.showModal({
+        title: "处理失败，请联系客服",
+        content: JSON.stringify(error),
+        showCancel: true,
+        cancelText: "取消",
+        cancelColor: "#000000",
+        confirmText: "确定",
+        confirmColor: "#3CC51F",
+        success: function (res) {
+          if (res.confirm) {
+            console.log("用户点击确定");
+          } else if (res.cancel) {
+            console.log("用户点击取消");
+          }
+        },
       });
       console.error("合并图片失败:", error);
       throw error;
