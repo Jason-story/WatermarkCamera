@@ -4,6 +4,7 @@ import Dunpai2 from "../../images/dunpai-2.png";
 import Icon2 from "../../images/icon-2.png";
 import Icon1 from "../../images/icon-1.png";
 import Icon3 from "../../images/icon-3.png";
+import Icon4 from "../../images/icon-4.png";
 
 const generateCanvasConfig = ({
   hours,
@@ -156,7 +157,7 @@ const generateCanvasConfig = ({
               Taro.getImageInfo({
                 src: Icon3,
                 success: (imgInfo) => {
-                  console.log('imgInfo: ', imgInfo);
+                  console.log("imgInfo: ", imgInfo);
                   const img = canvas.createImage();
                   img.src = "/" + imgInfo.path;
                   img.onload = () => {
@@ -205,11 +206,11 @@ const generateCanvasConfig = ({
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
               Taro.getImageInfo({
-                src: 'https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345',
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
                 success: (imgInfo) => {
-                  console.log('imgI222nfo: ', imgInfo);
+                  console.log("imgI222nfo: ", imgInfo);
                   const img = canvas.createImage();
-                  img.src =imgInfo.path;
+                  img.src = imgInfo.path;
                   img.onload = () => {
                     const imgWidth = imgInfo.width / 3 + 5;
                     const imgHeight = imgInfo.height / 3 + 5;
@@ -281,7 +282,6 @@ const generateCanvasConfig = ({
                 }
                 return lines;
               };
-
               const locationLines = getLocationLines(locationName);
               Taro.getImageInfo({
                 src: Icon1,
@@ -292,17 +292,17 @@ const generateCanvasConfig = ({
                     ctx.drawImage(img, 8.5 * 0.8, 0, width * 0.8, imgHeight);
 
                     // 绘制时间（调整大小为原来的0.7倍）
-                    ctx.font = "bold 16px sans-serif"; // 24 * 0.7
+                    ctx.font = "bold 15px sans-serif"; // 24 * 0.7
                     const gradient = ctx.createLinearGradient(
                       65 * 0.7,
                       3.6 * 0.7,
                       65 * 0.7,
                       25 * 0.7
                     );
-                    gradient.addColorStop(0, "#497cbd");
-                    gradient.addColorStop(1, "#000");
+                    gradient.addColorStop(0, "#4b81c5");
+                    gradient.addColorStop(1, "#181818");
                     ctx.fillStyle = gradient;
-                    ctx.fillText(`${hours}:${minutes}`, 62 * 0.7, 28 * 0.7);
+                    ctx.fillText(`${hours}:${minutes}`, 63 * 0.7, 28 * 0.7);
 
                     // 绘制位置名称
                     ctx.font = "bold 10.88px sans-serif"; // 13.6 * 0.8
@@ -482,23 +482,39 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, rectConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-
               const { width, height, color, text } = rectConfig;
               // 清除画布
               ctx.clearRect(0, 0, width, height);
-              // 设置字体
-              ctx.font = "bold 56px fzlt"; // Reduced from 80px
+              Taro.getImageInfo({
+                src: Icon4,
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = "/" + imgInfo.path;
+                  img.onload = () => {
+                    const imgWidth = imgInfo.width / 3;
+                    const imgHeight = imgInfo.height / 3;
 
-              // 计算文本宽度和位置以居中
-              const textWidth = ctx.measureText(text).width;
-              const x = (width - textWidth) / 2;
-              const y = height / 2 + 7; // Adjusted from 10
+                    // 获取画布的宽高
+                    const canvasWidth = canvas.width / dpr;
+                    const canvasHeight = canvas.height / dpr;
 
-              // 设置文字颜色（浅黑色）
-              ctx.fillStyle = "rgba(255, 255, 255, .2)";
-
-              // 填充文字
-              ctx.fillText(text, x, y);
+                    // 计算图片绘制的坐标，使其位于中心
+                    const x = (canvasWidth - imgWidth) / 2;
+                    const y = (canvasHeight - imgHeight) / 2;
+                    ctx.shadowColor = "none";
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.shadowBlur = 0;
+                    ctx.drawImage(img, x, y, imgWidth, imgHeight);
+                  };
+                  img.onerror = (err) => {
+                    console.error("图片加载失败", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("获取图片信息失败", err);
+                },
+              });
             },
             args: [
               {
@@ -645,7 +661,7 @@ const generateCanvasConfig = ({
         name: "免费-工程记录-3",
         logoY: 0.6,
         right: true,
-        jingweidu:true,
+        jingweidu: true,
         height: () => {
           return (width * 4) / 3;
         },
@@ -835,7 +851,7 @@ const generateCanvasConfig = ({
               const { fontSize, color, text, position } = config;
               // 绘制图片
               Taro.getImageInfo({
-                src: 'https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345',
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = imgInfo.path;
