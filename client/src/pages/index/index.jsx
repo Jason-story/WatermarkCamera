@@ -684,7 +684,7 @@ const CameraPage = () => {
     // 相机
     if (camera) {
       // 上传时间位置 保存
-      Taro.cloud.callFunction({
+      cloud.callFunction({
         name: "updateSavedConfig",
         data: {
           saveConfig: {

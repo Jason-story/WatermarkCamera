@@ -316,7 +316,7 @@ const MergeCanvas = () => {
         success: async function (res) {
           // 照片换色来的 免费使用
           if (app.$app.globalData.zphsId) {
-            Taro.cloud.callFunction({
+            cloud.callFunction({
               name: "zphsGetUser",
               data: {
                 type: "add",
