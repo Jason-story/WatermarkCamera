@@ -619,7 +619,7 @@ const CameraPage = () => {
       return;
     }
 
-    if (!shuiyinxiangjiName && (showHasCheck || showTrueCode)) {
+    if (!shuiyinxiangjiName && showTrueCode) {
       Taro.showToast({
         title: "请修改右下角水印后再拍照",
         icon: "none",
@@ -803,7 +803,7 @@ const CameraPage = () => {
       });
       return;
     }
-    if (!shuiyinxiangjiName && (showHasCheck || showTrueCode)) {
+    if (!shuiyinxiangjiName && showTrueCode) {
       Taro.showToast({
         title: "请修改右下角水印后再选取照片",
         icon: "none",
