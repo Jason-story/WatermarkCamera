@@ -116,12 +116,12 @@ const MergeCanvas = () => {
         // 视频合成
         Taro.cloud.callContainer({
           config: {
-            env: "prod-9g5wnloybe56625b",
+            env: "prod-5gzgeq4v5542b918",
           },
           path: "/process",
           header: {
             // "X-WX-SERVICE": "merge-video",
-            "X-WX-SERVICE": "express-loc1",
+            "X-WX-SERVICE": "express-ptcb",
             "content-type": "application/json",
           },
           method: "POST",
