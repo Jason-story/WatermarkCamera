@@ -523,24 +523,6 @@ const CameraPage = () => {
     permissions.writePhotosAlbum,
   ]);
 
-  const refreshCurrentPage = () => {
-    const currentPages = Taro.getCurrentPages();
-    const currentPage = currentPages[currentPages.length - 1];
-    const { route, options } = currentPage;
-
-    // 构建带参数的路径
-    const params = Object.keys(options)
-      .map((key) => `${key}=${options[key]}`)
-      .join("&");
-    const url = params ? `/${route}?${params}` : `/${route}`;
-    Taro.setStorageSync("noReload", "true");
-    const result = Taro.getStorageSync("noReload");
-    console.log("result2222: ", result);
-    // 重定向到当前页面，保留参数
-    Taro.redirectTo({
-      url: url,
-    });
-  };
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
