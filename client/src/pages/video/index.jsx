@@ -14,20 +14,20 @@ const app = getApp();
 
 const QRCodePage = () => {
   const [files, setFiles] = useState([
-    "cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/kit-cms-upload/1727530025982__output.mp4",
+    "cloud://ly-9gjnymq6d9d7ca23.6c79-ly-9gjnymq6d9d7ca23-1330414900/kit-cms-upload/1727530025982__output.mp4",
   ]);
   useEffect(() => {
     Taro.showLoading();
     // 小程序启动时调用此函数
     const init = async () => {
       await Taro.cloud.init({
-        env: "sy-4gecj2zw90583b8b",
+        env: "ly-9gjnymq6d9d7ca23",
       });
       Taro.cloud.callFunction({
         name: "getMyVideos",
         success: function (res) {
           Taro.hideLoading();
-          console.log('res.result.data: ', res.result);
+          console.log("res.result.data: ", res.result);
           if (res.result?.data?.length > 0) {
             setFiles(res.result.data);
           }
@@ -133,7 +133,7 @@ const QRCodePage = () => {
                   下载
                 </Button>
                 {item ===
-                "cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/kit-cms-upload/1727530025982__output.mp4" ? (
+                "cloud://ly-9gjnymq6d9d7ca23.6c79-ly-9gjnymq6d9d7ca23-1330414900/kit-cms-upload/1727530025982__output.mp4" ? (
                   <View
                     style={{
                       textAlign: "center",

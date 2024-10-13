@@ -150,7 +150,7 @@ const UserInfo = ({ userInfo, price }) => {
       trade_order_id: +new Date() + "",
       total_fee: price,
       title: "水印相机会员",
-      notify_url: "https://1326662896-fn1j227njy-sh.scf.tencentcs.com",
+      notify_url: "https://1330414900-iztv1ielys.ap-shanghai.tencentscf.com",
       time: Math.round(new Date() / 1000),
       nonce_str: getRandomNumber(),
       type: "JSAPI",

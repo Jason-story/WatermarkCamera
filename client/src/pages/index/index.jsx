@@ -183,7 +183,7 @@ const CameraPage = () => {
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
     const init = async () => {
       await Taro.cloud.init({
-        env: "sy-4gecj2zw90583b8b",
+        env: "ly-9gjnymq6d9d7ca23",
       });
 
       Taro.cloud.callFunction({
