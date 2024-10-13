@@ -1670,7 +1670,7 @@ const CameraPage = () => {
                       textAlign: "center",
                     }}
                   >
-                    <View>请先添加水印名称后再拍照或相册选图，如下图所示</View>
+                    <View>请先填写水印名称后再拍照或相册选图，如下图所示</View>
                     <Image
                       src={Icon8}
                       style={{
@@ -1698,7 +1698,7 @@ const CameraPage = () => {
                   setEdit(true);
                 }}
               >
-                去修改
+                去填写
               </Button>
             </AtModalAction>
           </AtModal>
