@@ -185,7 +185,6 @@ const CameraPage = () => {
       await Taro.cloud.init({
         env: "sy-4gecj2zw90583b8b",
       });
-
       Taro.cloud.callFunction({
         name: "addUser",
         success: function (res) {
@@ -621,7 +620,11 @@ const CameraPage = () => {
       return;
     }
 
-    if (!shuiyinxiangjiName && showTrueCode) {
+    if (
+      !shuiyinxiangjiName &&
+      showTrueCode &&
+      canvasConfigState[currentShuiyinIndex]?.[0]?.right
+    ) {
       setShuiyinNameModal(true);
       return;
     }
@@ -802,7 +805,11 @@ const CameraPage = () => {
       return;
     }
     // 显示填写水印弹出提示
-    if (!shuiyinxiangjiName && showTrueCode) {
+    if (
+      !shuiyinxiangjiName &&
+      showTrueCode &&
+      canvasConfigState[currentShuiyinIndex]?.[0]?.right
+    ) {
       setShuiyinNameModal(true);
       return;
     }
@@ -1576,44 +1583,43 @@ const CameraPage = () => {
               </View>
             </View>
           </View>
-          <View
-            className="button-group"
-            style={{
-              margin: "10px auto",
-              padding: "0 15px",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
-          >
-            {["图片水印", "视频水印"].map((option, index) => {
-              if (fuckShenHe) {
-                return null;
-              }
-              return (
-                <AtButton
-                  key={option}
-                  onClick={() => handleSelect(option)}
-                  style={{
-                    color: "white",
-                    border: "none",
-                    borderRadius: "25px",
-                    padding: "0 20px",
-                    fontSize: "30rpx",
-                    cursor: "pointer",
-                    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                  }}
-                  className={`button-group__button ${
-                    selected === option
-                      ? "button-group__button--selected selected_" + index
-                      : ""
-                  }`}
-                >
-                  {option.slice(0, 2) + "加" + option.slice(2)}
-                </AtButton>
-              );
-            })}
-          </View>
+          {fuckShenHe === false && (
+            <View
+              className="button-group"
+              style={{
+                margin: "0px auto 10px auto",
+                padding: "0 15px",
+                width: "100%",
+                boxSizing: "border-box",
+              }}
+            >
+              {["图片水印", "视频水印"].map((option, index) => {
+                return (
+                  <AtButton
+                    key={option}
+                    onClick={() => handleSelect(option)}
+                    style={{
+                      color: "white",
+                      border: "none",
+                      borderRadius: "25px",
+                      padding: "0 20px",
+                      fontSize: "30rpx",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                    }}
+                    className={`button-group__button ${
+                      selected === option
+                        ? "button-group__button--selected selected_" + index
+                        : ""
+                    }`}
+                  >
+                    {option.slice(0, 2) + "加" + option.slice(2)}
+                  </AtButton>
+                );
+              })}
+            </View>
+          )}
           <View
             className="bottom-btns"
             style={{ marginTop: "5px", paddingBottom: "20px" }}
@@ -1825,7 +1831,6 @@ const CameraPage = () => {
                   />
                 </View>
               </View>
-
             </AtModalContent>
             <AtModalAction>
               <Button
@@ -1842,7 +1847,7 @@ const CameraPage = () => {
                       icon: "none",
                       duration: 2000,
                     });
-                    return
+                    return;
                   }
                   setAddPhoneNumber(false);
 
@@ -1890,7 +1895,7 @@ const CameraPage = () => {
               </View>
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
-                  保存位置、标题等数据，下次使用时无需再次修改
+                  保存位置、标题、相机名称等数据，下次使用时无需再次修改
                 </View>
                 <Switch
                   style={{ transform: "scale(0.7)" }}
