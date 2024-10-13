@@ -619,13 +619,9 @@ const CameraPage = () => {
       return;
     }
 
-    if (
-      !shuiyinxiangjiName &&
-      (canvasConfigState[currentShuiyinIndex]?.[0]?.left ||
-        canvasConfigState[currentShuiyinIndex]?.[0]?.right)
-    ) {
+    if (!shuiyinxiangjiName && (showHasCheck || showTrueCode)) {
       Taro.showToast({
-        title: "请先修改右下角水印后再拍照",
+        title: "请修改右下角水印后再拍照",
         icon: "none",
         duration: 3000,
       });
@@ -807,13 +803,9 @@ const CameraPage = () => {
       });
       return;
     }
-    if (
-      !shuiyinxiangjiName &&
-      (canvasConfigState[currentShuiyinIndex]?.[0]?.left ||
-        canvasConfigState[currentShuiyinIndex]?.[0]?.right)
-    ) {
+    if (!shuiyinxiangjiName && (showHasCheck || showTrueCode)) {
       Taro.showToast({
-        title: "请先修改右下角水印后再选取照片",
+        title: "请修改右下角水印后再选取照片",
         icon: "none",
         duration: 3000,
       });
