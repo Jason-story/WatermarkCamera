@@ -13,7 +13,6 @@ import {
   Label,
   Input,
   Ad,
-  AdCustom,
 } from "@tarojs/components";
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
@@ -496,23 +495,6 @@ const CameraPage = () => {
 
     // 执行权限检查后的后续操作
     getAuth();
-  };
-  const refreshCurrentPage = () => {
-    const currentPages = Taro.getCurrentPages();
-    const currentPage = currentPages[currentPages.length - 1];
-    const { route, options } = currentPage;
-
-    // 构建带参数的路径
-    const params = Object.keys(options)
-      .map((key) => `${key}=${options[key]}`)
-      .join("&");
-    const url = params ? `/${route}?${params}` : `/${route}`;
-    Taro.setStorageSync("noReload", "true");
-    const result = Taro.getStorageSync("noReload");
-    // 重定向到当前页面，保留参数
-    Taro.redirectTo({
-      url: url,
-    });
   };
   useEffect(() => {
     const context = createCameraContext();
@@ -1892,8 +1874,7 @@ const CameraPage = () => {
                     return
                   }
                   setAddPhoneNumber(false);
-
-                  await Taro.cloud.callFunction({
+                  await cloud.callFunction({
                     name: "addUser",
                     data: {
                       phone,
