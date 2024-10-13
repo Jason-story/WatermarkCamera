@@ -26,6 +26,26 @@ page {
   bottom: 0;
   left: 0;
 }
+.editTips {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 42px;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.4);
+  animation: fadeOut 1s ease-in-out 5s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
 .mask-box {
   position: absolute;
   bottom: 15px;
@@ -295,6 +315,9 @@ page {
 .vip {
   margin-left: 30%;
 }
+.shuiyin-list-no-grid{
+  display: block !important;
+}
 .imgVideoShuiyin {
   display: flex;
   align-items: center;
@@ -322,10 +345,6 @@ page {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-
-}
-.shuiyin-list-no-grid{
-  display: block !important;
 }
 .extra-view {
   ad-custom {
@@ -352,7 +371,6 @@ page {
     justify-content: center;
     align-items: center;
   }
-
   .shuiyin-item-img {
     display: flex;
     justify-content: center;
@@ -365,7 +383,6 @@ page {
   image {
     width: 90%;
   }
-
   .vip-arrow {
     width: 90px;
     height: 90px;
@@ -421,26 +438,6 @@ picker,
   width: 90%;
 }
 
-.editTips {
-  position: absolute;
-  top: 70%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 42px;
-  color: rgba(255, 255, 255, 0.7);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.4);
-  animation: fadeOut 1s ease-in-out 5s forwards;
-}
-
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
 .tips {
   color: #333;
   margin-bottom: 30px;
@@ -745,4 +742,5 @@ picker,
       }
     }
   }
+
 }

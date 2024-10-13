@@ -49,12 +49,11 @@ import Shuiyin4 from "../../images/shuiyin-4.png";
 import Shuiyin5 from "../../images/shuiyin-5.png";
 import Shuiyin6 from "../../images/shuiyin-6.png";
 import AddMyApp from "../../images/add-my-app.png";
-import { appConfigs } from "../../appConfig.js";
-import AddPic from "../../images/add-pic.png";
 import Arrow from "../../images/left-arrow.png";
 import VideoImg from "../../images/video.png";
 import Jianhao from "../../images/jianhao.png";
-
+import AddPic from "../../images/add-pic.png";
+import { appConfigs } from "../../appConfig.js";
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
@@ -65,13 +64,10 @@ const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始�
 const dayD = String(now.getDate()).padStart(2, "0");
 const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
-const secondsD = String(now.getSeconds()).padStart(2, "0");
-const maxDate = new Date("2030-01-01");
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
-
+const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
 const fs = wx.getFileSystemManager();
 const CACHE_LIMIT = 30 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
-
 function getCacheSize(path) {
   let totalSize = 0;
   try {
@@ -142,6 +138,7 @@ const CameraPage = () => {
   const [hours, setHours] = useState(hoursD);
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
+  app.$app.globalData.zphsId = zphsId;
 
   // 水印选择
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
@@ -178,9 +175,9 @@ const CameraPage = () => {
   const [logoWidth, setLogoWidth] = useState(0);
   const [logoHeight, setLogoHeight] = useState(0);
   const [rateModal, setRateModal] = useState(false);
+  const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
-
   let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -257,17 +254,16 @@ const CameraPage = () => {
         },
       });
       // 邀请存档
-      // if (inviteId) {
-      //   Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
-
-      //   cloud.callFunction({
-      //     name: "invite",
-      //     data: {
-      //       invite_id: inviteId,
-      //     },
-      //   });
-      // }
-      // cloud.callFunction({
+      if (inviteId) {
+        Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
+        // Taro.cloud.callFunction({
+        //   name: "invite",
+        //   data: {
+        //     invite_id: inviteId,
+        //   },
+        // });
+      }
+      // Taro.cloud.callFunction({
       //   name: "getPrice",
       //   success: function (res) {
       //     setPrice(res.result.data);
@@ -527,6 +523,24 @@ const CameraPage = () => {
     permissions.writePhotosAlbum,
   ]);
 
+  const refreshCurrentPage = () => {
+    const currentPages = Taro.getCurrentPages();
+    const currentPage = currentPages[currentPages.length - 1];
+    const { route, options } = currentPage;
+
+    // 构建带参数的路径
+    const params = Object.keys(options)
+      .map((key) => `${key}=${options[key]}`)
+      .join("&");
+    const url = params ? `/${route}?${params}` : `/${route}`;
+    Taro.setStorageSync("noReload", "true");
+    const result = Taro.getStorageSync("noReload");
+    console.log("result2222: ", result);
+    // 重定向到当前页面，保留参数
+    Taro.redirectTo({
+      url: url,
+    });
+  };
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
@@ -539,7 +553,9 @@ const CameraPage = () => {
       ) {
         setAllAuth(true);
         const result = Taro.getStorageSync("noReload");
+        console.log("result: ", result);
         if (!result) {
+          console.log(222222);
           // 在需要刷新的地方调用这个函数
           refreshCurrentPage();
         }
@@ -548,6 +564,19 @@ const CameraPage = () => {
       }
     });
   };
+
+  useEffect(() => {
+    if (allAuth) {
+      setTimeout(() => {
+        Taro.showToast({
+          title: "点击水印可编辑时间地点",
+          icon: "none",
+          duration: 7000,
+        });
+      }, 1000);
+    }
+  }, [allAuth]);
+
   useEffect(() => {
     if (allAuth) {
       setTimeout(() => {
@@ -644,10 +673,18 @@ const CameraPage = () => {
       return;
     }
 
+    if (!shuiyinxiangjiName && showTrueCode) {
+      Taro.showToast({
+        title: "请修改右下角水印后再拍照",
+        icon: "none",
+        duration: 3000,
+      });
+      return;
+    }
     // 相机
     if (camera) {
       // 上传时间位置 保存
-      cloud.callFunction({
+      Taro.cloud.callFunction({
         name: "updateSavedConfig",
         data: {
           saveConfig: {
@@ -658,6 +695,7 @@ const CameraPage = () => {
             longitude,
             showTrueCode,
             showHasCheck,
+            shuiyinxiangjiName,
           },
         },
       });
@@ -738,6 +776,7 @@ const CameraPage = () => {
         longitude,
         showTrueCode,
         showHasCheck,
+        shuiyinxiangjiName,
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
@@ -747,6 +786,7 @@ const CameraPage = () => {
         setLongitude(longitude);
         setShowHasCheck(showHasCheck);
         setShowTrueCode(showTrueCode);
+        setShuiyinxiangjiName(shuiyinxiangjiName);
       }, 1000);
     }
     saveChange(userInfo?.saveConfig?.isSaved);
@@ -817,7 +857,14 @@ const CameraPage = () => {
       });
       return;
     }
-
+    if (!shuiyinxiangjiName && showTrueCode) {
+      Taro.showToast({
+        title: "请修改右下角水印后再选取照片",
+        icon: "none",
+        duration: 3000,
+      });
+      return;
+    }
     if (selected === "图片水印") {
       Taro.chooseMedia({
         count: 1,
@@ -850,7 +897,6 @@ const CameraPage = () => {
       });
     } else {
       // 视频水印
-      console.log("222222222222223333333 ");
       Taro.chooseMedia({
         count: 1,
         mediaType: ["video"],
@@ -885,9 +931,6 @@ const CameraPage = () => {
           });
 
           // takePhoto(false, filePath, true);
-        },
-        fail: (err) => {
-          console.log("33333333: ", err);
         },
       });
     }
@@ -940,6 +983,7 @@ const CameraPage = () => {
               showHasCheck,
               showTrueCode,
               disableTrueCode,
+              shuiyinxiangjiName,
             });
 
             const canvasConfigDz = generateCanvasConfig({
@@ -964,13 +1008,17 @@ const CameraPage = () => {
               showHasCheck,
               showTrueCode,
               disableTrueCode,
+              shuiyinxiangjiName,
             });
             canvasConfig.push(...canvasConfigDz);
             // 设置canvas宽高
             canvas.width = res[0].width * dpr;
             canvas.height = res[0].height * dpr;
             // 设置边框样式
-
+            // canvas.addEventListener("touchstart", () => {
+            //   console.log(4444)
+            //   setEdit(true);
+            // });
             ctx.scale(dpr, dpr);
             setCanvasConfigState(canvasConfig);
 
@@ -1073,10 +1121,27 @@ const CameraPage = () => {
     showHasCheck,
     // 右下角防伪码
     showTrueCode,
+    shuiyinxiangjiName,
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
   };
+  // useEffect(() => {
+  //   if (allAuth) {
+  //     Taro.getStorage({ key: "hasVisited" })
+  //       .then(() => {
+  //         // 用户已经访问过小程序，不显示弹窗
+  //         setShowFirstModal(false);
+  //       })
+  //       .catch(() => {
+  //         // 用户第一次访问小程序，显示弹窗
+  //         setShowFirstModal(true);
+  //         // 设置标志位，表示用户已经访问过小程序
+  //         Taro.setStorage({ key: "hasVisited", data: true });
+  //       });
+  //   }
+  // }, [allAuth]);
+
   const uploadLogo = () => {
     Taro.chooseMedia({
       count: 1,
@@ -1136,6 +1201,18 @@ const CameraPage = () => {
         canvasConfigState[currentShuiyinIndex]?.[0].logoY;
     }
   }, [currentShuiyinIndex]);
+
+  // useEffect(() => {
+  //   if (
+  //     !shuiyinxiangjiName.includes("今日") ||
+  //     !shuiyinxiangjiName.includes("马克")
+  //   )
+  //     Taro.showToast({
+  //       title: "名称请填写 衿日水印相机 或者 码可水印相机",
+  //       icon: "error",
+  //     });
+  // }, [shuiyinxiangjiName]);
+
   return (
     <View className="container">
       {userInfo.black ? (
@@ -1197,6 +1274,16 @@ const CameraPage = () => {
 
             {allAuth && (
               <View className="camera-btns">
+                {/* <View className="red-envelope-container">
+            <Image
+              className="red-envelope-image"
+              src={Hongbaoicon} // 替换为您的实际图片URL
+              onClick={() => {
+                Taro.navigateTo({ url: "/pages/meituan/index" });
+              }}
+            />
+          </View> */}
+
                 <View className="zoom-box">
                   <View className="zoom-text" onClick={zoomClick}>
                     {zoomLevel}
@@ -1215,7 +1302,8 @@ const CameraPage = () => {
                 </View>
               </View>
             )}
- {allAuth && (
+
+            {allAuth && (
               <View
                 className="logo-wrap"
                 style={{
@@ -1282,11 +1370,11 @@ const CameraPage = () => {
               >
                 <Canvas
                   id="fishCanvas"
-                  type="2d"
                   onTouchStart={(e) => {
                     setShowFloatLayout(!showFloatLayout);
                     setEdit(true);
                   }}
+                  type="2d"
                   // className={canvasImg ? "hideCanvas" : ""}
                   style={{
                     width: screenWidth,
@@ -1513,6 +1601,24 @@ const CameraPage = () => {
                 {/* <View>隐藏防伪下标？</View> */}
                 <View>请点击设置</View>
               </View>
+              {/* {!fuckShenHe && (
+                <Image
+                  src={qrCodePath}
+                  onClick={() => {
+                    wx.previewImage({
+                      current: qrCodePath, // 当前显示图片的http链接
+                      urls: [qrCodePath], // 需要预览的图片http链接列表
+                    });
+                  }}
+                  style={{
+                    marginLeft: "30px",
+                    position: "absolute",
+                    right: "-7px",
+                    width: "60px",
+                    height: "74px",
+                  }}
+                ></Image>
+              )} */}
             </View>
             <View className="tools-bar-inner">
               <View
@@ -1532,8 +1638,28 @@ const CameraPage = () => {
                 ></Image>
                 <Text>视频</Text>
               </View>
+              {/* <View
+                className={
+                  "xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
+              >
+                <Image
+                  src={Setting}
+                  className="xiangceIcon"
+                  onClick={() => {
+                    setShowSetting(!showSetting);
+                    setShowSettingFloatLayout(!showSettingFloatLayout);
+                  }}
+                ></Image>
+                <Text>设置</Text>
+              </View> */}
             </View>
           </View>
+          {/* <View className="media-type-box">
+            <View>图片</View>
+            <View>视频</View>
+          </View> */}
           <View className="button-group">
             {["图片水印", "视频水印"].map((option, index) => {
               if (fuckShenHe) {
@@ -1564,7 +1690,80 @@ const CameraPage = () => {
               );
             })}
           </View>
-          <View className="bottom-btns" style={{ marginTop: "5px" }}></View>
+          <View className="bottom-btns" style={{ marginTop: "5px" }}>
+            {/* {!fuckShenHe && (
+              <Button
+                onClick={() => {
+                  // setInviteModalShow(true);
+                  Taro.navigateTo({
+                    url: "/pages/vip/index",
+                  });
+                }}
+                className="share-btn"
+                type="button"
+              >
+                <Text>增加次数</Text>
+                <View id="container-stars">
+                  <View id="stars"></View>
+                </View>
+                <View id="glow">
+                  <View className="circle"></View>
+                  <View className="circle"></View>
+                </View>
+              </Button>
+            )} */}
+            {/* <Button
+              className="share-btn"
+              onClick={() => {
+                Taro.navigateTo({
+                  url: "/pages/jiaocheng/index",
+                });
+              }}
+              style={{
+                background: "linear-gradient(45deg, #ff512f, #dd2476)",
+                color: "white",
+                border: "none",
+                borderRadius: "30px",
+                padding: "5px 16px",
+                fontSize: "32rpx",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                marginBottom: "10px",
+                height: "46px",
+                marginTop: "10px",
+              }}
+            >
+              使用教程
+            </Button> */}
+          </View>
+          {/* <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
+            <AtModalHeader>
+              <Text>提示</Text>
+            </AtModalHeader>
+            <AtModalContent>
+              <View className="modal-list">
+                <View className="txt1">
+                  好友打开您的分享链接，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
+                  <View style={{ color: "#f22c3d" }}>
+                    如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
+                  </View>
+                </View>
+              </View>
+            </AtModalContent>
+            <AtModalAction>
+              <Button
+                onClick={() => {
+                  setInviteModalShow(false);
+                }}
+                style={{ flex: 1 }}
+              >
+                关闭
+              </Button>
+              <Button openType="share" type="button" style={{ flex: 1 }}>
+                去群聊邀请
+              </Button>
+            </AtModalAction>
+          </AtModal> */}
           <AtModal isOpened={videoModal} closeOnClickOverlay={true}>
             <AtModalHeader>
               <Text>提示</Text>
@@ -1704,7 +1903,7 @@ const CameraPage = () => {
                   if (!phone) {
                     return;
                   }
-                  await cloud.callFunction({
+                  await Taro.cloud.callFunction({
                     name: "addUser",
                     data: {
                       phone,
@@ -1713,11 +1912,18 @@ const CameraPage = () => {
                   Taro.setStorage({ key: "phoneInputed", data: true });
                 }}
               >
-
                 提交
               </Button>
             </AtModalAction>
           </AtModal>
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
+          {/*  -----------------------  */}
           <AtFloatLayout
             isOpened={showSetting}
             title="设置"
@@ -1802,7 +2008,7 @@ const CameraPage = () => {
                 })}
               </View>
             ) : (
-              <View className="shuiyin-list shuiyin-list-no-grid">
+              <View className="shuiyin-list shuiyin-list-no-grid edit-box">
                 <View className="input-item">
                   <AtCard title="时间">
                     <Picker
@@ -1843,6 +2049,65 @@ const CameraPage = () => {
                       ></Input>
                     </View>
                   </AtCard>
+                  {
+                    <View className="syxjName-box">
+                      <AtCard title="水印相机名称，自动显示在左右下角(必填)">
+                        <View className="picker">
+                          <Text>水印相机名称： </Text>
+                          <Input
+                            className="input"
+                            value={shuiyinxiangjiName}
+                            maxlength={10}
+                            clear={true}
+                            onInput={(e) => {
+                              debounce(
+                                setShuiyinxiangjiName(
+                                  e.detail.value.replace(/\s+/g, "")
+                                ),
+                                10
+                              );
+                            }}
+                          ></Input>
+                        </View>
+                        <View
+                          style={{
+                            marginTop: "10px",
+                            color: "#7b7878",
+                            fontSize: "14px",
+                          }}
+                        >
+                          最长6个字，填写需要的APP名称（昨日水印相机、牛克水印相机）
+                        </View>
+                      </AtCard>
+                    </View>
+                  }
+                  {disableTrueCode &&
+                    canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
+                      <AtCard title="右下角防伪下标">
+                        <View className="picker" style={{ height: "50px" }}>
+                          <Text>是否显示： </Text>
+                          <Switch
+                            style={{
+                              transform: "scale(0.7)",
+                              opacity: !canvasConfigState[
+                                currentShuiyinIndex
+                              ]?.[0]?.right
+                                ? 0.2
+                                : 1,
+                            }}
+                            checked={showTrueCode}
+                            disabled={
+                              !canvasConfigState[currentShuiyinIndex]?.[0]
+                                ?.right
+                            }
+                            onChange={(e) => {
+                              setShowTrueCode(e.detail.value);
+                            }}
+                          />
+                        </View>
+                      </AtCard>
+                    )}
+
                   {disableTrueCode &&
                     canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
                       <AtCard title="左下角已验证下标">
@@ -1865,28 +2130,6 @@ const CameraPage = () => {
                         </View>
                       </AtCard>
                     )}
-                  {disableTrueCode &&
-                    canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
-                      <AtCard title="右下角防伪下标">
-                        <View className="picker" style={{ height: "50px" }}>
-                          <Text>是否显示： </Text>
-                          <Switch
-                            style={{
-                              transform: "scale(0.7)",
-                              opacity: !canvasConfigState[
-                                currentShuiyinIndex
-                              ]?.[0]?.right
-                                ? 0.2
-                                : 1,
-                            }}
-                            checked={showTrueCode}
-                            onChange={(e) => {
-                              setShowTrueCode(e.detail.value);
-                            }}
-                          />
-                        </View>
-                      </AtCard>
-                    )}
                   {canvasConfigState[currentShuiyinIndex]?.[0]?.title && (
                     <AtCard title="标题">
                       <View className="picker">
@@ -1903,7 +2146,6 @@ const CameraPage = () => {
                       </View>
                     </AtCard>
                   )}
-
                   {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
                     <AtCard title="天气">
                       <View className="picker">

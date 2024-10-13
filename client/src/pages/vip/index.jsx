@@ -49,11 +49,17 @@ const getCloud = async () => {
 
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const UserInfo = ({ userInfo, price }) => {
-  console.log("price: ", price);
   if (!price) {
     return;
   }
-  let fuckShenHe = app.$app.globalData.fuckShenHe;
+
+  let fuckShenHe;
+  if (price.isSecondShow) {
+    fuckShenHe = app.$app.globalData.fuckShenHe;
+  } else {
+    fuckShenHe = true;
+  }
+
   const config = app.$app.globalData.config;
 
   let inviteId = Taro.getCurrentInstance().router.params.id || "";

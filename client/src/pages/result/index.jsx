@@ -193,15 +193,9 @@ const MergeCanvas = () => {
             duration: 5000,
           });
         }
-
       }
     } catch (error) {
       setLoading(false);
-      // Taro.showToast({
-      //   title: "处理失败，请重试",
-      //   icon: "error",
-      //   duration: 3000,
-      // });
       Taro.showModal({
         title: "处理失败，请联系客服",
         content: JSON.stringify(error),
@@ -218,7 +212,6 @@ const MergeCanvas = () => {
           }
         },
       });
-      console.error("合并图片失败:", error);
       throw error;
     }
   }
@@ -321,6 +314,19 @@ const MergeCanvas = () => {
       await cloud.callFunction({
         name: "addUser",
         success: async function (res) {
+          // 照片换色来的 免费使用
+          if (app.$app.globalData.zphsId) {
+            Taro.cloud.callFunction({
+              name: "zphsGetUser",
+              data: {
+                type: "add",
+                zphsId: app.$app.globalData.zphsId,
+              },
+              success: function (res) {
+                config.isFree = true;
+              },
+            });
+          }
           if (res.result.data.invite_count == undefined) {
             res.result.data.invite_count = 0;
           }
