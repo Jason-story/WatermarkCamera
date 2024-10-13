@@ -146,7 +146,7 @@ const CameraPage = () => {
   const [update, setUpdate] = useState(false);
   const [showHasCheck, setShowHasCheck] = useState(undefined);
   const [showTrueCode, setShowTrueCode] = useState(undefined);
-  const [mainCopyright, setmainCopyright] = useState(null);
+  const [disableTrueCode, setdisableTrueCode] = useState(null);
   const [showSettingFloatLayout, setShowSettingFloatLayout] = useState(false);
   const [logoPath, setLogoPath] = useState("");
   const [logoWidth, setLogoWidth] = useState(0);
@@ -923,7 +923,7 @@ const CameraPage = () => {
               canvas,
               showHasCheck,
               showTrueCode,
-              mainCopyright,
+              disableTrueCode,
               shuiyinxiangjiName,
             });
 
@@ -948,7 +948,7 @@ const CameraPage = () => {
               dpr,
               showHasCheck,
               showTrueCode,
-              mainCopyright,
+              disableTrueCode,
               shuiyinxiangjiName,
             });
             canvasConfig.push(...canvasConfigDz);
@@ -1033,8 +1033,8 @@ const CameraPage = () => {
   }, [app.$app.globalData.config.showTrueCode]);
 
   useEffect(() => {
-    setmainCopyright(app.$app.globalData.config.mainCopyright);
-  }, [app.$app.globalData.config.mainCopyright]);
+    setdisableTrueCode(app.$app.globalData.config.disableTrueCode);
+  }, [app.$app.globalData.config.disableTrueCode]);
 
   useEffect(() => {
     drawMask();
@@ -1582,10 +1582,9 @@ const CameraPage = () => {
               margin: "10px auto",
               padding: "0 15px",
               width: "100%",
-              boxSizing:'border-box'
+              boxSizing: "border-box",
             }}
           >
-
             {["图片水印", "视频水印"].map((option, index) => {
               if (fuckShenHe) {
                 return null;
@@ -1812,7 +1811,7 @@ const CameraPage = () => {
             <AtModalContent>
               <View className="modal-list">
                 <View className="txt1">
-                  尊敬的会员，为防止失联，请填写您的手机号，如有变动第一时间通知您！
+                  尊敬的会员，为防止失联，请填一定填写正确手机号，如有变动第一时间通知您！如果填写错误请联系客服修改。
                 </View>
                 <View>
                   <AtInput
@@ -1826,24 +1825,27 @@ const CameraPage = () => {
                   />
                 </View>
               </View>
+
             </AtModalContent>
             <AtModalAction>
               <Button
-                onClick={() => {
-                  setAddPhoneNumber(false);
-                }}
-                style={{ flex: 1 }}
-              >
-                关闭
-              </Button>
-              <Button
                 style={{ flex: 1 }}
                 onClick={async () => {
+                  const validatePhone = (phoneNumber) => {
+                    // 中国大陆手机号的正则
+                    const phoneRegex = /^1[3-9]\d{9}$/;
+                    return phoneRegex.test(phoneNumber);
+                  };
+                  if (!validatePhone(phone)) {
+                    Taro.showToast({
+                      title: "手机号格式不正确",
+                      icon: "none",
+                      duration: 2000,
+                    });
+                    return
+                  }
                   setAddPhoneNumber(false);
 
-                  if (!phone) {
-                    return;
-                  }
                   await Taro.cloud.callFunction({
                     name: "addUser",
                     data: {
@@ -2023,7 +2025,7 @@ const CameraPage = () => {
                       </AtCard>
                     </View>
                   }
-                  {mainCopyright &&
+                  {disableTrueCode &&
                     canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
                       <AtCard title="右下角防伪下标">
                         <View className="picker" style={{ height: "50px" }}>
@@ -2050,7 +2052,7 @@ const CameraPage = () => {
                       </AtCard>
                     )}
 
-                  {mainCopyright &&
+                  {disableTrueCode &&
                     canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
                       <AtCard title="左下角已验证下标">
                         <View className="picker" style={{ height: "50px" }}>
