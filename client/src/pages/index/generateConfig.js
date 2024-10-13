@@ -1054,7 +1054,6 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin3,
         logoY: 0.6,
-        right: true,
         title: true,
         weather: true,
         right: true,
@@ -1128,7 +1127,7 @@ const generateCanvasConfig = ({
                     ctx.drawImage(img, 10, 0, imgWidth / 2.5, imgHeight / 2.5);
                     // 绘制日期和时间
                     const { year, month, day, weekly, minutes, hours } = config;
-                    ctx.font = "normal 24px fzlt"; // 文字大小14px
+                    ctx.font = "bold 24px fzlt"; // 文字大小14px
                     ctx.fillStyle = "#2a4360"; // 文字颜色
                     // 计算文本宽度
                     const timeText = `${hours}:${minutes}`;

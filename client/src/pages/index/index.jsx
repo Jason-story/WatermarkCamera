@@ -54,6 +54,8 @@ import VideoImg from "../../images/video.png";
 import Jianhao from "../../images/jianhao.png";
 import AddPic from "../../images/add-pic.png";
 import { appConfigs } from "../../appConfig.js";
+import Icon8 from "../../images/icon-8.jpg";
+
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
@@ -122,6 +124,7 @@ const getCloud = async () => {
 let canTakePhotoFlag = false;
 
 const CameraPage = () => {
+  const [shuiyinNameModal, setShuiyinNameModal] = useState(false);
   const [cameraContext, setCameraContext] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [allAuth, setAllAuth] = useState(false);
@@ -169,7 +172,7 @@ const CameraPage = () => {
   const [update, setUpdate] = useState(false);
   const [showHasCheck, setShowHasCheck] = useState(undefined);
   const [showTrueCode, setShowTrueCode] = useState(undefined);
-  const [disableTrueCode, setDisableTrueCode] = useState(null);
+  const [disableTrueCode, setdisableTrueCode] = useState(null);
   const [showSettingFloatLayout, setShowSettingFloatLayout] = useState(false);
   const [logoPath, setLogoPath] = useState("");
   const [logoWidth, setLogoWidth] = useState(0);
@@ -523,6 +526,24 @@ const CameraPage = () => {
     permissions.writePhotosAlbum,
   ]);
 
+  const refreshCurrentPage = () => {
+    const currentPages = Taro.getCurrentPages();
+    const currentPage = currentPages[currentPages.length - 1];
+    const { route, options } = currentPage;
+
+    // 构建带参数的路径
+    const params = Object.keys(options)
+      .map((key) => `${key}=${options[key]}`)
+      .join("&");
+    const url = params ? `/${route}?${params}` : `/${route}`;
+    Taro.setStorageSync("noReload", "true");
+    const result = Taro.getStorageSync("noReload");
+    console.log("result2222: ", result);
+    // 重定向到当前页面，保留参数
+    Taro.redirectTo({
+      url: url,
+    });
+  };
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
@@ -553,19 +574,7 @@ const CameraPage = () => {
         Taro.showToast({
           title: "点击水印可编辑时间地点",
           icon: "none",
-          duration: 7000,
-        });
-      }, 1000);
-    }
-  }, [allAuth]);
-
-  useEffect(() => {
-    if (allAuth) {
-      setTimeout(() => {
-        Taro.showToast({
-          title: "点击水印可编辑时间地点",
-          icon: "none",
-          duration: 7000,
+          duration: 5000,
         });
       }, 1000);
     }
@@ -656,11 +665,7 @@ const CameraPage = () => {
     }
 
     if (!shuiyinxiangjiName && showTrueCode) {
-      Taro.showToast({
-        title: "请修改右下角水印后再拍照",
-        icon: "none",
-        duration: 3000,
-      });
+      setShuiyinNameModal(true);
       return;
     }
     // 相机
@@ -839,12 +844,9 @@ const CameraPage = () => {
       });
       return;
     }
+    // 显示填写水印弹出提示
     if (!shuiyinxiangjiName && showTrueCode) {
-      Taro.showToast({
-        title: "请修改右下角水印后再选取照片",
-        icon: "none",
-        duration: 3000,
-      });
+      setShuiyinNameModal(true);
       return;
     }
     if (selected === "图片水印") {
@@ -1079,7 +1081,7 @@ const CameraPage = () => {
   }, [app.$app.globalData.config.showTrueCode]);
 
   useEffect(() => {
-    setDisableTrueCode(app.$app.globalData.config.disableTrueCode);
+    setdisableTrueCode(app.$app.globalData.config.disableTrueCode);
   }, [app.$app.globalData.config.disableTrueCode]);
 
   useEffect(() => {
@@ -1620,29 +1622,17 @@ const CameraPage = () => {
                 ></Image>
                 <Text>视频</Text>
               </View>
-              {/* <View
-                className={
-                  "xiangce " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Image
-                  src={Setting}
-                  className="xiangceIcon"
-                  onClick={() => {
-                    setShowSetting(!showSetting);
-                    setShowSettingFloatLayout(!showSettingFloatLayout);
-                  }}
-                ></Image>
-                <Text>设置</Text>
-              </View> */}
             </View>
           </View>
-          {/* <View className="media-type-box">
-            <View>图片</View>
-            <View>视频</View>
-          </View> */}
-          <View className="button-group">
+          <View
+            className="button-group"
+            style={{
+              margin: "10px auto",
+              padding: "0 15px",
+              width: "100%",
+              boxSizing: "border-box",
+            }}
+          >
             {["图片水印", "视频水印"].map((option, index) => {
               if (fuckShenHe) {
                 return null;
@@ -1672,29 +1662,11 @@ const CameraPage = () => {
               );
             })}
           </View>
-          <View className="bottom-btns" style={{ marginTop: "5px" }}>
-            {/* {!fuckShenHe && (
-              <Button
-                onClick={() => {
-                  // setInviteModalShow(true);
-                  Taro.navigateTo({
-                    url: "/pages/vip/index",
-                  });
-                }}
-                className="share-btn"
-                type="button"
-              >
-                <Text>增加次数</Text>
-                <View id="container-stars">
-                  <View id="stars"></View>
-                </View>
-                <View id="glow">
-                  <View className="circle"></View>
-                  <View className="circle"></View>
-                </View>
-              </Button>
-            )} */}
-            {/* <Button
+          <View
+            className="bottom-btns"
+            style={{ marginTop: "5px", paddingBottom: "20px" }}
+          >
+            <Button
               className="share-btn"
               onClick={() => {
                 Taro.navigateTo({
@@ -1706,28 +1678,55 @@ const CameraPage = () => {
                 color: "white",
                 border: "none",
                 borderRadius: "30px",
-                padding: "5px 16px",
-                fontSize: "32rpx",
+                padding: "0 20px",
+                fontSize: "28rpx",
                 cursor: "pointer",
                 transition: "transform 0.2s, box-shadow 0.2s",
-                marginBottom: "10px",
-                height: "46px",
+                height: "39px",
                 marginTop: "10px",
               }}
             >
               使用教程
-            </Button> */}
+            </Button>
           </View>
-          {/* <AtModal isOpened={inviteModalShow} closeOnClickOverlay={false}>
+          <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={true}>
             <AtModalHeader>
               <Text>提示</Text>
+              <View
+                onClick={() => {
+                  setShowFloatLayout(!showFloatLayout);
+                }}
+                style={{
+                  position: "absolute",
+                  right: "15px",
+                  top: "10px",
+                  width: "20px",
+                  height: "20px",
+                }}
+              >
+                <Image
+                  style={{ width: "100%", height: "100%" }}
+                  src={Close}
+                ></Image>
+              </View>
             </AtModalHeader>
             <AtModalContent>
               <View className="modal-list">
-                <View className="txt1">
-                  好友打开您的分享链接，则您获得一次免费次数，每个好友仅限一次，每天累计最多获赠三次。
-                  <View style={{ color: "#f22c3d" }}>
-                    如果您已经开通会员，好友通过您的分享开通会员，将获得他开通额度的20%（可提现），如果您未开通会员，则只能获得5%
+                <View className="">
+                  <View
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    <View>请先填写水印名称后再拍照或相册选图，如下图所示</View>
+                    <Image
+                      src={Icon8}
+                      style={{
+                        marginTop: "10px",
+                        width: "280px",
+                        height: "80px",
+                      }}
+                    ></Image>
                   </View>
                 </View>
               </View>
@@ -1735,17 +1734,23 @@ const CameraPage = () => {
             <AtModalAction>
               <Button
                 onClick={() => {
-                  setInviteModalShow(false);
+                  setShuiyinNameModal(false);
                 }}
-                style={{ flex: 1 }}
               >
-                关闭
+                取消
               </Button>
-              <Button openType="share" type="button" style={{ flex: 1 }}>
-                去群聊邀请
+              <Button
+                onClick={() => {
+                  setShowFloatLayout(!showFloatLayout);
+                  setShuiyinNameModal(false);
+                  setEdit(true);
+                }}
+              >
+                去填写
               </Button>
             </AtModalAction>
-          </AtModal> */}
+          </AtModal>
+
           <AtModal isOpened={videoModal} closeOnClickOverlay={true}>
             <AtModalHeader>
               <Text>提示</Text>
@@ -1853,7 +1858,7 @@ const CameraPage = () => {
             <AtModalContent>
               <View className="modal-list">
                 <View className="txt1">
-                  尊敬的会员，为防止失联，请填写您的手机号，如有变动第一时间通知您！
+                  尊敬的会员，为防止失联，请填一定填写正确手机号，如有变动第一时间通知您！如果填写错误请联系客服修改。
                 </View>
                 <View>
                   <AtInput
@@ -1867,24 +1872,27 @@ const CameraPage = () => {
                   />
                 </View>
               </View>
+
             </AtModalContent>
             <AtModalAction>
               <Button
-                onClick={() => {
-                  setAddPhoneNumber(false);
-                }}
-                style={{ flex: 1 }}
-              >
-                关闭
-              </Button>
-              <Button
                 style={{ flex: 1 }}
                 onClick={async () => {
+                  const validatePhone = (phoneNumber) => {
+                    // 中国大陆手机号的正则
+                    const phoneRegex = /^1[3-9]\d{9}$/;
+                    return phoneRegex.test(phoneNumber);
+                  };
+                  if (!validatePhone(phone)) {
+                    Taro.showToast({
+                      title: "手机号格式不正确",
+                      icon: "none",
+                      duration: 2000,
+                    });
+                    return
+                  }
                   setAddPhoneNumber(false);
 
-                  if (!phone) {
-                    return;
-                  }
                   await Taro.cloud.callFunction({
                     name: "addUser",
                     data: {
@@ -2041,6 +2049,7 @@ const CameraPage = () => {
                             value={shuiyinxiangjiName}
                             maxlength={10}
                             clear={true}
+                            placeholder="点击添加"
                             onInput={(e) => {
                               debounce(
                                 setShuiyinxiangjiName(
