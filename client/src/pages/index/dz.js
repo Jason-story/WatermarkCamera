@@ -30,7 +30,7 @@ const generateCanvasConfig = ({
   canvas,
   showHasCheck,
   showTrueCode,
-  disableTrueCode,
+  mainCopyright,
   shuiyinxiangjiName,
 }) => {
   let width = "";
@@ -341,7 +341,7 @@ const generateCanvasConfig = ({
                     ctx.lineTo(9.52, dateY);
                     ctx.stroke();
 
-                    if (disableTrueCode && showHasCheck) {
+                    if (mainCopyright && showHasCheck) {
                       // 绘制下标 (移动到左下角)
                       ctx.font = "bold 10px sans-serif";
                       ctx.fillStyle = "#c9cbcd";
@@ -374,7 +374,7 @@ const generateCanvasConfig = ({
                     }
 
                     // 防伪图标
-                    if (disableTrueCode && showTrueCode) {
+                    if (mainCopyright && showTrueCode) {
                       // 如果没有填写水印相机名称 则展示上传图标
                       if (!shuiyinxiangjiName) {
                         Taro.getImageInfo({
@@ -671,9 +671,9 @@ const generateCanvasConfig = ({
               ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
-              if (disableTrueCode && showTrueCode) {
+              if (mainCopyright && showTrueCode) {
                 // 防伪图标
-                if (disableTrueCode && showTrueCode) {
+                if (mainCopyright && showTrueCode) {
                   // 如果没有填写水印相机名称 则展示上传图标
                   if (!shuiyinxiangjiName) {
                     Taro.getImageInfo({
