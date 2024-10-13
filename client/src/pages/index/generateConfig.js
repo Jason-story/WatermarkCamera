@@ -3,11 +3,15 @@ import Mk1 from "../../images/mk-1.png";
 import Dunpai from "../../images/dunpai.png";
 import Dunpai2 from "../../images/dunpai-2.png";
 import Icon2 from "../../images/icon-2.png";
+import Icon2Back from "../../images/icon-2-back.png";
 import Icon5 from "../../images/icon-5.png";
 import Icon6 from "../../images/icon-6.png";
-import Mk2 from "../../images/mk-2.png";
 import Shuiyin8 from "../../images/shuiyin-8.png";
 import Shuiyin9 from "../../images/shuiyin-9.png";
+import Icon7 from "../../images/icon-7.png";
+import Mk2 from "../../images/mk-2.png";
+import Mk2Back from "../../images/mk-2-back.png";
+
 const generateCanvasConfig = ({
   hours,
   minutes,
@@ -29,6 +33,7 @@ const generateCanvasConfig = ({
   showHasCheck,
   showTrueCode,
   disableTrueCode,
+  shuiyinxiangjiName,
 }) => {
   function generateRandomString(length) {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 大写字母
@@ -61,7 +66,12 @@ const generateCanvasConfig = ({
     // 返回字符串
     return result.join("");
   }
-
+  // shuiyinxiangjiName = "今日水印";
+  if ((shuiyinxiangjiName || "").includes("今日水印")) {
+    shuiyinxiangjiName = "今日水印";
+  } else if ((shuiyinxiangjiName || "").includes("马克")) {
+    shuiyinxiangjiName = "马克";
+  }
   return [
     // 马克
     // 马克
@@ -129,8 +139,8 @@ const generateCanvasConfig = ({
                       ctx.font = "bold 10px sans-serif";
                       ctx.fillStyle = "#c9cbcd";
                       ctx.fillText(
-                        `马克相机已验证照片真实性`,
-                        28,
+                        shuiyinxiangjiName + `相机已验证照片真实性`,
+                        26,
                         canvas.height / dpr - 2
                       );
                       // 小盾牌图片 (移动到左下角)
@@ -151,67 +161,132 @@ const generateCanvasConfig = ({
                               imgHeight * 0.65
                             );
                           };
-                          img.onerror = (err) => {
-                            console.error(
-                              "Background image loading failed",
-                              err
-                            );
-                          };
-                        },
-                        fail: (err) => {
-                          console.error(
-                            "Failed to get background image info",
-                            err
-                          );
                         },
                       });
                     }
 
                     if (disableTrueCode && showTrueCode) {
-                      // 防伪图标 (保持不变)
-                      Taro.getImageInfo({
-                        src: Mk2,
-                        success: (imgInfo) => {
-                          const img = canvas.createImage();
-                          img.src = "/" + imgInfo.path;
-                          img.onload = () => {
-                            const imgWidth = (imgInfo.width / 3) * 0.5;
-                            const imgHeight = (imgInfo.height / 3) * 0.5;
-                            const canvasWidth = canvas.width / dpr;
-                            const canvasHeight = canvas.height / dpr;
-                            const x = canvasWidth - imgWidth;
-                            const y = canvasHeight - imgHeight;
-                            ctx.drawImage(
-                              img,
-                              x - 10,
-                              y - 10,
-                              imgWidth,
-                              imgHeight
-                            );
-                            //  绘制时间
-                            ctx.font = "bold 7px NotoSansMono";
-                            ctx.fillStyle = "#fff";
-                            ctx.clearRect(x - 35, 11, 100, 30);
-                            ctx.fillText(
-                              "防伪 " + generateRandomString(),
-                              x - 35,
-                              108
-                            );
-                          };
-                          img.onerror = (err) => {
-                            console.error(
-                              "Background image loading failed",
-                              err
-                            );
-                          };
-                        },
-                        fail: (err) => {
-                          console.error(
-                            "Failed to get background image info",
-                            err
-                          );
-                        },
-                      });
+                      // 防伪图标
+                      if (disableTrueCode && showTrueCode) {
+                        // 如果没有填写水印相机名称 则展示上传图标
+                        if (!shuiyinxiangjiName) {
+                          Taro.getImageInfo({
+                            src: Icon7,
+                            success: (imgInfo) => {
+                              const img = canvas.createImage();
+                              img.src = "/" + imgInfo.path;
+                              img.onload = () => {
+                                const imgWidth = imgInfo.width / 3;
+                                const imgHeight = imgInfo.height / 3;
+                                const canvasWidth = canvas.width / dpr;
+                                const canvasHeight = canvas.height / dpr;
+                                const x = canvasWidth - imgWidth - 20;
+                                const y = canvasHeight - imgHeight - 5;
+                                ctx.clearRect(
+                                  x + 40,
+                                  y + 16,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                                ctx.drawImage(
+                                  img,
+                                  x + 10,
+                                  y,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                              };
+                            },
+                          });
+                        } else if (shuiyinxiangjiName === "马克") {
+                          // 马克相机
+                          Taro.getImageInfo({
+                            src: Mk2Back,
+                            success: (imgInfo) => {
+                              const img = canvas.createImage();
+                              img.src = "/" + imgInfo.path;
+                              img.onload = () => {
+                                const imgWidth = (imgInfo.width / 3) * 0.5;
+                                const imgHeight = (imgInfo.height / 3) * 0.5;
+                                const canvasWidth = canvas.width / dpr;
+                                const canvasHeight = canvas.height / dpr;
+                                const x = canvasWidth - imgWidth;
+                                const y = canvasHeight - imgHeight;
+                                ctx.drawImage(
+                                  img,
+                                  x - 10,
+                                  y - 10,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                                ctx.font = "bold 11px NotoSansMono";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("马克", x + 5, y + 2);
+                                //  绘制防伪码
+                                ctx.font = "bold 7px NotoSansMono";
+                                ctx.fillStyle = "#fff";
+                                ctx.clearRect(
+                                  x - 40,
+                                  y - 10 + imgHeight + 10,
+                                  100,
+                                  30
+                                );
+                                ctx.fillText(
+                                  "防伪 " + generateRandomString(),
+                                  x - 35,
+                                  y - 10 + imgHeight + 8
+                                );
+                              };
+                            },
+                          });
+                        } else {
+                          // 今日水印
+                          Taro.getImageInfo({
+                            src: Icon2Back,
+                            success: (imgInfo) => {
+                              const img = canvas.createImage();
+                              img.src = "/" + imgInfo.path;
+                              img.onload = () => {
+                                const imgWidth = imgInfo.width / 3 + 5;
+                                const imgHeight = imgInfo.height / 3 + 5;
+                                const canvasWidth = canvas.width / dpr;
+                                const canvasHeight = canvas.height / dpr;
+                                const x = canvasWidth - imgWidth - 20;
+                                const y = canvasHeight - imgHeight - 5;
+                                ctx.clearRect(
+                                  x + 40,
+                                  y + 16,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                                ctx.drawImage(
+                                  img,
+                                  x + 40,
+                                  y + 16,
+                                  imgWidth * 0.7,
+                                  imgHeight * 0.7
+                                );
+                                // 绘制水印名字
+                                ctx.font = "bold 11px NotoSansMono";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText(
+                                  shuiyinxiangjiName,
+                                  x + 57,
+                                  y + 25
+                                );
+                                //  绘制防伪码
+                                ctx.font = "bold 6px NotoSansMono";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText(
+                                  generateRandomString(),
+                                  x + 55,
+                                  y + 47
+                                );
+                              };
+                            },
+                          });
+                        }
+                      }
                     }
                   };
                   img.onerror = (err) => {
@@ -308,54 +383,12 @@ const generateCanvasConfig = ({
               ctx.clearRect(0, 0, canvas.width, canvas.height);
               ctx.fillStyle = color;
               ctx.fillRect(rect[0], rect[1], rect[2], rect[3]);
-              if (disableTrueCode && showTrueCode) {
-                // 防伪图标 (unchanged)
-                Taro.getImageInfo({
-                  src: Icon2,
-                  success: (imgInfo) => {
-                    const img = canvas.createImage();
-                    img.src = "/" + imgInfo.path;
-                    img.onload = () => {
-                      const imgWidth = imgInfo.width / 3 + 5;
-                      const imgHeight = imgInfo.height / 3 + 5;
-
-                      // 获取画布的宽高
-                      const canvasWidth = canvas.width / dpr;
-                      const canvasHeight = canvas.height / dpr;
-
-                      // 计算图片绘制的坐标，使其位于右下角
-                      const x = canvasWidth - imgWidth - 20;
-                      const y = canvasHeight - imgHeight - 5;
-                      ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
-
-                      ctx.drawImage(
-                        img,
-                        x + 40,
-                        y + 16,
-                        imgWidth * 0.7,
-                        imgHeight * 0.7
-                      );
-                      //  绘制时间
-                      ctx.font = "bold 6px NotoSansMono";
-                      ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(), x + 52, y + 47);
-                    };
-                    img.onerror = (err) => {
-                      console.error("Background image loading failed", err);
-                    };
-                  },
-                  fail: (err) => {
-                    console.error("Failed to get background image info", err);
-                  },
-                });
-              }
-
               if (disableTrueCode && showHasCheck) {
                 // 绘制下标 (移动到左下角)
                 ctx.font = "bold 10px sans-serif";
                 ctx.fillStyle = "#c9cbcd";
                 ctx.fillText(
-                  `今日水印相机已验证 | 时间地点真实`,
+                  shuiyinxiangjiName + `相机已验证 | 时间地点真实`,
                   26,
                   canvas.height / dpr - 2
                 );
@@ -369,6 +402,7 @@ const generateCanvasConfig = ({
                     img.onload = () => {
                       const imgWidth = imgInfo.width / 3 + 5;
                       const imgHeight = imgInfo.height / 3 + 5;
+
                       ctx.drawImage(
                         img,
                         9,
@@ -377,14 +411,95 @@ const generateCanvasConfig = ({
                         imgHeight * 0.65
                       );
                     };
-                    img.onerror = (err) => {
-                      console.error("Background image loading failed", err);
-                    };
-                  },
-                  fail: (err) => {
-                    console.error("Failed to get background image info", err);
                   },
                 });
+              }
+
+              // 防伪图标
+              if (disableTrueCode && showTrueCode) {
+                // 如果没有填写水印相机名称 则展示上传图标
+                if (!shuiyinxiangjiName) {
+                  Taro.getImageInfo({
+                    src: Icon7,
+                    success: (imgInfo) => {
+                      const img = canvas.createImage();
+                      img.src = "/" + imgInfo.path;
+                      img.onload = () => {
+                        const imgWidth = imgInfo.width / 3;
+                        const imgHeight = imgInfo.height / 3;
+                        const canvasWidth = canvas.width / dpr;
+                        const canvasHeight = canvas.height / dpr;
+                        const x = canvasWidth - imgWidth - 20;
+                        const y = canvasHeight - imgHeight - 5;
+                        ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+                        ctx.drawImage(img, x + 10, y, imgWidth, imgHeight);
+                      };
+                    },
+                  });
+                } else if (shuiyinxiangjiName === "马克") {
+                  // 马克相机
+                  Taro.getImageInfo({
+                    src: Mk2Back,
+                    success: (imgInfo) => {
+                      const img = canvas.createImage();
+                      img.src = "/" + imgInfo.path;
+                      img.onload = () => {
+                        const imgWidth = (imgInfo.width / 3) * 0.5;
+                        const imgHeight = (imgInfo.height / 3) * 0.5;
+                        const canvasWidth = canvas.width / dpr;
+                        const canvasHeight = canvas.height / dpr;
+                        const x = canvasWidth - imgWidth;
+                        const y = canvasHeight - imgHeight;
+                        ctx.drawImage(img, x - 10, y - 10, imgWidth, imgHeight);
+                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.fillText("马克", x + 5, y + 2);
+                        //  绘制防伪码
+                        ctx.font = "bold 7px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.clearRect(x - 40, y - 10 + imgHeight + 10, 100, 30);
+                        ctx.fillText(
+                          "防伪 " + generateRandomString(),
+                          x - 35,
+                          y - 10 + imgHeight + 8
+                        );
+                      };
+                    },
+                  });
+                } else {
+                  // 今日水印
+                  Taro.getImageInfo({
+                    src: Icon2Back,
+                    success: (imgInfo) => {
+                      const img = canvas.createImage();
+                      img.src = "/" + imgInfo.path;
+                      img.onload = () => {
+                        const imgWidth = imgInfo.width / 3 + 5;
+                        const imgHeight = imgInfo.height / 3 + 5;
+                        const canvasWidth = canvas.width / dpr;
+                        const canvasHeight = canvas.height / dpr;
+                        const x = canvasWidth - imgWidth - 20;
+                        const y = canvasHeight - imgHeight - 5;
+                        ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+                        ctx.drawImage(
+                          img,
+                          x + 40,
+                          y + 16,
+                          imgWidth * 0.7,
+                          imgHeight * 0.7
+                        );
+                        // 绘制水印名字
+                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.fillText(shuiyinxiangjiName, x + 57, y + 25);
+                        //  绘制防伪码
+                        ctx.font = "bold 6px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.fillText(generateRandomString(), x + 55, y + 47);
+                      };
+                    },
+                  });
+                }
               }
             },
             args: [
@@ -808,44 +923,91 @@ const generateCanvasConfig = ({
               ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
-
+              // 防伪图标
               if (disableTrueCode && showTrueCode) {
-                Taro.getImageInfo({
-                  src: Icon2,
-                  success: (imgInfo) => {
-                    const img = canvas.createImage();
-                    img.src = "/" + imgInfo.path;
-                    img.onload = () => {
-                      const imgWidth = imgInfo.width / 3 + 5;
-                      const imgHeight = imgInfo.height / 3 + 5;
-
-                      const canvasWidth = canvas.width / dpr;
-                      const canvasHeight = canvas.height / dpr;
-
-                      const x = canvasWidth - imgWidth - 20;
-                      const y = canvasHeight - imgHeight - 5;
-                      ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
-
-                      ctx.drawImage(
-                        img,
-                        x + 40,
-                        y + 16,
-                        imgWidth * 0.7,
-                        imgHeight * 0.7
-                      );
-                      //  绘制时间
-                      ctx.font = "bold 6px NotoSansMono";
-                      ctx.fillStyle = "#fff";
-                      ctx.fillText(generateRandomString(), x + 52, y + 47);
-                    };
-                    img.onerror = (err) => {
-                      console.error("Background image loading failed", err);
-                    };
-                  },
-                  fail: (err) => {
-                    console.error("Failed to get background image info", err);
-                  },
-                });
+                // 如果没有填写水印相机名称 则展示上传图标
+                if (!shuiyinxiangjiName) {
+                  Taro.getImageInfo({
+                    src: Icon7,
+                    success: (imgInfo) => {
+                      const img = canvas.createImage();
+                      img.src = "/" + imgInfo.path;
+                      img.onload = () => {
+                        const imgWidth = imgInfo.width / 3;
+                        const imgHeight = imgInfo.height / 3;
+                        const canvasWidth = canvas.width / dpr;
+                        const canvasHeight = canvas.height / dpr;
+                        const x = canvasWidth - imgWidth - 20;
+                        const y = canvasHeight - imgHeight - 5;
+                        ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+                        ctx.drawImage(img, x + 10, y, imgWidth, imgHeight);
+                      };
+                    },
+                  });
+                } else if (shuiyinxiangjiName === "马克") {
+                  // 马克相机
+                  Taro.getImageInfo({
+                    src: Mk2Back,
+                    success: (imgInfo) => {
+                      const img = canvas.createImage();
+                      img.src = "/" + imgInfo.path;
+                      img.onload = () => {
+                        const imgWidth = (imgInfo.width / 3) * 0.5;
+                        const imgHeight = (imgInfo.height / 3) * 0.5;
+                        const canvasWidth = canvas.width / dpr;
+                        const canvasHeight = canvas.height / dpr;
+                        const x = canvasWidth - imgWidth;
+                        const y = canvasHeight - imgHeight;
+                        ctx.drawImage(img, x - 10, y - 10, imgWidth, imgHeight);
+                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.fillText("马克", x + 5, y + 2);
+                        //  绘制防伪码
+                        ctx.font = "bold 7px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.clearRect(x - 40, y - 10 + imgHeight + 10, 100, 30);
+                        ctx.fillText(
+                          "防伪 " + generateRandomString(),
+                          x - 35,
+                          y - 10 + imgHeight + 8
+                        );
+                      };
+                    },
+                  });
+                } else {
+                  // 今日水印
+                  Taro.getImageInfo({
+                    src: Icon2Back,
+                    success: (imgInfo) => {
+                      const img = canvas.createImage();
+                      img.src = "/" + imgInfo.path;
+                      img.onload = () => {
+                        const imgWidth = imgInfo.width / 3 + 5;
+                        const imgHeight = imgInfo.height / 3 + 5;
+                        const canvasWidth = canvas.width / dpr;
+                        const canvasHeight = canvas.height / dpr;
+                        const x = canvasWidth - imgWidth - 20;
+                        const y = canvasHeight - imgHeight - 5;
+                        ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+                        ctx.drawImage(
+                          img,
+                          x + 40,
+                          y + 16,
+                          imgWidth * 0.7,
+                          imgHeight * 0.7
+                        );
+                        // 绘制水印名字
+                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.fillText(shuiyinxiangjiName, x + 57, y + 25);
+                        //  绘制防伪码
+                        ctx.font = "bold 6px NotoSansMono";
+                        ctx.fillStyle = "#fff";
+                        ctx.fillText(generateRandomString(), x + 55, y + 47);
+                      };
+                    },
+                  });
+                }
               }
             },
             args: [

@@ -64,7 +64,6 @@ const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
-console.log("zphsId: ", zphsId);
 const fs = wx.getFileSystemManager();
 const CACHE_LIMIT = 30 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
 function getCacheSize(path) {
@@ -151,6 +150,7 @@ const CameraPage = () => {
   const [logoWidth, setLogoWidth] = useState(0);
   const [logoHeight, setLogoHeight] = useState(0);
   const [rateModal, setRateModal] = useState(false);
+  const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   let isWeatherEdited = false;
@@ -619,6 +619,18 @@ const CameraPage = () => {
       return;
     }
 
+    if (
+      !shuiyinxiangjiName &&
+      (canvasConfigState[currentShuiyinIndex]?.[0]?.left ||
+        canvasConfigState[currentShuiyinIndex]?.[0]?.right)
+    ) {
+      Taro.showToast({
+        title: "请先修改右下角水印后再拍照",
+        icon: "none",
+        duration: 3000,
+      });
+      return;
+    }
     // 相机
     if (camera) {
       // 上传时间位置 保存
@@ -633,6 +645,7 @@ const CameraPage = () => {
             longitude,
             showTrueCode,
             showHasCheck,
+            shuiyinxiangjiName,
           },
         },
       });
@@ -713,6 +726,7 @@ const CameraPage = () => {
         longitude,
         showTrueCode,
         showHasCheck,
+        shuiyinxiangjiName,
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
@@ -722,6 +736,7 @@ const CameraPage = () => {
         setLongitude(longitude);
         setShowHasCheck(showHasCheck);
         setShowTrueCode(showTrueCode);
+        setShuiyinxiangjiName(shuiyinxiangjiName);
       }, 1000);
     }
     saveChange(userInfo?.saveConfig?.isSaved);
@@ -792,7 +807,18 @@ const CameraPage = () => {
       });
       return;
     }
-
+    if (
+      !shuiyinxiangjiName &&
+      (canvasConfigState[currentShuiyinIndex]?.[0]?.left ||
+        canvasConfigState[currentShuiyinIndex]?.[0]?.right)
+    ) {
+      Taro.showToast({
+        title: "请先修改右下角水印后再选取照片",
+        icon: "none",
+        duration: 3000,
+      });
+      return;
+    }
     if (selected === "图片水印") {
       Taro.chooseMedia({
         count: 1,
@@ -911,6 +937,7 @@ const CameraPage = () => {
               showHasCheck,
               showTrueCode,
               disableTrueCode,
+              shuiyinxiangjiName,
             });
 
             const canvasConfigDz = generateCanvasConfig({
@@ -935,6 +962,7 @@ const CameraPage = () => {
               showHasCheck,
               showTrueCode,
               disableTrueCode,
+              shuiyinxiangjiName,
             });
             canvasConfig.push(...canvasConfigDz);
             // 设置canvas宽高
@@ -1042,6 +1070,7 @@ const CameraPage = () => {
     showHasCheck,
     // 右下角防伪码
     showTrueCode,
+    shuiyinxiangjiName,
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
@@ -1121,6 +1150,17 @@ const CameraPage = () => {
         canvasConfigState[currentShuiyinIndex]?.[0].logoY;
     }
   }, [currentShuiyinIndex]);
+
+  // useEffect(() => {
+  //   if (
+  //     !shuiyinxiangjiName.includes("今日") ||
+  //     !shuiyinxiangjiName.includes("马克")
+  //   )
+  //     Taro.showToast({
+  //       title: "名称请填写 衿日水印相机 或者 码可水印相机",
+  //       icon: "error",
+  //     });
+  // }, [shuiyinxiangjiName]);
 
   return (
     <View className="container">
@@ -1918,7 +1958,7 @@ const CameraPage = () => {
                 })}
               </View>
             ) : (
-              <View className="shuiyin-list shuiyin-list-no-grid">
+              <View className="shuiyin-list shuiyin-list-no-grid edit-box">
                 <View className="input-item">
                   <AtCard title="时间">
                     <Picker
@@ -1959,29 +1999,38 @@ const CameraPage = () => {
                       ></Input>
                     </View>
                   </AtCard>
-                  {disableTrueCode &&
-                    canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
-                      <AtCard title="左下角已验证下标">
-                        <View className="picker" style={{ height: "50px" }}>
-                          <Text>是否显示： </Text>
-
-                          <Switch
-                            style={{
-                              transform: "scale(0.7)",
-                              opacity: !canvasConfigState[
-                                currentShuiyinIndex
-                              ]?.[0]?.left
-                                ? 0.2
-                                : 1,
+                  {
+                    <View className="syxjName-box">
+                      <AtCard title="水印相机名称，自动显示在左右下角(必填)">
+                        <View className="picker">
+                          <Text>水印相机名称： </Text>
+                          <Input
+                            className="input"
+                            value={shuiyinxiangjiName}
+                            maxlength={10}
+                            clear={true}
+                            onInput={(e) => {
+                              debounce(
+                                setShuiyinxiangjiName(
+                                  e.detail.value.replace(/\s+/g, "")
+                                ),
+                                10
+                              );
                             }}
-                            checked={showHasCheck}
-                            onChange={(e) => {
-                              setShowHasCheck(e.detail.value);
-                            }}
-                          />
+                          ></Input>
+                        </View>
+                        <View
+                          style={{
+                            marginTop: "10px",
+                            color: "#7b7878",
+                            fontSize: "14px",
+                          }}
+                        >
+                          最长6个字，填写需要的APP名称（昨日水印相机、牛克水印相机）
                         </View>
                       </AtCard>
-                    )}
+                    </View>
+                  }
                   {disableTrueCode &&
                     canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
                       <AtCard title="右下角防伪下标">
@@ -2008,6 +2057,31 @@ const CameraPage = () => {
                         </View>
                       </AtCard>
                     )}
+
+                  {disableTrueCode &&
+                    canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
+                      <AtCard title="左下角已验证下标">
+                        <View className="picker" style={{ height: "50px" }}>
+                          <Text>是否显示： </Text>
+
+                          <Switch
+                            style={{
+                              transform: "scale(0.7)",
+                              opacity: !canvasConfigState[
+                                currentShuiyinIndex
+                              ]?.[0]?.left
+                                ? 0.2
+                                : 1,
+                            }}
+                            checked={showHasCheck}
+                            onChange={(e) => {
+                              setShowHasCheck(e.detail.value);
+                            }}
+                          />
+                        </View>
+                      </AtCard>
+                    )}
+
                   {canvasConfigState[currentShuiyinIndex]?.[0]?.title && (
                     <AtCard title="标题">
                       <View className="picker">

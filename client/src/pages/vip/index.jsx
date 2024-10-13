@@ -33,7 +33,12 @@ const UserInfo = ({ userInfo, price }) => {
   if (!price) {
     return;
   }
-  let fuckShenHe = app.$app.globalData.fuckShenHe;
+  let fuckShenHe;
+  if (price.isMainShow) {
+    fuckShenHe = app.$app.globalData.fuckShenHe;
+  } else {
+    fuckShenHe = true;
+  }
   const config = app.$app.globalData.config;
 
   let inviteId = Taro.getCurrentInstance().router.params.id || "";
