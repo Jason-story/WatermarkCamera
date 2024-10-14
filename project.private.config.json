@@ -3,7 +3,7 @@
   "projectname": "水印相机",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": false,
+    "urlCheck": true,
     "preloadBackgroundData": false,
     "autoAudits": true
   },

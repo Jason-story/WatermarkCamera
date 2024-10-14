@@ -56,7 +56,8 @@ import Icon8 from "../../images/icon-8.jpg";
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
-const app = Taro.getApp();
+const app = getApp();
+let cloud = '';
 const now = new Date();
 const yearD = now.getFullYear();
 const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
@@ -116,7 +117,6 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   app.$app.globalData.zphsId = zphsId;
-
   // 水印选择
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   // const [price, setPrice] = useState({});
@@ -182,10 +182,9 @@ const CameraPage = () => {
     // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
     const init = async () => {
-      await Taro.cloud.init({
-        env: "sy-4gecj2zw90583b8b",
-      });
-      Taro.cloud.callFunction({
+      cloud = await app.$app.globalData.getCloud();
+      console.log('clou22d: ', cloud);
+      cloud.callFunction({
         name: "addUser",
         success: function (res) {
           setUserInfo(res.result.data);
@@ -210,7 +209,7 @@ const CameraPage = () => {
           }
         },
       });
-      Taro.cloud.callFunction({
+      cloud.callFunction({
         name: "getConfig",
         success: function (res) {
           app.$app.globalData.config = res.result.data;
@@ -228,29 +227,29 @@ const CameraPage = () => {
           });
         },
       });
-      // 邀请存档
-      if (inviteId) {
-        Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
-        // Taro.cloud.callFunction({
-        //   name: "invite",
-        //   data: {
-        //     invite_id: inviteId,
-        //   },
-        // });
-      }
-      // Taro.cloud.callFunction({
-      //   name: "getPrice",
-      //   success: function (res) {
-      //     setPrice(res.result.data);
+    };
+    init();
+    // 邀请存档
+    if (inviteId) {
+      Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
+      // cloud.callFunction({
+      //   name: "invite",
+      //   data: {
+      //     invite_id: inviteId,
       //   },
       // });
-    };
+    }
+    // cloud.callFunction({
+    //   name: "getPrice",
+    //   success: function (res) {
+    //     setPrice(res.result.data);
+    //   },
+    // });
     wx.getSystemInfo({
       success: function (res) {
         setScreenWidth(res.screenWidth); // 输出屏幕宽度
       },
     });
-    init();
   }, []);
 
   const handleDateChange = (e) => {
@@ -448,7 +447,7 @@ const CameraPage = () => {
             setPermissions({
               [scope.split(".")[1]]: true,
             });
-            // await Taro.cloud.callFunction({
+            // await cloud.callFunction({
             //   name: "addUser",
             // });
           } catch (error) {
@@ -456,7 +455,7 @@ const CameraPage = () => {
             setPermissions({
               [scope.split(".")[1]]: false,
             });
-            // await Taro.cloud.callFunction({
+            // await cloud.callFunction({
             //   name: "addUser",
             // });
           }
@@ -494,7 +493,6 @@ const CameraPage = () => {
     const url = params ? `/${route}?${params}` : `/${route}`;
     Taro.setStorageSync("noReload", "true");
     const result = Taro.getStorageSync("noReload");
-    console.log("result2222: ", result);
     // 重定向到当前页面，保留参数
     Taro.redirectTo({
       url: url,
@@ -512,9 +510,7 @@ const CameraPage = () => {
       ) {
         setAllAuth(true);
         const result = Taro.getStorageSync("noReload");
-        console.log("result: ", result);
         if (!result) {
-          console.log(222222);
           // 在需要刷新的地方调用这个函数
           refreshCurrentPage();
         }
@@ -628,10 +624,12 @@ const CameraPage = () => {
       setShuiyinNameModal(true);
       return;
     }
+
     // 相机
     if (camera) {
       // 上传时间位置 保存
-      Taro.cloud.callFunction({
+      console.log('cloud: ', cloud);
+      cloud.callFunction({
         name: "updateSavedConfig",
         data: {
           saveConfig: {
@@ -1859,7 +1857,7 @@ const CameraPage = () => {
                     }
                     setAddPhoneNumber(false);
 
-                    await Taro.cloud.callFunction({
+                    await cloud.callFunction({
                       name: "addUser",
                       data: {
                         phone,
@@ -2006,13 +2004,13 @@ const CameraPage = () => {
                             fontSize: "14px",
                           }}
                         >
-                          填写需要的APP名称
+                          填写需要的APP名称，最多4个字
                           <Text
                             style={{
                               color: "#f22c3d",
                             }}
                           >
-                            （昨日水印相机、牛克水印相机）{" "}
+                            （衿日水印、蚂克水印）
                           </Text>
                         </View>
                         <View className="picker">
@@ -2020,7 +2018,7 @@ const CameraPage = () => {
                           <Input
                             className="input"
                             value={shuiyinxiangjiName}
-                            maxlength={10}
+                            maxlength={4}
                             clear={true}
                             placeholder="点击添加"
                             onInput={(e) => {

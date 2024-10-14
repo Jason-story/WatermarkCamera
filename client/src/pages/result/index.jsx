@@ -2,29 +2,19 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { View, Button, Image, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import { useDidShow } from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
-import {
-  AtButton,
-  AtModal,
-  AtToast,
-  AtCard,
-  AtSwitch,
-  AtModalHeader,
-  AtModalContent,
-  AtModalAction,
-  AtFloatLayout,
-} from "taro-ui";
+import { AtModal, AtModalHeader, AtModalContent, AtModalAction } from "taro-ui";
 import "./index.scss";
 import Close from "../../images/close.png";
-
+import { appConfigs } from "../../appConfig.js";
+const appid = Taro.getAccountInfoSync().miniProgram.appId;
 const app = getApp();
-
+let cloud = "";
 const screenWidth = Taro.getSystemInfoSync().screenWidth;
-let interstitialAd = null;
-
 const MergeCanvas = () => {
   const config = app.$app.globalData.config;
+const ytgConfig = appConfigs[appid];
+
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
   const firstImagePath = Taro.getCurrentInstance().router.params.bg; // 第一张图片的本地路径
@@ -92,12 +82,13 @@ const MergeCanvas = () => {
     const cloudPath = `${fileName}/${Date.now()}-${Math.random()
       .toString(36)
       .substring(7)}.${filePath.match(/\.(\w+)$/)[1]}`;
-    const res = await Taro.cloud.uploadFile({
+    const res = await cloud.uploadFile({
       cloudPath,
       filePath,
     });
     return res.fileID;
   }
+
   async function mergeImages(firstImagePath, secondImagePath, userInfo) {
     try {
       // 上传图片
@@ -108,20 +99,19 @@ const MergeCanvas = () => {
           config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
         ]);
       // 调用云函数
+
       let res = "";
       // 视频合成
       if (isVideo) {
-        const start = +new Date();
-        console.log("userInfo: ", userInfo);
+        const ytg = await app.$app.globalData.getContainer();
         // 视频合成
-        Taro.cloud.callContainer({
+        ytg.callContainer({
           config: {
-            env: "prod-9g5wnloybe56625b",
+            env: ytgConfig["containerId"],
           },
           path: "/process",
           header: {
-            // "X-WX-SERVICE": "merge-video",
-            "X-WX-SERVICE": "express-loc1",
+            "X-WX-SERVICE": ytgConfig["containerName"],
             "content-type": "application/json",
           },
           method: "POST",
@@ -140,10 +130,9 @@ const MergeCanvas = () => {
             }
           },
           fail: (error) => {
-            const end = +new Date();
             setLoading(false);
             Taro.showToast({
-              title: "处理超时，请减小视频大小后重试",
+              title: "网络错误，请重试",
               icon: "none",
               duration: 3000,
             });
@@ -151,7 +140,7 @@ const MergeCanvas = () => {
         });
       } else {
         // 图片合成
-        res = await Taro.cloud.callFunction({
+        res = await cloud.callFunction({
           name: "mergeImage",
           data: {
             firstImageFileID,
@@ -198,7 +187,7 @@ const MergeCanvas = () => {
   const saveImage = async (fileID, userInfo) => {
     const save = () => {
       // 下载云存储中的图片
-      Taro.cloud.downloadFile({
+      cloud.downloadFile({
         fileID: fileID, // 替换为你要下载的图片文件ID
         success: (res) => {
           Taro.saveImageToPhotosAlbum({
@@ -210,28 +199,9 @@ const MergeCanvas = () => {
                 duration: 2000,
               });
               setLoading(false);
-              if (userInfo.type === "default") {
-                if (wx.createInterstitialAd) {
-                  interstitialAd = wx.createInterstitialAd({
-                    adUnitId: "adunit-39ab5f712a4521b4",
-                  });
-                  interstitialAd.onLoad(() => {});
-                  interstitialAd.onError((err) => {
-                    console.error("插屏广告加载失败", err);
-                  });
-                  interstitialAd.onClose(() => {});
-                }
-
-                // 在适合的场景显示插屏广告
-                if (interstitialAd) {
-                  interstitialAd.show().catch((err) => {
-                    console.error("插屏广告显示失败", err);
-                  });
-                }
-              }
 
               // if (inviteId) {
-              //   await Taro.cloud.callFunction({
+              //   await cloud.callFunction({
               //     name: "invite",
               //     data: {
               //       invite_id: inviteId,
@@ -289,13 +259,14 @@ const MergeCanvas = () => {
     await saveImage(mergedImageFileID, info);
   }
   useEffect(() => {
-    const getData = async () => {
-      await Taro.cloud.callFunction({
+    const init = async () => {
+      cloud = await app.$app.globalData.getCloud();
+      await cloud.callFunction({
         name: "addUser",
         success: async function (res) {
           // 照片换色来的 免费使用
           if (app.$app.globalData.zphsId) {
-            Taro.cloud.callFunction({
+            cloud.callFunction({
               name: "zphsGetUser",
               data: {
                 type: "add",
@@ -340,7 +311,7 @@ const MergeCanvas = () => {
             // 本地生成
             drawImages(res.result.data);
           }
-          await Taro.cloud.callFunction({
+          await cloud.callFunction({
             name: "addUser",
             data: {
               remark: "成功使用",
@@ -349,7 +320,7 @@ const MergeCanvas = () => {
         },
       });
     };
-    getData();
+    init();
   }, []);
   Taro.useShareAppMessage((res) => {
     return {
@@ -475,7 +446,7 @@ const MergeCanvas = () => {
       const cloudPath = `files/client/${generateTimestamp(info)}_${
         info.openid
       }.${filePath.match(/\.(\w+)$/)[1]}`;
-      const res = await Taro.cloud.uploadFile({
+      const res = await cloud.uploadFile({
         cloudPath,
         filePath,
       });
@@ -492,28 +463,8 @@ const MergeCanvas = () => {
             icon: "success",
             duration: 2000,
           });
-          if (info.type === "default") {
-            if (wx.createInterstitialAd) {
-              interstitialAd = wx.createInterstitialAd({
-                adUnitId: "adunit-39ab5f712a4521b4",
-              });
-              interstitialAd.onLoad(() => {});
-              interstitialAd.onError((err) => {
-                console.error("插屏广告加载失败", err);
-              });
-              interstitialAd.onClose(() => {});
-            }
-
-            // 在适合的场景显示插屏广告
-            if (interstitialAd) {
-              interstitialAd.show().catch((err) => {
-                console.error("插屏广告显示失败", err);
-              });
-            }
-          }
-
           // if (inviteId) {
-          //   await Taro.cloud.callFunction({
+          //   await cloud.callFunction({
           //     name: "invite",
           //     data: {
           //       invite_id: inviteId,
@@ -641,9 +592,6 @@ const MergeCanvas = () => {
           }}
         />
       </View>
-      {userInfo.type === "default" && (
-        <ad-custom unit-id="adunit-400b4fabebcc3e5d"></ad-custom>
-      )}
       <View
         className="bottom-btns"
         style={{

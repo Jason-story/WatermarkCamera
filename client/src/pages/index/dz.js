@@ -1,7 +1,6 @@
 import Taro from "@tarojs/taro";
 import Shuiyin7 from "../../images/shuiyin-7.png";
 import Dunpai2 from "../../images/dunpai-2.png";
-import Icon2 from "../../images/icon-2.png";
 import Icon2Back from "../../images/icon-2-back.png";
 import Icon1 from "../../images/icon-1.png";
 import Icon3 from "../../images/icon-3.png";
@@ -77,9 +76,7 @@ const generateCanvasConfig = ({
     return result.join("");
   }
   // shuiyinxiangjiName = "今日水印";
-  if ((shuiyinxiangjiName || "").includes("今日水印")) {
-    shuiyinxiangjiName = "今日水印";
-  } else if ((shuiyinxiangjiName || "").includes("马克")) {
+  if ((shuiyinxiangjiName || "").includes("马克")) {
     shuiyinxiangjiName = "马克";
   }
   return [
@@ -347,7 +344,9 @@ const generateCanvasConfig = ({
                       ctx.fillStyle = "#c9cbcd";
                       ctx.fillText(
                         shuiyinxiangjiName +
-                        (shuiyinxiangjiName.includes('相机') ? '已验证 | 时间地点真实' : '相机已验证 | 时间地点真实'),
+                          (shuiyinxiangjiName.includes("相机")
+                            ? "已验证 | 时间地点真实"
+                            : "相机已验证 | 时间地点真实"),
                         26,
                         canvas.height / dpr - 2
                       );
@@ -689,19 +688,8 @@ const generateCanvasConfig = ({
                           const canvasHeight = canvas.height / dpr;
                           const x = canvasWidth - imgWidth - 20;
                           const y = canvasHeight - imgHeight - 5;
-                          ctx.clearRect(
-                            x + 40,
-                            y + 16,
-                            imgWidth,
-                            imgHeight
-                          );
-                          ctx.drawImage(
-                            img,
-                            x + 10,
-                            y,
-                            imgWidth,
-                            imgHeight
-                          );
+                          ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
+                          ctx.drawImage(img, x + 10, y, imgWidth, imgHeight);
                         };
                       },
                     });
@@ -760,12 +748,7 @@ const generateCanvasConfig = ({
                           const canvasHeight = canvas.height / dpr;
                           const x = canvasWidth - imgWidth - 20;
                           const y = canvasHeight - imgHeight - 5;
-                          ctx.clearRect(
-                            x + 40,
-                            y + 16,
-                            imgWidth,
-                            imgHeight
-                          );
+                          ctx.clearRect(x + 40, y + 16, imgWidth, imgHeight);
                           ctx.drawImage(
                             img,
                             x + 40,
@@ -780,11 +763,7 @@ const generateCanvasConfig = ({
                           //  绘制防伪码
                           ctx.font = "bold 6px NotoSansMono";
                           ctx.fillStyle = "#fff";
-                          ctx.fillText(
-                            generateRandomString(),
-                            x + 55,
-                            y + 47
-                          );
+                          ctx.fillText(generateRandomString(), x + 55, y + 47);
                         };
                       },
                     });

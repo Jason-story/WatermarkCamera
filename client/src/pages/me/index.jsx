@@ -8,7 +8,7 @@ import "./index.scss";
 
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const app = getApp();
-
+let cloud="";
 const UserInfo = ({
   userInfo,
   mianfeicishu,
@@ -177,7 +177,6 @@ const UserInfo = ({
         </View>
       )}
       {fuckShenHe && "暂无"}
-      {userType === "default" && <Ad unit-id="adunit-5545a3fd94d5af76"></Ad>}
     </View>
   );
 };
@@ -191,14 +190,20 @@ const Index = () => {
     userId: "12345678",
   });
   const [data, setData] = useState({});
+   cloud = app.$app.globalData.getCloud();
 
   useEffect(() => {
-    Taro.cloud.callFunction({
-      name: "addUser",
-      success: function (res) {
-        setData(res.result.data);
-      },
-    });
+    const init = async () => {
+      cloud = await app.$app.globalData.getCloud();
+      await cloud.init();
+      cloud.callFunction({
+        name: "addUser",
+        success: function (res) {
+          setData(res.result.data);
+        },
+      });
+    };
+    init();
   }, []);
   Taro.useShareAppMessage((res) => {
     return {

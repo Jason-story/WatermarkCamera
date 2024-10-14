@@ -1,40 +1,31 @@
 import React, { useEffect, useState } from "react";
 import Taro from "@tarojs/taro";
-import {
-  View,
-  Button,
-  Image,
-  Ad,
-  Video,
-  Text,
-  Input,
-} from "@tarojs/components";
+import { View, Button, Video } from "@tarojs/components";
 import "./index.scss";
 const app = getApp();
+let cloud = "";
 
 const QRCodePage = () => {
   const [files, setFiles] = useState([
     "cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/kit-cms-upload/1727530025982__output.mp4",
   ]);
+
   useEffect(() => {
     Taro.showLoading();
-    // 小程序启动时调用此函数
+
     const init = async () => {
-      await Taro.cloud.init({
-        env: "sy-4gecj2zw90583b8b",
-      });
-      Taro.cloud.callFunction({
+      cloud = await app.$app.globalData.getCloud();
+      await cloud.init();
+      cloud.callFunction({
         name: "getMyVideos",
         success: function (res) {
           Taro.hideLoading();
-          console.log('res.result.data: ', res.result);
           if (res.result?.data?.length > 0) {
             setFiles(res.result.data);
           }
         },
       });
     };
-
     init();
   }, []);
 
@@ -60,7 +51,7 @@ const QRCodePage = () => {
       title: "下载中...",
       mask: true,
     });
-    Taro.cloud.downloadFile({
+    cloud.downloadFile({
       fileID: fileID, // 替换为你要下载的图片文件ID
       success: (res) => {
         console.log("res: ", res);

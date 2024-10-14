@@ -2,7 +2,6 @@ import Taro from "@tarojs/taro";
 import Mk1 from "../../images/mk-1.png";
 import Dunpai from "../../images/dunpai.png";
 import Dunpai2 from "../../images/dunpai-2.png";
-import Icon2 from "../../images/icon-2.png";
 import Icon2Back from "../../images/icon-2-back.png";
 import Icon5 from "../../images/icon-5.png";
 import Icon6 from "../../images/icon-6.png";
@@ -67,9 +66,7 @@ const generateCanvasConfig = ({
     return result.join("");
   }
   // shuiyinxiangjiName = "今日水印";
-  if ((shuiyinxiangjiName || "").includes("今日水印")) {
-    shuiyinxiangjiName = "今日水印";
-  } else if ((shuiyinxiangjiName || "").includes("马克")) {
+  if ((shuiyinxiangjiName || "").includes("马克")) {
     shuiyinxiangjiName = "马克";
   }
   return [
