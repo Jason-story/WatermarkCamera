@@ -139,7 +139,8 @@ const generateCanvasConfig = ({
                       ctx.font = "bold 10px sans-serif";
                       ctx.fillStyle = "#c9cbcd";
                       ctx.fillText(
-                        shuiyinxiangjiName + `相机已验证照片真实性`,
+                        shuiyinxiangjiName +
+                        (shuiyinxiangjiName.includes('相机') ? '已验证照片真实性' : '相机已验证照片真实性'),
                         26,
                         canvas.height / dpr - 2
                       );
@@ -388,7 +389,8 @@ const generateCanvasConfig = ({
                 ctx.font = "bold 10px sans-serif";
                 ctx.fillStyle = "#c9cbcd";
                 ctx.fillText(
-                  shuiyinxiangjiName + `相机已验证 | 时间地点真实`,
+                  shuiyinxiangjiName +
+                  (shuiyinxiangjiName.includes('相机') ? '已验证 | 时间地点真实' : '相机已验证 | 时间地点真实'),
                   26,
                   canvas.height / dpr - 2
                 );
