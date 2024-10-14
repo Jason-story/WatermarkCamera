@@ -103,9 +103,9 @@ const MergeCanvas = () => {
       let res = "";
       // 视频合成
       if (isVideo) {
-        const ytg = await app.$app.globalData.getContainer();
+
         // 视频合成
-        ytg.callContainer({
+        cloud.callContainer({
           config: {
             env: ytgConfig["containerId"],
           },
