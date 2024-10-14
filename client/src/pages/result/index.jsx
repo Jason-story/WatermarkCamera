@@ -103,9 +103,19 @@ const MergeCanvas = () => {
       let res = "";
       // 视频合成
       if (isVideo) {
-
+        let ytg = null;
+        if (ytgConfig.type === "shared") {
+          ytg = await new Taro.cloud.Cloud({
+            resourceAppid: "wx785efc584be4265b",
+            resourceEnv: "prod-9g5wnloybe56625b",
+          });
+          await ytg.init();
+        } else {
+          ytg = cloud;
+        }
+        console.log("ytg: ", ytg);
         // 视频合成
-        cloud.callContainer({
+        ytg.callContainer({
           config: {
             env: ytgConfig["containerId"],
           },
@@ -269,12 +279,11 @@ const MergeCanvas = () => {
         });
         await cloud.init();
       } else {
-         await Taro.cloud.init({
+        await Taro.cloud.init({
           env: config.env,
         });
         cloud = Taro.cloud;
       }
-
 
       await cloud.callFunction({
         name: "addUser",
