@@ -29,7 +29,7 @@ const appConfigs = {
     env: "ly-9gjnymq6d9d7ca23",
     priceShow: "isMainShow",
     priceMap: "jiage",
-    notify_url: "https://1326662896-fn1j227njy-sh.scf.tencentcs.com",
+    notify_url: "https://1330414900-iztv1ielys.ap-shanghai.tencentscf.com",
     containerId: "prod-5gzgeq4v5542b918",
     containerName: "express-ptcb",
   },

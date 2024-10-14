@@ -106,8 +106,8 @@ const MergeCanvas = () => {
         let ytg = null;
         if (ytgConfig.type === "shared") {
           ytg = await new Taro.cloud.Cloud({
-            resourceAppid: "wx785efc584be4265b",
-            resourceEnv: "prod-9g5wnloybe56625b",
+            resourceAppid: ytgConfig.containerResourceAppid,
+            resourceEnv: ytgConfig.containerResourceEnv,
           });
           await ytg.init();
         } else {
