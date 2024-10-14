@@ -9,7 +9,7 @@ const appConfigs = {
     containerId: "prod-9g5wnloybe56625b",
     containerName: "express-loc1",
   },
-  // 可修改位置水印相机 被共享
+  // 可修改定位水印相机 被共享
   wxb5e2af22e727269d: {
     type: "shared",
     resourceAppid: "wx785efc584be4265b",
