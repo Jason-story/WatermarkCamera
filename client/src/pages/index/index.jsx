@@ -53,6 +53,7 @@ import VideoImg from "../../images/video.png";
 import Jianhao from "../../images/jianhao.png";
 import AddPic from "../../images/add-pic.png";
 import Icon8 from "../../images/icon-8.jpg";
+import Mianze from "../../images/mianze.png";
 
 import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
@@ -1511,15 +1512,15 @@ const CameraPage = () => {
                 }
               >
                 <Image
-                  src={Jiaocheng}
+                  src={Mianze}
                   className="xiangceIcon"
                   onClick={() => {
                     Taro.navigateTo({
-                      url: "/pages/jiaocheng/index",
+                      url: "/pages/mianze/index",
                     });
                   }}
                 ></Image>
-                <Text>教程</Text>
+                <Text>声明</Text>
               </View>
               <View
                 className={
