@@ -3,22 +3,14 @@ import { View, Ad, Image, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import Head from "../../images/head.jpg";
 import ShareImg from "../../images/logo.jpg";
+import { appConfigs } from "../../appConfig.js";
 
 import "./index.scss";
 
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const app = getApp();
-let cloud="";
-const UserInfo = ({
-  userInfo,
-  mianfeicishu,
-  totalQuota,
-  inviteCount,
-  userId,
-  endTime,
-  todayCount,
-  userType,
-}) => {
+let cloud = "";
+const UserInfo = ({ totalQuota, userId, endTime, userType }) => {
   let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   const onCopyText = (text) => {
@@ -180,7 +172,6 @@ const UserInfo = ({
     </View>
   );
 };
-
 const Index = () => {
   const [userInfo, setUserInfo] = useState({
     avatar: Head,
@@ -190,12 +181,24 @@ const Index = () => {
     userId: "12345678",
   });
   const [data, setData] = useState({});
-   cloud = app.$app.globalData.getCloud();
 
   useEffect(() => {
     const init = async () => {
-      cloud = await app.$app.globalData.getCloud();
-      await cloud.init();
+      const appid = Taro.getAccountInfoSync().miniProgram.appId;
+      const config = appConfigs[appid];
+      if (config.type === "shared") {
+        cloud = await new Taro.cloud.Cloud({
+          resourceAppid: config.resourceAppid,
+          resourceEnv: config.resourceEnv,
+        });
+        await cloud.init();
+      } else {
+        await Taro.cloud.init({
+          env: config.env,
+        });
+        cloud = Taro.cloud;
+      }
+
       cloud.callFunction({
         name: "addUser",
         success: function (res) {

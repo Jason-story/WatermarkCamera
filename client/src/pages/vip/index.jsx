@@ -16,7 +16,6 @@ import { appConfigs } from "../../appConfig.js";
 import Close from "../../images/close.png";
 import "./index.scss";
 const md5 = require("./md5.js");
-
 const appid = Taro.getAccountInfoSync().miniProgram.appId;
 const config = appConfigs[appid];
 const app = getApp();
@@ -107,7 +106,21 @@ const Index = () => {
       title: "加载中...",
     });
     const init = async () => {
-      cloud = await app.$app.globalData.getCloud();
+      const appid = Taro.getAccountInfoSync().miniProgram.appId;
+      const config = appConfigs[appid];
+      if (config.type === "shared") {
+        cloud = await new Taro.cloud.Cloud({
+          resourceAppid: config.resourceAppid,
+          resourceEnv: config.resourceEnv,
+        });
+        await cloud.init();
+      } else {
+         await Taro.cloud.init({
+          env: config.env,
+        });
+        cloud = Taro.cloud;
+      }
+
       cloud.callFunction({
         name: "addUser",
         success: function (res) {
@@ -246,10 +259,9 @@ const Index = () => {
             <View>
               <Text style={{ fontWeight: "bold" }}>会员权益</Text>
             </View>
-            <View>• 无限使用次数</View>
+            <View>• 不限使用次数</View>
             <View>• 解锁视频水印功能(需半年及以上会员)</View>
             <View>• 高清水印图片</View>
-            <View>• 去掉除封面广告之外的一切广告</View>
             <View>• 添加微信，随时提供客服支持</View>
           </View>
         ) : (

@@ -39,6 +39,7 @@ import XiangceIcon from "../../images/xiangce.png";
 import Setting from "../../images/setting.png";
 import Jiaocheng from "../../images/jiaocheng.png";
 import KefuIcon from "../../images/kefu.png";
+import { appConfigs } from "../../appConfig.js";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import Shuiyin1 from "../../images/shuiyin-1.png";
 import Shuiyin2 from "../../images/shuiyin-2.png";
@@ -57,7 +58,7 @@ import "./index.scss";
 import generateCanvasConfig from "./generateConfig";
 import dingzhi from "./dz";
 const app = getApp();
-let cloud = '';
+let cloud = "";
 const now = new Date();
 const yearD = now.getFullYear();
 const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
@@ -182,8 +183,22 @@ const CameraPage = () => {
     // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
     const init = async () => {
-      cloud = await app.$app.globalData.getCloud();
-      console.log('clou22d: ', cloud);
+      const appid = Taro.getAccountInfoSync().miniProgram.appId;
+      const config = appConfigs[appid];
+      if (config.type === "shared") {
+        cloud = await new Taro.cloud.Cloud({
+          resourceAppid: config.resourceAppid,
+          resourceEnv: config.resourceEnv,
+        });
+        await cloud.init();
+      } else {
+         await Taro.cloud.init({
+          env: config.env,
+        });
+        cloud = Taro.cloud;
+      }
+
+
       cloud.callFunction({
         name: "addUser",
         success: function (res) {
@@ -628,7 +643,7 @@ const CameraPage = () => {
     // 相机
     if (camera) {
       // 上传时间位置 保存
-      console.log('cloud: ', cloud);
+      console.log("cloud: ", cloud);
       cloud.callFunction({
         name: "updateSavedConfig",
         data: {

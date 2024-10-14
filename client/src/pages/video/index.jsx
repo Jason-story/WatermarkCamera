@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Taro from "@tarojs/taro";
 import { View, Button, Video } from "@tarojs/components";
+import { appConfigs } from "../../appConfig.js";
 import "./index.scss";
 const app = getApp();
 let cloud = "";
@@ -14,8 +15,21 @@ const QRCodePage = () => {
     Taro.showLoading();
 
     const init = async () => {
-      cloud = await app.$app.globalData.getCloud();
-      await cloud.init();
+      const appid = Taro.getAccountInfoSync().miniProgram.appId;
+      const config = appConfigs[appid];
+      if (config.type === "shared") {
+        cloud = await new Taro.cloud.Cloud({
+          resourceAppid: config.resourceAppid,
+          resourceEnv: config.resourceEnv,
+        });
+        await cloud.init();
+      } else {
+         await Taro.cloud.init({
+          env: config.env,
+        });
+        cloud = Taro.cloud;
+      }
+
       cloud.callFunction({
         name: "getMyVideos",
         success: function (res) {

@@ -54,33 +54,12 @@ const initContainer = async () => {
   return ytgInitPromise;
 };
 
-const systemInfo = Taro.getSystemInfoSync();
-if (systemInfo.platform === "devtools") {
-  console.log("当前在开发者工具中运行");
-} else {
-  console.log("当前在真机中运行");
-}
-
 class App extends Component {
   constructor() {
     super();
     // 手动定义 globalData
     this.globalData = {
       config: {},
-      cloud,
-      ytg,
-      getCloud: async () => {
-        if (!cloud) {
-          await initCloud();
-        }
-        return cloud;
-      },
-      getContainer: async () => {
-        if (!ytg) {
-          await initContainer();
-        }
-        return ytg;
-      },
       // false 显示  true隐藏
       fuckShenHe: false,
       // fuckShenHe:
@@ -89,10 +68,7 @@ class App extends Component {
     };
   }
 
-  async componentDidMount() {
-    await initCloud();
-    await initContainer();
-  }
+  componentDidMount() {}
 
   componentDidShow() {}
 

@@ -13,7 +13,7 @@ let cloud = "";
 const screenWidth = Taro.getSystemInfoSync().screenWidth;
 const MergeCanvas = () => {
   const config = app.$app.globalData.config;
-const ytgConfig = appConfigs[appid];
+  const ytgConfig = appConfigs[appid];
 
   Taro.getCurrentInstance().router.params;
   const inviteId = Taro.getCurrentInstance().router.params.id;
@@ -260,7 +260,22 @@ const ytgConfig = appConfigs[appid];
   }
   useEffect(() => {
     const init = async () => {
-      cloud = await app.$app.globalData.getCloud();
+      const appid = Taro.getAccountInfoSync().miniProgram.appId;
+      const config = appConfigs[appid];
+      if (config.type === "shared") {
+        cloud = await new Taro.cloud.Cloud({
+          resourceAppid: config.resourceAppid,
+          resourceEnv: config.resourceEnv,
+        });
+        await cloud.init();
+      } else {
+         await Taro.cloud.init({
+          env: config.env,
+        });
+        cloud = Taro.cloud;
+      }
+
+
       await cloud.callFunction({
         name: "addUser",
         success: async function (res) {
