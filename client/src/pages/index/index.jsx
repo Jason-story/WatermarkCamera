@@ -198,7 +198,6 @@ const CameraPage = () => {
         cloud = Taro.cloud;
       }
 
-
       cloud.callFunction({
         name: "addUser",
         success: function (res) {
