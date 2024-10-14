@@ -113,7 +113,6 @@ const MergeCanvas = () => {
         } else {
           ytg = cloud;
         }
-        console.log("ytg: ", ytg);
         // 视频合成
         ytg.callContainer({
           config: {

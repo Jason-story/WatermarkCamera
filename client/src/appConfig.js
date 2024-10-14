@@ -20,7 +20,7 @@ const appConfigs = {
     containerId: "prod-9g5wnloybe56625b",
     containerResourceAppid: "wx785efc584be4265b",
     containerResourceEnv: "prod-9g5wnloybe56625b",
-    containerName: '"express-loc1"',
+    containerName: "express-loc1",
   },
 
   wx8d21222bcb51c801: {
