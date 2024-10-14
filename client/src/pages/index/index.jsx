@@ -556,9 +556,9 @@ const CameraPage = () => {
         Taro.showToast({
           title: "点击水印可编辑时间地点",
           icon: "none",
-          duration: 5000,
+          duration: 4000,
         });
-      }, 1000);
+      }, 500);
     }
   }, [allAuth]);
 
@@ -804,9 +804,16 @@ const CameraPage = () => {
     });
   }, []);
   useEffect(() => {
-    setTimeout(() => {
-      setUpdate(true);
-    }, 4000);
+    let count = 0;
+    const interval = setInterval(() => {
+      setUpdate((prev) => !prev); // 这里是为了每次赋不同的值
+      count++;
+      if (count === 4) {
+        clearInterval(interval); // 执行两次后清除定时器
+      }
+    }, 2000);
+
+    return () => clearInterval(interval); // 清除副作用
   }, []);
   const selectImg = () => {
     if (!allAuth) {
@@ -1625,9 +1632,6 @@ const CameraPage = () => {
               }}
             >
               {["图片水印", "视频水印"].map((option, index) => {
-                if (fuckShenHe) {
-                  return null;
-                }
                 return (
                   <AtButton
                     key={option}
@@ -1681,7 +1685,7 @@ const CameraPage = () => {
               使用教程
             </Button>
           </View>
-          <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={true}>
+          <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text>提示</Text>
               <View
@@ -1716,7 +1720,7 @@ const CameraPage = () => {
                       style={{
                         marginTop: "10px",
                         width: "280px",
-                        height: "80px",
+                        height: "68px",
                       }}
                     ></Image>
                   </View>
@@ -1843,59 +1847,63 @@ const CameraPage = () => {
             </AtModalAction>
           </AtModal>
           {/* 会员填写手机号 防失联 */}
-          <AtModal isOpened={addPhoneNumber} closeOnClickOverlay={false}>
-            <AtModalHeader>
-              <Text style={{ color: "#ffaa00" }}>提示</Text>
-            </AtModalHeader>
-            <AtModalContent>
-              <View className="modal-list">
-                <View className="txt1">
-                  尊敬的会员，为防止失联，请填一定填写正确手机号，如有变动第一时间通知您！如果填写错误请联系客服修改。
+
+          {addPhoneNumber && (
+            <AtModal isOpened={addPhoneNumber} closeOnClickOverlay={false}>
+              <AtModalHeader>
+                <Text style={{ color: "#ffaa00" }}>提示</Text>
+              </AtModalHeader>
+              <AtModalContent>
+                <View className="modal-list">
+                  <View className="txt1">
+                    尊敬的会员，为防止失联，请填一定填写正确手机号，如有变动第一时间通知您！如果填写错误请联系客服修改。
+                  </View>
+                  <View>
+                    <AtInput
+                      title="手机号"
+                      type="number"
+                      maxLength={11}
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e);
+                      }}
+                    />
+                  </View>
                 </View>
-                <View>
-                  <AtInput
-                    title="手机号"
-                    type="number"
-                    maxLength={11}
-                    value={phone}
-                    onChange={(e) => {
-                      setPhone(e);
-                    }}
-                  />
-                </View>
-              </View>
-            </AtModalContent>
-            <AtModalAction>
-              <Button
-                style={{ flex: 1 }}
-                onClick={async () => {
-                  const validatePhone = (phoneNumber) => {
-                    // 中国大陆手机号的正则
-                    const phoneRegex = /^1[3-9]\d{9}$/;
-                    return phoneRegex.test(phoneNumber);
-                  };
-                  if (!validatePhone(phone)) {
-                    Taro.showToast({
-                      title: "手机号格式不正确",
-                      icon: "none",
-                      duration: 2000,
+              </AtModalContent>
+              <AtModalAction>
+                <Button
+                  style={{ flex: 1 }}
+                  onClick={async () => {
+                    const validatePhone = (phoneNumber) => {
+                      // 中国大陆手机号的正则
+                      const phoneRegex = /^1[3-9]\d{9}$/;
+                      return phoneRegex.test(phoneNumber);
+                    };
+                    if (!validatePhone(phone)) {
+                      Taro.showToast({
+                        title: "手机号格式不正确",
+                        icon: "none",
+                        duration: 2000,
+                      });
+                      return;
+                    }
+                    setAddPhoneNumber(false);
+
+                    await cloud.callFunction({
+                      name: "addUser",
+                      data: {
+                        phone,
+                      },
                     });
-                    return;
-                  }
-                  setAddPhoneNumber(false);
-                  await cloud.callFunction({
-                    name: "addUser",
-                    data: {
-                      phone,
-                    },
-                  });
-                  Taro.setStorage({ key: "phoneInputed", data: true });
-                }}
-              >
-                提交
-              </Button>
-            </AtModalAction>
-          </AtModal>
+                    Taro.setStorage({ key: "phoneInputed", data: true });
+                  }}
+                >
+                  提交
+                </Button>
+              </AtModalAction>
+            </AtModal>
+          )}
           {/*  -----------------------  */}
           {/*  -----------------------  */}
           {/*  -----------------------  */}
@@ -1952,38 +1960,30 @@ const CameraPage = () => {
               <View className="shuiyin-list">
                 {canvasConfigState.map((item, index) => {
                   return (
-                    <React.Fragment key={index}>
-                      {/* 会员免广告 */}
-                      <View
-                        className="shuiyin-item"
-                        onClick={() => {
-                          setCurrentShuiyinIndex(index);
-                        }}
-                      >
-                        <View className="shuiyin-item-img">
-                          {item[0].vip && (
-                            <Image
-                              mode="aspectFit"
-                              className="vip-arrow"
-                              src={VipArrow}
-                            ></Image>
-                          )}
+                    <View key={index}>
+                      <View className="shuiyin-item">
+                        <View
+                          className="shuiyin-item-img"
+                          onTouchStart={(e) => {
+                            setCurrentShuiyinIndex(index);
+                          }}
+                        >
                           <Image mode="aspectFit" src={item[0].img}></Image>
                         </View>
                         {currentShuiyinIndex === index && (
-                          <View className="shuiyin-item-cover">
-                            <Button
-                              onClick={() => {
-                                setEdit(true);
-                                updateShuiyinIndex(index);
-                              }}
-                            >
-                              编辑
-                            </Button>
+                          <View
+                            className="shuiyin-item-cover"
+                            onTouchStart={(e) => {
+                              console.log(111, e);
+                              setEdit(true);
+                              updateShuiyinIndex(index);
+                            }}
+                          >
+                            <Button>编辑</Button>
                           </View>
                         )}
                       </View>
-                    </React.Fragment>
+                    </View>
                   );
                 })}
               </View>
@@ -2031,7 +2031,21 @@ const CameraPage = () => {
                   </AtCard>
                   {
                     <View className="syxjName-box">
-                      <AtCard title="水印相机名称，自动显示在左右下角(必填)">
+                      <AtCard title="水印相机名称，自动显示在左右下角">
+                        <View
+                          style={{
+                            fontSize: "14px",
+                          }}
+                        >
+                          填写需要的APP名称
+                          <Text
+                            style={{
+                              color: "#f22c3d",
+                            }}
+                          >
+                            （昨日水印相机、牛克水印相机）{" "}
+                          </Text>
+                        </View>
                         <View className="picker">
                           <Text>水印相机名称： </Text>
                           <Input
@@ -2049,15 +2063,6 @@ const CameraPage = () => {
                               );
                             }}
                           ></Input>
-                        </View>
-                        <View
-                          style={{
-                            marginTop: "10px",
-                            color: "#7b7878",
-                            fontSize: "14px",
-                          }}
-                        >
-                          最长6个字，填写需要的APP名称（昨日水印相机、牛克水印相机）
                         </View>
                       </AtCard>
                     </View>
@@ -2094,6 +2099,7 @@ const CameraPage = () => {
                       <AtCard title="左下角已验证下标">
                         <View className="picker" style={{ height: "50px" }}>
                           <Text>是否显示： </Text>
+
                           <Switch
                             style={{
                               transform: "scale(0.7)",
@@ -2111,6 +2117,7 @@ const CameraPage = () => {
                         </View>
                       </AtCard>
                     )}
+
                   {canvasConfigState[currentShuiyinIndex]?.[0]?.title && (
                     <AtCard title="标题">
                       <View className="picker">
@@ -2144,6 +2151,7 @@ const CameraPage = () => {
                       </View>
                     </AtCard>
                   )}
+
                   {canvasConfigState[currentShuiyinIndex]?.[0]?.jingweidu && (
                     <>
                       <AtCard title="经纬度">
