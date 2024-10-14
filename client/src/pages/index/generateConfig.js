@@ -140,7 +140,7 @@ const generateCanvasConfig = ({
                       ctx.fillStyle = "#c9cbcd";
                       ctx.fillText(
                         shuiyinxiangjiName +
-                        (shuiyinxiangjiName.includes('相机') ? '已验证 | 时间地点真实' : '相机已验证 | 时间地点真实'),
+                        (shuiyinxiangjiName.includes('相机') ? '已验证照片真实性' : '相机已验证照片真实性'),
                         26,
                         canvas.height / dpr - 2
                       );
