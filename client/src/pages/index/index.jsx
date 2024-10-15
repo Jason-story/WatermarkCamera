@@ -1667,23 +1667,6 @@ const CameraPage = () => {
           <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text>提示</Text>
-              <View
-                onClick={() => {
-                  setShowFloatLayout(!showFloatLayout);
-                }}
-                style={{
-                  position: "absolute",
-                  right: "15px",
-                  top: "10px",
-                  width: "20px",
-                  height: "20px",
-                }}
-              >
-                <Image
-                  style={{ width: "100%", height: "100%" }}
-                  src={Close}
-                ></Image>
-              </View>
             </AtModalHeader>
             <AtModalContent>
               <View className="modal-list">
