@@ -8,6 +8,8 @@ import Icon4 from "../../images/icon-4.png";
 import Icon7 from "../../images/icon-7.png";
 import Mk2 from "../../images/mk-2.png";
 import Mk2Back from "../../images/mk-2-back.png";
+const lineWidth = 0.3;
+const strokeStyle = "#5d5d5d"; // 描边颜色可以设置为黑色或你想要的颜色
 
 const generateCanvasConfig = ({
   hours,
@@ -87,22 +89,17 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-
               const { fontSize, color, text, position } = textConfig;
               ctx.font = `${fontSize}px fzlt`;
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
               ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
               ctx.shadowOffsetX = 1;
               ctx.shadowOffsetY = 8;
               ctx.shadowBlur = 3;
-
               ctx.fillStyle = color;
-
               const textWidth = ctx.measureText(text).width;
               const canvasWidth = canvas.width / dpr;
               const xPosition = (canvasWidth - textWidth) / 2;
               const yPosition = position[1];
-
               ctx.fillText(text, xPosition, yPosition);
             },
             args: [
@@ -164,7 +161,6 @@ const generateCanvasConfig = ({
               Taro.getImageInfo({
                 src: Icon3,
                 success: (imgInfo) => {
-                  console.log("imgInfo: ", imgInfo);
                   const img = canvas.createImage();
                   img.src = "/" + imgInfo.path;
                   img.onload = () => {
@@ -267,13 +263,11 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, rectConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-
               const { width } = rectConfig;
               const imgHeight = 34 * 0.8;
               const lineHeight = 21.25 * 0.8;
               const maxLines = 2;
               const charsPerLine = 20;
-
               const getLocationLines = (text) => {
                 const words = text.split("");
                 let lines = 1;
@@ -297,9 +291,8 @@ const generateCanvasConfig = ({
                   img.src = "/" + imgInfo.path;
                   img.onload = () => {
                     ctx.drawImage(img, 8.5 * 0.8, 0, width * 0.8, imgHeight);
-
                     // 绘制时间（调整大小为原来的0.7倍）
-                    ctx.font = "bold 15px sans-serif"; // 24 * 0.7
+                    ctx.font = "bold 15px fzlt"; // 24 * 0.7
                     const gradient = ctx.createLinearGradient(
                       65 * 0.7,
                       3.6 * 0.7,
@@ -312,12 +305,17 @@ const generateCanvasConfig = ({
                     ctx.fillText(`${hours}:${minutes}`, 63 * 0.7, 28 * 0.7);
 
                     // 绘制位置名称
-                    ctx.font = "bold 10.88px sans-serif"; // 13.6 * 0.8
+                    ctx.font = "bold 10.88px fzlt"; // 13.6 * 0.8
+                    // 设置描边
+                    ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
+                    ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+
                     ctx.fillStyle = "white";
                     let y = 52.2; // (65.25 * 0.8)
                     let remainingText = locationName;
                     for (let i = 0; i < locationLines; i++) {
                       const line = remainingText.substring(0, charsPerLine);
+                      ctx.strokeText(line, 14.96, y); // 绘制文字描边
                       ctx.fillText(line, 14.96, y); // 18.7 * 0.8
                       remainingText = remainingText.substring(charsPerLine);
                       y += lineHeight;
@@ -325,6 +323,11 @@ const generateCanvasConfig = ({
 
                     // 绘制日期
                     const dateY = y;
+                    ctx.strokeText(
+                      `${year}.${month}.${day} ${weekly}`,
+                      14.96,
+                      dateY
+                    );
                     ctx.fillText(
                       `${year}.${month}.${day} ${weekly}`,
                       14.96,
@@ -340,8 +343,18 @@ const generateCanvasConfig = ({
 
                     if (disableTrueCode && showHasCheck) {
                       // 绘制下标 (移动到左下角)
-                      ctx.font = "bold 10px sans-serif";
+                      ctx.font = "bold 10px fzlt";
                       ctx.fillStyle = "#c9cbcd";
+                      ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
+                      ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+                      ctx.strokeText(
+                        shuiyinxiangjiName +
+                          (shuiyinxiangjiName.includes("相机")
+                            ? "已验证 | 时间地点真实"
+                            : "相机已验证 | 时间地点真实"),
+                        26,
+                        canvas.height / dpr - 2
+                      ); // 绘制文字描边
                       ctx.fillText(
                         shuiyinxiangjiName +
                           (shuiyinxiangjiName.includes("相机")
@@ -428,6 +441,7 @@ const generateCanvasConfig = ({
                               );
                               ctx.font = "bold 11px NotoSansMono";
                               ctx.fillStyle = "#fff";
+                              ctx.strokeText("马克", x + 5, y + 2);
                               ctx.fillText("马克", x + 5, y + 2);
                               //  绘制防伪码
                               ctx.font = "bold 7px NotoSansMono";
@@ -438,6 +452,8 @@ const generateCanvasConfig = ({
                                 100,
                                 30
                               );
+                              ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
+                              ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
                               ctx.fillText(
                                 "防伪 " + generateRandomString(),
                                 x - 35,
@@ -476,6 +492,13 @@ const generateCanvasConfig = ({
                               // 绘制水印名字
                               ctx.font = "bold 11px NotoSansMono";
                               ctx.fillStyle = "#fff";
+                              ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
+                              ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+                              ctx.strokeText(
+                                shuiyinxiangjiName,
+                                x + 57,
+                                y + 25
+                              );
                               ctx.fillText(shuiyinxiangjiName, x + 57, y + 25);
                               //  绘制防伪码
                               ctx.font = "bold 6px NotoSansMono";

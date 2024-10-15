@@ -1699,7 +1699,7 @@ const CameraPage = () => {
                       style={{
                         marginTop: "10px",
                         width: "280px",
-                        height: "68px",
+                        height: "59px",
                       }}
                     ></Image>
                   </View>

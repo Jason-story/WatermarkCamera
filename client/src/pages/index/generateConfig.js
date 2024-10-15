@@ -120,11 +120,11 @@ const generateCanvasConfig = ({
                       img.height / 2.8
                     );
                     // 绘制时间（调整大小为原来的0.7倍）
-                    ctx.font = "bold 16px sans-serif"; // 24 * 0.7
+                    ctx.font = "bold 16px fzlt"; // 24 * 0.7
                     ctx.fillStyle = "#21c3a2";
                     ctx.fillText(`${hours}:${minutes}`, 71, 22);
                     ctx.fillStyle = "#fff";
-                    ctx.font = "bold 18px sans-serif"; // 24 * 0.7
+                    ctx.font = "bold 18px fzlt"; // 24 * 0.7
                     // 绘制日期
                     ctx.fillText(
                       `${year}/${month}/${day} ${weekly}`,
@@ -133,7 +133,7 @@ const generateCanvasConfig = ({
                     );
                     if (disableTrueCode && showHasCheck) {
                       // 绘制下标 (移动到左下角)
-                      ctx.font = "bold 10px sans-serif";
+                      ctx.font = "bold 10px fzlt";
                       ctx.fillStyle = "#c9cbcd";
                       ctx.fillText(
                         shuiyinxiangjiName +
@@ -383,7 +383,7 @@ const generateCanvasConfig = ({
               ctx.fillRect(rect[0], rect[1], rect[2], rect[3]);
               if (disableTrueCode && showHasCheck) {
                 // 绘制下标 (移动到左下角)
-                ctx.font = "bold 10px sans-serif";
+                ctx.font = "bold 10px fzlt";
                 ctx.fillStyle = "#c9cbcd";
                 ctx.fillText(
                   shuiyinxiangjiName +
