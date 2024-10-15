@@ -141,7 +141,7 @@ const MergeCanvas = () => {
           fail: (error) => {
             setLoading(false);
             Taro.showToast({
-              title: "网络错误，请重试",
+              title: "系统重启，请刷新后重新上传",
               icon: "none",
               duration: 3000,
             });
@@ -269,17 +269,15 @@ const MergeCanvas = () => {
   }
   useEffect(() => {
     const init = async () => {
-      const appid = Taro.getAccountInfoSync().miniProgram.appId;
-      const config = appConfigs[appid];
-      if (config.type === "shared") {
+      if (ytgConfig.type === "shared") {
         cloud = await new Taro.cloud.Cloud({
-          resourceAppid: config.resourceAppid,
-          resourceEnv: config.resourceEnv,
+          resourceAppid: ytgConfig.resourceAppid,
+          resourceEnv: ytgConfig.resourceEnv,
         });
         await cloud.init();
       } else {
         await Taro.cloud.init({
-          env: config.env,
+          env: ytgConfig.env,
         });
         cloud = Taro.cloud;
       }
@@ -307,10 +305,9 @@ const MergeCanvas = () => {
           } else {
             // 免费次数用尽
             if (
-              (res.result.data.times >=
+              res.result.data.times >=
                 config.mianfeicishu + res.result.data.invite_count &&
-                res.result.data.type === "default") ||
-              (res.result.data.type === "default" && isVip === "true")
+              res.result.data.type === "default"
             ) {
               setIsShowModal(true);
               setLoading(false);
