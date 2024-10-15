@@ -193,7 +193,7 @@ const CameraPage = () => {
         });
         await cloud.init();
       } else {
-         await Taro.cloud.init({
+        await Taro.cloud.init({
           env: config.env,
         });
         cloud = Taro.cloud;
@@ -201,6 +201,9 @@ const CameraPage = () => {
 
       cloud.callFunction({
         name: "addUser",
+        data: {
+          userToApp: config.userToApp,
+        },
         success: function (res) {
           setUserInfo(res.result.data);
           // 会员填写手机号
@@ -229,7 +232,6 @@ const CameraPage = () => {
         success: function (res) {
           app.$app.globalData.config = res.result.data;
           setCurrentShuiyinIndex(res.result.data.shuiyinindex);
-
           wx.downloadFile({
             url: app.$app.globalData.config.gzh, // 你的二维码图片地址
             success(res) {
