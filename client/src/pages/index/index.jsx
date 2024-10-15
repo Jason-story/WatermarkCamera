@@ -199,6 +199,7 @@ const CameraPage = () => {
         cloud = Taro.cloud;
       }
 
+      console.log('config.userToApp: ', config.userToApp);
       cloud.callFunction({
         name: "addUser",
         data: {
@@ -464,17 +465,13 @@ const CameraPage = () => {
             setPermissions({
               [scope.split(".")[1]]: true,
             });
-            // await cloud.callFunction({
-            //   name: "addUser",
-            // });
+
           } catch (error) {
             console.error(`${scope} 权限被拒绝`, error);
             setPermissions({
               [scope.split(".")[1]]: false,
             });
-            // await cloud.callFunction({
-            //   name: "addUser",
-            // });
+
           }
         }
       } catch (error) {
@@ -2025,7 +2022,7 @@ const CameraPage = () => {
                               color: "#f22c3d",
                             }}
                           >
-                            （衿曰水印、蚂可水印）
+                            （岑曰水印、马可水印）
                           </Text>
                         </View>
                         <View className="picker">
