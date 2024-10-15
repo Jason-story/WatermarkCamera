@@ -1559,9 +1559,7 @@ const CameraPage = () => {
               </View>
               <View style={{ fontSize: "12px", marginLeft: "5px" }}>
                 <View>微信闪退？</View>
-                <View>保存失败？</View>
                 <View>保存数据？</View>
-                {/* <View>隐藏防伪下标？</View> */}
                 <View>请点击设置</View>
               </View>
               {/* {!fuckShenHe && (
@@ -2019,13 +2017,13 @@ const CameraPage = () => {
                             fontSize: "14px",
                           }}
                         >
-                          填写需要的APP名称，最多4个字
+                          填写需要的水印名称，最多4个字
                           <Text
                             style={{
                               color: "#f22c3d",
                             }}
                           >
-                            （衿日水印、蚂克水印）
+                            （衿曰水印、蚂可水印）
                           </Text>
                         </View>
                         <View className="picker">
