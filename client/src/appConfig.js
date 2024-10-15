@@ -21,8 +21,7 @@ const appConfigs = {
     containerResourceAppid: "wx785efc584be4265b",
     containerResourceEnv: "prod-9g5wnloybe56625b",
     containerName: "express-loc1",
-    userToApp:'fushu'
-
+    userToApp: "子小程序",
   },
 
   wx8d21222bcb51c801: {
