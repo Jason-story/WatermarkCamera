@@ -747,7 +747,7 @@ const CameraPage = () => {
         setShowHasCheck(showHasCheck);
         setShowTrueCode(showTrueCode);
         setShuiyinxiangjiName(shuiyinxiangjiName);
-        setFangDaoShuiyin(fangdaoShuiyin)
+        setFangDaoShuiyin(fangdaoShuiyin || '盗图必究')
       }, 1000);
     }
     saveChange(userInfo?.saveConfig?.isSaved);
