@@ -418,6 +418,159 @@ const generateCanvasConfig = ({
       {
         path: [
           {
+            draw: (ctx, config) => {
+              const canvasWidth = canvas.width / dpr;
+              const canvasHeight = canvas.height / dpr;
+
+              ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+              Taro.getImageInfo({
+                src: Icon5,
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = "/" + imgInfo.path;
+                  img.onload = () => {
+                    const imgWidth = imgInfo.width;
+                    const imgHeight = imgInfo.height;
+                    // 绘制图片
+                    ctx.drawImage(img, 10, 0, imgWidth / 2.5, imgHeight / 2.5);
+                    // 绘制日期和时间
+                    const { year, month, day, weekly, minutes, hours } = config;
+                    ctx.font = "bold 24px fzlt"; // 文字大小14px
+                    ctx.fillStyle = "#2a4360"; // 文字颜色
+                    // 计算文本宽度
+                    const timeText = `${hours}:${minutes}`;
+                    const textWidth = ctx.measureText(timeText).width;
+
+                    // 计算文本的起始位置以实现水平居中
+                    const imgXPosition = 10; // 图片的X坐标
+                    const imgActualWidth = imgWidth / 2.5; // 图片实际宽度
+                    const textXPosition =
+                      imgXPosition + (imgActualWidth - textWidth) / 2; // 文本的起始X坐标
+                    ctx.lineWidth = lineWidth;
+                    ctx.strokeStyle = strokeStyle;
+                    ctx.strokeText(timeText, textXPosition, 56);
+                    ctx.fillText(timeText, textXPosition, 56);
+
+                    ctx.font = "normal 14px fzlt"; // 文字大小14px
+                    const dateString = `${year}-${month}-${day} ${weekly}`;
+                    ctx.fillStyle = "#fff"; // 文字颜色白色
+                    ctx.lineWidth = lineWidth;
+                    ctx.strokeStyle = strokeStyle;
+                    ctx.strokeText(dateString, 12, 87);
+                    ctx.fillText(dateString, 12, 87);
+                  };
+                  img.onerror = (err) => {
+                    console.error("Background image loading failed", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("Failed to get background image info", err);
+                },
+              });
+
+              // 绘制地点
+              const { locationName } = config;
+              const maxCharsPerLine = 20; // 原来的9 * 0.75
+              const lines = [];
+              for (let i = 0; i < locationName.length; i += maxCharsPerLine) {
+                lines.push(locationName.slice(i, i + maxCharsPerLine));
+              }
+              ctx.font = "normal 14px fzlt"; // 文字大小14px
+              ctx.fillStyle = "#fff"; // 文字颜色白色
+              const maxLines = 2;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = strokeStyle;
+              lines.slice(0, maxLines).forEach((line, index) => {
+                ctx.strokeText(line, 12, 110 + index * (15 * 1.2));
+                ctx.fillText(line, 12, 110 + index * (15 * 1.2));
+              });
+              Taro.getImageInfo({
+                src: Icon6,
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = "/" + imgInfo.path;
+                  img.onload = () => {
+                    const imgWidth = imgInfo.width / 2.8;
+                    const imgHeight = imgInfo.height / 2.8;
+                    ctx.shadowColor = "none";
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.shadowBlur = 0;
+                    ctx.drawImage(img, 12, 140, imgWidth, imgHeight);
+                  };
+                  img.onerror = (err) => {
+                    console.error("Image loading failed", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("Failed to get image information", err);
+                },
+              });
+            },
+            args: [
+              {
+                year,
+                month,
+                day,
+                weekly,
+                minutes,
+                hours,
+                locationName,
+              },
+            ],
+          },
+
+          {
+            draw: (ctx, config) => {
+              const { fontSize, color, text, position } = config;
+              Taro.getImageInfo({
+                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = imgInfo.path;
+                  img.onload = () => {
+                    const imgWidth = imgInfo.width / 3 + 5;
+                    const imgHeight = imgInfo.height / 3 + 5;
+
+                    const canvasWidth = canvas.width / dpr;
+                    const canvasHeight = canvas.height / dpr;
+
+                    const x = canvasWidth - imgWidth;
+                    const y = canvasHeight - imgHeight + 16;
+                    ctx.shadowColor = "none";
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    ctx.shadowBlur = 0;
+                    ctx.drawImage(img, x, y, imgWidth, imgHeight);
+                  };
+                  img.onerror = (err) => {
+                    console.error("Image loading failed", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("Failed to get image information", err);
+                },
+              });
+            },
+            args: [
+              {
+                fontSize: 12.24,
+                color: "rgba(255, 255, 255, 0.8)",
+                text: `水印相机`,
+                position: [0, 82.4],
+              },
+            ],
+          },
+        ],
+        img: Shuiyin9,
+        height: 180,
+        logoY: 0.45,
+      },
+    ],
+    [
+      {
+        path: [
+          {
             draw: (ctx, backgroundConfig) => {
               const { color, rect } = backgroundConfig;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1174,178 +1327,6 @@ const generateCanvasConfig = ({
           let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },
-      },
-    ],
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    [
-      {
-        path: [
-          {
-            draw: (ctx, config) => {
-              const canvasWidth = canvas.width / dpr;
-              const canvasHeight = canvas.height / dpr;
-
-              ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-              Taro.getImageInfo({
-                src: Icon5,
-                success: (imgInfo) => {
-                  const img = canvas.createImage();
-                  img.src = "/" + imgInfo.path;
-                  img.onload = () => {
-                    const imgWidth = imgInfo.width;
-                    const imgHeight = imgInfo.height;
-                    // 绘制图片
-                    ctx.drawImage(img, 10, 0, imgWidth / 2.5, imgHeight / 2.5);
-                    // 绘制日期和时间
-                    const { year, month, day, weekly, minutes, hours } = config;
-                    ctx.font = "bold 24px fzlt"; // 文字大小14px
-                    ctx.fillStyle = "#2a4360"; // 文字颜色
-                    // 计算文本宽度
-                    const timeText = `${hours}:${minutes}`;
-                    const textWidth = ctx.measureText(timeText).width;
-
-                    // 计算文本的起始位置以实现水平居中
-                    const imgXPosition = 10; // 图片的X坐标
-                    const imgActualWidth = imgWidth / 2.5; // 图片实际宽度
-                    const textXPosition =
-                      imgXPosition + (imgActualWidth - textWidth) / 2; // 文本的起始X坐标
-                    ctx.lineWidth = lineWidth;
-                    ctx.strokeStyle = strokeStyle;
-                    ctx.strokeText(timeText, textXPosition, 56);
-                    ctx.fillText(timeText, textXPosition, 56);
-
-                    ctx.font = "normal 14px fzlt"; // 文字大小14px
-                    const dateString = `${year}-${month}-${day} ${weekly}`;
-                    ctx.fillStyle = "#fff"; // 文字颜色白色
-                    ctx.lineWidth = lineWidth;
-                    ctx.strokeStyle = strokeStyle;
-                    ctx.strokeText(dateString, 12, 87);
-                    ctx.fillText(dateString, 12, 87);
-                  };
-                  img.onerror = (err) => {
-                    console.error("Background image loading failed", err);
-                  };
-                },
-                fail: (err) => {
-                  console.error("Failed to get background image info", err);
-                },
-              });
-
-              // 绘制地点
-              const { locationName } = config;
-              const maxCharsPerLine = 20; // 原来的9 * 0.75
-              const lines = [];
-              for (let i = 0; i < locationName.length; i += maxCharsPerLine) {
-                lines.push(locationName.slice(i, i + maxCharsPerLine));
-              }
-              ctx.font = "normal 14px fzlt"; // 文字大小14px
-              ctx.fillStyle = "#fff"; // 文字颜色白色
-              const maxLines = 2;
-              ctx.lineWidth = lineWidth;
-              ctx.strokeStyle = strokeStyle;
-              lines.slice(0, maxLines).forEach((line, index) => {
-                ctx.strokeText(line, 12, 110 + index * (15 * 1.2));
-                ctx.fillText(line, 12, 110 + index * (15 * 1.2));
-              });
-              Taro.getImageInfo({
-                src: Icon6,
-                success: (imgInfo) => {
-                  const img = canvas.createImage();
-                  img.src = "/" + imgInfo.path;
-                  img.onload = () => {
-                    const imgWidth = imgInfo.width / 2.8;
-                    const imgHeight = imgInfo.height / 2.8;
-                    ctx.shadowColor = "none";
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 0;
-                    ctx.shadowBlur = 0;
-                    ctx.drawImage(img, 12, 140, imgWidth, imgHeight);
-                  };
-                  img.onerror = (err) => {
-                    console.error("Image loading failed", err);
-                  };
-                },
-                fail: (err) => {
-                  console.error("Failed to get image information", err);
-                },
-              });
-            },
-            args: [
-              {
-                year,
-                month,
-                day,
-                weekly,
-                minutes,
-                hours,
-                locationName,
-              },
-            ],
-          },
-
-          {
-            draw: (ctx, config) => {
-              const { fontSize, color, text, position } = config;
-              Taro.getImageInfo({
-                src: "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/14931726462345285_shuiyinxiangji.png?sign=8d9e3815f59c6f2dc08d156e7405f6ca&t=1726462345",
-                success: (imgInfo) => {
-                  const img = canvas.createImage();
-                  img.src = imgInfo.path;
-                  img.onload = () => {
-                    const imgWidth = imgInfo.width / 3 + 5;
-                    const imgHeight = imgInfo.height / 3 + 5;
-
-                    const canvasWidth = canvas.width / dpr;
-                    const canvasHeight = canvas.height / dpr;
-
-                    const x = canvasWidth - imgWidth;
-                    const y = canvasHeight - imgHeight + 16;
-                    ctx.shadowColor = "none";
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 0;
-                    ctx.shadowBlur = 0;
-                    ctx.drawImage(img, x, y, imgWidth, imgHeight);
-                  };
-                  img.onerror = (err) => {
-                    console.error("Image loading failed", err);
-                  };
-                },
-                fail: (err) => {
-                  console.error("Failed to get image information", err);
-                },
-              });
-            },
-            args: [
-              {
-                fontSize: 12.24,
-                color: "rgba(255, 255, 255, 0.8)",
-                text: `水印相机`,
-                position: [0, 82.4],
-              },
-            ],
-          },
-        ],
-        img: Shuiyin9,
-        height: 180,
-        logoY: 0.45,
       },
     ],
   ];

@@ -155,6 +155,7 @@ const CameraPage = () => {
   const [logoHeight, setLogoHeight] = useState(0);
   const [rateModal, setRateModal] = useState(false);
   const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
+  const [fangdaoShuiyin, setFangDaoShuiyin] = useState("盗图必究");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   let isWeatherEdited = false;
@@ -199,7 +200,7 @@ const CameraPage = () => {
         cloud = Taro.cloud;
       }
 
-      console.log('config.userToApp: ', config.userToApp);
+      console.log("config.userToApp: ", config.userToApp);
       cloud.callFunction({
         name: "addUser",
         data: {
@@ -465,13 +466,11 @@ const CameraPage = () => {
             setPermissions({
               [scope.split(".")[1]]: true,
             });
-
           } catch (error) {
             console.error(`${scope} 权限被拒绝`, error);
             setPermissions({
               [scope.split(".")[1]]: false,
             });
-
           }
         }
       } catch (error) {
@@ -591,6 +590,7 @@ const CameraPage = () => {
       }
     });
   };
+
   const takePhoto = async (camera = true, path, serverCanvas) => {
     console.log("canvasImg: ", canvasImg);
     // Taro.saveImageToPhotosAlbum({
@@ -642,7 +642,6 @@ const CameraPage = () => {
     // 相机
     if (camera) {
       // 上传时间位置 保存
-      console.log("cloud: ", cloud);
       cloud.callFunction({
         name: "updateSavedConfig",
         data: {
@@ -655,6 +654,7 @@ const CameraPage = () => {
             showTrueCode,
             showHasCheck,
             shuiyinxiangjiName,
+            fangdaoShuiyin
           },
         },
       });
@@ -736,6 +736,7 @@ const CameraPage = () => {
         showTrueCode,
         showHasCheck,
         shuiyinxiangjiName,
+        fangdaoShuiyin
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
@@ -746,6 +747,7 @@ const CameraPage = () => {
         setShowHasCheck(showHasCheck);
         setShowTrueCode(showTrueCode);
         setShuiyinxiangjiName(shuiyinxiangjiName);
+        setFangDaoShuiyin(fangdaoShuiyin)
       }, 1000);
     }
     saveChange(userInfo?.saveConfig?.isSaved);
@@ -951,6 +953,7 @@ const CameraPage = () => {
               showTrueCode,
               disableTrueCode,
               shuiyinxiangjiName,
+              fangdaoShuiyin
             });
 
             const canvasConfigDz = generateCanvasConfig({
@@ -1084,6 +1087,7 @@ const CameraPage = () => {
     // 右下角防伪码
     showTrueCode,
     shuiyinxiangjiName,
+    fangdaoShuiyin,
   ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
@@ -1163,17 +1167,6 @@ const CameraPage = () => {
         canvasConfigState[currentShuiyinIndex]?.[0].logoY;
     }
   }, [currentShuiyinIndex]);
-
-  // useEffect(() => {
-  //   if (
-  //     !shuiyinxiangjiName.includes("今日") ||
-  //     !shuiyinxiangjiName.includes("马克")
-  //   )
-  //     Taro.showToast({
-  //       title: "名称请填写 衿日水印相机 或者 码可水印相机",
-  //       icon: "error",
-  //     });
-  // }, [shuiyinxiangjiName]);
 
   return (
     <View className="container">
@@ -1265,7 +1258,7 @@ const CameraPage = () => {
               </View>
             )}
 
-            {allAuth && (
+            {allAuth && canvasConfigState[currentShuiyinIndex]?.[0].logoY && (
               <View
                 className="logo-wrap"
                 style={{
@@ -2096,7 +2089,23 @@ const CameraPage = () => {
                       </View>
                     </AtCard>
                   )}
-                  {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
+                  {canvasConfigState[currentShuiyinIndex]?.[0]?.fangdao && (
+                    <AtCard title="防盗水印">
+                      <View className="picker">
+                        <Text>防盗文字： </Text>
+                        <Input
+                          className="input"
+                          value={fangdaoShuiyin}
+                          maxlength={8}
+                          clear={true}
+                          onInput={(e) => {
+                            debounce(setFangDaoShuiyin(e.detail.value), 100);
+                          }}
+                        ></Input>
+                      </View>
+                    </AtCard>
+                  )}
+                     {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
                     <AtCard title="天气">
                       <View className="picker">
                         <Text>天气&温度： </Text>

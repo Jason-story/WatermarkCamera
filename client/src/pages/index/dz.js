@@ -6,7 +6,7 @@ import Icon1 from "../../images/icon-1.png";
 import Icon3 from "../../images/icon-3.png";
 import Icon4 from "../../images/icon-4.png";
 import Icon7 from "../../images/icon-7.png";
-import Mk2 from "../../images/mk-2.png";
+import Shuiyin10 from "../../images/shuiyin-10.png";
 import Mk2Back from "../../images/mk-2-back.png";
 const lineWidth = 0.3;
 const strokeStyle = "#5d5d5d"; // 描边颜色可以设置为黑色或你想要的颜色
@@ -16,6 +16,7 @@ const generateCanvasConfig = ({
   minutes,
   year,
   month,
+  fangdaoShuiyin,
   day,
   weekly,
   weather,
@@ -1068,6 +1069,67 @@ const generateCanvasConfig = ({
         position: "center",
       },
     ],
+    // 防盗
+    [
+      {
+        path: [
+          {
+            draw: (ctx, watermarkConfig) => {
+              const { text, fontSize, color, opacity, density } =
+                watermarkConfig;
+
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+              ctx.font = `${fontSize}px fzlt`;
+              ctx.fillStyle = color;
+              ctx.globalAlpha = opacity;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = strokeStyle;
+
+              ctx.save();
+              ctx.rotate(-(Math.PI / 4)); // 45度倾斜
+
+              const textWidth = ctx.measureText(text).width;
+              const xGap = textWidth + 20;
+              const yGap = fontSize * 2;
+
+              for (
+                let y = -canvas.height;
+                y < canvas.height * 2;
+                y += yGap * density
+              ) {
+                for (
+                  let x = -canvas.width;
+                  x < canvas.width * 2;
+                  x += xGap * density
+                ) {
+                  ctx.strokeText(text, x, y);
+
+                  ctx.fillText(text, x, y);
+                }
+              }
+              ctx.restore();
+            },
+            args: [
+              {
+                text: fangdaoShuiyin,
+                fontSize: 25,
+                color: "rgba(200, 200, 200, 0.2)",
+                opacity: 1,
+                density: 1.2, // 控制水印密度，值越大，水印越稀疏
+              },
+            ],
+          },
+        ],
+        img: Shuiyin10,
+        fangdao: true,
+        name: "防盗",
+        height: () => {
+          return (width * 4) / 3;
+        },
+      },
+    ],
+    // 防盗结束
   ];
 };
 export default generateCanvasConfig;
