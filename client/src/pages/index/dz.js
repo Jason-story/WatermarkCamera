@@ -307,8 +307,8 @@ const generateCanvasConfig = ({
                     // 绘制位置名称
                     ctx.font = "bold 10.88px fzlt"; // 13.6 * 0.8
                     // 设置描边
-                    ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
-                    ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+                    ctx.lineWidth = lineWidth;
+                    ctx.strokeStyle = strokeStyle;
 
                     ctx.fillStyle = "white";
                     let y = 52.2; // (65.25 * 0.8)
@@ -345,8 +345,8 @@ const generateCanvasConfig = ({
                       // 绘制下标 (移动到左下角)
                       ctx.font = "bold 10px fzlt";
                       ctx.fillStyle = "#c9cbcd";
-                      ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
-                      ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+                      ctx.lineWidth = lineWidth;
+                      ctx.strokeStyle = strokeStyle;
                       ctx.strokeText(
                         shuiyinxiangjiName +
                           (shuiyinxiangjiName.includes("相机")
@@ -452,7 +452,7 @@ const generateCanvasConfig = ({
                                 100,
                                 30
                               );
-                              ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
+                              ctx.lineWidth = lineWidth;
                               ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
                               ctx.fillText(
                                 "防伪 " + generateRandomString(),
@@ -492,7 +492,7 @@ const generateCanvasConfig = ({
                               // 绘制水印名字
                               ctx.font = "bold 11px NotoSansMono";
                               ctx.fillStyle = "#fff";
-                              ctx.lineWidth = lineWidth; // 设置描边宽度为0.5px
+                              ctx.lineWidth = lineWidth;
                               ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
                               ctx.strokeText(
                                 shuiyinxiangjiName,
@@ -623,6 +623,9 @@ const generateCanvasConfig = ({
               }
               ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+              ctx.strokeText(text, position[0], position[1]);
               ctx.fillText(text, ...position);
             },
             args: [
@@ -644,6 +647,9 @@ const generateCanvasConfig = ({
               }
               ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+              ctx.strokeText(text, ...position);
               ctx.fillText(text, ...position);
             },
             args: [
@@ -670,7 +676,14 @@ const generateCanvasConfig = ({
               }
 
               const maxLines = 2;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
               lines.slice(0, maxLines).forEach((line, index) => {
+                ctx.strokeText(
+                  index === 0 ? "地址: " + line : line,
+                  position[0] + (index === 0 ? 0 : 29), // Adjusted from 42
+                  position[1] + index * (fontSize * 1.25)
+                );
                 ctx.fillText(
                   index === 0 ? "地址: " + line : line,
                   position[0] + (index === 0 ? 0 : 29), // Adjusted from 42
@@ -693,6 +706,9 @@ const generateCanvasConfig = ({
               let { fontSize, color, text, position } = config;
               ctx.font = `${fontSize}px fzlt`;
               ctx.fillStyle = color;
+              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+              ctx.strokeText(text, ...position);
               ctx.fillText(text, ...position);
               if (disableTrueCode && showTrueCode) {
                 // 防伪图标
@@ -739,6 +755,9 @@ const generateCanvasConfig = ({
                           );
                           ctx.font = "bold 11px NotoSansMono";
                           ctx.fillStyle = "#fff";
+                          ctx.lineWidth = lineWidth;
+                          ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+                          ctx.strokeText("马克", x + 5, y + 2);
                           ctx.fillText("马克", x + 5, y + 2);
                           //  绘制防伪码
                           ctx.font = "bold 7px NotoSansMono";
@@ -782,6 +801,9 @@ const generateCanvasConfig = ({
                           // 绘制水印名字
                           ctx.font = "bold 11px NotoSansMono";
                           ctx.fillStyle = "#fff";
+                          ctx.lineWidth = lineWidth;
+                          ctx.strokeStyle = strokeStyle; // 描边颜色可以设置为黑色或你想要的颜色
+                          ctx.strokeText(shuiyinxiangjiName, x + 57, y + 25);
                           ctx.fillText(shuiyinxiangjiName, x + 57, y + 25);
                           //  绘制防伪码
                           ctx.font = "bold 6px NotoSansMono";
