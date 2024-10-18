@@ -12,8 +12,8 @@
   },
   "setting": {
     "urlCheck": true,
-    "es6": true,
-    "enhance": true,
+    "es6": false,
+    "enhance": false,
     "compileHotReLoad": false,
     "postcss": true,
     "minified": true,
@@ -25,7 +25,7 @@
     "packNpmRelationList": [],
     "condition": true,
     "uglifyFileName": false,
-    "compileWorklet": true,
+    "compileWorklet": false,
     "coverView": false,
     "showShadowRootInWxmlPanel": false,
     "ignoreUploadUnusedFiles": true

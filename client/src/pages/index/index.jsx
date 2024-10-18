@@ -765,33 +765,6 @@ const CameraPage = () => {
     }
   }, [locationName]);
   useEffect(() => {
-    wx.loadFontFace({
-      family: "fzlt",
-      global: true,
-      scopes: ["webview", "native"],
-      source:
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-16/13611726462007499_fzlt.ttf?sign=4958a39f2e580a185a5952b7771b509f&t=1726462008")',
-      success: (res) => {
-        drawMask();
-      },
-      fail: (err) => {},
-    });
-
-    wx.loadFontFace({
-      family: "NotoSansMono",
-      global: true,
-      scopes: ["webview", "native"],
-      source:
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/kit-cms-upload/2024-09-13/16741726192400525_NotoSansMono.ttf?sign=e538c8b4afae718262ea3eb01d7fc9f1&t=1726192401")',
-      success: (res) => {
-        drawMask();
-      },
-      fail: (err) => {
-        console.log("err: ", err);
-      },
-    });
-  }, []);
-  useEffect(() => {
     let count = 0;
     const interval = setInterval(() => {
       setUpdate((prev) => !prev); // 这里是为了每次赋不同的值

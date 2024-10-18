@@ -18,7 +18,24 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    wx.loadFontFace({
+      family: "hyqh",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        // 汉仪旗黑x165
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/pics/hyqhx165.ttf")',
+    });
+    wx.loadFontFace({
+      family: "number",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        // 数字
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/pics/makeNumber.ttf")',
+    });
+  }
 
   componentDidShow() {}
 
@@ -31,5 +48,3 @@ class App extends Component {
 }
 
 export default App;
-
-

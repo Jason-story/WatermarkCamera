@@ -8,9 +8,9 @@ import Icon6 from "../../images/icon-6.png";
 import Shuiyin8 from "../../images/shuiyin-8.png";
 import Shuiyin9 from "../../images/shuiyin-9.png";
 import Icon7 from "../../images/icon-7.png";
-import Mk2 from "../../images/mk-2.png";
+import DunpaiMake from "../../images/dunpaiMake.png";
 import Mk2Back from "../../images/mk-2-back.png";
-const lineWidth = 0.3;
+const lineWidth = 0.1;
 const strokeStyle = "#5d5d5d";
 
 const generateCanvasConfig = ({
@@ -86,29 +86,6 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, rectConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-              const { width } = rectConfig;
-              const lineHeight = 21.25 * 0.8;
-              const maxLines = 2;
-              const charsPerLine = 20;
-
-              const getLocationLines = (text) => {
-                const words = text.split("");
-                let lines = 1;
-                let currentLineLength = 0;
-                for (const word of words) {
-                  if (currentLineLength + 1 > charsPerLine) {
-                    lines++;
-                    currentLineLength = 1;
-                  } else {
-                    currentLineLength++;
-                  }
-                  if (lines === maxLines) break;
-                }
-                return lines;
-              };
-
-              const locationLines = getLocationLines(locationName);
               Taro.getImageInfo({
                 src: Mk1,
                 success: (imgInfo) => {
@@ -122,17 +99,15 @@ const generateCanvasConfig = ({
                       img.width / 2.8,
                       img.height / 2.8
                     );
-                    // 绘制时间（调整大小为原来的0.7倍）
-                    ctx.font = "bold 16px fzlt"; // 24 * 0.7
+                    ctx.font = "19px number"; // 24 * 0.7
                     ctx.fillStyle = "#21c3a2";
-
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
 
-                    ctx.strokeText(`${hours}:${minutes}`, 71, 22);
-                    ctx.fillText(`${hours}:${minutes}`, 71, 22);
+                    // ctx.strokeText(`${hours}:${minutes}`, 71, 22);
+                    ctx.fillText(`${hours}:${minutes}`, 72, 23);
                     ctx.fillStyle = "#fff";
-                    ctx.font = "bold 18px fzlt"; // 24 * 0.7
+                    ctx.font = "18px number"; // 24 * 0.7
                     // 绘制日期
                     ctx.strokeText(
                       `${year}/${month}/${day} ${weekly}`,
@@ -146,40 +121,37 @@ const generateCanvasConfig = ({
                     );
                     if (disableTrueCode && showHasCheck) {
                       // 绘制下标 (移动到左下角)
-                      ctx.font = "bold 10px fzlt";
-                      ctx.fillStyle = "#c9cbcd";
+                      ctx.font = "14px hyqh";
+                      ctx.fillStyle = "#e6e0d9";
                       ctx.strokeText(
                         shuiyinxiangjiName +
                           (shuiyinxiangjiName.includes("相机")
                             ? "已验证照片真实性"
                             : "相机已验证照片真实性"),
-                        26,
-                        canvas.height / dpr - 2
+                        30,
+                        canvas.height / dpr-4
                       );
                       ctx.fillText(
                         shuiyinxiangjiName +
                           (shuiyinxiangjiName.includes("相机")
                             ? "已验证照片真实性"
                             : "相机已验证照片真实性"),
-                        26,
-                        canvas.height / dpr - 2
+                        30,
+                        canvas.height / dpr -4
                       );
                       // 小盾牌图片 (移动到左下角)
                       Taro.getImageInfo({
-                        src: Dunpai,
+                        src: DunpaiMake,
                         success: (imgInfo) => {
                           const img = canvas.createImage();
                           img.src = "/" + imgInfo.path;
                           img.onload = () => {
-                            const imgWidth = imgInfo.width / 3 + 5;
-                            const imgHeight = imgInfo.height / 3 + 5;
-
                             ctx.drawImage(
                               img,
                               9,
-                              canvas.height / dpr - imgHeight * 0.65 + 1,
-                              imgWidth * 0.65,
-                              imgHeight * 0.65
+                              canvas.height / dpr - 17,
+                              17,
+                              17
                             );
                           };
                         },
@@ -240,15 +212,15 @@ const generateCanvasConfig = ({
                                   imgWidth,
                                   imgHeight
                                 );
-                                ctx.font = "bold 11px NotoSansMono";
+                                ctx.font = "bold 12px hyqh";
                                 ctx.fillStyle = "#fff";
 
                                 ctx.lineWidth = lineWidth;
                                 ctx.strokeStyle = strokeStyle;
-                                ctx.strokeText("马克", x + 5, y + 2);
-                                ctx.fillText("马克", x + 5, y + 2);
+                                ctx.strokeText("马克", x + 2, y + 2);
+                                ctx.fillText("马克", x + 2, y + 2);
                                 //  绘制防伪码
-                                ctx.font = "bold 7px NotoSansMono";
+                                ctx.font = "bold 7px hyqh";
                                 ctx.fillStyle = "#fff";
                                 ctx.clearRect(
                                   x - 40,
@@ -292,7 +264,7 @@ const generateCanvasConfig = ({
                                   imgHeight * 0.7
                                 );
                                 // 绘制水印名字
-                                ctx.font = "bold 11px NotoSansMono";
+                                ctx.font = "bold 11px hyqh";
                                 ctx.fillStyle = "#fff";
                                 ctx.strokeText(
                                   shuiyinxiangjiName,
@@ -305,7 +277,7 @@ const generateCanvasConfig = ({
                                   y + 25
                                 );
                                 //  绘制防伪码
-                                ctx.font = "bold 6px NotoSansMono";
+                                ctx.font = "bold 6px hyqh";
                                 ctx.fillStyle = "#fff";
                                 ctx.fillText(
                                   generateRandomString(),
@@ -338,10 +310,10 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `${fontSize}px fzlt`;
+              ctx.font = `${fontSize}px hyqh`;
               ctx.fillStyle = color;
 
-              const maxCharsPerLine = 20;
+              const maxCharsPerLine = 15;
               const lines = [];
               for (let i = 0; i < text.length; i += maxCharsPerLine) {
                 lines.push(text.slice(i, i + maxCharsPerLine));
@@ -372,7 +344,7 @@ const generateCanvasConfig = ({
                   ctx.fillStyle = currentFillStyle;
                 }
 
-                ctx.font = "bold 14px NotoSansMono";
+                ctx.font = "bold 14px hyqh";
                 ctx.lineWidth = lineWidth;
                 ctx.strokeStyle = strokeStyle;
                 ctx.strokeText(
@@ -410,7 +382,7 @@ const generateCanvasConfig = ({
         right: true,
         logoY: 0.6,
         height: () => {
-          return 110;
+          return 120;
         },
       },
     ],
@@ -435,7 +407,7 @@ const generateCanvasConfig = ({
                     ctx.drawImage(img, 10, 0, imgWidth / 2.5, imgHeight / 2.5);
                     // 绘制日期和时间
                     const { year, month, day, weekly, minutes, hours } = config;
-                    ctx.font = "bold 24px fzlt"; // 文字大小14px
+                    ctx.font = "bold 22px hyqh"; // 文字大小14px
                     ctx.fillStyle = "#2a4360"; // 文字颜色
                     // 计算文本宽度
                     const timeText = `${hours}:${minutes}`;
@@ -448,10 +420,10 @@ const generateCanvasConfig = ({
                       imgXPosition + (imgActualWidth - textWidth) / 2; // 文本的起始X坐标
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
-                    ctx.strokeText(timeText, textXPosition, 56);
-                    ctx.fillText(timeText, textXPosition, 56);
+                    // ctx.strokeText(timeText, textXPosition, 56);
+                    ctx.fillText(timeText, textXPosition - 3, 56);
 
-                    ctx.font = "normal 14px fzlt"; // 文字大小14px
+                    ctx.font = "normal 14px hyqh"; // 文字大小14px
                     const dateString = `${year}-${month}-${day} ${weekly}`;
                     ctx.fillStyle = "#fff"; // 文字颜色白色
                     ctx.lineWidth = lineWidth;
@@ -475,7 +447,7 @@ const generateCanvasConfig = ({
               for (let i = 0; i < locationName.length; i += maxCharsPerLine) {
                 lines.push(locationName.slice(i, i + maxCharsPerLine));
               }
-              ctx.font = "normal 14px fzlt"; // 文字大小14px
+              ctx.font = "normal 14px hyqh"; // 文字大小14px
               ctx.fillStyle = "#fff"; // 文字颜色白色
               const maxLines = 2;
               ctx.lineWidth = lineWidth;
@@ -578,7 +550,7 @@ const generateCanvasConfig = ({
               ctx.fillRect(rect[0], rect[1], rect[2], rect[3]);
               if (disableTrueCode && showHasCheck) {
                 // 绘制下标 (移动到左下角)
-                ctx.font = "bold 10px fzlt";
+                ctx.font = "bold 10px hyqh";
                 ctx.fillStyle = "#c9cbcd";
                 ctx.lineWidth = lineWidth;
                 ctx.strokeStyle = strokeStyle;
@@ -657,14 +629,14 @@ const generateCanvasConfig = ({
                         const x = canvasWidth - imgWidth;
                         const y = canvasHeight - imgHeight;
                         ctx.drawImage(img, x - 10, y - 10, imgWidth, imgHeight);
-                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.font = "bold 11px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.lineWidth = lineWidth;
                         ctx.strokeStyle = strokeStyle;
                         ctx.strokeText("马克", x + 5, y + 2);
                         ctx.fillText("马克", x + 5, y + 2);
                         //  绘制防伪码
-                        ctx.font = "bold 7px NotoSansMono";
+                        ctx.font = "bold 7px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.clearRect(x - 40, y - 10 + imgHeight + 10, 100, 30);
                         ctx.fillText(
@@ -698,14 +670,14 @@ const generateCanvasConfig = ({
                           imgHeight * 0.7
                         );
                         // 绘制水印名字
-                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.font = "bold 11px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.lineWidth = lineWidth;
                         ctx.strokeStyle = strokeStyle;
                         ctx.strokeText(shuiyinxiangjiName, x + 57, y + 25);
                         ctx.fillText(shuiyinxiangjiName, x + 57, y + 25);
                         //  绘制防伪码
-                        ctx.font = "bold 6px NotoSansMono";
+                        ctx.font = "bold 6px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.fillText(generateRandomString(), x + 55, y + 47);
                       };
@@ -724,7 +696,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -743,7 +715,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -762,7 +734,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -781,7 +753,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
 
               const maxLength = 16;
@@ -812,7 +784,7 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 15]; // Adjusted from +19
               }
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -901,7 +873,7 @@ const generateCanvasConfig = ({
               ctx.fillRect(8.84, 2.04, 34, 22.44);
 
               ctx.fillStyle = "black";
-              ctx.font = "bold 12.24px fzlt"; // Adjusted from 15.3px
+              ctx.font = "bold 12.24px hyqh"; // Adjusted from 15.3px
               ctx.fillText("打卡", 13.6, 18.4); // Adjusted from (17, 23)
             },
             args: [
@@ -915,7 +887,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -937,7 +909,7 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 13.6]; // Adjusted from 17
               }
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -956,7 +928,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
 
               const maxLength = 16;
@@ -987,7 +959,7 @@ const generateCanvasConfig = ({
               if (locationName.length > 16) {
                 position = [position[0], position[1] + 18.36]; // Adjusted from 22.95
               }
-              ctx.font = `bold ${fontSize}px fzlt`;
+              ctx.font = `bold ${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -1101,7 +1073,7 @@ const generateCanvasConfig = ({
 
               // 在蓝色背景中居中显示文字
               ctx.fillStyle = "white";
-              ctx.font = "bold 11.25px fzlt"; // 原来的15 * 0.75
+              ctx.font = "bold 11.25px hyqh"; // 原来的15 * 0.75
               const textWidth = ctx.measureText(text).width;
               const textX = (width - textWidth + 5.625) / 2 + 7.5; // 10 * 0.75 + 15 - 5 * 0.75
               const textY = 20.0625; // 原来的210 * 0.75
@@ -1145,7 +1117,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               let { fontSize, color, text, position } = config;
-              ctx.font = `${fontSize}px fzlt`;
+              ctx.font = `${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
             },
@@ -1162,7 +1134,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, weatherConfig) => {
               const { fontSize, color, text, position } = weatherConfig;
-              ctx.font = `${fontSize}px fzlt`;
+              ctx.font = `${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.fillText(text, ...position);
               // 防伪图标
@@ -1201,11 +1173,11 @@ const generateCanvasConfig = ({
                         const x = canvasWidth - imgWidth;
                         const y = canvasHeight - imgHeight;
                         ctx.drawImage(img, x - 10, y - 10, imgWidth, imgHeight);
-                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.font = "bold 11px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.fillText("马克", x + 5, y + 2);
                         //  绘制防伪码
-                        ctx.font = "bold 7px NotoSansMono";
+                        ctx.font = "bold 7px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.clearRect(x - 40, y - 10 + imgHeight + 10, 100, 30);
                         ctx.fillText(
@@ -1239,11 +1211,11 @@ const generateCanvasConfig = ({
                           imgHeight * 0.7
                         );
                         // 绘制水印名字
-                        ctx.font = "bold 11px NotoSansMono";
+                        ctx.font = "bold 11px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.fillText(shuiyinxiangjiName, x + 57, y + 25);
                         //  绘制防伪码
-                        ctx.font = "bold 6px NotoSansMono";
+                        ctx.font = "bold 6px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.fillText(generateRandomString(), x + 55, y + 47);
                       };
@@ -1266,7 +1238,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `${fontSize}px fzlt`;
+              ctx.font = `${fontSize}px hyqh`;
               ctx.fillStyle = color;
 
               const maxCharsPerLine = 9; // 原来的9 * 0.75
