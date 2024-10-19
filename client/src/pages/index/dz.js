@@ -9,6 +9,11 @@ import Icon4 from "../../images/icon-4.png";
 import Icon7 from "../../images/icon-7.png";
 import Shuiyin10 from "../../images/shuiyin-10.png";
 import Mk2Back from "../../images/mk-2-back.png";
+import DunpaiMake from "../../images/dunpaiMake.png";
+import Shuiyin8 from "../../images/shuiyin-8.png";
+import Mk1 from "../../images/mk-1.png";
+import Dunpai from "../../images/dunpai.png";
+
 const lineWidth = 0.3;
 const strokeStyle = "#5d5d5d"; // 描边颜色可以设置为黑色或你想要的颜色
 
@@ -120,7 +125,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              const maxLocationLength = 12;
+              const maxLocationLength = 15;
               const canvasWidth = canvas.width / dpr;
 
               const parts = text.split("@");
@@ -251,7 +256,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin4,
         width: width - 20,
-        height: 112,
+        height: 130,
         logoY: 0.6,
         name: "定制-水印相机",
         position: "center",
@@ -270,7 +275,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              const lineHeight = 21;
+              const lineHeight = 22;
               const maxLines = 2;
               const charsPerLine = 20;
               const getLocationLines = (text) => {
@@ -290,14 +295,14 @@ const generateCanvasConfig = ({
               };
               const locationLines = getLocationLines(locationName);
               Taro.getImageInfo({
-                src:  Icon1Bg,
+                src: Icon1Bg,
                 success: (imgInfo) => {
                   const img = canvas.createImage();
                   img.src = "/" + imgInfo.path;
                   img.onload = () => {
-                    ctx.drawImage(img, 10, 0, 100, 30);
+                    ctx.drawImage(img, 12, 8, 109, 30);
                     if (dakaName === "") {
-                      let gradient = ctx.createLinearGradient(30, 0, 30, 20);
+                      let gradient = ctx.createLinearGradient(30, 0, 30, 30);
                       gradient.addColorStop(0, "#CC0033"); // 深玫红
                       gradient.addColorStop(0.25, "#990033"); // 酒红色
                       gradient.addColorStop(0.5, "#006633"); // 深绿色
@@ -305,29 +310,28 @@ const generateCanvasConfig = ({
                       gradient.addColorStop(1, "#660099"); // 深紫色
                       ctx.font = "17px MiSans";
                       ctx.fillStyle = gradient;
-                      ctx.fillText("随便", 14, 22);
+                      ctx.fillText("随便", 18, 30);
                     } else {
                       ctx.font = "bold 17px MiSans";
                       ctx.fillStyle = "black";
-                      ctx.fillText(dakaName, 14, 22);
+                      ctx.fillText(dakaName, 18, 30);
                     }
-                    ctx.font = "24px number"; // 24 * 0.7
-                    const gradient = ctx.createLinearGradient(65, 3, 65, 25);
+                    ctx.font = "26px number"; // 24 * 0.7
+                    const gradient = ctx.createLinearGradient(65, 3, 65, 30);
                     gradient.addColorStop(0, "#0d53b6");
                     gradient.addColorStop(0.2, "#0d53b6");
                     gradient.addColorStop(1, "#181818");
                     ctx.fillStyle = gradient;
-                    ctx.fillText(`${hours}:${minutes}`, 59, 23);
-
+                    ctx.fillText(`${hours}:${minutes}`, 65, 33);
                     ctx.font = "14px hyqh";
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
                     ctx.fillStyle = "white";
-                    let y = 52;
+                    let y = 60;
                     let remainingText = locationName;
                     for (let i = 0; i < locationLines; i++) {
                       const line = remainingText.substring(0, charsPerLine);
-                      ctx.fillText(line, 16, y);
+                      ctx.fillText(line, 22, y);
                       remainingText = remainingText.substring(charsPerLine);
                       y += lineHeight;
                     }
@@ -336,20 +340,20 @@ const generateCanvasConfig = ({
                     const dateY = y;
 
                     ctx.fillText(`${weekly}`, 95, dateY);
-                    ctx.font = "14px 黑体";
-                    ctx.fillText(`${year}.${month}.${day} `, 16, dateY);
+                    ctx.font = "14px Arial";
+                    ctx.fillText(`${year}.${month}.${day} `, 22, dateY);
                     // 绘制黄线（不包含经纬度部分）
-                    ctx.lineWidth = 2.04; // 2.55 * 0.8
-                    ctx.strokeStyle = "#fdc144";
+                    ctx.lineWidth = 3; // 2.55 * 0.8
+                    ctx.strokeStyle = "#f6c334";
                     ctx.beginPath();
-                    ctx.moveTo(9.52, 42); // 11.9 * 0.8, 52.5 * 0.8
-                    ctx.lineTo(9.52, dateY);
+                    ctx.moveTo(13, 50); // 11.9 * 0.8, 52.5 * 0.8
+                    ctx.lineTo(13, dateY);
                     ctx.stroke();
 
                     if (disableTrueCode && showHasCheck) {
                       // 绘制下标 (移动到左下角)
                       ctx.font = "bold 12px hyqh";
-                      ctx.fillStyle = "#c9cbcd";
+                      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
                       ctx.lineWidth = lineWidth;
                       ctx.strokeStyle = strokeStyle;
                       ctx.fillText(
@@ -358,7 +362,7 @@ const generateCanvasConfig = ({
                             ? "已验证 | 时间地点真实"
                             : "相机已验证 | 时间地点真实"),
                         26,
-                        canvas.height / dpr - 2
+                        canvas.height / dpr - 7
                       );
 
                       // 小盾牌图片 (移动到左下角)
@@ -374,7 +378,7 @@ const generateCanvasConfig = ({
                             ctx.drawImage(
                               img,
                               9,
-                              canvas.height / dpr - imgHeight * 0.7 + 1,
+                              canvas.height / dpr - 20,
                               imgWidth * 0.7,
                               imgHeight * 0.7
                             );
@@ -529,28 +533,10 @@ const generateCanvasConfig = ({
         logoY: 0.6,
         daka: true,
         height: (locationName) => {
-          const baseHeight = 100; // 110 * 0.8
-          const lineHeight = 17; // 21.25 * 0.8
-          const maxLines = 2;
-          const charsPerLine = 15;
-          const getLocationLines = (text) => {
-            const words = text.split("");
-            let lines = 1;
-            let currentLineLength = 0;
-            for (const word of words) {
-              if (currentLineLength + 1 > charsPerLine) {
-                lines++;
-                currentLineLength = 1;
-              } else {
-                currentLineLength++;
-              }
-              if (lines === maxLines) break;
-            }
-            return lines;
-          };
-
-          const lines = getLocationLines(locationName);
-          let height = baseHeight + (lines - 1) * lineHeight;
+          let height = 114;
+          if (locationName.length > 20) {
+            height = height + 20;
+          }
           return height;
         },
       },
@@ -565,6 +551,314 @@ const generateCanvasConfig = ({
     // 222222 end
     // 222222 end
     // 222222 end
+     // 马克
+    // 马克
+    // 马克
+    // 马克
+    // 马克
+    // 马克
+    // 马克
+    [
+      {
+        path: [
+          {
+            draw: (ctx, rectConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              Taro.getImageInfo({
+                src: Mk1,
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = "/" + imgInfo.path;
+                  img.onload = () => {
+                    ctx.drawImage(
+                      img,
+                      10,
+                      0,
+                      img.width / 2.8,
+                      img.height / 2.8
+                    );
+                    ctx.font = "20px makeNumber"; // 24 * 0.7
+                    ctx.fillStyle = "#21c3a2";
+                    ctx.lineWidth = lineWidth;
+                    ctx.strokeStyle = strokeStyle;
+
+                    // ctx.strokeText(`${hours}:${minutes}`, 71, 22);
+                    ctx.fillText(`${hours}:${minutes}`, 70, 23);
+                    ctx.fillStyle = "#fff";
+                    ctx.font = "18px number"; // 24 * 0.7
+                    // 绘制日期
+                    ctx.strokeText(
+                      `${year}/${month}/${day} ${weekly}`,
+                      10,
+                      img.height / 2.8 + 22
+                    );
+                    ctx.fillText(
+                      `${year}/${month}/${day} ${weekly}`,
+                      10,
+                      img.height / 2.8 + 22
+                    );
+                    if (disableTrueCode && showHasCheck) {
+                      // 绘制下标 (移动到左下角)
+                      ctx.font = "14px hyqh";
+                      ctx.fillStyle = "#e6e0d9";
+                      ctx.strokeText(
+                        shuiyinxiangjiName +
+                          (shuiyinxiangjiName.includes("相机")
+                            ? "已验证照片真实性"
+                            : "相机已验证照片真实性"),
+                        30,
+                        canvas.height / dpr-4
+                      );
+                      ctx.fillText(
+                        shuiyinxiangjiName +
+                          (shuiyinxiangjiName.includes("相机")
+                            ? "已验证照片真实性"
+                            : "相机已验证照片真实性"),
+                        30,
+                        canvas.height / dpr -4
+                      );
+                      // 小盾牌图片 (移动到左下角)
+                      Taro.getImageInfo({
+                        src: DunpaiMake,
+                        success: (imgInfo) => {
+                          const img = canvas.createImage();
+                          img.src = "/" + imgInfo.path;
+                          img.onload = () => {
+                            ctx.drawImage(
+                              img,
+                              9,
+                              canvas.height / dpr - 17,
+                              17,
+                              17
+                            );
+                          };
+                        },
+                      });
+                    }
+
+                    if (disableTrueCode && showTrueCode) {
+                      // 防伪图标
+                      if (disableTrueCode && showTrueCode) {
+                        // 如果没有填写水印相机名称 则展示上传图标
+                        if (!shuiyinxiangjiName) {
+                          Taro.getImageInfo({
+                            src: Icon7,
+                            success: (imgInfo) => {
+                              const img = canvas.createImage();
+                              img.src = "/" + imgInfo.path;
+                              img.onload = () => {
+                                const imgWidth = imgInfo.width / 3;
+                                const imgHeight = imgInfo.height / 3;
+                                const canvasWidth = canvas.width / dpr;
+                                const canvasHeight = canvas.height / dpr;
+                                const x = canvasWidth - imgWidth - 20;
+                                const y = canvasHeight - imgHeight - 5;
+                                ctx.clearRect(
+                                  x + 40,
+                                  y + 16,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                                ctx.drawImage(
+                                  img,
+                                  x + 10,
+                                  y,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                              };
+                            },
+                          });
+                        } else if (shuiyinxiangjiName === "马克") {
+                          // 马克相机
+                          Taro.getImageInfo({
+                            src: Mk2Back,
+                            success: (imgInfo) => {
+                              const img = canvas.createImage();
+                              img.src = "/" + imgInfo.path;
+                              img.onload = () => {
+                                const imgWidth = (imgInfo.width / 3) * 0.5;
+                                const imgHeight = (imgInfo.height / 3) * 0.5;
+                                const canvasWidth = canvas.width / dpr;
+                                const canvasHeight = canvas.height / dpr;
+                                const x = canvasWidth - imgWidth;
+                                const y = canvasHeight - imgHeight;
+                                ctx.drawImage(
+                                  img,
+                                  x - 10,
+                                  y - 10,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                                ctx.font = "bold 12px hyqh";
+                                ctx.fillStyle = "#fff";
+
+                                ctx.lineWidth = lineWidth;
+                                ctx.strokeStyle = strokeStyle;
+                                ctx.fillText("马克", x + 2, y + 2);
+                                //  绘制防伪码
+                                ctx.font = "7px Monaco";
+                                ctx.fillStyle = "#fff";
+                                ctx.clearRect(
+                                  x - 40,
+                                  y - 10 + imgHeight + 10,
+                                  100,
+                                  30
+                                );
+                                ctx.fillText(
+                                  "防伪 " + generateRandomString(),
+                                  x - 35,
+                                  y - 10 + imgHeight + 8
+                                );
+                              };
+                            },
+                          });
+                        } else {
+                          // 今日水印
+                          Taro.getImageInfo({
+                            src: Icon2Back,
+                            success: (imgInfo) => {
+                              const img = canvas.createImage();
+                              img.src = "/" + imgInfo.path;
+                              img.onload = () => {
+                                const imgWidth = imgInfo.width / 3 + 5;
+                                const imgHeight = imgInfo.height / 3 + 5;
+                                const canvasWidth = canvas.width / dpr;
+                                const canvasHeight = canvas.height / dpr;
+                                const x = canvasWidth - imgWidth - 20;
+                                const y = canvasHeight - imgHeight - 5;
+                                ctx.clearRect(
+                                  x + 40,
+                                  y + 16,
+                                  imgWidth,
+                                  imgHeight
+                                );
+                                ctx.drawImage(
+                                  img,
+                                  x + 40,
+                                  y + 16,
+                                  imgWidth * 0.7,
+                                  imgHeight * 0.7
+                                );
+                                // 绘制水印名字
+                                ctx.font = "bold 11px hyqh";
+                                ctx.fillStyle = "#fff";
+
+                                ctx.fillText(
+                                  shuiyinxiangjiName,
+                                  x + 57,
+                                  y + 25
+                                );
+                                //  绘制防伪码
+                                ctx.font = "6px Monaco";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText(
+                                  generateRandomString(),
+                                  x + 55,
+                                  y + 47
+                                );
+                              };
+                            },
+                          });
+                        }
+                      }
+                    }
+                  };
+                  img.onerror = (err) => {
+                    console.error("Background image loading failed", err);
+                  };
+                },
+                fail: (err) => {
+                  console.error("Failed to get background image info", err);
+                },
+              });
+            },
+            args: [
+              {
+                width: 120, // 127.5 * 0.8
+              },
+            ],
+          },
+          // 地址
+          {
+            draw: (ctx, locationConfig) => {
+              const { fontSize, color, text, position } = locationConfig;
+              ctx.font = `${fontSize}px hyqh`;
+              ctx.fillStyle = color;
+
+              const maxCharsPerLine = 15;
+              const lines = [];
+              for (let i = 0; i < text.length; i += maxCharsPerLine) {
+                lines.push(text.slice(i, i + maxCharsPerLine));
+              }
+
+              const maxLines = 2;
+              const circleRadius = 4; // 白色圆点的半径
+              const circleOffset = 10; // 圆点和文字之间的距离
+
+              lines.slice(0, maxLines).forEach((line, index) => {
+                if (index === 0) {
+                  // 保存当前的填充样式
+                  const currentFillStyle = ctx.fillStyle;
+
+                  // 绘制白色圆点
+                  ctx.beginPath();
+                  ctx.arc(
+                    position[0] + circleRadius,
+                    69, // 调整圆点的垂直位置
+                    circleRadius,
+                    0,
+                    2 * Math.PI
+                  );
+                  ctx.fillStyle = "white";
+                  ctx.fill();
+
+                  // 恢复原来的填充样式用于文字
+                  ctx.fillStyle = currentFillStyle;
+                }
+
+                ctx.font = "bold 14px hyqh";
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = strokeStyle;
+                ctx.strokeText(
+                  line,
+                  position[0] +
+                    (index === 0
+                      ? circleRadius * 2 + circleOffset
+                      : circleRadius * 2 + circleOffset),
+                  position[1] + index * (fontSize * 1.2) + fontSize / 2 // 调整垂直位置
+                );
+                ctx.fillText(
+                  line,
+                  position[0] +
+                    (index === 0
+                      ? circleRadius * 2 + circleOffset
+                      : circleRadius * 2 + circleOffset),
+                  position[1] + index * (fontSize * 1.2) + fontSize / 2 // 调整垂直位置
+                );
+              });
+            },
+            args: [
+              {
+                fontSize: 14, // 原来的13.5 * 0.75
+                color: "#fff",
+                text: locationName,
+                position: [20, 67], // 原来的21.25 * 0.75, 91.25 * 0.75
+              },
+            ],
+          },
+        ],
+        img: Shuiyin8,
+        width: 204, // 255 * 0.8
+        name: "定制-今日水印相机-打卡",
+        left: true,
+        right: true,
+        logoY: 0.6,
+        height: () => {
+          return 120;
+        },
+      },
+    ],
     [
       {
         path: [

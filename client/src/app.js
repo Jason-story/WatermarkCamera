@@ -50,7 +50,7 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 数字
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Monaco.ttf")',
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Hack-Regular.ttf")',
     });
     wx.loadFontFace({
       family: "MiSans",

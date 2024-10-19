@@ -9,12 +9,13 @@ const QRCodePage = () => {
   return (
     <View className="qr-code-page">
       <View className="user-details">
-        <View>1. 先点击修改，修改你想要的时间和地点</View>
-        <View>2. 拍照或者相册选择图片</View>
-        <View>3. 稍等片刻、图片自动保存</View>
-        <View>4. 如果是视频水印，请先用手机原相机拍摄一段视频，然后再从相册选择即可</View>
-        <View style={{ marginTop: "40px" }}>
-          如果相册中保存的图片有问题，请在设置中打开第一个开关
+        <View>1. 先点击首页-修改，选择水印</View>
+        <View>2. 点击编辑或者直接点击水印</View>
+        <View>3. 修改时间、地点、水印名字、打卡标签等信息</View>
+        <View>4. 拍照或者相册选择图片</View>
+        <View>5. 稍等片刻、图片自动保存</View>
+        <View>
+          6. 如果是视频水印，请先用手机原相机拍摄一段视频，然后再从相册选择即可
         </View>
       </View>
       {/* {!app.$app.globalData.fuckShenHe && (
