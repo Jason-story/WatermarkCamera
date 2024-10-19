@@ -25,7 +25,7 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 汉仪旗黑x165
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/pics/hyqhx165.ttf")',
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/hyqhx165.ttf")',
     });
     wx.loadFontFace({
       family: "number",
@@ -33,7 +33,32 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 数字
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/pics/makeNumber.ttf")',
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Bebas-regular.ttf")',
+    });
+    // 马克相机数字
+    wx.loadFontFace({
+      family: "makeNumber",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        // 数字
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/makeNumber.ttf")',
+    });
+    wx.loadFontFace({
+      family: "Monaco",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        // 数字
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Monaco.ttf")',
+    });
+    wx.loadFontFace({
+      family: "MiSans",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        // 数字
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/MiSans-Bold.ttf")',
     });
   }
 

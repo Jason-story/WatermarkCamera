@@ -99,13 +99,13 @@ const generateCanvasConfig = ({
                       img.width / 2.8,
                       img.height / 2.8
                     );
-                    ctx.font = "19px number"; // 24 * 0.7
+                    ctx.font = "20px makeNumber"; // 24 * 0.7
                     ctx.fillStyle = "#21c3a2";
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
 
                     // ctx.strokeText(`${hours}:${minutes}`, 71, 22);
-                    ctx.fillText(`${hours}:${minutes}`, 72, 23);
+                    ctx.fillText(`${hours}:${minutes}`, 70, 23);
                     ctx.fillStyle = "#fff";
                     ctx.font = "18px number"; // 24 * 0.7
                     // 绘制日期
@@ -217,10 +217,9 @@ const generateCanvasConfig = ({
 
                                 ctx.lineWidth = lineWidth;
                                 ctx.strokeStyle = strokeStyle;
-                                ctx.strokeText("马克", x + 2, y + 2);
                                 ctx.fillText("马克", x + 2, y + 2);
                                 //  绘制防伪码
-                                ctx.font = "bold 7px hyqh";
+                                ctx.font = "7px Monaco";
                                 ctx.fillStyle = "#fff";
                                 ctx.clearRect(
                                   x - 40,
@@ -266,18 +265,14 @@ const generateCanvasConfig = ({
                                 // 绘制水印名字
                                 ctx.font = "bold 11px hyqh";
                                 ctx.fillStyle = "#fff";
-                                ctx.strokeText(
-                                  shuiyinxiangjiName,
-                                  x + 57,
-                                  y + 25
-                                );
+
                                 ctx.fillText(
                                   shuiyinxiangjiName,
                                   x + 57,
                                   y + 25
                                 );
                                 //  绘制防伪码
-                                ctx.font = "bold 6px hyqh";
+                                ctx.font = "6px Monaco";
                                 ctx.fillStyle = "#fff";
                                 ctx.fillText(
                                   generateRandomString(),
@@ -393,7 +388,6 @@ const generateCanvasConfig = ({
             draw: (ctx, config) => {
               const canvasWidth = canvas.width / dpr;
               const canvasHeight = canvas.height / dpr;
-
               ctx.clearRect(0, 0, canvasWidth, canvasHeight);
               Taro.getImageInfo({
                 src: Icon5,
@@ -406,8 +400,9 @@ const generateCanvasConfig = ({
                     // 绘制图片
                     ctx.drawImage(img, 10, 0, imgWidth / 2.5, imgHeight / 2.5);
                     // 绘制日期和时间
+                    // 2!!!!!!!
                     const { year, month, day, weekly, minutes, hours } = config;
-                    ctx.font = "bold 22px hyqh"; // 文字大小14px
+                    ctx.font = "26px Arial"; // 文字大小14px
                     ctx.fillStyle = "#2a4360"; // 文字颜色
                     // 计算文本宽度
                     const timeText = `${hours}:${minutes}`;
@@ -421,15 +416,21 @@ const generateCanvasConfig = ({
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
                     // ctx.strokeText(timeText, textXPosition, 56);
-                    ctx.fillText(timeText, textXPosition - 3, 56);
+                    ctx.fillText(timeText, textXPosition , 58);
 
-                    ctx.font = "normal 14px hyqh"; // 文字大小14px
-                    const dateString = `${year}-${month}-${day} ${weekly}`;
+                    ctx.font = "13px Arial"; // 文字大小14px
+                    const dateString = `${year}-${month}-${day}`;
                     ctx.fillStyle = "#fff"; // 文字颜色白色
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
                     ctx.strokeText(dateString, 12, 87);
                     ctx.fillText(dateString, 12, 87);
+
+                    ctx.font = "13px hyqh"; // 文字大小14px
+                    const weeklyStr = `${weekly}`;
+                    ctx.fillStyle = "#fff"; // 文字颜色白色
+                    ctx.fillText(weeklyStr, 95, 87);
+
                   };
                   img.onerror = (err) => {
                     console.error("Background image loading failed", err);
@@ -447,7 +448,7 @@ const generateCanvasConfig = ({
               for (let i = 0; i < locationName.length; i += maxCharsPerLine) {
                 lines.push(locationName.slice(i, i + maxCharsPerLine));
               }
-              ctx.font = "normal 14px hyqh"; // 文字大小14px
+              ctx.font = "normal 13px hyqh"; // 文字大小14px
               ctx.fillStyle = "#fff"; // 文字颜色白色
               const maxLines = 2;
               ctx.lineWidth = lineWidth;
@@ -629,14 +630,13 @@ const generateCanvasConfig = ({
                         const x = canvasWidth - imgWidth;
                         const y = canvasHeight - imgHeight;
                         ctx.drawImage(img, x - 10, y - 10, imgWidth, imgHeight);
-                        ctx.font = "bold 11px hyqh";
+                        ctx.font = "bold 12px hyqh";
                         ctx.fillStyle = "#fff";
                         ctx.lineWidth = lineWidth;
                         ctx.strokeStyle = strokeStyle;
-                        ctx.strokeText("马克", x + 5, y + 2);
-                        ctx.fillText("马克", x + 5, y + 2);
+                        ctx.fillText("马克", x + 2, y + 2);
                         //  绘制防伪码
-                        ctx.font = "bold 7px hyqh";
+                        ctx.font = "7px Monaco";
                         ctx.fillStyle = "#fff";
                         ctx.clearRect(x - 40, y - 10 + imgHeight + 10, 100, 30);
                         ctx.fillText(
@@ -674,10 +674,9 @@ const generateCanvasConfig = ({
                         ctx.fillStyle = "#fff";
                         ctx.lineWidth = lineWidth;
                         ctx.strokeStyle = strokeStyle;
-                        ctx.strokeText(shuiyinxiangjiName, x + 57, y + 25);
                         ctx.fillText(shuiyinxiangjiName, x + 57, y + 25);
                         //  绘制防伪码
-                        ctx.font = "bold 6px hyqh";
+                        ctx.font = "6px Monaco";
                         ctx.fillStyle = "#fff";
                         ctx.fillText(generateRandomString(), x + 55, y + 47);
                       };
@@ -696,7 +695,7 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `bold ${fontSize}px hyqh`;
+              ctx.font = `${fontSize}px Arial`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -705,10 +704,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 20, // Adjusted from 25
+                fontSize: 23, // Adjusted from 25
                 color: "white",
                 text: `${hours}:${minutes}`,
-                position: [12, 30], // Adjusted from [20-5, 34+3]
+                position: [10, 30], // Adjusted from [20-5, 34+3]
               },
             ],
           },

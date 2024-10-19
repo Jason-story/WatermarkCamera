@@ -123,6 +123,7 @@ const CameraPage = () => {
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   // const [price, setPrice] = useState({});
   const [qrCodePath, setQrCodePath] = useState("");
+  const [dakaName, setDakaName] = useState("");
 
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
@@ -654,7 +655,8 @@ const CameraPage = () => {
             showTrueCode,
             showHasCheck,
             shuiyinxiangjiName,
-            fangdaoShuiyin
+            dakaName,
+            fangdaoShuiyin,
           },
         },
       });
@@ -736,7 +738,8 @@ const CameraPage = () => {
         showTrueCode,
         showHasCheck,
         shuiyinxiangjiName,
-        fangdaoShuiyin
+        fangdaoShuiyin,
+        dakaName,
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
@@ -747,7 +750,8 @@ const CameraPage = () => {
         setShowHasCheck(showHasCheck);
         setShowTrueCode(showTrueCode);
         setShuiyinxiangjiName(shuiyinxiangjiName);
-        setFangDaoShuiyin(fangdaoShuiyin || '盗图必究')
+        setDakaName(dakaName || "随便");
+        setFangDaoShuiyin(fangdaoShuiyin || "盗图必究");
       }, 1000);
     }
     saveChange(userInfo?.saveConfig?.isSaved);
@@ -926,7 +930,8 @@ const CameraPage = () => {
               showTrueCode,
               disableTrueCode,
               shuiyinxiangjiName,
-              fangdaoShuiyin
+              fangdaoShuiyin,
+              dakaName,
             });
 
             const canvasConfigDz = generateCanvasConfig({
@@ -1060,6 +1065,7 @@ const CameraPage = () => {
     // 右下角防伪码
     showTrueCode,
     shuiyinxiangjiName,
+    dakaName,
     fangdaoShuiyin,
   ]);
   const updateShuiyinIndex = (current) => {
@@ -1469,6 +1475,9 @@ const CameraPage = () => {
           </View>
           {/* ------- */}
           <View className="tools-bar" style={{ marginTop: "-15px" }}>
+            {/* <View className="tools-bar-inner">
+
+            </View> */}
             <View className="tools-bar-inner">
               <View
                 className={
@@ -1492,6 +1501,28 @@ const CameraPage = () => {
                   "xiangce " +
                   (vipAnimate || addAnimate ? "button-animate " : "")
                 }
+                // className={
+                //   "kefu vip xiangce " +
+                //   (vipAnimate || addAnimate ? "button-animate " : "")
+                // }
+              >
+                <Image
+                  src={VideoImg}
+                  className="xiangceIcon"
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: "/pages/video/index",
+                    });
+                  }}
+                ></Image>
+                <Text>视频</Text>
+              </View>
+
+              {/* <View
+                className={
+                  "xiangce " +
+                  (vipAnimate || addAnimate ? "button-animate " : "")
+                }
               >
                 <Image
                   src={Setting}
@@ -1502,10 +1533,22 @@ const CameraPage = () => {
                   }}
                 ></Image>
                 <Text>设置</Text>
-              </View>
+              </View> */}
             </View>
-
             <View
+              className="shantui-btns"
+              style={{ marginLeft: "-50px", width: "230px" }}
+            >
+              <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
+              <Switch
+                style={{ transform: "scale(0.7)" }}
+                checked={shantuiSwitch}
+                onChange={(e) => {
+                  setShantuiSwitch(e.detail.value);
+                }}
+              />
+            </View>
+            {/* <View
               className="tools-bar-inner"
               style={{
                 position: "absolute",
@@ -1527,44 +1570,8 @@ const CameraPage = () => {
                 <View>保存数据？</View>
                 <View>请点击设置</View>
               </View>
-              {/* {!fuckShenHe && (
-                <Image
-                  src={qrCodePath}
-                  onClick={() => {
-                    wx.previewImage({
-                      current: qrCodePath, // 当前显示图片的http链接
-                      urls: [qrCodePath], // 需要预览的图片http链接列表
-                    });
-                  }}
-                  style={{
-                    marginLeft: "30px",
-                    position: "absolute",
-                    right: "-7px",
-                    width: "60px",
-                    height: "74px",
-                  }}
-                ></Image>
-              )} */}
-            </View>
-            <View className="tools-bar-inner">
-              <View
-                className={
-                  "kefu vip xiangce " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Image
-                  src={VideoImg}
-                  className="xiangceIcon"
-                  onClick={() => {
-                    Taro.navigateTo({
-                      url: "/pages/video/index",
-                    });
-                  }}
-                ></Image>
-                <Text>视频</Text>
-              </View>
-            </View>
+
+            </View> */}
           </View>
           {fuckShenHe === false && (
             <View
@@ -1648,7 +1655,7 @@ const CameraPage = () => {
                       style={{
                         marginTop: "10px",
                         width: "280px",
-                        height: "59px",
+                        height: "67px",
                       }}
                     ></Image>
                   </View>
@@ -1848,7 +1855,7 @@ const CameraPage = () => {
               setShowSettingFloatLayout(!showSettingFloatLayout);
             }}
           >
-            <View className="shuiyin-list shuiyin-list-no-grid">
+            {/* <View className="shuiyin-list shuiyin-list-no-grid">
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
                   微信闪退、保存失败请打开此开关
@@ -1863,7 +1870,7 @@ const CameraPage = () => {
               </View>
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
-                  保存位置、标题、相机名称等数据，下次使用时无需再次修改
+                  地点、标题、水印名称等数据，下次使用时无需再次修改
                 </View>
                 <Switch
                   style={{ transform: "scale(0.7)" }}
@@ -1874,7 +1881,7 @@ const CameraPage = () => {
                   }}
                 />
               </View>
-            </View>
+            </View> */}
           </AtFloatLayout>
           <AtFloatLayout
             isOpened={showFloatLayout}
@@ -1957,36 +1964,59 @@ const CameraPage = () => {
                       ></Input>
                     </View>
                   </AtCard>
-                  {
+                  <View
+                    className="shantui-btns"
+                    style={{
+                      margin: "0px",
+                      height: "auto",
+                      marginBottom: "15px",
+                      border: "1px #f22c3d solid",
+                      borderRadius: "6px",
+                      padding: "5px 0 5px 10px",
+                    }}
+                  >
+                    <View
+                      style={{
+                        color: "#333",
+                      }}
+                    >
+                      保存地点、打卡标签、水印名称等设置，下次使用时无需再次修改
+                    </View>
+                    <Switch
+                      style={{ transform: "scale(0.7)" }}
+                      disabled={!locationName}
+                      checked={isShuiyinSaved}
+                      onChange={(e) => {
+                        saveChange(e.detail.value);
+                      }}
+                    />
+                  </View>
+                  {canvasConfigState[currentShuiyinIndex]?.[0]?.daka && (
                     <View className="syxjName-box">
-                      <AtCard title="水印相机名称，自动显示在左右下角">
+                      <AtCard title="打卡标签">
                         <View
                           style={{
                             fontSize: "14px",
                           }}
                         >
-                          填写需要的水印名称，最多4个字
+                          最多2个字，如打卡、考勤、上班等
                           <Text
                             style={{
                               color: "#f22c3d",
                             }}
-                          >
-                            （岑曰水印、马可水印）
-                          </Text>
+                          ></Text>
                         </View>
                         <View className="picker">
-                          <Text>水印相机名称： </Text>
+                          <Text>打卡标签： </Text>
                           <Input
                             className="input"
-                            value={shuiyinxiangjiName}
-                            maxlength={4}
-                            clear={true}
+                            value={dakaName}
+                            maxlength={2}
                             placeholder="点击添加"
+                            clear={true}
                             onInput={(e) => {
                               debounce(
-                                setShuiyinxiangjiName(
-                                  e.detail.value.replace(/\s+/g, "")
-                                ),
+                                setDakaName(e.detail.value.replace(/\s+/g, "")),
                                 10
                               );
                             }}
@@ -1994,7 +2024,41 @@ const CameraPage = () => {
                         </View>
                       </AtCard>
                     </View>
-                  }
+                  )}
+                  <View className="syxjName-box">
+                    <AtCard title="水印名称，自动显示在右下角">
+                      <View
+                        style={{
+                          fontSize: "14px",
+                        }}
+                      >
+                        填写需要的水印名称，最多4个字
+                        <Text
+                          style={{
+                            color: "#f22c3d",
+                          }}
+                        ></Text>
+                      </View>
+                      <View className="picker">
+                        <Text>水印名称： </Text>
+                        <Input
+                          className="input"
+                          value={shuiyinxiangjiName}
+                          maxlength={4}
+                          clear={true}
+                          placeholder="点击添加"
+                          onInput={(e) => {
+                            debounce(
+                              setShuiyinxiangjiName(
+                                e.detail.value.replace(/\s+/g, "")
+                              ),
+                              10
+                            );
+                          }}
+                        ></Input>
+                      </View>
+                    </AtCard>
+                  </View>
                   {disableTrueCode &&
                     canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
                       <AtCard title="右下角防伪下标">
@@ -2078,7 +2142,7 @@ const CameraPage = () => {
                       </View>
                     </AtCard>
                   )}
-                     {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
+                  {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
                     <AtCard title="天气">
                       <View className="picker">
                         <Text>天气&温度： </Text>
