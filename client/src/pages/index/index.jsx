@@ -957,6 +957,7 @@ const CameraPage = () => {
               showTrueCode,
               disableTrueCode,
               shuiyinxiangjiName,
+              drawMask,
             });
             canvasConfig.push(...canvasConfigDz);
             // 设置canvas宽高
@@ -1130,7 +1131,11 @@ const CameraPage = () => {
                   height,
                   path: filePath,
                   x: 20,
-                  y: canvasConfigState[currentShuiyinIndex]?.[0].logoY,
+                  y:
+                    typeof canvasConfigState[currentShuiyinIndex]?.[0]
+                      .height === "function"
+                      ? canvasConfigState[currentShuiyinIndex]?.[0].height()
+                      : canvasConfigState[currentShuiyinIndex]?.[0].height,
                 };
               },
             });
@@ -1143,9 +1148,20 @@ const CameraPage = () => {
   useEffect(() => {
     if (app.$app.globalData.config.logoConfig) {
       app.$app.globalData.config.logoConfig.y =
-        canvasConfigState[currentShuiyinIndex]?.[0].logoY;
+        typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
+          ? canvasConfigState[currentShuiyinIndex]?.[0].height()
+          : canvasConfigState[currentShuiyinIndex]?.[0].height;
     }
   }, [currentShuiyinIndex]);
+
+  let canvasRealHeight;
+  if (
+    typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
+  ) {
+    canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height();
+  } else {
+    canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height;
+  }
 
   return (
     <View className="container">
@@ -1241,15 +1257,12 @@ const CameraPage = () => {
               <View
                 className="logo-wrap"
                 style={{
-                  top:
+                  bottom:
                     showFloatLayout || showSettingFloatLayout
-                      ? (canvasConfigState[currentShuiyinIndex]?.[0].logoY -
-                          0.45) *
-                          ((screenWidth / 3) * 4) +
+                      ? (screenWidth / 3) * 4 * 0.5 +
+                        (canvasRealHeight + 10) +
                         "px"
-                      : canvasConfigState[currentShuiyinIndex]?.[0].logoY *
-                          ((screenWidth / 3) * 4) +
-                        "px",
+                      : canvasRealHeight + 10 + "px",
                 }}
                 onClick={() => {
                   uploadLogo();
@@ -1539,7 +1552,7 @@ const CameraPage = () => {
               className="shantui-btns"
               style={{ marginLeft: "-50px", width: "230px" }}
             >
-              <View style={{ marginRight: "10px" }}>微信闪退请打开此开关</View>
+              <View style={{ fontSize:'15px' }}>微信闪退、图片长时间没有生成，请打开此开关</View>
               <Switch
                 style={{ transform: "scale(0.7)" }}
                 checked={shantuiSwitch}
@@ -1956,7 +1969,7 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={locationName}
-                        maxlength={30}
+                        maxlength={50}
                         clear={true}
                         onInput={(e) => {
                           debounce(setLocationName(e.detail.value), 100);
@@ -2017,7 +2030,7 @@ const CameraPage = () => {
                             onInput={(e) => {
                               debounce(
                                 setDakaName(e.detail.value.replace(/\s+/g, "")),
-                                10
+                                100
                               );
                             }}
                           ></Input>
@@ -2052,7 +2065,7 @@ const CameraPage = () => {
                               setShuiyinxiangjiName(
                                 e.detail.value.replace(/\s+/g, "")
                               ),
-                              10
+                              100
                             );
                           }}
                         ></Input>

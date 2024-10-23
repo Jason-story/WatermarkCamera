@@ -116,16 +116,15 @@ const generateCanvasConfig = ({
                 fontSize: 41.6,
                 color: "white",
                 text: `${hours}:${minutes}`,
-                position: [0, 46.4],
+                position: [0, 40],
               },
             ],
           },
-
-          // Date and Location
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
-              const maxLocationLength = 15;
+              const maxLocationLength = 12;
+              const maxLines = 4;
               const canvasWidth = canvas.width / dpr;
 
               const parts = text.split("@");
@@ -142,21 +141,23 @@ const generateCanvasConfig = ({
               const markerWidth = 14.4;
               const firstPartWidth = dateWidth + weeklyWidth + markerWidth;
 
-              let firstLine, secondLine;
-              if (locationName.length > maxLocationLength) {
-                firstLine = locationName.slice(0, maxLocationLength);
-                secondLine = locationName.slice(maxLocationLength);
-              } else {
-                firstLine = locationName;
-                secondLine = "";
+              // 将locationName分割成最多3行,每行最多15字
+              const lines = [];
+              let remainingText = locationName;
+              while (remainingText.length > 0 && lines.length < maxLines) {
+                if (remainingText.length <= maxLocationLength) {
+                  lines.push(remainingText);
+                  break;
+                }
+                lines.push(remainingText.slice(0, maxLocationLength));
+                remainingText = remainingText.slice(maxLocationLength);
               }
 
-              const firstLineWidth = ctx.measureText(firstLine).width;
-              const secondLineWidth = ctx.measureText(secondLine).width;
-
+              const lineWidths = lines.map(
+                (line) => ctx.measureText(line).width
+              );
               const totalWidth = Math.max(
-                firstPartWidth + firstLineWidth,
-                firstPartWidth + secondLineWidth
+                firstPartWidth + Math.max(...lineWidths)
               );
               const xPosition = (canvasWidth - totalWidth) / 2;
               let yPosition = position[1];
@@ -173,7 +174,6 @@ const generateCanvasConfig = ({
                   const img = canvas.createImage();
                   img.src = "/" + imgInfo.path;
                   img.onload = () => {
-                    const iconSize = 22.4;
                     ctx.shadowColor = "none";
                     ctx.shadowOffsetX = 0;
                     ctx.shadowOffsetY = 0;
@@ -181,9 +181,9 @@ const generateCanvasConfig = ({
                     ctx.drawImage(
                       img,
                       xPosition + dateWidth + weeklyWidth - 4,
-                      yPosition - iconSize + 4,
-                      iconSize,
-                      iconSize * 1.12
+                      yPosition - 25,
+                      22,
+                      32
                     );
 
                     ctx.font = `${fontSize}px hyqh`;
@@ -192,12 +192,12 @@ const generateCanvasConfig = ({
                     ctx.shadowOffsetX = 2;
                     ctx.shadowOffsetY = 4;
                     ctx.shadowBlur = 4;
-                    ctx.fillText(firstLine, locationX, yPosition);
 
-                    if (secondLine) {
-                      yPosition += fontSize + 3.2;
-                      ctx.fillText(secondLine, locationX, yPosition);
-                    }
+                    // 绘制每一行文本
+                    lines.forEach((line, index) => {
+                      const currentY = yPosition + (fontSize + 3.2) * index;
+                      ctx.fillText(line, locationX, currentY);
+                    });
                   };
                 },
               });
@@ -213,7 +213,6 @@ const generateCanvasConfig = ({
               },
             ],
           },
-          // Watermark camera (unchanged)
           {
             draw: (ctx, config) => {
               const { fontSize, color, text, position } = config;
@@ -256,7 +255,15 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin4,
         width: width - 20,
-        height: 130,
+        height: () => {
+          let base = 130;
+          if ( locationName.length >= 24 && locationName.length <= 36) {
+            base = base + 30;
+          } else if (locationName.length > 36) {
+            base = base + 50;
+          }
+          return base;
+        },
         logoY: 0.6,
         name: "定制-水印相机",
         position: "center",
@@ -275,8 +282,8 @@ const generateCanvasConfig = ({
           {
             draw: (ctx) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              const lineHeight = 22;
-              const maxLines = 2;
+              const lineHeight = 17;
+              const maxLines = 3;
               const charsPerLine = 20;
               const getLocationLines = (text) => {
                 const words = text.split("");
@@ -317,10 +324,10 @@ const generateCanvasConfig = ({
                       ctx.fillText(dakaName, 18, 30);
                     }
                     ctx.font = "26px number"; // 24 * 0.7
-                    const gradient = ctx.createLinearGradient(65, 3, 65, 30);
+                    const gradient = ctx.createLinearGradient(65, 3, 65, 40);
                     gradient.addColorStop(0, "#0d53b6");
-                    gradient.addColorStop(0.2, "#0d53b6");
-                    gradient.addColorStop(1, "#181818");
+                    gradient.addColorStop(0.3, "#0d53b6");
+                    gradient.addColorStop(1, "#000");
                     ctx.fillStyle = gradient;
                     ctx.fillText(`${hours}:${minutes}`, 65, 33);
                     ctx.font = "14px hyqh";
@@ -339,15 +346,15 @@ const generateCanvasConfig = ({
                     // 绘制日期
                     const dateY = y;
 
-                    ctx.fillText(`${weekly}`, 95, dateY);
+                    ctx.fillText(`${weekly}`, 95, dateY + 5);
                     ctx.font = "14px Arial";
-                    ctx.fillText(`${year}.${month}.${day} `, 22, dateY);
+                    ctx.fillText(`${year}.${month}.${day} `, 22, dateY + 5);
                     // 绘制黄线（不包含经纬度部分）
                     ctx.lineWidth = 3; // 2.55 * 0.8
                     ctx.strokeStyle = "#f6c334";
                     ctx.beginPath();
                     ctx.moveTo(13, 50); // 11.9 * 0.8, 52.5 * 0.8
-                    ctx.lineTo(13, dateY);
+                    ctx.lineTo(13, dateY + 5);
                     ctx.stroke();
 
                     if (disableTrueCode && showHasCheck) {
@@ -532,10 +539,10 @@ const generateCanvasConfig = ({
         right: true,
         logoY: 0.6,
         daka: true,
-        height: (locationName) => {
-          let height = 114;
-          if (locationName.length > 20) {
-            height = height + 20;
+        height: () => {
+          let height = 130;
+          if (locationName.length > 40) {
+            height = height + 35;
           }
           return height;
         },
@@ -551,7 +558,7 @@ const generateCanvasConfig = ({
     // 222222 end
     // 222222 end
     // 222222 end
-     // 马克
+    // 马克
     // 马克
     // 马克
     // 马克
@@ -607,7 +614,7 @@ const generateCanvasConfig = ({
                             ? "已验证照片真实性"
                             : "相机已验证照片真实性"),
                         30,
-                        canvas.height / dpr-4
+                        canvas.height / dpr - 4
                       );
                       ctx.fillText(
                         shuiyinxiangjiName +
@@ -615,7 +622,7 @@ const generateCanvasConfig = ({
                             ? "已验证照片真实性"
                             : "相机已验证照片真实性"),
                         30,
-                        canvas.height / dpr -4
+                        canvas.height / dpr - 4
                       );
                       // 小盾牌图片 (移动到左下角)
                       Taro.getImageInfo({
@@ -792,7 +799,7 @@ const generateCanvasConfig = ({
                 lines.push(text.slice(i, i + maxCharsPerLine));
               }
 
-              const maxLines = 2;
+              const maxLines = 4;
               const circleRadius = 4; // 白色圆点的半径
               const circleOffset = 10; // 圆点和文字之间的距离
 
@@ -855,7 +862,13 @@ const generateCanvasConfig = ({
         right: true,
         logoY: 0.6,
         height: () => {
-          return 120;
+          let base = 120;
+          if (locationName.length > 30 && locationName.length < 45) {
+            base += 30;
+          } else if (locationName.length > 45) {
+            base += 60;
+          }
+          return base;
         },
       },
     ],
@@ -1112,7 +1125,7 @@ const generateCanvasConfig = ({
         ],
         img: Shuiyin7,
         name: "免费-工程记录-3",
-        logoY: 0.6,
+        // logoY: 0.6,
         right: true,
         jingweidu: true,
         height: () => {
@@ -1127,20 +1140,15 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-
               const { fontSize, color, text, position } = textConfig;
               ctx.font = `${fontSize}px 黑体`;
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-
               // 添加阴影效果
               ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
               ctx.shadowOffsetX = 1;
-              ctx.shadowOffsetY = 6; // Adjusted from 8
-              ctx.shadowBlur = 2; // Adjusted from 3
-
+              ctx.shadowOffsetY = 6;
+              ctx.shadowBlur = 2;
               // 分割小时和分钟
               const [hours, minutes] = text.split(":");
-
               // 计算各部分的宽度
               const hoursWidth = ctx.measureText(hours).width;
               const minutesWidth = ctx.measureText(minutes).width;
@@ -1200,7 +1208,7 @@ const generateCanvasConfig = ({
                 fontSize: 42, // Adjusted from 52
                 color: "white",
                 text: `${hours}:${minutes}`,
-                position: [0, 56], // Adjusted from 70
+                position: [0, 35], // Adjusted from 70
               },
             ],
           },
@@ -1242,7 +1250,7 @@ const generateCanvasConfig = ({
                 fontSize: 14, // Adjusted from 15
                 color: "white",
                 text: `${year}年${month}月${day}日  ${weekly}`,
-                position: [0, 80], // Adjusted from 100
+                position: [0, 59], // Adjusted from 100
               },
             ],
           },
@@ -1293,7 +1301,7 @@ const generateCanvasConfig = ({
                 fontSize: 12, // Adjusted from 15
                 color: "white",
                 text: `@ ${locationName}`,
-                position: [0, 101], // Adjusted from 126
+                position: [0, 80], // Adjusted from 126
               },
             ],
           },
@@ -1386,8 +1394,6 @@ const generateCanvasConfig = ({
                   x < canvas.width * 2;
                   x += xGap * density
                 ) {
-                  ctx.strokeText(text, x, y);
-
                   ctx.fillText(text, x, y);
                 }
               }
@@ -1397,9 +1403,9 @@ const generateCanvasConfig = ({
               {
                 text: fangdaoShuiyin,
                 fontSize: 25,
-                color: "rgba(200, 200, 200, 0.2)",
+                color: "rgba(200, 200, 200, 0.25)",
                 opacity: 1,
-                density: 1.2, // 控制水印密度，值越大，水印越稀疏
+                density: 1.5, // 控制水印密度，值越大，水印越稀疏
               },
             ],
           },

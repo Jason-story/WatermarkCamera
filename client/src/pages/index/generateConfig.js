@@ -32,6 +32,7 @@ const generateCanvasConfig = ({
   showTrueCode,
   disableTrueCode,
   shuiyinxiangjiName,
+  drawMask,
 }) => {
   function generateRandomString(length) {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 大写字母
@@ -70,7 +71,6 @@ const generateCanvasConfig = ({
   }
 
   return [
-
     [
       {
         path: [
@@ -106,7 +106,7 @@ const generateCanvasConfig = ({
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
                     // ctx.strokeText(timeText, textXPosition, 56);
-                    ctx.fillText(timeText, textXPosition , 58);
+                    ctx.fillText(timeText, textXPosition, 58);
 
                     ctx.font = "13px Arial"; // 文字大小14px
                     const dateString = `${year}-${month}-${day}`;
@@ -120,7 +120,6 @@ const generateCanvasConfig = ({
                     const weeklyStr = `${weekly}`;
                     ctx.fillStyle = "#fff"; // 文字颜色白色
                     ctx.fillText(weeklyStr, 95, 87);
-
                   };
                   img.onerror = (err) => {
                     console.error("Background image loading failed", err);
@@ -413,10 +412,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 11, // Adjusted from 14
+                fontSize: 12, // Adjusted from 14
                 color: "white",
                 text: `${year}年${month}月${day}日`,
-                position: [78, 18], // Adjusted from [102-5, 19+3]
+                position: [80, 17], // Adjusted from [102-5, 19+3]
               },
             ],
           },
@@ -432,65 +431,58 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 11, // Adjusted from 14
+                fontSize: 12, // Adjusted from 14
                 color: "white",
                 text: `${weekly} ${weather || "刷新重试"}℃`,
-                position: [78, 36], // Adjusted from [102-5, 42+3]
+                position: [80, 36], // Adjusted from [102-5, 42+3]
               },
             ],
           },
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `bold ${fontSize}px hyqh`;
+              ctx.font = `${fontSize}px hyqh`;
               ctx.fillStyle = color;
 
-              const maxLength = 16;
+              const maxLength = 25;
               const firstLine = text.slice(0, maxLength);
               const secondLine =
                 text.length > maxLength ? text.slice(maxLength) : "";
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
-              ctx.strokeText(firstLine, position[0], position[1]);
               ctx.fillText(firstLine, position[0], position[1]);
+
               if (secondLine) {
-                ctx.strokeText(secondLine, position[0], position[1] + 15); // Adjusted from +19
-                ctx.fillText(secondLine, position[0], position[1] + 15); // Adjusted from +19
+                ctx.fillText(secondLine, position[0], position[1] + 15);
+                ctx.fillText(
+                  hideJw
+                    ? "经纬度: " +
+                        ((latitude * 1)?.toFixed(5) +
+                          ", " +
+                          (longitude * 1)?.toFixed(5))
+                    : "",
+                  position[0],
+                  86
+                );
+              } else {
+                ctx.fillText(
+                  hideJw
+                    ? "经纬度: " +
+                        ((latitude * 1)?.toFixed(5) +
+                          ", " +
+                          (longitude * 1)?.toFixed(5))
+                    : "",
+                  position[0],
+                  72
+                );
               }
             },
             args: [
               {
-                fontSize: 11, // Adjusted from 13.6
+                fontSize: 12, // Adjusted from 13.6
                 color: "white",
                 text: locationName,
                 position: [12, 55], // Adjusted from [20-5, 66+3]
-              },
-            ],
-          },
-          {
-            draw: (ctx, coordinateConfig) => {
-              let { fontSize, color, text, position } = coordinateConfig;
-              if (locationName.length > 16) {
-                position = [position[0], position[1] + 15]; // Adjusted from +19
-              }
-              ctx.font = `bold ${fontSize}px hyqh`;
-              ctx.fillStyle = color;
-              ctx.lineWidth = lineWidth;
-              ctx.strokeStyle = strokeStyle;
-              ctx.strokeText(text, ...position);
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 11, // Adjusted from 13.6
-                color: "white",
-                text: hideJw
-                  ? "经纬度: " +
-                    ((latitude * 1)?.toFixed(5) +
-                      ", " +
-                      (longitude * 1)?.toFixed(5))
-                  : "",
-                position: [12, 72], // Adjusted from [20-5, 87+3]
               },
             ],
           },
@@ -508,8 +500,8 @@ const generateCanvasConfig = ({
               {
                 lineWidth: 2,
                 color: "#fec52e",
-                start: [71, 6], // Adjusted from [94-5, 5+3]
-                end: [71, 38], // Adjusted from [94-5, 44+3]
+                start: [74, 6], // Adjusted from [94-5, 5+3]
+                end: [74, 38], // Adjusted from [94-5, 44+3]
               },
             ],
           },
@@ -532,43 +524,41 @@ const generateCanvasConfig = ({
             draw: (ctx, rectConfig) => {
               const { width, height, color } = rectConfig;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-
               ctx.fillStyle = color;
               ctx.strokeStyle = "#5d5d5d";
-              ctx.lineWidth = 0.3;
+              ctx.lineWidth = 0.38;
 
-              const radius = 3.4; // Adjusted from 4.25
+              const radius = 4.33;
               ctx.beginPath();
-              ctx.moveTo(6.8 + radius, 0);
-              ctx.lineTo(6.8 + width - radius, 0);
-              ctx.arcTo(6.8 + width, 0, 6.8 + width, radius, radius);
-              ctx.lineTo(6.8 + width, height - radius);
+              ctx.moveTo(8.67 + radius, 0);
+              ctx.lineTo(8.67 + width - radius, 0);
+              ctx.arcTo(8.67 + width, 0, 8.67 + width, radius, radius);
+              ctx.lineTo(8.67 + width, height - radius);
               ctx.arcTo(
-                6.8 + width,
+                8.67 + width,
                 height,
-                6.8 + width - radius,
+                8.67 + width - radius,
                 height,
                 radius
               );
-              ctx.lineTo(6.8 + radius, height);
-              ctx.arcTo(6.8, height, 6.8, height - radius, radius);
-              ctx.lineTo(6.8, radius);
-              ctx.arcTo(6.8, 0, 6.8 + radius, 0, radius);
+              ctx.lineTo(8.67 + radius, height);
+              ctx.arcTo(8.67, height, 8.67, height - radius, radius);
+              ctx.lineTo(8.67, radius);
+              ctx.arcTo(8.67, 0, 8.67 + radius, 0, radius);
               ctx.closePath();
               ctx.fill();
-              ctx.stroke();
 
               ctx.fillStyle = "#fec52e";
-              ctx.fillRect(8.84, 2.04, 34, 22.44);
+              ctx.fillRect(11.27, 2.6, 43.35, 28.61);
 
               ctx.fillStyle = "black";
-              ctx.font = "bold 12.24px hyqh"; // Adjusted from 15.3px
-              ctx.fillText("打卡", 13.6, 18.4); // Adjusted from (17, 23)
+              ctx.font = "18px MiSans";
+              ctx.fillText("打卡", 15, 23.46);
             },
             args: [
               {
-                width: 102, // Adjusted from 127.5
-                height: 27.2, // Adjusted from 34
+                width: 130,
+                height: 34.67,
                 color: "white",
               },
             ],
@@ -576,79 +566,82 @@ const generateCanvasConfig = ({
           {
             draw: (ctx, textConfig) => {
               const { fontSize, color, text, position } = textConfig;
-              ctx.font = `bold ${fontSize}px hyqh`;
+              ctx.font = `${fontSize}px makeNumber`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
-              ctx.strokeText(text, ...position);
               ctx.fillText(text, ...position);
             },
             args: [
               {
-                fontSize: 17.6, // Adjusted from 22
+                fontSize: 28,
                 color: "#1895e6",
                 text: `${hours}:${minutes}`,
-                position: [52, 20], // Adjusted from [65, 25]
-              },
-            ],
-          },
-          {
-            draw: (ctx, config) => {
-              let { fontSize, color, text, position } = config;
-              if (locationName.length > 16) {
-                position = [position[0], position[1] + 13.6]; // Adjusted from 17
-              }
-              ctx.font = `bold ${fontSize}px hyqh`;
-              ctx.fillStyle = color;
-              ctx.lineWidth = lineWidth;
-              ctx.strokeStyle = strokeStyle;
-              ctx.strokeText(text, ...position);
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 10.88, // Adjusted from 13.6
-                color: "white",
-                text: `${year}年${month}月${day}日 ${weekly}`,
-                position: [14.96, 62.56], // Adjusted from [18.7, 78.2]
+                position: [70, 27],
               },
             ],
           },
           {
             draw: (ctx, locationConfig) => {
               const { fontSize, color, text, position } = locationConfig;
-              ctx.font = `bold ${fontSize}px hyqh`;
+              ctx.font = `${fontSize}px hyqh`;
               ctx.fillStyle = color;
-
-              const maxLength = 16;
-              const firstLine = text.slice(0, maxLength);
-              const secondLine =
-                text.length > maxLength ? text.slice(maxLength) : "";
-              ctx.lineWidth = lineWidth;
-              ctx.strokeStyle = strokeStyle;
-              ctx.strokeText(text, ...position);
-              ctx.fillText(firstLine, ...position);
-              if (secondLine) {
-                ctx.strokeText(secondLine, position[0], position[1] + 16); // Adjusted from 20
-                ctx.fillText(secondLine, position[0], position[1] + 16); // Adjusted from 20
+              const maxLines = 3;
+              const charsPerLine = 20;
+              const getLocationLines = (text) => {
+                const words = text.split("");
+                let lines = 1;
+                let currentLineLength = 0;
+                for (const word of words) {
+                  if (currentLineLength + 1 > charsPerLine) {
+                    lines++;
+                    currentLineLength = 1;
+                  } else {
+                    currentLineLength++;
+                  }
+                  if (lines === maxLines) break;
+                }
+                return lines;
+              };
+              const lineHeight = 17;
+              const locationLines = getLocationLines(locationName);
+              let y = 57;
+              let remainingText = locationName;
+              for (let i = 0; i < locationLines; i++) {
+                const line = remainingText.substring(0, charsPerLine);
+                ctx.fillText(line, 22, y);
+                remainingText = remainingText.substring(charsPerLine);
+                y += lineHeight;
               }
+
+              // 绘制日期
+              const dateY = y;
+
+              ctx.fillText(`${weekly}`, 135, dateY + 5);
+              ctx.font = "14px Arial";
+              ctx.fillText(`${year}年${month}月${day}日 `, 22, dateY + 5);
+              // 绘制黄线（不包含经纬度部分）
+              ctx.lineWidth = 3; // 2.55 * 0.8
+              ctx.strokeStyle = "#f6c334";
+              ctx.beginPath();
+              ctx.moveTo(13, 45); // 11.9 * 0.8, 52.5 * 0.8
+              ctx.lineTo(13, dateY + 5);
+              ctx.stroke();
             },
             args: [
               {
-                fontSize: 10.88, // Adjusted from 13.6
+                fontSize: 14,
                 color: "white",
                 text: locationName,
-                position: [14.96, 44.2], // Adjusted from [18.7, 55.25]
               },
             ],
           },
           {
             draw: (ctx, coordinateConfig) => {
               let { fontSize, color, text, position } = coordinateConfig;
-              if (locationName.length > 16) {
-                position = [position[0], position[1] + 18.36]; // Adjusted from 22.95
-              }
-              ctx.font = `bold ${fontSize}px hyqh`;
+              let y = canvas.height / 3 - 10;
+              position = [10, y];
+              ctx.font = `${fontSize}px hyqh`;
               ctx.fillStyle = color;
               ctx.lineWidth = lineWidth;
               ctx.strokeStyle = strokeStyle;
@@ -657,7 +650,7 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 10.88, // Adjusted from 13.6
+                fontSize: 14,
                 color: "white",
                 text: hideJw
                   ? "经纬度: " +
@@ -665,39 +658,23 @@ const generateCanvasConfig = ({
                       ", " +
                       (longitude * 1)?.toFixed(5))
                   : "",
-                position: [6.8, 80], // Adjusted from [8.5, 100]
-              },
-            ],
-          },
-          {
-            draw: (ctx, lineConfig) => {
-              let { lineWidth, color, start, end } = lineConfig;
-              ctx.lineWidth = lineWidth;
-              ctx.strokeStyle = color;
-              ctx.beginPath();
-              ctx.moveTo(...start);
-              if (locationName.length > 16) {
-                end = [end[0], end[1] + 13.6]; // Adjusted from 17
-              }
-              ctx.lineTo(...end);
-              ctx.stroke();
-            },
-            args: [
-              {
-                lineWidth: 2.04, // Adjusted from 2.55
-                color: "#fec52e",
-                start: [9.52, 34], // Adjusted from [11.9, 42.5]
-                end: [9.52, 64.6], // Adjusted from [11.9, 80.75]
               },
             ],
           },
         ],
         img: Shuiyin2,
-        width: 204, // Adjusted from 255
         logoY: 0.6,
         name: "免费-打卡-2",
         jingweidu: true,
-        height: locationName.length > 16 ? 104 : 88, // Adjusted from 130 and 110
+        height: () => {
+          let height = 110;
+          if (locationName.length >= 20 && locationName.length <= 40) {
+            height = height + 15;
+          } else if (locationName.length > 40) {
+            height = height + 35;
+          }
+          return height;
+        },
       },
     ],
     [
@@ -962,14 +939,14 @@ const generateCanvasConfig = ({
         right: true,
         name: "免费-工程记录-3",
         width: 168.75, // 原来的225 * 0.75
-        height: (locationName) => {
+        height: () => {
           const baseHeight = 82.5; // 原来的110 * 0.75
           const lineHeight = 15; // 原来的20 * 0.75
           const maxLines = 3;
           const charsPerLine = 9; // 原来的9 * 0.75
 
-          const getLocationLines = (text) => {
-            const words = text.split("");
+          const getLocationLines = () => {
+            const words = locationName.split("");
             let lines = 1;
             let currentLineLength = 0;
             for (const word of words) {
@@ -984,7 +961,7 @@ const generateCanvasConfig = ({
             return lines;
           };
 
-          const lines = getLocationLines(locationName);
+          const lines = getLocationLines();
           let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },

@@ -44,6 +44,7 @@ const MergeCanvas = () => {
     const getInfo = async () => {
       const img2Info = await Taro.getImageInfo({ src: secondImagePath });
       const imgInfo = await Taro.getImageInfo({ src: firstImagePath });
+      console.log("imgInfo: ", imgInfo);
       setImg2Info(img2Info);
       setImgInfo(imgInfo);
     };
@@ -395,7 +396,6 @@ const MergeCanvas = () => {
       // 计算 img2 的新尺寸
       let img2Width = canvasWidth;
       let img2Height = img2Width * (info2.height / info2.width);
-
       // 计算 img2 的位置
       let x = 0;
       let y = canvasHeight - img2Height - 10 * dpr;
@@ -405,8 +405,11 @@ const MergeCanvas = () => {
       if (config?.logoConfig?.path) {
         ctx.drawImage(
           config.logoConfig.path,
-          config.logoConfig.x * dpr,
-          config.logoConfig.y * canvasHeight,
+          70,
+          canvasHeight -
+            config.logoConfig.height * (canvasWidth / screenWidth) -
+            50 -
+            img2Height,
           config.logoConfig.width * (canvasWidth / screenWidth),
           config.logoConfig.height * (canvasWidth / screenWidth)
         );
@@ -552,7 +555,8 @@ const MergeCanvas = () => {
       <View
         className="result-img-box"
         style={{
-          height: `${(screenWidth / imgInfo.width) * imgInfo.height}px`,
+          height: `${(imgInfo.height / imgInfo.width) * screenWidth}px`,
+          // height: `${(screenWidth / imgInfo.width) * imgInfo.height}px`,
         }}
       >
         {loading && (
@@ -578,7 +582,7 @@ const MergeCanvas = () => {
             width: `${screenWidth}px`,
             display: "block",
             height: `100%`,
-            minHeight: "50vh",
+            // minHeight: "50vh",
           }}
         />
         {config?.logoConfig?.path && (
@@ -592,11 +596,7 @@ const MergeCanvas = () => {
               height: `${config.logoConfig.height}px`,
               bottom: "auto",
               left: "10px",
-              top: `${
-                config.logoConfig.y *
-                (screenWidth / imgInfo.width) *
-                imgInfo.height
-              }px`,
+              bottom: `${config.logoConfig.y + 20}px`,
             }}
           />
         )}

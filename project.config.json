@@ -23,7 +23,7 @@
       "outputPath": ""
     },
     "packNpmRelationList": [],
-    "condition": true,
+    "condition": false,
     "uglifyFileName": false,
     "compileWorklet": false,
     "coverView": false,
@@ -43,5 +43,5 @@
     "ignore": [],
     "include": []
   },
-  "appid": "wx785efc584be4265b"
+  "appid": "wx66918b8c0abc4288"
 }
