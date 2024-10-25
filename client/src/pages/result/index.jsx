@@ -213,6 +213,12 @@ const MergeCanvas = () => {
           Taro.saveImageToPhotosAlbum({
             filePath: res.tempFilePath,
             success: async () => {
+              await cloud.callFunction({
+                name: "addUser",
+                data: {
+                  remark: "成功使用",
+                },
+              });
               Taro.showToast({
                 title: "已保存到相册",
                 icon: "success",
@@ -351,12 +357,6 @@ const MergeCanvas = () => {
             // 本地生成
             drawImages(res.result.data);
           }
-          await cloud.callFunction({
-            name: "addUser",
-            data: {
-              remark: "成功使用",
-            },
-          });
         },
       });
     };
@@ -506,6 +506,12 @@ const MergeCanvas = () => {
         success: async () => {
           setLoading(false);
           uploadImage(tempFilePath);
+          await cloud.callFunction({
+            name: "addUser",
+            data: {
+              remark: "成功使用",
+            },
+          });
           Taro.showToast({
             title: "已保存到相册",
             icon: "success",
@@ -738,9 +744,7 @@ const MergeCanvas = () => {
               <View style={{ lineHeight: 1.6 }}>
                 {isVip === "true"
                   ? "该水印为 永久会员 专属，请开通永久会员，会员为"
-                  : "您的" +
-                    config.mianfeicishu +
-                    "次免费次数用完，请开通会员，会员为"}
+                  : "无体验次数，请开通会员，会员为"}
                 <Text style={{ color: "red" }}>收费服务</Text>
                 ，请知悉！！！
               </View>
