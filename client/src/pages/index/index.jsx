@@ -1927,11 +1927,30 @@ const CameraPage = () => {
                       <View className="shuiyin-item">
                         <View
                           className="shuiyin-item-img"
+                          style={{
+                            width: "100%",
+                            padding: 0,
+                          }}
                           onTouchStart={(e) => {
                             setCurrentShuiyinIndex(index);
                           }}
                         >
-                          <Image mode="aspectFit" src={item[0].img}></Image>
+                          <View
+                            className="shuiyin-item-img"
+                            style={{
+                              width: "100%",
+                              padding: 0,
+                            }}
+                          >
+                            {item[0].vip && (
+                              <Image
+                                mode="aspectFit"
+                                className="vip-arrow"
+                                src={VipArrow}
+                              ></Image>
+                            )}
+                            <Image mode="aspectFit" src={item[0].img}></Image>
+                          </View>
                         </View>
                         {currentShuiyinIndex === index && (
                           <View
