@@ -22,11 +22,13 @@ const MergeCanvas = () => {
   const scale = 1;
   const serverCanvas = Taro.getCurrentInstance().router.params.serverCanvas;
   const isVip = Taro.getCurrentInstance().router.params.vip;
+  const realWidth = Taro.getCurrentInstance().router.params.realWidth;
+  const realHeight = Taro.getCurrentInstance().router.params.realHeight;
+
   // 图片水印 or 视频水印
   const isVideo = app.$app.globalData.config.isVideo;
   const videoPath = app.$app.globalData.config.videoPath;
   const [videoModal, setVideoModal] = useState(false);
-
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
   const [img2Info, setImg2Info] = useState({});
@@ -35,6 +37,9 @@ const MergeCanvas = () => {
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("图片检测中. . .");
+  const [tempPath, setTempPath] = useState("");
+  const [currentFileId, setFileId] = useState("");
+
   const texts = isVideo
     ? ["视频上传中. . .", "视频上传中. . .", "视频上传中. . ."]
     : ["图片检测中. . .", "图片生成中. . .", "图片下载中. . ."];
@@ -196,6 +201,11 @@ const MergeCanvas = () => {
 
   const saveImage = async (fileID, userInfo) => {
     const save = () => {
+      if (isVip === "true" && userInfo.type !== "never") {
+        setLoading(false);
+        setIsShowModal(true);
+        return;
+      }
       // 下载云存储中的图片
       cloud.downloadFile({
         fileID: fileID, // 替换为你要下载的图片文件ID
@@ -286,6 +296,7 @@ const MergeCanvas = () => {
       await cloud.callFunction({
         name: "addUser",
         success: async function (res) {
+          await setUserInfo(res.result.data);
           // 照片换色来的 免费使用
           if (app.$app.globalData.zphsId) {
             cloud.callFunction({
@@ -304,18 +315,21 @@ const MergeCanvas = () => {
           }
           if (config.isFree) {
           } else {
-            // 免费次数用尽
-            if (
-              res.result.data.times >=
-                config.mianfeicishu + res.result.data.invite_count &&
-              res.result.data.type === "default"
-            ) {
-              setIsShowModal(true);
+            if (res.result.data.type === "default") {
               setLoading(false);
               return;
             }
+            // 免费次数用尽
+            // if (
+            //   res.result.data.times >=
+            //     config.mianfeicishu + res.result.data.invite_count &&
+            //   res.result.data.type === "default"
+            // ) {
+            //   setIsShowModal(true);
+            //   setLoading(false);
+            //   return;
+            // }
           }
-          await setUserInfo(res.result.data);
           // 服务端合成图片
           if (serverCanvas === "true") {
             console.log("服务端 ");
@@ -326,7 +340,12 @@ const MergeCanvas = () => {
             );
             setImageHeight(height);
             setImageWidth(width);
-            handleMergedImage(fileID, res.result.data);
+            // handleMergedImage(fileID, res.result.data);
+            setFileId(fileID);
+            if (userInfo.type !== "default") {
+              // 假设这个函数在成功合并图片后被调用
+              handleMergedImage(fileID, res.result.data);
+            }
           } else {
             console.log("客户端 ");
             // 本地生成
@@ -419,8 +438,8 @@ const MergeCanvas = () => {
       setTimeout(async () => {
         try {
           // 根据用户类型决定是否需要额外的缩放
-          const finalWidth = Math.round(canvasWidth);
-          const finalHeight = Math.round(canvasHeight);
+          const finalWidth = realWidth ? realWidth : canvasWidth;
+          const finalHeight = realHeight ? realHeight : canvasHeight;
 
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
@@ -432,10 +451,11 @@ const MergeCanvas = () => {
             destHeight: finalHeight,
           });
 
-          // setImagePath(tempFilePath);
+          setTempPath(tempFilePath);
           setLoading(false);
-
-          clientCanvasSaveImage(tempFilePath, userInfo);
+          if (userInfo.type !== "default") {
+            clientCanvasSaveImage(tempFilePath, userInfo);
+          }
         } catch (error) {
           console.error("保存图片失败:", error);
         }
@@ -476,6 +496,11 @@ const MergeCanvas = () => {
       return res.fileID;
     }
     const save = () => {
+      if (isVip === "true" && info.type !== "never") {
+        setLoading(false);
+        setIsShowModal(true);
+        return;
+      }
       Taro.saveImageToPhotosAlbum({
         filePath: tempFilePath,
         success: async () => {
@@ -514,21 +539,11 @@ const MergeCanvas = () => {
       });
       return;
     }
-
     // 会员直接保存 无广告
     if (userInfo.type !== "default") {
       save();
       return;
     }
-    // 激励广告
-    // if (
-    //   userInfo.todayUsageCount >= 2 &&
-    //   userInfo.type === "default" &&
-    //   isShare === false
-    // ) {
-    //   setIsShowModal(true);
-    //   return;
-    // }
     save();
   };
   const chongxinpaishe = useCallback(() => {
@@ -536,6 +551,11 @@ const MergeCanvas = () => {
       delta: 1,
     });
   }, []);
+  const clickBaoCun = useCallback(() => {
+    setIsShowModal(true);
+    setLoading(false);
+  }, []);
+  console.log("1222: ", userInfo);
   // ----------------------客户端合成结束
   return (
     <View className="container result">
@@ -668,6 +688,28 @@ const MergeCanvas = () => {
         >
           抖音、小红书取图、去水印
         </Button> */}
+        {userInfo.type === "default" && (
+          <Button
+            className="share-btn"
+            onClick={clickBaoCun}
+            style={{
+              background: "linear-gradient(45deg,#536DFE, #64B5F6)",
+              color: "white",
+              border: "none",
+              borderRadius: "30px",
+              padding: "5px 16px",
+              fontSize: "32rpx",
+              cursor: "pointer",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              width: "90%",
+              height: "46px",
+              marginBottom: "20px",
+              marginTop: "20px",
+            }}
+          >
+            保存图片
+          </Button>
+        )}
         <Button
           className="share-btn"
           onClick={chongxinpaishe}
@@ -695,7 +737,7 @@ const MergeCanvas = () => {
             <View className="modal-list">
               <View style={{ lineHeight: 1.6 }}>
                 {isVip === "true"
-                  ? "该水印为 会员专属，免费次数不能使用该水印，请开通会员，会员为"
+                  ? "该水印为 永久会员 专属，请开通永久会员，会员为"
                   : "您的" +
                     config.mianfeicishu +
                     "次免费次数用完，请开通会员，会员为"}

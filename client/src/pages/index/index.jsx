@@ -639,7 +639,6 @@ const CameraPage = () => {
       setShuiyinNameModal(true);
       return;
     }
-
     // 相机
     if (camera) {
       // 上传时间位置 保存
@@ -682,7 +681,11 @@ const CameraPage = () => {
                 "&vip=" +
                 canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
                 "&id=" +
-                inviteId,
+                inviteId +
+                "&realWidth=" +
+                canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
+                "&realHeight=" +
+                canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
             });
           }, 200);
         },
@@ -702,7 +705,11 @@ const CameraPage = () => {
           "&vip=" +
           canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
           "&id=" +
-          inviteId,
+          inviteId +
+          "&realWidth=" +
+          canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
+          "&realHeight=" +
+          canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
       });
     }
   };
@@ -1177,7 +1184,13 @@ const CameraPage = () => {
         >
           <View
             className="camera-box"
-            style={{ height: (screenWidth / 3) * 4 + "px" }}
+            style={{
+              height:
+                (canvasConfigState[currentShuiyinIndex]?.[0].proportion
+                  ? canvasConfigState[currentShuiyinIndex]?.[0].proportion *
+                    screenWidth
+                  : (screenWidth / 3) * 4) + "px",
+            }}
           >
             <Marquee />
             {permissions.camera && (
@@ -1552,7 +1565,9 @@ const CameraPage = () => {
               className="shantui-btns"
               style={{ marginLeft: "-50px", width: "230px" }}
             >
-              <View style={{ fontSize:'15px' }}>微信闪退、图片长时间没有生成，请打开此开关</View>
+              <View style={{ fontSize: "15px" }}>
+                微信闪退、图片长时间没有生成，请打开此开关
+              </View>
               <Switch
                 style={{ transform: "scale(0.7)" }}
                 checked={shantuiSwitch}

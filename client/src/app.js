@@ -60,7 +60,23 @@ class App extends Component {
         // 数字
         'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/MiSans-Bold.ttf")',
     });
+    wx.loadFontFace({
+      family: "huakangjingangheiRegular",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/huakangjingangheiRegular.ttf")',
+    });
+    wx.loadFontFace({
+      family: "InsideOutCow3",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/InsideOutCow3.ttf")',
+    });
   }
+
+
 
   componentDidShow() {}
 

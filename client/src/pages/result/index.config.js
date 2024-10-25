@@ -1,4 +1,4 @@
 export default {
-  navigationBarTitleText: '水印相机',
+  navigationBarTitleText: '最终效果',
   enableShareAppMessage: true,
 }

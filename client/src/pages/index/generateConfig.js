@@ -1,12 +1,15 @@
 import Taro from "@tarojs/taro";
-
 import Dunpai2 from "../../images/dunpai-2.png";
 import Icon2Back from "../../images/icon-2-back.png";
 import Icon5 from "../../images/icon-5.png";
 import Icon6 from "../../images/icon-6.png";
 import Shuiyin9 from "../../images/shuiyin-9.png";
+import Shuiyin11 from "../../images/shuiyin-11.png";
 import Icon7 from "../../images/icon-7.png";
 import Mk2Back from "../../images/mk-2-back.png";
+import Icon1Bg from "../../images/icon-1-bg.png";
+import Icon1 from "../../images/icon-1.png";
+
 const lineWidth = 0.1;
 const strokeStyle = "#5d5d5d";
 
@@ -412,7 +415,7 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 12, // Adjusted from 14
+                fontSize: 12,
                 color: "white",
                 text: `${year}年${month}月${day}日`,
                 position: [80, 17], // Adjusted from [102-5, 19+3]
@@ -431,10 +434,10 @@ const generateCanvasConfig = ({
             },
             args: [
               {
-                fontSize: 12, // Adjusted from 14
+                fontSize: 12,
                 color: "white",
                 text: `${weekly} ${weather || "刷新重试"}℃`,
-                position: [80, 36], // Adjusted from [102-5, 42+3]
+                position: [80, 36],
               },
             ],
           },
@@ -516,7 +519,6 @@ const generateCanvasConfig = ({
         height: locationName.length > 16 ? 105 : 95, // Adjusted from 120 and 110
       },
     ],
-
     [
       {
         path: [
@@ -524,60 +526,35 @@ const generateCanvasConfig = ({
             draw: (ctx, rectConfig) => {
               const { width, height, color } = rectConfig;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              ctx.fillStyle = color;
-              ctx.strokeStyle = "#5d5d5d";
-              ctx.lineWidth = 0.38;
 
-              const radius = 4.33;
-              ctx.beginPath();
-              ctx.moveTo(8.67 + radius, 0);
-              ctx.lineTo(8.67 + width - radius, 0);
-              ctx.arcTo(8.67 + width, 0, 8.67 + width, radius, radius);
-              ctx.lineTo(8.67 + width, height - radius);
-              ctx.arcTo(
-                8.67 + width,
-                height,
-                8.67 + width - radius,
-                height,
-                radius
-              );
-              ctx.lineTo(8.67 + radius, height);
-              ctx.arcTo(8.67, height, 8.67, height - radius, radius);
-              ctx.lineTo(8.67, radius);
-              ctx.arcTo(8.67, 0, 8.67 + radius, 0, radius);
-              ctx.closePath();
-              ctx.fill();
-
-              ctx.fillStyle = "#fec52e";
-              ctx.fillRect(11.27, 2.6, 43.35, 28.61);
-
-              ctx.fillStyle = "black";
-              ctx.font = "18px MiSans";
-              ctx.fillText("打卡", 15, 23.46);
+              Taro.getImageInfo({
+                src: Icon1,
+                success: (imgInfo) => {
+                  const img = canvas.createImage();
+                  img.src = "/" + imgInfo.path;
+                  img.onload = () => {
+                    const imgWidth = imgInfo.width / 3;
+                    const imgHeight = imgInfo.height / 3;
+                    ctx.drawImage(img, 10, 5, imgWidth, imgHeight);
+                    ctx.fillStyle = "black";
+                    ctx.font = "18px MiSans";
+                    // ctx.fillText("打卡", 15, 27);
+                    ctx.font = "24px makeNumber";
+                    ctx.fillStyle = "#2497e3";
+                    ctx.fillText(`${hours}:${minutes}`, 62, 28);
+                  };
+                  img.onerror = (err) => {
+                    console.error("Background image loading failed", err);
+                  };
+                },
+              });
             },
+
             args: [
               {
-                width: 130,
-                height: 34.67,
+                width: 120,
+                height: 35,
                 color: "white",
-              },
-            ],
-          },
-          {
-            draw: (ctx, textConfig) => {
-              const { fontSize, color, text, position } = textConfig;
-              ctx.font = `${fontSize}px makeNumber`;
-              ctx.fillStyle = color;
-              ctx.lineWidth = lineWidth;
-              ctx.strokeStyle = strokeStyle;
-              ctx.fillText(text, ...position);
-            },
-            args: [
-              {
-                fontSize: 28,
-                color: "#1895e6",
-                text: `${hours}:${minutes}`,
-                position: [70, 27],
               },
             ],
           },
@@ -965,6 +942,85 @@ const generateCanvasConfig = ({
           let height = baseHeight + (lines - 1) * lineHeight;
           return height;
         },
+      },
+    ],
+    // 永久会员定制
+    [
+      {
+        path: [
+          {
+            draw: (ctx, textConfig) => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              const { fontSize, text } = textConfig;
+              ctx.font = "normal 40px Arial,sans-serif";
+              ctx.fillStyle = "#fff";
+
+              // const spacing = -3; // 字符间距
+              // for (let char of text) {
+              ctx.fillText(text, 4, 32);
+              let x = ctx.measureText(text).width;
+              // }
+              // 蓝线
+              ctx.lineWidth = 3;
+              ctx.strokeStyle = "#7dcaf5";
+              ctx.lineCap = "round";
+              ctx.beginPath();
+              ctx.moveTo(x + 13, 3);
+              ctx.lineTo(x + 13, 30);
+              ctx.stroke();
+              // 日期
+              ctx.font = "normal 15px Arial,sans-serif";
+              ctx.fillStyle = "white";
+              // const spacing2 = -1; // 字符间距
+              let x2 = x + 22;
+              ctx.fillText(`${year}-${month}-${day}`, x2, 13);
+
+              // for (let char of `${year}-${month}-${day}`) {
+              //   ctx.fillText(char, x2, 12);
+              //   x2 += ctx.measureText(char).width + spacing2;
+              // }
+              // 星期
+              ctx.font = "normal 14px Arial,sans-serif";
+              ctx.fillStyle = "#fff";
+              ctx.fillText(`${weekly} ${weather || "刷新重试"}℃`, x + 22, 31);
+            },
+            args: [
+              {
+                text: `${hours}:${minutes}`,
+              },
+            ],
+          },
+          {
+            draw: (ctx, locationConfig) => {
+              const { fontSize, color, text, position } = locationConfig;
+              ctx.font = `${fontSize}px huakangjingangheiRegular`;
+              ctx.fillStyle = color;
+              const maxLength = 27;
+              const firstLine = text.slice(0, maxLength);
+              const secondLine =
+                text.length > maxLength ? text.slice(maxLength) : "";
+              ctx.fillText(firstLine, position[0], position[1]);
+              if (secondLine) {
+                ctx.fillText(secondLine, position[0], position[1] + 15);
+              }
+            },
+            args: [
+              {
+                fontSize: 14,
+                color: "white",
+                text: locationName,
+                position: [6, 54],
+              },
+            ],
+          },
+        ],
+        img: Shuiyin11,
+        vip: true,
+        finalWidth: 1290,
+        finalHeight: 2160,
+        proportion: 1.674418,
+        weather: true,
+        height: locationName.length > 25 ? 80 : 55,
       },
     ],
   ];

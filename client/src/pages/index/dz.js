@@ -2,7 +2,6 @@ import Taro from "@tarojs/taro";
 import Shuiyin7 from "../../images/shuiyin-7.png";
 import Dunpai2 from "../../images/dunpai-2.png";
 import Icon2Back from "../../images/icon-2-back.png";
-import Icon1 from "../../images/icon-1.png";
 import Icon1Bg from "../../images/icon-1-bg.png";
 import Icon3 from "../../images/icon-3.png";
 import Icon4 from "../../images/icon-4.png";
