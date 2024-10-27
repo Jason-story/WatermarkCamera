@@ -438,8 +438,12 @@ const MergeCanvas = () => {
       setTimeout(async () => {
         try {
           // 根据用户类型决定是否需要额外的缩放
-          const finalWidth = realWidth ? realWidth : canvasWidth;
-          const finalHeight = realHeight ? realHeight : canvasHeight;
+          const finalWidth =
+            realWidth !== "undefined" ? realWidth : canvasWidth / 2;
+          const finalHeight =
+            realHeight !== "undefined" ? realHeight : canvasHeight / 2;
+          console.log("finalHeight: ", finalHeight);
+          console.log("finalWidth: ", finalWidth);
 
           const { tempFilePath } = await Taro.canvasToTempFilePath({
             fileType: "jpg",
