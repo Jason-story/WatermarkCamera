@@ -25,7 +25,7 @@
     "packNpmRelationList": [],
     "condition": false,
     "uglifyFileName": false,
-    "compileWorklet": false,
+    "compileWorklet": true,
     "coverView": false,
     "showShadowRootInWxmlPanel": false,
     "ignoreUploadUnusedFiles": true
@@ -43,5 +43,5 @@
     "ignore": [],
     "include": []
   },
-  "appid": "wxb5e2af22e727269d"
+  "appid": "wx785efc584be4265b"
 }

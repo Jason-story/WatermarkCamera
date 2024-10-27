@@ -93,6 +93,7 @@ page {
   color: #fff; // 白色字体
   border-radius: 50%; // 使div变成圆形
   display: flex; // 使用Flexbox布局
+  flex-direction: row;
   justify-content: center; // 水平居中
   align-items: center; // 垂直居中
   text-align: center; // 文本居中
@@ -102,6 +103,7 @@ page {
   width: 25px; // 图标的宽度
   height: 25px; // 图标的高度
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 
@@ -136,12 +138,14 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
 }
 .tools-bar {
   height: 11%;
   display: flex;
   align-items: center;
   position: relative;
+  flex-direction: row;
   > view {
     width: 25%;
     flex-shrink: 0;
@@ -155,6 +159,7 @@ page {
   display: flex;
   align-items: center;
   position: relative;
+  flex-direction: row;
 }
 .bottom-btns {
   margin-top: 20px;
@@ -175,6 +180,8 @@ page {
   top: 50%;
   transform: translate(-50%, -50%);
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   z-index: 2;
@@ -187,6 +194,8 @@ page {
   border: 2px solid #5675fa; // 外边细线
   border-radius: 50%; // 外圆
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   transition: all 0.3s linear;
@@ -210,6 +219,8 @@ page {
 .share-btn,
 .vip-btn {
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   border: 1px solid #515151;
@@ -223,6 +234,8 @@ page {
 }
 .shantui-btns {
   display: flex;
+  flex-direction: row;
+
   justify-content: start;
   align-items: center;
   font-size: 26px;
@@ -327,6 +340,8 @@ page {
   label {
     width: 160px;
     display: flex;
+    flex-direction: row;
+
     align-items: center;
     justify-content: start;
 
@@ -343,9 +358,14 @@ page {
   height: 70rpx;
 }
 .shuiyin-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  >view{
+    flex-basis: 33%;
+    flex-shrink: 0;
+  }
 }
 .extra-view {
   ad-custom {
@@ -372,9 +392,12 @@ page {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: row;
   }
   .shuiyin-item-img {
     display: flex;
+    flex-direction: row;
+
     justify-content: center;
     align-items: center;
     padding: 20px 0;
@@ -423,6 +446,8 @@ picker,
 }
 .picker {
   display: flex;
+  flex-direction: row;
+
   justify-content: start;
   align-items: center;
 }
@@ -469,6 +494,8 @@ picker,
 .share-btn {
   display: flex;
   justify-content: center;
+  flex-direction: row;
+
   align-items: center;
   overflow: hidden;
   padding: 3px 20px;
@@ -512,6 +539,8 @@ picker,
 #glow {
   position: absolute;
   display: flex;
+  flex-direction: row;
+
   width: 12rem;
 }
 
@@ -623,6 +652,8 @@ picker,
 /* RedEnvelope.scss */
 .red-envelope-container {
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
@@ -699,6 +730,8 @@ picker,
 }
 .media-type-box {
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   width: 50%;
@@ -725,7 +758,9 @@ picker,
     transition: all 0.2s ease;
     align-items: center;
     height: 70px;
+    line-height: 1;
     color: rgb(24, 24, 24);
+    border: 1px solid #c5d9e8;
     &:last-child {
       margin-right: 0;
     }
@@ -747,7 +782,12 @@ picker,
   }
 }
 .edit-box {
-  .at-card__content-info{
+  .at-card__content-info {
     font-size: 26px;
   }
+}
+text {
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
 }

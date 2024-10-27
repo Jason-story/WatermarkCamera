@@ -27,5 +27,16 @@ export default {
     navigationBarTitleText: "WeChat",
     navigationBarTextStyle: "black",
   },
+  lazyCodeLoading: "requiredComponents",
+  componentFramework: "glass-easel",
+  disableScroll: true,
+  navigationStyle: "custom",
+  rendererOptions: {
+    skyline: {
+      disableABTest: true,
+      sdkVersionBegin: "3.0.1", // 基础库最低版本
+      sdkVersionEnd: "15.255.255", // 填最大值，否则之后的新版本会不生效
+    },
+  },
   cloud: true,
 };

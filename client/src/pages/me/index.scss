@@ -44,6 +44,8 @@
 
     .user-item {
       display: flex;
+  flex-direction: row;
+
       justify-content: space-between;
       padding: 20px 0;
       border-bottom: 1px solid #ddd;
@@ -72,6 +74,8 @@
   font-size: 28px;
   border: none;
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   width: 160px;

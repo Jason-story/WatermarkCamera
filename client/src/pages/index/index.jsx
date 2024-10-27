@@ -1471,6 +1471,9 @@ const CameraPage = () => {
                 </View>
               }
               <View
+                style={{
+                  marginRight: "auto",
+                }}
                 className={
                   "xiangce kefu " +
                   (vipAnimate || addAnimate ? "button-animate " : "")
@@ -1609,6 +1612,7 @@ const CameraPage = () => {
                 padding: "0 15px",
                 width: "100%",
                 boxSizing: "border-box",
+                lineHeight: 1,
               }}
             >
               {["图片水印", "视频水印"].map((option, index) => {
@@ -1921,7 +1925,33 @@ const CameraPage = () => {
           >
             {!edit ? (
               <View className="shuiyin-list">
-                {canvasConfigState.map((item, index) => {
+                {/* {canvasConfigState.map((item, index) => { */}
+                {[
+                  [
+                    {
+                      vip: false,
+                      img: Shuiyin1,
+                    },
+                  ],
+                  [
+                    {
+                      vip: false,
+                      img: Shuiyin1,
+                    },
+                  ],
+                  [
+                    {
+                      vip: false,
+                      img: Shuiyin1,
+                    },
+                  ],
+                  [
+                    {
+                      vip: false,
+                      img: Shuiyin1,
+                    },
+                  ],
+                ].map((item, index) => {
                   return (
                     <View key={index}>
                       <View className="shuiyin-item">
@@ -1971,7 +2001,7 @@ const CameraPage = () => {
               </View>
             ) : (
               <View className="shuiyin-list shuiyin-list-no-grid edit-box">
-                <View className="input-item">
+                {/* <View className="input-item">
                   <AtCard title="时间">
                     <Picker
                       mode="date"
@@ -2254,7 +2284,7 @@ const CameraPage = () => {
                       </AtCard>
                     </>
                   )}
-                </View>
+                </View> */}
               </View>
             )}
             {!edit && (

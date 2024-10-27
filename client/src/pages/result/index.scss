@@ -37,6 +37,8 @@
 
 .vip-btn {
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   border: 1px solid #515151;
@@ -51,6 +53,8 @@
 
 .share-btn {
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   overflow: hidden;
@@ -110,6 +114,8 @@
 #glow {
   position: absolute;
   display: flex;
+  flex-direction: row;
+
   width: 12rem;
 }
 
@@ -219,6 +225,8 @@
 }
 .hasLoading {
   display: flex;
+  flex-direction: row;
+
   justify-content: center;
   align-items: center;
 }
