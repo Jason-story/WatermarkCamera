@@ -49,6 +49,11 @@ page {
     font-size: 28px !important;
   }
 }
-canvas {
-  transform: translate3d(0, 0, 0) !important; /* 启用硬件加速 */
+.at-float-layout .layout-body {
+  height:100%!important;
+  min-height: auto!important;
+  max-height: auto!important;
+}
+.at-modal__footer .at-modal__action {
+  flex-direction: row;
 }

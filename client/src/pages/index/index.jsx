@@ -6,11 +6,8 @@ import {
   Text,
   Image,
   Canvas,
+  Snapshot,
   Switch,
-  Picker,
-  Input,
-  Ad,
-  AdCustom,
 } from "@tarojs/components";
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
@@ -20,7 +17,6 @@ import {
   AtModal,
   AtToast,
   AtInput,
-  AtCard,
   AtButton,
   AtModalHeader,
   AtModalContent,
@@ -157,6 +153,7 @@ const CameraPage = () => {
   const [rateModal, setRateModal] = useState(false);
   const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
   const [fangdaoShuiyin, setFangDaoShuiyin] = useState("盗图必究");
+  const [cameraTempPath, setCameraTempPath] = useState("");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   let isWeatherEdited = false;
@@ -592,6 +589,39 @@ const CameraPage = () => {
     });
   };
 
+  const cameraPathOnload = () => {
+    Taro.createSelectorQuery()
+      .select(".snapshot")
+      .node()
+      .exec((res) => {
+        console.log(res);
+        const node = res[0].node;
+        node.takeSnapshot({
+          // type: 'file' 且 format: 'png' 时，可直接导出成临时文件
+          type: "arraybuffer",
+          format: "png",
+          success: (res) => {
+            setCameraTempPath(undefined);
+            const f = `${wx.env.USER_DATA_PATH}/shuiyin.png`;
+            const fs = wx.getFileSystemManager();
+            fs.writeFileSync(f, res.data, "binary");
+            wx.showToast({
+              title: "保存成功",
+            });
+            wx.saveImageToPhotosAlbum({
+              filePath: f,
+            });
+          },
+          fail(res) {
+            wx.showToast({
+              icon: "error",
+              title: "失败，请重试",
+            });
+            setCameraTempPath(undefined);
+          },
+        });
+      });
+  };
   const takePhoto = async (camera = true, path, serverCanvas) => {
     console.log("canvasImg: ", canvasImg);
     // Taro.saveImageToPhotosAlbum({
@@ -668,26 +698,29 @@ const CameraPage = () => {
             : shantuiSwitch || serverCanvas
             ? "normal"
             : "original",
-        success: (path) => {
-          setTimeout(() => {
-            Taro.navigateTo({
-              url:
-                "/pages/result/index?bg=" +
-                path.tempImagePath +
-                "&mask=" +
-                canvasImg +
-                "&serverCanvas=" +
-                (shantuiSwitch || serverCanvas) +
-                "&vip=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
-                "&id=" +
-                inviteId +
-                "&realWidth=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
-                "&realHeight=" +
-                canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
-            });
-          }, 200);
+        success: async (path) => {
+          await setCameraTempPath(path.tempImagePath);
+          console.log("path.tempImagePath: ", path.tempImagePath);
+
+          // setTimeout(() => {
+          //   Taro.navigateTo({
+          //     url:
+          //       "/pages/result/index?bg=" +
+          //       path.tempImagePath +
+          //       "&mask=" +
+          //       canvasImg +
+          //       "&serverCanvas=" +
+          //       (shantuiSwitch || serverCanvas) +
+          //       "&vip=" +
+          //       canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
+          //       "&id=" +
+          //       inviteId +
+          //       "&realWidth=" +
+          //       canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
+          //       "&realHeight=" +
+          //       canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
+          //   });
+          // }, 200);
         },
         fail: (error) => {},
       });
@@ -1193,16 +1226,6 @@ const CameraPage = () => {
             }}
           >
             <Marquee />
-            {permissions.camera && (
-              <Camera
-                className="camera"
-                resolution="high"
-                devicePosition={devicePosition}
-                flash={shanguangflag}
-                frameSize="large"
-                onError={cameraError}
-              />
-            )}
 
             {!allAuth && (
               <View className="auth-box">
@@ -1328,7 +1351,41 @@ const CameraPage = () => {
                   (showFloatLayout || showSettingFloatLayout ? " top" : "")
                 }
               >
-                <Canvas
+                <Snapshot className="snapshot">
+                  {
+                    <View
+                      style={{
+                        height: "100%",
+                        widh: "100%",
+                      }}
+                    >
+                      <Camera
+                        className="camera"
+                        resolution="high"
+                        devicePosition={devicePosition}
+                        flash={shanguangflag}
+                        frameSize="large"
+                        onError={cameraError}
+                      />
+                      {cameraTempPath && (
+                        <Image
+                          src={cameraTempPath}
+                          onLoad={cameraPathOnload}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            position: "absolute",
+                            zIndex: 2,
+                            top: "0",
+                            left: "0",
+                          }}
+                        ></Image>
+                      )}
+                    </View>
+                  }
+                  <View className="mask-inner-box">sss</View>
+                </Snapshot>
+                {/* <Canvas
                   id="fishCanvas"
                   onTouchStart={(e) => {
                     setShowFloatLayout(!showFloatLayout);
@@ -1348,7 +1405,7 @@ const CameraPage = () => {
                             locationName
                           ) + "px",
                   }}
-                />
+                /> */}
 
                 {canvasImg && (
                   <Image
@@ -1951,6 +2008,12 @@ const CameraPage = () => {
                       img: Shuiyin1,
                     },
                   ],
+                  [
+                    {
+                      vip: false,
+                      img: Shuiyin1,
+                    },
+                  ],
                 ].map((item, index) => {
                   return (
                     <View key={index}>
@@ -2288,15 +2351,17 @@ const CameraPage = () => {
               </View>
             )}
             {!edit && (
-              <Text
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  marginTop: "20px",
-                }}
-              >
-                更多水印样式开发中...
-              </Text>
+              <View>
+                <Text
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    marginTop: "20px",
+                  }}
+                >
+                  更多水印样式开发中...
+                </Text>
+              </View>
             )}
           </AtFloatLayout>
           <AtToast isOpened={showToast} text="请输入详细地点"></AtToast>
