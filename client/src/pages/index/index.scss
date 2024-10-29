@@ -48,10 +48,12 @@ page {
     visibility: hidden;
   }
 }
-.snapshot{
+.snapshot {
   position: relative;
   width: 100%;
   height: 100%;
+  border: 0;
+  overflow: hidden;
 }
 .mask-box {
   // position: absolute;
@@ -63,9 +65,9 @@ page {
     bottom: 50%;
   }
   .mask-inner-box {
+    width: 100%;
+    height: 100%;
     position: absolute;
-    left: 0px;
-    bottom: 0px;
   }
 }
 .camera-btns {
@@ -836,4 +838,9 @@ text {
 }
 .at-float-layout .layout-header__btn-close:after {
   transform: translate3d(-50%, -50%, 0) rotate(-45deg);
+}
+.copySYXJ {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
 }

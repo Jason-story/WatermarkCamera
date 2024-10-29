@@ -1,0 +1,54 @@
+@import './font.css';
+.item1-wrapper {
+  width: 100%;
+  color: #fff;
+  position: absolute;
+  left: 0px;
+  bottom: 62px;
+}
+.item1-time {
+  font-size: 100px;
+  font-family: 'Helvetica Neue Light';
+  text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
+    1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
+    2px 2px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-bottom: 12px;
+}
+.item1-date,
+.item1-week,
+.item1-location {
+  flex-shrink: 0;
+  text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
+    1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
+    2px 2px 3px rgba(0, 0, 0, 0.1);
+}
+.item1-date {
+  font-weight: normal;
+  font-family: 'Helvetica Neue';
+}
+.item1-week {
+  margin-left: 12px;
+}
+
+.item1-addr-wrap {
+  margin-top: 10px;
+  justify-content: center;
+  align-items: baseline;
+  position: relative;
+  min-height: 90px;
+  image {
+    width: 28px;
+    height: 38.4px;
+    margin: 0 0px 0 14px;
+    transform: translate3d(-5px, 13px, 0);
+    flex-shrink: 0;
+  }
+}
+.item1-location {
+  max-width: 65%;
+  font-weight: 500;
+  text {
+    line-height: 1.2;
+  }
+}

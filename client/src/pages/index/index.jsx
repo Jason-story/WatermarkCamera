@@ -5,18 +5,20 @@ import {
   Button,
   Text,
   Image,
-  Canvas,
   Snapshot,
+  Input,
+  Picker,
   Switch,
 } from "@tarojs/components";
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Close from "../../images/close.png";
-
+import ShuiyinsDom from "../../components/shuiyin";
 import {
   AtModal,
   AtToast,
   AtInput,
+  AtCard,
   AtButton,
   AtModalHeader,
   AtModalContent,
@@ -32,28 +34,17 @@ import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import VipArrow from "../../images/vip-arrow.png";
 import XiangceIcon from "../../images/xiangce.png";
-import Setting from "../../images/setting.png";
-import Jiaocheng from "../../images/jiaocheng.png";
 import KefuIcon from "../../images/kefu.png";
 import { appConfigs } from "../../appConfig.js";
 import ShuiyinIcon from "../../images/shuiyin.png";
-import Shuiyin1 from "../../images/shuiyin-1.png";
-import Shuiyin2 from "../../images/shuiyin-2.png";
-import Shuiyin3 from "../../images/shuiyin-3.png";
-import Shuiyin4 from "../../images/shuiyin-4.png";
-import Shuiyin5 from "../../images/shuiyin-5.png";
-import Shuiyin6 from "../../images/shuiyin-6.png";
 import AddMyApp from "../../images/add-my-app.png";
-import Arrow from "../../images/left-arrow.png";
 import VideoImg from "../../images/video.png";
 import Jianhao from "../../images/jianhao.png";
 import AddPic from "../../images/add-pic.png";
 import Icon8 from "../../images/icon-8.jpg";
+import Icon2 from "../../images/icon-2.png";
 import Mianze from "../../images/mianze.png";
-
 import "./index.scss";
-import generateCanvasConfig from "./generateConfig";
-import dingzhi from "./dz";
 const app = getApp();
 let cloud = "";
 const now = new Date();
@@ -103,11 +94,9 @@ const CameraPage = () => {
   const [allAuth, setAllAuth] = useState(false);
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
-  // const [vipModal, setVipModal] = useState(false);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [weather, setWeather] = useState({ text: "", temperature: "" });
-  const [canvasImg, setCanvasImg] = useState("");
   const [year, setYear] = useState(yearD);
   const [month, setMonth] = useState(monthD);
   const [day, setDay] = useState(dayD);
@@ -115,12 +104,8 @@ const CameraPage = () => {
   const [minutes, setMinutes] = useState(minutesD);
   const [locationName, setLocationName] = useState("");
   app.$app.globalData.zphsId = zphsId;
-  // 水印选择
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
-  // const [price, setPrice] = useState({});
-  const [qrCodePath, setQrCodePath] = useState("");
   const [dakaName, setDakaName] = useState("");
-
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
@@ -232,16 +217,6 @@ const CameraPage = () => {
         success: function (res) {
           app.$app.globalData.config = res.result.data;
           setCurrentShuiyinIndex(res.result.data.shuiyinindex);
-          wx.downloadFile({
-            url: app.$app.globalData.config.gzh, // 你的二维码图片地址
-            success(res) {
-              if (res.statusCode === 200) {
-                // 成功下载，设置图片路径到本地路径
-                setQrCodePath(res.tempFilePath);
-              }
-            },
-            fail(err) {},
-          });
         },
       });
     };
@@ -590,29 +565,33 @@ const CameraPage = () => {
   };
 
   const cameraPathOnload = () => {
+    Taro.showLoading({
+      title: "图片生成中...",
+    });
     Taro.createSelectorQuery()
       .select(".snapshot")
       .node()
       .exec((res) => {
-        console.log(res);
         const node = res[0].node;
         node.takeSnapshot({
-          // type: 'file' 且 format: 'png' 时，可直接导出成临时文件
           type: "arraybuffer",
           format: "png",
-          success: (res) => {
-            setCameraTempPath(undefined);
+          success: async (res) => {
             const f = `${wx.env.USER_DATA_PATH}/shuiyin.png`;
             const fs = wx.getFileSystemManager();
-            fs.writeFileSync(f, res.data, "binary");
+            await fs.writeFileSync(f, res.data, "binary");
+            Taro.hideLoading();
             wx.showToast({
               title: "保存成功",
             });
+
+            setCameraTempPath(undefined);
             wx.saveImageToPhotosAlbum({
               filePath: f,
             });
           },
           fail(res) {
+            Taro.hideLoading();
             wx.showToast({
               icon: "error",
               title: "失败，请重试",
@@ -623,7 +602,7 @@ const CameraPage = () => {
       });
   };
   const takePhoto = async (camera = true, path, serverCanvas) => {
-    console.log("canvasImg: ", canvasImg);
+    // console.log("canvasImg: ", canvasImg);
     // Taro.saveImageToPhotosAlbum({
     //   filePath: canvasImg,
     //   success: async () => {
@@ -915,158 +894,11 @@ const CameraPage = () => {
               "&id=" +
               inviteId,
           });
-
-          // takePhoto(false, filePath, true);
         },
       });
     }
   };
-  let rafId = "";
-  const drawMask = () => {
-    if (!locationName) {
-      return;
-    }
-    cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(() => {
-      const query = Taro.createSelectorQuery();
-      query
-        .select("#fishCanvas")
-        .fields({ node: true, size: true })
-        .exec((res) => {
-          if (res && res[0]) {
-            const canvas = res[0].node;
-            const ctx = canvas.getContext("2d");
-            ctx.save();
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // 首先重置所有可能的阴影属性
-            ctx.shadowColor = "rgba(0,0,0,0)";
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-            const dpr = wx.getSystemInfoSync().pixelRatio;
-            const canvasConfig = dingzhi({
-              hours,
-              minutes,
-              year,
-              month,
-              day,
-              weekly,
-              weather,
-              locationName,
-              latitude,
-              longitude,
-              hideJw,
-              title,
-              Shuiyin1,
-              Shuiyin2,
-              Shuiyin3,
-              Shuiyin4,
-              Shuiyin5,
-              Shuiyin6,
-              dpr,
-              canvas,
-              showHasCheck,
-              showTrueCode,
-              disableTrueCode,
-              shuiyinxiangjiName,
-              fangdaoShuiyin,
-              dakaName,
-            });
-
-            const canvasConfigDz = generateCanvasConfig({
-              hours,
-              minutes,
-              year,
-              month,
-              day,
-              weekly,
-              weather,
-              locationName,
-              latitude,
-              longitude,
-              hideJw,
-              title,
-              Shuiyin1,
-              Shuiyin2,
-              Shuiyin3,
-              Shuiyin5,
-              canvas,
-              dpr,
-              showHasCheck,
-              showTrueCode,
-              disableTrueCode,
-              shuiyinxiangjiName,
-              drawMask,
-            });
-            canvasConfig.push(...canvasConfigDz);
-            // 设置canvas宽高
-            canvas.width = res[0].width * dpr;
-            canvas.height = res[0].height * dpr;
-            // 设置边框样式
-            // canvas.addEventListener("touchstart", () => {
-            //   console.log(4444)
-            //   setEdit(true);
-            // });
-            ctx.scale(dpr, dpr);
-            setCanvasConfigState(canvasConfig);
-
-            // if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-            //   ctx.strokeStyle = "black";
-            //   ctx.lineWidth = 1 / dpr; // 确保边框宽度为1像素，考虑设备像素比
-            // }
-            try {
-              canvasConfig[currentShuiyinIndex]?.[0]?.path.forEach(
-                (item, index) => {
-                  const { draw, args } = item;
-                  draw(ctx, ...args);
-                }
-              );
-
-              // if (wx.getAccountInfoSync().miniProgram.envVersion !== "release") {
-              //   // 绘制边框
-              //   ctx.strokeRect(0, 0, canvas.width - 2, canvas.height);
-              // }
-
-              ctx.restore();
-              // 等待绘制完成后获取图像数据
-              setTimeout(() => {
-                const imageData = canvas.toDataURL("image/png"); // 获取 base64 数据
-                const base64Data = imageData.replace(
-                  /^data:image\/\w+;base64,/,
-                  ""
-                ); // 去掉前缀
-
-                // 将 base64 数据转换为二进制数据
-                const binaryData = wx.base64ToArrayBuffer(base64Data);
-
-                // 生成唯一的文件名
-                const uniqueFileName = `${Date.now()}.png`;
-                const tempFilePath = `${wx.env.USER_DATA_PATH}/${uniqueFileName}`;
-
-                // 写入文件系统生成临时文件路径
-                const fsm = wx.getFileSystemManager();
-                fsm.writeFile({
-                  filePath: tempFilePath,
-                  data: binaryData,
-                  encoding: "binary",
-                  success: () => {
-                    // 在这里可以使用临时文件路径
-                    setCanvasImg(tempFilePath);
-                    // console.log("tempFilePath: ", tempFilePath);
-                  },
-                  fail: (err) => {
-                    console.error("写入文件失败：", err);
-                  },
-                });
-              }, 1000); // 延迟执行以确保绘制完成
-            } catch (error) {
-              console.log("error: ", error);
-            }
-          }
-        });
-    });
-  };
+  const drawMask = () => {};
 
   useEffect(() => {
     if (app.$app.globalData.config.showHasCheck !== undefined) {
@@ -1202,7 +1034,6 @@ const CameraPage = () => {
   } else {
     canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height;
   }
-
   return (
     <View className="container">
       {userInfo.black ? (
@@ -1357,6 +1188,7 @@ const CameraPage = () => {
                       style={{
                         height: "100%",
                         widh: "100%",
+                        overflow: "hidden",
                       }}
                     >
                       <Camera
@@ -1364,7 +1196,7 @@ const CameraPage = () => {
                         resolution="high"
                         devicePosition={devicePosition}
                         flash={shanguangflag}
-                        frameSize="large"
+                        frameSize="medium"
                         onError={cameraError}
                       />
                       {cameraTempPath && (
@@ -1383,7 +1215,27 @@ const CameraPage = () => {
                       )}
                     </View>
                   }
-                  <View className="mask-inner-box">sss</View>
+                  <View className="mask-inner-box">
+                    {ShuiyinsDom[0].component({
+                      hours,
+                      minutes,
+                      day,
+                      month,
+                      year,
+                      weekly,
+                      locationName,
+                    })}
+                  </View>
+                  {/* 水印相机logo */}
+                  <View className="copySYXJ">
+                    <Image
+                      src={Icon2}
+                      style={{
+                        width: "52px",
+                        height: "15px",
+                      }}
+                    ></Image>
+                  </View>
                 </Snapshot>
                 {/* <Canvas
                   id="fishCanvas"
@@ -1406,25 +1258,6 @@ const CameraPage = () => {
                           ) + "px",
                   }}
                 /> */}
-
-                {canvasImg && (
-                  <Image
-                    src={canvasImg}
-                    className={canvasImg ? "hideCanvas" : ""}
-                    style={{
-                      width: "100%",
-                      height:
-                        canvasConfigState[currentShuiyinIndex]?.[0].height &&
-                        typeof canvasConfigState[currentShuiyinIndex]?.[0]
-                          .height === "number"
-                          ? canvasConfigState[currentShuiyinIndex]?.[0].height +
-                            "px"
-                          : canvasConfigState[currentShuiyinIndex]?.[0].height(
-                              locationName
-                            ) + "px",
-                    }}
-                  ></Image>
-                )}
               </View>
             )}
           </View>
@@ -1470,6 +1303,7 @@ const CameraPage = () => {
                       });
                       return;
                     }
+                    console.log("showFloatLayout: ", showFloatLayout);
                     setShowFloatLayout(!showFloatLayout);
                   }}
                 ></Image>
@@ -1982,39 +1816,7 @@ const CameraPage = () => {
           >
             {!edit ? (
               <View className="shuiyin-list">
-                {/* {canvasConfigState.map((item, index) => { */}
-                {[
-                  [
-                    {
-                      vip: false,
-                      img: Shuiyin1,
-                    },
-                  ],
-                  [
-                    {
-                      vip: false,
-                      img: Shuiyin1,
-                    },
-                  ],
-                  [
-                    {
-                      vip: false,
-                      img: Shuiyin1,
-                    },
-                  ],
-                  [
-                    {
-                      vip: false,
-                      img: Shuiyin1,
-                    },
-                  ],
-                  [
-                    {
-                      vip: false,
-                      img: Shuiyin1,
-                    },
-                  ],
-                ].map((item, index) => {
+                {ShuiyinsDom.map((item, index) => {
                   return (
                     <View key={index}>
                       <View className="shuiyin-item">
@@ -2035,21 +1837,23 @@ const CameraPage = () => {
                               padding: 0,
                             }}
                           >
-                            {item[0].vip && (
+                            {item.options.vip && (
                               <Image
                                 mode="aspectFit"
                                 className="vip-arrow"
                                 src={VipArrow}
                               ></Image>
                             )}
-                            <Image mode="aspectFit" src={item[0].img}></Image>
+                            <Image
+                              mode="aspectFit"
+                              src={item.options.cover}
+                            ></Image>
                           </View>
                         </View>
                         {currentShuiyinIndex === index && (
                           <View
                             className="shuiyin-item-cover"
                             onTouchStart={(e) => {
-                              console.log(111, e);
                               setEdit(true);
                               updateShuiyinIndex(index);
                             }}
@@ -2063,8 +1867,9 @@ const CameraPage = () => {
                 })}
               </View>
             ) : (
+              // 编辑页
               <View className="shuiyin-list shuiyin-list-no-grid edit-box">
-                {/* <View className="input-item">
+                <View className="input-item">
                   <AtCard title="时间">
                     <Picker
                       mode="date"
@@ -2131,7 +1936,8 @@ const CameraPage = () => {
                       }}
                     />
                   </View>
-                  {canvasConfigState[currentShuiyinIndex]?.[0]?.daka && (
+                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.daka && ( */}
+                  {
                     <View className="syxjName-box">
                       <AtCard title="打卡标签">
                         <View
@@ -2164,7 +1970,7 @@ const CameraPage = () => {
                         </View>
                       </AtCard>
                     </View>
-                  )}
+                  }
                   <View className="syxjName-box">
                     <AtCard title="水印名称，自动显示在右下角">
                       <View
@@ -2199,58 +2005,60 @@ const CameraPage = () => {
                       </View>
                     </AtCard>
                   </View>
-                  {disableTrueCode &&
-                    canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
-                      <AtCard title="右下角防伪下标">
-                        <View className="picker" style={{ height: "50px" }}>
-                          <Text>是否显示： </Text>
-                          <Switch
-                            style={{
-                              transform: "scale(0.7)",
-                              opacity: !canvasConfigState[
-                                currentShuiyinIndex
-                              ]?.[0]?.right
-                                ? 0.2
-                                : 1,
-                            }}
-                            checked={showTrueCode}
-                            disabled={
-                              !canvasConfigState[currentShuiyinIndex]?.[0]
-                                ?.right
-                            }
-                            onChange={(e) => {
-                              setShowTrueCode(e.detail.value);
-                            }}
-                          />
-                        </View>
-                      </AtCard>
-                    )}
+                  {
+                    // {disableTrueCode &&
+                    //   canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
+                    <AtCard title="右下角防伪下标">
+                      <View className="picker" style={{ height: "50px" }}>
+                        <Text>是否显示： </Text>
+                        <Switch
+                          // style={{
+                          //   transform: "scale(0.7)",
+                          //   opacity: !canvasConfigState[
+                          //     currentShuiyinIndex
+                          //   ]?.[0]?.right
+                          //     ? 0.2
+                          //     : 1,
+                          // }}
+                          // checked={showTrueCode}
+                          // disabled={
+                          //   !canvasConfigState[currentShuiyinIndex]?.[0]?.right
+                          // }
+                          onChange={(e) => {
+                            setShowTrueCode(e.detail.value);
+                          }}
+                        />
+                      </View>
+                    </AtCard>
+                  }
 
-                  {disableTrueCode &&
-                    canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
-                      <AtCard title="左下角已验证下标">
-                        <View className="picker" style={{ height: "50px" }}>
-                          <Text>是否显示： </Text>
+                  {
+                    // {disableTrueCode &&
+                    //   canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
+                    <AtCard title="左下角已验证下标">
+                      <View className="picker" style={{ height: "50px" }}>
+                        <Text>是否显示： </Text>
 
-                          <Switch
-                            style={{
-                              transform: "scale(0.7)",
-                              opacity: !canvasConfigState[
-                                currentShuiyinIndex
-                              ]?.[0]?.left
-                                ? 0.2
-                                : 1,
-                            }}
-                            checked={showHasCheck}
-                            onChange={(e) => {
-                              setShowHasCheck(e.detail.value);
-                            }}
-                          />
-                        </View>
-                      </AtCard>
-                    )}
+                        <Switch
+                          style={{
+                            transform: "scale(0.7)",
+                            // opacity: !canvasConfigState[
+                            //   currentShuiyinIndex
+                            // ]?.[0]?.left
+                            //   ? 0.2
+                            //   : 1,
+                          }}
+                          checked={showHasCheck}
+                          onChange={(e) => {
+                            setShowHasCheck(e.detail.value);
+                          }}
+                        />
+                      </View>
+                    </AtCard>
+                  }
 
-                  {canvasConfigState[currentShuiyinIndex]?.[0]?.title && (
+                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.title && ( */}
+                  { (
                     <AtCard title="标题">
                       <View className="picker">
                         <Text>标题： </Text>
@@ -2266,7 +2074,8 @@ const CameraPage = () => {
                       </View>
                     </AtCard>
                   )}
-                  {canvasConfigState[currentShuiyinIndex]?.[0]?.fangdao && (
+                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.fangdao && ( */}
+                  { (
                     <AtCard title="防盗水印">
                       <View className="picker">
                         <Text>防盗文字： </Text>
@@ -2282,7 +2091,8 @@ const CameraPage = () => {
                       </View>
                     </AtCard>
                   )}
-                  {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
+                  {(
+                  // {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
                     <AtCard title="天气">
                       <View className="picker">
                         <Text>天气&温度： </Text>
@@ -2300,7 +2110,8 @@ const CameraPage = () => {
                     </AtCard>
                   )}
 
-                  {canvasConfigState[currentShuiyinIndex]?.[0]?.jingweidu && (
+                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.jingweidu && ( */}
+                  {(
                     <>
                       <AtCard title="经纬度">
                         <View className="picker" style={{ height: "50px" }}>
@@ -2347,7 +2158,7 @@ const CameraPage = () => {
                       </AtCard>
                     </>
                   )}
-                </View> */}
+                </View>
               </View>
             )}
             {!edit && (

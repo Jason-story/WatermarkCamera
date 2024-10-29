@@ -20,6 +20,13 @@ class App extends Component {
 
   componentDidMount() {
     wx.loadFontFace({
+      family: "HelveticaNeue",
+      global: true,
+      scopes: ["webview", "native"],
+      source:
+        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Helvetica-Neue.ttf")',
+    });
+    wx.loadFontFace({
       family: "hyqh",
       global: true,
       scopes: ["webview", "native"],
@@ -75,8 +82,6 @@ class App extends Component {
         'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/InsideOutCow3.ttf")',
     });
   }
-
-
 
   componentDidShow() {}
 
