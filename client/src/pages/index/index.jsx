@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   Snapshot,
-  Textarea,
   Input,
   Picker,
   Switch,
@@ -14,6 +13,7 @@ import {
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Close from "../../images/close.png";
+import P1 from "../../images/p-1.png";
 import ShuiyinDoms from "../../components/shuiyin";
 import {
   AtModal,
@@ -1191,6 +1191,7 @@ const CameraPage = () => {
                     style={{
                       height: "100%",
                       overflow: "hidden",
+                      position:'relative'
                     }}
                     onClick={(e) => {
                       setShowFloatLayout(!showFloatLayout);
@@ -1241,7 +1242,7 @@ const CameraPage = () => {
                       )}
                     </View>
                     <View className="mask-inner-box">
-                      {ShuiyinDoms[0].component({
+                      {ShuiyinDoms[currentShuiyinIndex].component({
                         hours,
                         minutes,
                         day,
@@ -1254,7 +1255,7 @@ const CameraPage = () => {
                     </View>
                     {/* 右下角 水印相机logo */}
                     {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                    0 ? (
+                      0 && (
                       <View className="copySYXJ">
                         {/* 0 水印相机  1 今日水印&马克相机 */}
                         <Image
@@ -1265,7 +1266,25 @@ const CameraPage = () => {
                           }}
                         ></Image>
                       </View>
-                    ) : null}
+                    )}
+                    {/* 今日水印 或者 马克 左下角*/}
+                    {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                      1 && (
+                      <View
+                        style={{ position: "absolute", left: 0, bottom: 0 }}
+                      >
+                        {shuiyinxiangjiName.includes("马克") ? (
+                          <View className="make-left-copyright">
+                            马克相机已验证照片真实性
+                          </View>
+                        ) : (
+                          <View className="jinri-left-copyright">
+                            <Image src={P1}></Image>
+                            {shuiyinxiangjiName + "相机已验证 | 时间地点真实"}
+                          </View>
+                        )}
+                      </View>
+                    )}
                   </View>
                 </Snapshot>
                 {/* <Canvas

@@ -25,7 +25,7 @@
     "packNpmRelationList": [],
     "condition": false,
     "uglifyFileName": false,
-    "compileWorklet": true,
+    "compileWorklet": false,
     "coverView": false,
     "showShadowRootInWxmlPanel": false,
     "ignoreUploadUnusedFiles": true

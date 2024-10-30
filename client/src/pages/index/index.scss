@@ -845,7 +845,18 @@ text {
   right: 20px;
   bottom: 20px;
 }
-.input-tips{
-  color:#919191;
+.input-tips {
+  color: #919191;
   font-size: 20px;
+}
+.make-left-copyright,
+.jinri-left-copyright {
+  position: absolute;
+  left: 10px;
+  bottom: 20px;
+  image {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+  }
 }

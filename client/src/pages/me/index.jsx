@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Ad, Image, Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import Head from "../../images/head.jpg";
 import ShareImg from "../../images/logo.jpg";
 import { appConfigs } from "../../appConfig.js";
 
@@ -174,7 +173,6 @@ const UserInfo = ({ totalQuota, userId, endTime, userType }) => {
 };
 const Index = () => {
   const [userInfo, setUserInfo] = useState({
-    avatar: Head,
     nickname: "",
     freeQuota: 5,
     totalQuota: "30",
