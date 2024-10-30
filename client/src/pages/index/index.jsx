@@ -1281,9 +1281,17 @@ const CameraPage = () => {
                         ) : (
                           <View className="jinri-left-copyright">
                             <Image src={P1}></Image>
-                            <Text>
-                              {shuiyinxiangjiName + "相机已验证 | 时间地点真实"}
-                            </Text>
+                            <View
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
+                              <Text className="short-line"></Text>
+                              <Text>{" 时间地点真实"}</Text>
+                            </View>
                           </View>
                         )}
                       </View>

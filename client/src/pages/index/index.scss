@@ -858,18 +858,24 @@ text {
   bottom: 18px;
   align-items: center;
   image {
-    width: 28px;
-    height: 28px;
+    width: 25px;
+    height: 25px;
     margin-right: 3px;
     margin-left: 5px;
   }
-  text {
+  view {
     color: rgba(255, 255, 255, 0.7);
     font-family: "HYQiHei 65J";
     font-size: 19px;
     font-weight: 500;
     text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
-    1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
-    2px 2px 3px rgba(0, 0, 0, 0.1);
+      1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
+      2px 2px 3px rgba(0, 0, 0, 0.1);
+  }
+  .short-line {
+    width: 2px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    margin: 0 8px -4px 0px;
   }
 }
