@@ -35,24 +35,24 @@ page {
 .at-input__input {
   font-size: 26px !important;
 }
-.syxjName-box {
-  color: #f22c3d;
-  .at-card__header-title {
-    color: #f22c3d !important;
-  }
-}
+// .syxjName-box {
+//   color: #f22c3d;
+//   .at-card__header-title {
+//     color: #f22c3d !important;
+//   }
+// }
 .edit-box {
   .at-card {
-    margin-bottom: 30px !important;
+    margin-bottom: 20px !important;
   }
   .at-card__header-title {
     font-size: 28px !important;
   }
 }
 .at-float-layout .layout-body {
-  height:100%!important;
-  min-height: auto!important;
-  max-height: auto!important;
+  height: 100% !important;
+  min-height: auto !important;
+  max-height: auto !important;
 }
 .at-modal__footer .at-modal__action {
   flex-direction: row;
@@ -61,4 +61,32 @@ page {
   display: flex;
   align-items: center;
   flex-direction: row;
+}
+.at-card__header {
+  flex-direction: row !important;
+}
+picker {
+  height: 50px !important;
+  line-height: 50px !important;
+  view {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+.picker {
+  height: 50px !important;
+  line-height: 50px !important;
+}
+.at-card__header-title {
+  font-weight: bold !important;
+}
+.edit-item {
+  margin-bottom: 10px;
+  border: 1px #b3c2ce solid;
+  border-radius: 6px;
+  padding: 7px 20px;
+}
+.at-float-layout .layout-header__btn-close{
+  width: 80px!important;
 }

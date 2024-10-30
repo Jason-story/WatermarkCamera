@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   Snapshot,
+  Textarea,
   Input,
   Picker,
   Switch,
@@ -13,12 +14,11 @@ import {
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Close from "../../images/close.png";
-import ShuiyinsDom from "../../components/shuiyin";
+import ShuiyinDoms from "../../components/shuiyin";
 import {
   AtModal,
   AtToast,
   AtInput,
-  AtCard,
   AtButton,
   AtModalHeader,
   AtModalContent,
@@ -508,13 +508,11 @@ const CameraPage = () => {
 
   useEffect(() => {
     if (allAuth) {
-      setTimeout(() => {
-        Taro.showToast({
-          title: "点击水印可编辑时间地点",
-          icon: "none",
-          duration: 4000,
-        });
-      }, 500);
+      Taro.showToast({
+        title: "点击水印可编辑时间地点",
+        icon: "none",
+        duration: 3000,
+      });
     }
   }, [allAuth]);
 
@@ -769,7 +767,7 @@ const CameraPage = () => {
         setShowHasCheck(showHasCheck);
         setShowTrueCode(showTrueCode);
         setShuiyinxiangjiName(shuiyinxiangjiName);
-        setDakaName(dakaName || "随便");
+        setDakaName(dakaName || "打卡");
         setFangDaoShuiyin(fangdaoShuiyin || "盗图必究");
       }, 1000);
     }
@@ -1034,6 +1032,12 @@ const CameraPage = () => {
   } else {
     canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height;
   }
+
+  const systemInfo = wx.getSystemInfoSync();
+
+  // 判断是否是真机
+  const isRealDevice = systemInfo.platform !== "devtools";
+
   return (
     <View className="container">
       {userInfo.black ? (
@@ -1183,7 +1187,16 @@ const CameraPage = () => {
                 }
               >
                 <Snapshot className="snapshot">
-                  {
+                  <View
+                    style={{
+                      height: "100%",
+                      overflow: "hidden",
+                    }}
+                    onClick={(e) => {
+                      setShowFloatLayout(!showFloatLayout);
+                      setEdit(true);
+                    }}
+                  >
                     <View
                       style={{
                         height: "100%",
@@ -1191,14 +1204,27 @@ const CameraPage = () => {
                         overflow: "hidden",
                       }}
                     >
-                      <Camera
-                        className="camera"
-                        resolution="high"
-                        devicePosition={devicePosition}
-                        flash={shanguangflag}
-                        frameSize="medium"
-                        onError={cameraError}
-                      />
+                      {isRealDevice && (
+                        <Camera
+                          className="camera"
+                          resolution="high"
+                          devicePosition={devicePosition}
+                          flash={shanguangflag}
+                          frameSize="medium"
+                          onError={cameraError}
+                        />
+                      )}
+                      {!isRealDevice && (
+                        <Image
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                          }}
+                          src={
+                            "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/WechatIMG718.jpg?sign=ab89bf84e898c7a3cb8dcff813bd80f9&t=1730259987"
+                          }
+                        ></Image>
+                      )}
                       {cameraTempPath && (
                         <Image
                           src={cameraTempPath}
@@ -1214,27 +1240,32 @@ const CameraPage = () => {
                         ></Image>
                       )}
                     </View>
-                  }
-                  <View className="mask-inner-box">
-                    {ShuiyinsDom[0].component({
-                      hours,
-                      minutes,
-                      day,
-                      month,
-                      year,
-                      weekly,
-                      locationName,
-                    })}
-                  </View>
-                  {/* 水印相机logo */}
-                  <View className="copySYXJ">
-                    <Image
-                      src={Icon2}
-                      style={{
-                        width: "52px",
-                        height: "15px",
-                      }}
-                    ></Image>
+                    <View className="mask-inner-box">
+                      {ShuiyinDoms[0].component({
+                        hours,
+                        minutes,
+                        day,
+                        month,
+                        year,
+                        weekly,
+                        locationName,
+                        dakaName,
+                      })}
+                    </View>
+                    {/* 右下角 水印相机logo */}
+                    {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                    0 ? (
+                      <View className="copySYXJ">
+                        {/* 0 水印相机  1 今日水印&马克相机 */}
+                        <Image
+                          src={Icon2}
+                          style={{
+                            width: "52px",
+                            height: "14px",
+                          }}
+                        ></Image>
+                      </View>
+                    ) : null}
                   </View>
                 </Snapshot>
                 {/* <Canvas
@@ -1455,7 +1486,7 @@ const CameraPage = () => {
                 <Text>设置</Text>
               </View> */}
             </View>
-            <View
+            {/* <View
               className="shantui-btns"
               style={{ marginLeft: "-50px", width: "230px" }}
             >
@@ -1469,7 +1500,7 @@ const CameraPage = () => {
                   setShantuiSwitch(e.detail.value);
                 }}
               />
-            </View>
+            </View> */}
             {/* <View
               className="tools-bar-inner"
               style={{
@@ -1816,7 +1847,7 @@ const CameraPage = () => {
           >
             {!edit ? (
               <View className="shuiyin-list">
-                {ShuiyinsDom.map((item, index) => {
+                {ShuiyinDoms.map((item, index) => {
                   return (
                     <View key={index}>
                       <View className="shuiyin-item">
@@ -1868,297 +1899,251 @@ const CameraPage = () => {
               </View>
             ) : (
               // 编辑页
-              <View className="shuiyin-list shuiyin-list-no-grid edit-box">
-                <View className="input-item">
-                  <AtCard title="时间">
-                    <Picker
-                      mode="date"
-                      value={`${year}年${month}月${day}日`}
-                      onChange={handleDateChange}
-                    >
-                      <View>选择日期： {`${year}年${month}月${day}日`}</View>
-                    </Picker>
-                    <Picker
-                      mode="time"
-                      value={`${hours}:${minutes}`}
-                      onChange={handleTimeChange}
-                    >
-                      <View>选择时间： {`${hours}:${minutes}`}</View>
-                    </Picker>
-                  </AtCard>
-                  <AtCard title="地点">
-                    <Picker
-                      mode="region"
-                      value={editCity}
-                      onChange={handleCityChange}
-                    >
-                      <View className="input-picker">
-                        选择城市： {editCity}
-                      </View>
-                    </Picker>
+              <View className="edit-box">
+                <View className="shantui-btns">
+                  <View
+                    style={{
+                      color: "#151515",
+                      marginRight: "10px",
+                    }}
+                  >
+                    保存地点、打卡标签、水印名称等设置，下次使用时无需再次修改
+                  </View>
+                  <Switch
+                    style={{ transform: "scale(0.7)" }}
+                    disabled={!locationName}
+                    checked={isShuiyinSaved}
+                    onChange={(e) => {
+                      saveChange(e.detail.value);
+                    }}
+                  />
+                </View>
+                <View className="edit-item">
+                  <Picker
+                    mode="date"
+                    value={`${year}年${month}月${day}日`}
+                    onChange={handleDateChange}
+                  >
+                    <View>选择日期： {`${year}年${month}月${day}日`}</View>
+                  </Picker>
+                </View>
+                <View className="edit-item">
+                  <Picker
+                    mode="time"
+                    value={`${hours}:${minutes}`}
+                    onChange={handleTimeChange}
+                  >
+                    <View>选择时间： {`${hours}:${minutes}`}</View>
+                  </Picker>
+                </View>
+                <View className="edit-item">
+                  <View className="picker">
+                    <Text>详细地点： </Text>
+                    <Input
+                      className="input"
+                      value={locationName}
+                      maxlength={50}
+                      clear={true}
+                      onInput={(e) => {
+                        debounce(setLocationName(e.detail.value), 100);
+                      }}
+                    ></Input>
+                  </View>
+                  <View className="input-tips">最多45个字</View>
+                </View>
+                {ShuiyinDoms[currentShuiyinIndex].options?.hasDakaLabel && (
+                  <View className="edit-item flex-row">
                     <View className="picker">
-                      <Text>详细地点： </Text>
+                      <Text
+                        style={{
+                          color: "f22c3d",
+                        }}
+                      >
+                        打卡标签：{" "}
+                      </Text>
                       <Input
                         className="input"
-                        value={locationName}
-                        maxlength={50}
+                        value={dakaName}
+                        maxlength={2}
+                        placeholder="点击添加"
                         clear={true}
                         onInput={(e) => {
-                          debounce(setLocationName(e.detail.value), 100);
+                          debounce(
+                            setDakaName(e.detail.value.replace(/\s+/g, "")),
+                            100
+                          );
                         }}
                       ></Input>
                     </View>
-                  </AtCard>
-                  <View
-                    className="shantui-btns"
-                    style={{
-                      margin: "0px",
-                      height: "auto",
-                      marginBottom: "15px",
-                      border: "1px #f22c3d solid",
-                      borderRadius: "6px",
-                      padding: "5px 0 5px 10px",
-                    }}
-                  >
-                    <View
-                      style={{
-                        color: "#333",
-                      }}
-                    >
-                      保存地点、打卡标签、水印名称等设置，下次使用时无需再次修改
+                    <View className="input-tips">
+                      最多2个字，如打卡、考勤、上班等
                     </View>
-                    <Switch
-                      style={{ transform: "scale(0.7)" }}
-                      disabled={!locationName}
-                      checked={isShuiyinSaved}
-                      onChange={(e) => {
-                        saveChange(e.detail.value);
-                      }}
-                    />
                   </View>
-                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.daka && ( */}
-                  {
-                    <View className="syxjName-box">
-                      <AtCard title="打卡标签">
-                        <View
-                          style={{
-                            fontSize: "14px",
-                          }}
-                        >
-                          最多2个字，如打卡、考勤、上班等
-                          <Text
-                            style={{
-                              color: "#f22c3d",
-                            }}
-                          ></Text>
-                        </View>
-                        <View className="picker">
-                          <Text>打卡标签： </Text>
-                          <Input
-                            className="input"
-                            value={dakaName}
-                            maxlength={2}
-                            placeholder="点击添加"
-                            clear={true}
-                            onInput={(e) => {
-                              debounce(
-                                setDakaName(e.detail.value.replace(/\s+/g, "")),
-                                100
-                              );
-                            }}
-                          ></Input>
-                        </View>
-                      </AtCard>
-                    </View>
-                  }
-                  <View className="syxjName-box">
-                    <AtCard title="水印名称，自动显示在右下角">
-                      <View
-                        style={{
-                          fontSize: "14px",
-                        }}
-                      >
-                        填写需要的水印名称，最多4个字
-                        <Text
-                          style={{
-                            color: "#f22c3d",
-                          }}
-                        ></Text>
-                      </View>
-                      <View className="picker">
-                        <Text>水印名称： </Text>
-                        <Input
-                          className="input"
-                          value={shuiyinxiangjiName}
-                          maxlength={4}
-                          clear={true}
-                          placeholder="点击添加"
-                          onInput={(e) => {
-                            debounce(
-                              setShuiyinxiangjiName(
-                                e.detail.value.replace(/\s+/g, "")
-                              ),
-                              100
-                            );
-                          }}
-                        ></Input>
-                      </View>
-                    </AtCard>
-                  </View>
-                  {
-                    // {disableTrueCode &&
-                    //   canvasConfigState[currentShuiyinIndex]?.[0]?.right && (
-                    <AtCard title="右下角防伪下标">
+                )}
+                {ShuiyinDoms[currentShuiyinIndex].options
+                  ?.showRightCopyright && (
+                  <>
+                    <View className="edit-item">
                       <View className="picker" style={{ height: "50px" }}>
-                        <Text>是否显示： </Text>
+                        <Text>右下角防伪下标是否显示： </Text>
                         <Switch
-                          // style={{
-                          //   transform: "scale(0.7)",
-                          //   opacity: !canvasConfigState[
-                          //     currentShuiyinIndex
-                          //   ]?.[0]?.right
-                          //     ? 0.2
-                          //     : 1,
-                          // }}
-                          // checked={showTrueCode}
-                          // disabled={
-                          //   !canvasConfigState[currentShuiyinIndex]?.[0]?.right
-                          // }
+                          style={{
+                            transform: "scale(0.7)",
+                          }}
+                          checked={showTrueCode}
                           onChange={(e) => {
                             setShowTrueCode(e.detail.value);
                           }}
                         />
                       </View>
-                    </AtCard>
-                  }
+                    </View>
+                    {showTrueCode && (
+                      <View className="edit-item flex-row">
+                        <View className="picker">
+                          <Text
+                            style={{
+                              color: "f22c3d",
+                            }}
+                          >
+                            右下角水印名称：
+                          </Text>
+                          <Input
+                            className="input"
+                            value={shuiyinxiangjiName}
+                            maxlength={4}
+                            clear={true}
+                            placeholder="点击添加"
+                            onInput={(e) => {
+                              debounce(
+                                setShuiyinxiangjiName(
+                                  e.detail.value.replace(/\s+/g, "")
+                                ),
+                                100
+                              );
+                            }}
+                          ></Input>
+                        </View>
+                        <View className="input-tips">
+                          自动显示在右下角,最多4个字
+                        </View>
+                      </View>
+                    )}
+                  </>
+                )}
 
-                  {
-                    // {disableTrueCode &&
-                    //   canvasConfigState[currentShuiyinIndex]?.[0]?.left && (
-                    <AtCard title="左下角已验证下标">
+                {ShuiyinDoms[currentShuiyinIndex].options
+                  ?.showLeftCopyright && (
+                  <View className="edit-item">
+                    <View className="picker">
+                      <Text>左下角已验证下标是否显示： </Text>
+                      <Switch
+                        style={{
+                          transform: "scale(0.7)",
+                        }}
+                        checked={showHasCheck}
+                        onChange={(e) => {
+                          setShowHasCheck(e.detail.value);
+                        }}
+                      />
+                    </View>
+                  </View>
+                )}
+                {ShuiyinDoms[currentShuiyinIndex].options?.hasTitle && (
+                  <View className="edit-item">
+                    <View className="picker">
+                      <Text>工程标题： </Text>
+                      <Input
+                        className="input"
+                        value={title}
+                        maxlength={8}
+                        clear={true}
+                        onInput={(e) => {
+                          debounce(setTitle(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </View>
+                )}
+                {ShuiyinDoms[currentShuiyinIndex].options?.hasFangDao && (
+                  <View className="edit-item">
+                    <View className="picker">
+                      <Text>防盗水印文字： </Text>
+                      <Input
+                        className="input"
+                        value={fangdaoShuiyin}
+                        maxlength={8}
+                        clear={true}
+                        onInput={(e) => {
+                          debounce(setFangDaoShuiyin(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </View>
+                )}
+                {ShuiyinDoms[currentShuiyinIndex].options?.hasWeather && (
+                  <View className="edit-item">
+                    <View className="picker">
+                      <Text>天气&温度： </Text>
+                      <Input
+                        className="input"
+                        value={weather}
+                        maxlength={8}
+                        clear={true}
+                        onInput={(e) => {
+                          isWeatherEdited = true;
+                          debounce(setWeather(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                  </View>
+                )}
+
+                {ShuiyinDoms[currentShuiyinIndex].options?.hasJingWeiDu && (
+                  <>
+                    <View className="edit-item">
                       <View className="picker" style={{ height: "50px" }}>
                         <Text>是否显示： </Text>
-
                         <Switch
-                          style={{
-                            transform: "scale(0.7)",
-                            // opacity: !canvasConfigState[
-                            //   currentShuiyinIndex
-                            // ]?.[0]?.left
-                            //   ? 0.2
-                            //   : 1,
-                          }}
-                          checked={showHasCheck}
+                          style={{ transform: "scale(0.7)" }}
+                          checked={hideJw}
                           onChange={(e) => {
-                            setShowHasCheck(e.detail.value);
+                            setHideJw(e.detail.value);
                           }}
                         />
                       </View>
-                    </AtCard>
-                  }
-
-                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.title && ( */}
-                  { (
-                    <AtCard title="标题">
+                    </View>
+                    <View className="edit-item">
                       <View className="picker">
-                        <Text>标题： </Text>
+                        <Text>经度： </Text>
                         <Input
                           className="input"
-                          value={title}
-                          maxlength={8}
+                          value={longitude}
+                          maxlength={14}
                           clear={true}
+                          type="number"
                           onInput={(e) => {
-                            debounce(setTitle(e.detail.value), 100);
+                            debounce(setLongitude(e.detail.value), 100);
                           }}
                         ></Input>
                       </View>
-                    </AtCard>
-                  )}
-                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.fangdao && ( */}
-                  { (
-                    <AtCard title="防盗水印">
+                    </View>
+                    <View className="edit-item">
                       <View className="picker">
-                        <Text>防盗文字： </Text>
+                        <Text>纬度： </Text>
                         <Input
                           className="input"
-                          value={fangdaoShuiyin}
-                          maxlength={8}
+                          value={latitude}
+                          type="number"
+                          maxlength={14}
                           clear={true}
                           onInput={(e) => {
-                            debounce(setFangDaoShuiyin(e.detail.value), 100);
+                            debounce(setLatitude(e.detail.value), 100);
                           }}
                         ></Input>
                       </View>
-                    </AtCard>
-                  )}
-                  {(
-                  // {canvasConfigState[currentShuiyinIndex]?.[0]?.weather && (
-                    <AtCard title="天气">
-                      <View className="picker">
-                        <Text>天气&温度： </Text>
-                        <Input
-                          className="input"
-                          value={weather}
-                          maxlength={8}
-                          clear={true}
-                          onInput={(e) => {
-                            isWeatherEdited = true;
-                            debounce(setWeather(e.detail.value), 100);
-                          }}
-                        ></Input>
-                      </View>
-                    </AtCard>
-                  )}
-
-                  {/* {canvasConfigState[currentShuiyinIndex]?.[0]?.jingweidu && ( */}
-                  {(
-                    <>
-                      <AtCard title="经纬度">
-                        <View className="picker" style={{ height: "50px" }}>
-                          <Text>是否显示： </Text>
-
-                          <Switch
-                            style={{ transform: "scale(0.7)" }}
-                            checked={hideJw}
-                            onChange={(e) => {
-                              setHideJw(e.detail.value);
-                            }}
-                          />
-                        </View>
-                      </AtCard>
-                      <AtCard title="经度">
-                        <View className="picker">
-                          <Text>经度： </Text>
-                          <Input
-                            className="input"
-                            value={longitude}
-                            maxlength={14}
-                            clear={true}
-                            type="number"
-                            onInput={(e) => {
-                              debounce(setLongitude(e.detail.value), 100);
-                            }}
-                          ></Input>
-                        </View>
-                      </AtCard>
-                      <AtCard title="纬度">
-                        <View className="picker">
-                          <Text>纬度： </Text>
-                          <Input
-                            className="input"
-                            value={latitude}
-                            type="number"
-                            maxlength={14}
-                            clear={true}
-                            onInput={(e) => {
-                              debounce(setLatitude(e.detail.value), 100);
-                            }}
-                          ></Input>
-                        </View>
-                      </AtCard>
-                    </>
-                  )}
-                </View>
+                    </View>
+                  </>
+                )}
               </View>
             )}
             {!edit && (

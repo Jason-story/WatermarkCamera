@@ -1,0 +1,39 @@
+// @import './font.css';
+.item2-wrapper {
+  color: #fff;
+  position: absolute;
+  left: 22px;
+  bottom: 63px;
+}
+.item2-badage {
+  image {
+    width: 200px;
+    height: 55px;
+  }
+}
+.item2-text-box {
+  flex-direction: row;
+  .item2-line {
+    width: 4px;
+    height: 100%;
+    background-color: #f9c344;
+    margin-right: 20px;
+  }
+  .item2-add-date {
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: flex-start;
+    align-items: flex-start;
+  }
+  .item2-location {
+    font-family: "HYQiHei 65J";
+    text {
+      line-height: 1.2;
+    }
+  }
+  .item2-date {
+    margin-bottom: -10px;
+    font-family: "Arial";
+  }
+}
+// Bebas

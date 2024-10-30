@@ -249,13 +249,14 @@ page {
 .shantui-btns {
   display: flex;
   flex-direction: row;
-
   justify-content: start;
   align-items: center;
-  font-size: 26px;
-  padding-left: 20px;
-  height: 60px;
-  margin-top: -10px;
+  font-size: 27px;
+  height: auto;
+  margin-bottom: 10px;
+  border: 1px #f22c3d solid;
+  border-radius: 6px;
+  padding: 10px 20px;
 }
 
 .vip-btn image {
@@ -843,4 +844,8 @@ text {
   position: absolute;
   right: 20px;
   bottom: 20px;
+}
+.input-tips{
+  color:#919191;
+  font-size: 20px;
 }
