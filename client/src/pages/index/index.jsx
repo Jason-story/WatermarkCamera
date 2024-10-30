@@ -1191,7 +1191,7 @@ const CameraPage = () => {
                     style={{
                       height: "100%",
                       overflow: "hidden",
-                      position:'relative'
+                      position: "relative",
                     }}
                     onClick={(e) => {
                       setShowFloatLayout(!showFloatLayout);
@@ -1275,12 +1275,15 @@ const CameraPage = () => {
                       >
                         {shuiyinxiangjiName.includes("马克") ? (
                           <View className="make-left-copyright">
-                            马克相机已验证照片真实性
+                            <Image src={P1}></Image>
+                            <Text>马克相机已验证照片真实性</Text>
                           </View>
                         ) : (
                           <View className="jinri-left-copyright">
                             <Image src={P1}></Image>
-                            {shuiyinxiangjiName + "相机已验证 | 时间地点真实"}
+                            <Text>
+                              {shuiyinxiangjiName + "相机已验证 | 时间地点真实"}
+                            </Text>
                           </View>
                         )}
                       </View>

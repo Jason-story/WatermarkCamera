@@ -852,11 +852,24 @@ text {
 .make-left-copyright,
 .jinri-left-copyright {
   position: absolute;
+  display: flex;
+  flex-direction: row;
   left: 10px;
-  bottom: 20px;
+  bottom: 18px;
+  align-items: center;
   image {
-    width: 30px;
-    height: 30px;
-    margin-right: 5px;
+    width: 28px;
+    height: 28px;
+    margin-right: 3px;
+    margin-left: 5px;
+  }
+  text {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: "HYQiHei 65J";
+    font-size: 19px;
+    font-weight: 500;
+    text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
+    1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
+    2px 2px 3px rgba(0, 0, 0, 0.1);
   }
 }
