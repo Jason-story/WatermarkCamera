@@ -7,7 +7,7 @@ import "./index.scss";
 
 const Index = ({ hours, minutes, locationName, weekly, day, month, year }) => {
   return (
-    <View className="item3-wrapper">
+    <View className="item3-wrapper"  key={"item-3"}>
       <View className="item3-time">
         <Text>
           {hours}:{minutes}

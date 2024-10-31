@@ -17,7 +17,7 @@ const Index = ({
   remark,
 }) => {
   return (
-    <View className="item1-wrapper">
+    <View className="item1-wrapper" key={"item-1"}>
       <View className="item1-badage">
         <Image src={Icon1}></Image>
         <Text className="item1-dakaText">{dakaName}</Text>

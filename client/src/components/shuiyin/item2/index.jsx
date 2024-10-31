@@ -16,7 +16,7 @@ const Index = ({
   year,
 }) => {
   return (
-    <View className="item2-wrapper">
+    <View className="item2-wrapper"  key={"item-2"}>
       <View className="item2-badage">
         <Image src={Icon1}></Image>
         <View className="item2-time-box">{`${hours}:${minutes}`}</View>
