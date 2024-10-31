@@ -97,3 +97,20 @@
   mask-size: 100% 100%;
   mask-position: center;
 }
+.item1-remark-box {
+  margin-top: 15px;
+  .item1-location {
+    margin: 0;
+    padding: 4px 6px 6px 6px;
+    border-top-left-radius: 6px; /* 左上角圆角 */
+    border-bottom-left-radius: 6px; /* 左下角圆角 */
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  text {
+    line-height: normal !important;
+  }
+}

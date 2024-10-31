@@ -35,12 +35,6 @@ exports.main = async (event, context) => {
     // 使用正则表达式提取 inviteId
     let plateformMatch = body.match(/plateform%3D([^%&]*)/);
     let plateform = plateformMatch ? decodeURIComponent(plateformMatch[1]) : null;
-
-    console.log('openid:', openid);
-    console.log('type:', type);
-    console.log('inviteId: ', inviteId);
-    console.log('price: ', price);
-
     const transaction = await db.startTransaction();
     const config = {
         '1day': 1,
@@ -48,7 +42,8 @@ exports.main = async (event, context) => {
         threeMonth: 90,
         halfYearMonth: 180,
         year: 365,
-        never: 999999
+        never: 999999,
+        dingzhi: 999999
     };
 
     try {

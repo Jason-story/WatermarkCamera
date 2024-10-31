@@ -9,7 +9,9 @@ page {
   min-height: auto !important;
   bottom: auto !important;
 }
-
+.at-float-layout .layout-body__content {
+  max-height: 100% !important;
+}
 .at-float-layout--active .at-float-layout__container {
   height: 100vh !important;
   top: 31% !important;

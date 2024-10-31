@@ -14,17 +14,16 @@ const Index = ({
   day,
   month,
   year,
+  remark,
 }) => {
-
   return (
     <View className="item1-wrapper">
       <View className="item1-badage">
         <Image src={Icon1}></Image>
         <Text className="item1-dakaText">{dakaName}</Text>
         <View className="item1-time-box">
-
-        <Text className="item1-time item1-time-base">{`${hours}:${minutes}`}</Text>
-        <Text className="item1-time item1-time-cover">{`${hours}:${minutes}`}</Text>
+          <Text className="item1-time item1-time-base">{`${hours}:${minutes}`}</Text>
+          <Text className="item1-time item1-time-cover">{`${hours}:${minutes}`}</Text>
         </View>
       </View>
       <View className="item1-text-box flex">
@@ -45,6 +44,18 @@ const Index = ({
           </View>
         </View>
       </View>
+      {/* 备注 */}
+      {remark.length > 0 && (
+        <View className="item1-text-box item1-remark-box flex">
+          <View className="item1-location">
+            <View
+              dangerouslySetInnerHTML={{
+                __html: formatTextWithLineLimit(remark, 20, 1),
+              }}
+            ></View>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

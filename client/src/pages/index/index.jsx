@@ -17,6 +17,7 @@ import P1 from "../../images/p-1.png";
 import P2 from "../../images/p-2.png";
 import P3 from "../../images/p-3.png";
 import P4 from "../../images/p-4.png";
+import P5 from "../../images/p-5.png";
 import ShuiyinDoms from "../../components/shuiyin";
 import { generateRandomString } from "../../components/utils.js";
 
@@ -110,7 +111,7 @@ const CameraPage = () => {
   const [locationName, setLocationName] = useState("");
   app.$app.globalData.zphsId = zphsId;
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
-  const [dakaName, setDakaName] = useState("");
+  const [dakaName, setDakaName] = useState("打卡");
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
@@ -144,9 +145,9 @@ const CameraPage = () => {
   const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
   const [fangdaoShuiyin, setFangDaoShuiyin] = useState("盗图必究");
   const [cameraTempPath, setCameraTempPath] = useState("");
+  const [remark, setRemark] = useState("");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
-  let isWeatherEdited = false;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
     const weekDays = [
@@ -188,7 +189,6 @@ const CameraPage = () => {
         cloud = Taro.cloud;
       }
 
-      console.log("config.userToApp: ", config.userToApp);
       cloud.callFunction({
         name: "addUser",
         data: {
@@ -302,10 +302,7 @@ const CameraPage = () => {
   };
   useEffect(() => {
     allAuth && permissions.userLocation && !city && getLocation();
-    longitude &&
-      latitude &&
-      !isWeatherEdited &&
-      fetchWeather(longitude, latitude);
+    longitude && latitude && fetchWeather(longitude, latitude);
   }, [allAuth, permissions, city, longitude, latitude]);
 
   const getLocation = () => {
@@ -666,6 +663,8 @@ const CameraPage = () => {
             showTrueCode,
             showHasCheck,
             shuiyinxiangjiName,
+            weather,
+            remark,
             dakaName,
             fangdaoShuiyin,
           },
@@ -674,35 +673,9 @@ const CameraPage = () => {
 
       cameraContext?.takePhoto({
         zoom: zoomLevel,
-        quality:
-          userInfo.type === "default"
-            ? "low"
-            : shantuiSwitch || serverCanvas
-            ? "normal"
-            : "original",
+        quality: userInfo.type === "default" ? "low" : "original",
         success: async (path) => {
           await setCameraTempPath(path.tempImagePath);
-          console.log("path.tempImagePath: ", path.tempImagePath);
-
-          // setTimeout(() => {
-          //   Taro.navigateTo({
-          //     url:
-          //       "/pages/result/index?bg=" +
-          //       path.tempImagePath +
-          //       "&mask=" +
-          //       canvasImg +
-          //       "&serverCanvas=" +
-          //       (shantuiSwitch || serverCanvas) +
-          //       "&vip=" +
-          //       canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
-          //       "&id=" +
-          //       inviteId +
-          //       "&realWidth=" +
-          //       canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
-          //       "&realHeight=" +
-          //       canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
-          //   });
-          // }, 200);
         },
         fail: (error) => {},
       });
@@ -736,18 +709,6 @@ const CameraPage = () => {
       imageUrl: ShareImg,
     };
   });
-  // useEffect(() => {
-  //   if (
-  //     userInfo.type === "buyout" &&
-  //     (userInfo.hasDingZhi || userInfo.hasDingZhi === 0)
-  //   ) {
-  //     setCurrentShuiyinIndex(userInfo.hasDingZhi);
-  //     setTimeout(() => {
-  //       setLocationName(userInfo.dingZhiLoca || "");
-  //       drawMask();
-  //     }, 1500);
-  //   }
-  // }, [userInfo.hasDingZhi]);
   // 判断是否使用服务端保存的数据生成图片
   useEffect(() => {
     if (userInfo?.saveConfig?.isSaved) {
@@ -762,17 +723,19 @@ const CameraPage = () => {
         shuiyinxiangjiName,
         fangdaoShuiyin,
         dakaName,
+        remark,
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(currentShuiyinIndex);
         setWeather(weather);
+        setRemark(remark);
         setLocationName(locationName);
         setLatitude(latitude);
         setLongitude(longitude);
         setShowHasCheck(showHasCheck);
         setShowTrueCode(showTrueCode);
         setShuiyinxiangjiName(shuiyinxiangjiName);
-        setDakaName(dakaName || "打卡");
+        setDakaName(dakaName);
         setFangDaoShuiyin(fangdaoShuiyin || "盗图必究");
       }, 1000);
     }
@@ -919,49 +882,9 @@ const CameraPage = () => {
     setdisableTrueCode(app.$app.globalData.config.disableTrueCode);
   }, [app.$app.globalData.config.disableTrueCode]);
 
-  useEffect(() => {
-    drawMask();
-  }, [
-    title,
-    weather,
-    hideJw,
-    latitude,
-    longitude,
-    minutes,
-    locationName,
-    hours,
-    year,
-    month,
-    day,
-    currentShuiyinIndex,
-    canvasConfigState.length,
-    update,
-    // 已验证下标
-    showHasCheck,
-    // 右下角防伪码
-    showTrueCode,
-    shuiyinxiangjiName,
-    dakaName,
-    fangdaoShuiyin,
-  ]);
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);
   };
-  // useEffect(() => {
-  //   if (allAuth) {
-  //     Taro.getStorage({ key: "hasVisited" })
-  //       .then(() => {
-  //         // 用户已经访问过小程序，不显示弹窗
-  //         setShowFirstModal(false);
-  //       })
-  //       .catch(() => {
-  //         // 用户第一次访问小程序，显示弹窗
-  //         setShowFirstModal(true);
-  //         // 设置标志位，表示用户已经访问过小程序
-  //         Taro.setStorage({ key: "hasVisited", data: true });
-  //       });
-  //   }
-  // }, [allAuth]);
 
   const uploadLogo = () => {
     Taro.chooseMedia({
@@ -1042,7 +965,6 @@ const CameraPage = () => {
 
   // 判断是否是真机
   const isRealDevice = systemInfo.platform !== "devtools";
-
   return (
     <View className="container">
       {userInfo.black ? (
@@ -1197,6 +1119,7 @@ const CameraPage = () => {
                         height: "100%",
                         widh: "100%",
                         position: "relative",
+                        background: "#756666",
                       }}
                     >
                       {isRealDevice && (
@@ -1240,7 +1163,7 @@ const CameraPage = () => {
                     {userInfo.type === "default" && (
                       <View
                         style={{
-                          color: "rgba(0,0,0,.15)",
+                          color: "rgba(0,0,0,.2)",
                           fontSize: "30px",
                           fontWeight: "bold",
                           position: "absolute",
@@ -1248,7 +1171,7 @@ const CameraPage = () => {
                           textAlign: "center",
                           top: "50%",
                           left: "50%",
-                          width:'300px',
+                          width: "300px",
                           height: "100px",
                           marginLeft: "-150px",
                           marginTop: "-50px",
@@ -1268,11 +1191,14 @@ const CameraPage = () => {
                         weekly,
                         locationName,
                         dakaName,
+                        title,
+                        weather,
+                        remark,
                       })}
                     </View>
-                    {/* 右下角 copyright = false 水印相机logo */}
+                    {/* 右下角 copyright  水印相机logo */}
                     {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                      false && (
+                      "syxj" && (
                       <View className="copySYXJ">
                         <Image
                           src={Icon2}
@@ -1286,7 +1212,9 @@ const CameraPage = () => {
                     {/* 左下角*/}
                     {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
                       "jrsy" &&
-                      showHasCheck && (
+                      showHasCheck &&
+                      ShuiyinDoms[currentShuiyinIndex].options
+                        ?.showLeftCopyright && (
                         <View
                           style={{ position: "absolute", left: 0, bottom: 0 }}
                         >
@@ -1320,7 +1248,24 @@ const CameraPage = () => {
                           </View>
                         </View>
                       )}
-
+                    {/* 提示填写水印名字图标 */}
+                    {disableTrueCode && showTrueCode && !shuiyinxiangjiName && (
+                      <View
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          bottom: "10px",
+                        }}
+                      >
+                        <Image
+                          src={P5}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                          }}
+                        ></Image>
+                      </View>
+                    )}
                     {/*今日水印 右下角*/}
                     {shuiyinxiangjiName &&
                       ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
@@ -1413,27 +1358,6 @@ const CameraPage = () => {
                       )}
                   </View>
                 </Snapshot>
-                {/* <Canvas
-                  id="fishCanvas"
-                  onTouchStart={(e) => {
-                    setShowFloatLayout(!showFloatLayout);
-                    setEdit(true);
-                  }}
-                  type="2d"
-                  // className={canvasImg ? "hideCanvas" : ""}
-                  style={{
-                    width: screenWidth,
-                    height:
-                      canvasConfigState[currentShuiyinIndex]?.[0].height &&
-                      typeof canvasConfigState[currentShuiyinIndex]?.[0]
-                        .height === "number"
-                        ? canvasConfigState[currentShuiyinIndex]?.[0].height +
-                          "px"
-                        : canvasConfigState[currentShuiyinIndex]?.[0].height(
-                            locationName
-                          ) + "px",
-                  }}
-                /> */}
               </View>
             )}
           </View>
@@ -1479,7 +1403,6 @@ const CameraPage = () => {
                       });
                       return;
                     }
-                    console.log("showFloatLayout: ", showFloatLayout);
                     setShowFloatLayout(!showFloatLayout);
                   }}
                 ></Image>
@@ -1938,14 +1861,6 @@ const CameraPage = () => {
               </AtModalAction>
             </AtModal>
           )}
-          {/*  -----------------------  */}
-          {/*  -----------------------  */}
-          {/*  -----------------------  */}
-          {/*  -----------------------  */}
-          {/*  -----------------------  */}
-          {/*  -----------------------  */}
-          {/*  -----------------------  */}
-          {/*  -----------------------  */}
           <AtFloatLayout
             isOpened={showSetting}
             title="设置"
@@ -2126,7 +2041,7 @@ const CameraPage = () => {
                   </View>
                 )}
                 {ShuiyinDoms[currentShuiyinIndex].options
-                  ?.showRightCopyright && (
+                  ?.showRightCopyright  && (
                   <>
                     <View className="edit-item">
                       <View className="picker" style={{ height: "50px" }}>
@@ -2142,42 +2057,44 @@ const CameraPage = () => {
                         />
                       </View>
                     </View>
-                    {showTrueCode && (
-                      <View className="edit-item flex-row">
-                        <View className="picker">
-                          <Text
-                            style={{
-                              color: "f22c3d",
-                            }}
-                          >
-                            右下角水印名称：
-                          </Text>
-                          <Input
-                            className="input"
-                            value={shuiyinxiangjiName}
-                            maxlength={4}
-                            clear={true}
-                            placeholder="点击添加"
-                            onInput={(e) => {
-                              debounce(
-                                setShuiyinxiangjiName(
-                                  e.detail.value.replace(/\s+/g, "")
-                                ),
-                                100
-                              );
-                            }}
-                          ></Input>
+                    {ShuiyinDoms[currentShuiyinIndex].options
+                      ?.showRightCopyright &&
+                       (
+                        <View className="edit-item flex-row">
+                          <View className="picker">
+                            <Text
+                              style={{
+                                color: "f22c3d",
+                              }}
+                            >
+                              右下角水印名称：
+                            </Text>
+                            <Input
+                              className="input"
+                              value={shuiyinxiangjiName}
+                              maxlength={4}
+                              clear={true}
+                              placeholder="点击添加"
+                              onInput={(e) => {
+                                debounce(
+                                  setShuiyinxiangjiName(
+                                    e.detail.value.replace(/\s+/g, "")
+                                  ),
+                                  100
+                                );
+                              }}
+                            ></Input>
+                          </View>
+                          <View className="input-tips">
+                            自动显示在右下角,最多4个字
+                          </View>
                         </View>
-                        <View className="input-tips">
-                          自动显示在右下角,最多4个字
-                        </View>
-                      </View>
-                    )}
+                      )}
                   </>
                 )}
 
                 {ShuiyinDoms[currentShuiyinIndex].options
-                  ?.showLeftCopyright && (
+                  ?.showLeftCopyright &&  (
                   <View className="edit-item">
                     <View className="picker">
                       <Text>左下角已验证下标是否显示： </Text>
@@ -2235,11 +2152,27 @@ const CameraPage = () => {
                         maxlength={8}
                         clear={true}
                         onInput={(e) => {
-                          isWeatherEdited = true;
                           debounce(setWeather(e.detail.value), 100);
                         }}
                       ></Input>
                     </View>
+                  </View>
+                )}
+                {ShuiyinDoms[currentShuiyinIndex].options?.hasRemark && (
+                  <View className="edit-item">
+                    <View className="picker">
+                      <Text>备注： </Text>
+                      <Input
+                        className="input"
+                        value={remark}
+                        maxlength={20}
+                        clear={true}
+                        onInput={(e) => {
+                          debounce(setRemark(e.detail.value), 100);
+                        }}
+                      ></Input>
+                    </View>
+                    <View className="input-tips">最多20个字</View>
                   </View>
                 )}
 
