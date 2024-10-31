@@ -61,25 +61,39 @@ class App extends Component {
       source:
         'url("https://fonts-1326662896.cos.ap-guangzhou.myqcloud.com/MiSans-Bold.ttf")',
     });
-    // // 马克相机数字
-    // wx.loadFontFace({
-    //   family: "makeNumber",
-    //   global: true,
-    //         scopes: ["webview", "native", "skyline"],
-
-    //   source:
-    //     // 数字
-    //     'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/makeNumber.ttf")',
-    // });
-    // wx.loadFontFace({
-    //   family: "Monaco",
-    //   global: true,
-    //         scopes: ["webview", "native", "skyline"],
-
-    //   source:
-    //     // 数字
-    //     'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Hack-Regular.ttf")',
-    // });
+    wx.loadFontFace({
+      family: "PTMono",
+      global: true,
+      scopes: ["webview", "native", "skyline"],
+      source:
+        // 今日水印相机 防伪码
+        'url("https://fonts-1326662896.cos.ap-guangzhou.myqcloud.com/PTMono-Bold.ttf")',
+    });
+    // 马克相机数字
+    wx.loadFontFace({
+      family: "makeNumber",
+      global: true,
+      scopes: ["webview", "native", "skyline"],
+      source:
+        // 数字
+        'url("https://fonts-1326662896.cos.ap-guangzhou.myqcloud.com/makeNumber.ttf")',
+    });
+    wx.loadFontFace({
+      family: "Monaco",
+      global: true,
+      scopes: ["webview", "native", "skyline"],
+      source:
+        // 数字
+        'url("https://fonts-1326662896.cos.ap-guangzhou.myqcloud.com/Monaco.ttf")',
+    });
+    wx.loadFontFace({
+      family: "Monaco",
+      global: true,
+      scopes: ["webview", "native", "skyline"],
+      source:
+        // 数字
+        'url("https://fonts-1326662896.cos.ap-guangzhou.myqcloud.com/Monaco.ttf")',
+    });
 
     // wx.loadFontFace({
     //   family: "huakangjingangheiRegular",

@@ -14,7 +14,12 @@ import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Close from "../../images/close.png";
 import P1 from "../../images/p-1.png";
+import P2 from "../../images/p-2.png";
+import P3 from "../../images/p-3.png";
+import P4 from "../../images/p-4.png";
 import ShuiyinDoms from "../../components/shuiyin";
+import { generateRandomString } from "../../components/utils.js";
+
 import {
   AtModal,
   AtToast,
@@ -1220,9 +1225,10 @@ const CameraPage = () => {
                           style={{
                             width: "100%",
                             height: "100%",
+                            opacity: 0.1,
                           }}
                           src={
-                            "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/WechatIMG718.jpg?sign=ab89bf84e898c7a3cb8dcff813bd80f9&t=1730259987"
+                            "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/placeholder.jpg?sign=70c36abd181c0db12cee0f82114561bf&t=1730346325"
                           }
                         ></Image>
                       )}
@@ -1253,11 +1259,10 @@ const CameraPage = () => {
                         dakaName,
                       })}
                     </View>
-                    {/* 右下角 水印相机logo */}
+                    {/* 右下角 copyright = false 水印相机logo */}
                     {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                      0 && (
+                      false && (
                       <View className="copySYXJ">
-                        {/* 0 水印相机  1 今日水印&马克相机 */}
                         <Image
                           src={Icon2}
                           style={{
@@ -1267,35 +1272,127 @@ const CameraPage = () => {
                         ></Image>
                       </View>
                     )}
-                    {/* 今日水印 或者 马克 左下角*/}
+                    {/* 左下角*/}
                     {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                      1 && (
+                      "jrsy" && (
                       <View
                         style={{ position: "absolute", left: 0, bottom: 0 }}
                       >
-                        {shuiyinxiangjiName.includes("马克") ? (
-                          <View className="make-left-copyright">
-                            <Image src={P1}></Image>
-                            <Text>马克相机已验证照片真实性</Text>
+                        {/* 如果马克相机则单独处理 其他则是默认加上相机名 */}
+
+                        <View className="jinri-left-copyright">
+                          <Image src={P1}></Image>
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
+                            <Text className="short-line"></Text>
+                            <Text>{" 时间地点真实"}</Text>
                           </View>
-                        ) : (
-                          <View className="jinri-left-copyright">
-                            <Image src={P1}></Image>
-                            <View
-                              style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
-                              <Text className="short-line"></Text>
-                              <Text>{" 时间地点真实"}</Text>
-                            </View>
-                          </View>
-                        )}
+                        </View>
                       </View>
                     )}
+                    {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                      "mk" && (
+                      <View
+                        style={{ position: "absolute", left: 0, bottom: 0 }}
+                      >
+                        <View className="make-left-copyright">
+                          <Image src={P1}></Image>
+                          <Text>马克相机已验证照片真实性</Text>
+                        </View>
+                      </View>
+                    )}
+
+                    {/*今日水印 右下角*/}
+                    {shuiyinxiangjiName &&
+                      ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                        "jrsy" && (
+                        <View
+                          style={{ position: "absolute", right: 0, bottom: 0 }}
+                        >
+                          <View className="jinri-right-copyright">
+                            {/* 今日水印 右下角背景图 */}
+                            <Image src={P2}></Image>
+                            {/* 右下角今日水印四个字图片 */}
+                            {shuiyinxiangjiName.includes("今日水印") && (
+                              <Image
+                                src={P3}
+                                style={{
+                                  position: "absolute",
+                                  right: "2px",
+                                  top: "0px",
+                                  width: "56px",
+                                  height: "12.3px",
+                                }}
+                              ></Image>
+                            )}
+                            {/* 今日水印 防伪码 */}
+                            <Text
+                              style={{
+                                fontSize: "7px",
+                                fontFamily: "PTMono",
+                                position: "absolute",
+                                color: "rgba(255,255,255,.9)",
+                                right: "1px",
+                                bottom: "-1px",
+                              }}
+                            >
+                              {generateRandomString(4)}
+                            </Text>
+                            {!shuiyinxiangjiName.includes("今日水印") && (
+                              <Text
+                                style={{
+                                  position: "absolute",
+                                  color: "rgba(255, 255, 255,.9)",
+                                  right: "3px",
+                                  top: "0px",
+                                  fontSize: "13px",
+                                }}
+                              >
+                                {shuiyinxiangjiName}
+                              </Text>
+                            )}
+                          </View>
+                        </View>
+                      )}
+                    {/* 马克右下角 */}
+                    {shuiyinxiangjiName &&
+                      ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                        "mk" && (
+                        <View
+                          style={{ position: "absolute", right: 0, bottom: 0 }}
+                        >
+                          <View className="make-right-copyright">
+                            {/* 马克 右下角背景图 */}
+                            <Image src={P4}></Image>
+                            {/* 马克 防伪码 */}
+                            <Text
+                              style={{
+                                fontSize: "10px",
+                                position: "absolute",
+                                color: "rgba(255,255,255,.85)",
+                                right: "1px",
+                                bottom: "-1px",
+                              }}
+                            >
+                              防伪
+                              <Text
+                                style={{
+                                  fontSize: "9px",
+                                  fontFamily: "Monaco",
+                                }}
+                              >
+                                {" " + generateRandomString(3)}
+                              </Text>
+                            </Text>
+                          </View>
+                        </View>
+                      )}
                   </View>
                 </Snapshot>
                 {/* <Canvas

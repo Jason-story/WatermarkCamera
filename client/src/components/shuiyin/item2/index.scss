@@ -1,15 +1,16 @@
 .item2-wrapper {
   color: #fff;
   position: absolute;
-  left: 22px;
-  bottom: 63px;
-  font-size: 28px;
+  left: 16px;
+  bottom: 55px;
+  font-size: 26px;
+  font-family: "HYQiHei 65J";
 }
 .item2-badage {
   position: relative;
   image {
-    width: 190px;
-    height: 52px;
+    width: 200px;
+    height: 59px;
   }
   margin-bottom: 27px;
   margin-left: -2px;
@@ -30,8 +31,6 @@
     align-items: flex-start;
   }
   .item2-location {
-    font-family: "HYQiHei 65J";
-    font-size: 26px;
     margin-bottom: 8px;
     margin-top: -12px;
     margin-left: -1px;
@@ -43,58 +42,36 @@
       line-height: 1.3;
     }
   }
-  .item2-date {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    margin-bottom: -11px;
-    font-family: "Arial";
-    opacity: 0.9;
-    text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
+}
+.item2-date {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  font-family: ;
+  text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
     1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
     2px 2px 3px rgba(0, 0, 0, 0.1);
-    text {
-      font-weight: normal;
-      margin-right: 11px;
-    }
-  }
+  // text {
+  //   font-weight: normal;
+  //   margin-right: 11px;
+  //   font-family: "Arial";
+  // }
 }
 .item2-dakaText,
 .item2-time {
   position: absolute;
 }
-.item2-dakaText {
-  font-family: "MiSans";
-  color: #000;
-  left: 8px;
-  top: 12px;
-  font-size: 32px;
-}
 .item2-time-box {
   position: absolute;
-  height: 52px;
-  width: 115px;
-  left: 75px;
-  top: -2px;
-  text-align: center;
-}
-.item2-time {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  font-family: "Bebas";
-  font-size: 50px;
-  letter-spacing: 1px;
-  transform: translate(-50%, -50%);
-  font-weight: 300;
-}
-.item2-time-base {
-  color: #1f59b5;
-}
-.item2-time-cover {
-  color: #000;
-  -webkit-mask-image: url("https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/mask.png?33");
-  mask-image: url("https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/mask.png?33");
-  mask-size: 100% 100%;
-  mask-position: center;
+  height: 59px;
+  width: 90px;
+  left: 105px;
+  top: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-family: "makeNumber";
+  color: #21c3a2;
+  font-size: 37px;
 }

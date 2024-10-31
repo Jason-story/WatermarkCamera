@@ -2,31 +2,48 @@ import React, { useEffect } from "react";
 import Taro from "@tarojs/taro";
 import { View, Text, Image } from "@tarojs/components";
 import Icon1 from "./icon-1.png";
-import { formatTextWithLineLimit } from "../../unitls";
+import { formatTextWithLineLimit } from "../../utils";
 import "./index.scss";
 
-const Index = ({ hours, minutes, locationName, weekly, day, month, year }) => {
+const Index = ({
+  hours,
+  minutes,
+  dakaName,
+  locationName,
+  weekly,
+  day,
+  month,
+  year,
+}) => {
+
   return (
     <View className="item1-wrapper">
-      <View className="item1-time">
-        <Text>
-          {hours}:{minutes}
-        </Text>
-      </View>
-      <View className="flex item1-addr-wrap">
-        <View className="item1-date flex">
-          <Text>
-            {year}.{month}.{day}
-          </Text>
-          <Text className="item1-week">{weekly}</Text>
-        </View>
+      <View className="item1-badage">
         <Image src={Icon1}></Image>
-        <View
-          className="item1-location"
-          dangerouslySetInnerHTML={{
-            __html: formatTextWithLineLimit(locationName, 15, 3),
-          }}
-        ></View>
+        <Text className="item1-dakaText">{dakaName}</Text>
+        <View className="item1-time-box">
+
+        <Text className="item1-time item1-time-base">{`${hours}:${minutes}`}</Text>
+        <Text className="item1-time item1-time-cover">{`${hours}:${minutes}`}</Text>
+        </View>
+      </View>
+      <View className="item1-text-box flex">
+        {/* 黄线 */}
+        <View className="item1-line"></View>
+        {/* 日期地址 */}
+        <View className="item1-add-date flex">
+          <View className="item1-location">
+            <View
+              dangerouslySetInnerHTML={{
+                __html: formatTextWithLineLimit(locationName, 20, 3),
+              }}
+            ></View>
+          </View>
+          <View className="item1-date">
+            <Text>{`${year}.${month}.${day}`}</Text>
+            {`${weekly}`}
+          </View>
+        </View>
       </View>
     </View>
   );
