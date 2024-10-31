@@ -5,7 +5,14 @@ page {
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .at-float-layout__container {
-  min-height: 60% !important;
+  max-height: auto !important;
+  min-height: auto !important;
+  bottom: auto !important;
+}
+
+.at-float-layout--active .at-float-layout__container {
+  height: 100vh !important;
+  top: 31% !important;
 }
 .at-card__header {
   padding-top: 5px !important;
@@ -87,6 +94,6 @@ picker {
   border-radius: 6px;
   padding: 7px 20px;
 }
-.at-float-layout .layout-header__btn-close{
-  width: 80px!important;
+.at-float-layout .layout-header__btn-close {
+  width: 80px !important;
 }

@@ -6,7 +6,7 @@ import { appConfigs } from "../../appConfig.js";
 
 import "./index.scss";
 
-const inviteId = Taro.getCurrentInstance().router.params.id || "";
+const inviteId = Taro.getCurrentInstance().router?.params.id || "";
 const app = getApp();
 let cloud = "";
 const UserInfo = ({ totalQuota, userId, endTime, userType }) => {

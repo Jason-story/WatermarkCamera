@@ -23,13 +23,13 @@ const config = [
     },
   },
   {
-    // 0
+    // 1
     component: Shuiyin2,
     options: {
       title: "今日水印相机-打卡",
       vip: false,
       cover: Shuiyin2Cover,
-      hasDakaLabel: true,
+      hasDakaLabel: false,
       showRightCopyright: true,
       showLeftCopyright: true,
       hasTitle: false,
@@ -40,7 +40,7 @@ const config = [
     },
   },
   {
-    // 1
+    // 2
     component: Shuiyin3,
     options: {
       title: "水印相机",

@@ -22,18 +22,20 @@ const Index = ({
         <View className="item2-time-box">{`${hours}:${minutes}`}</View>
       </View>
       <View className="item2-date">
-        <Text>{`${year}.${month}.${day}`}</Text>
+        <Text>{`${year}/${month}/${day}`}</Text>
         {`${weekly}`}
       </View>
       <View className="item2-text-box flex">
         {/* 日期地址 */}
         <View className="item2-add-date flex">
           <View className="item2-location">
+            <View className="item2-dot"></View>
             <View
               dangerouslySetInnerHTML={{
-                __html: formatTextWithLineLimit(locationName, 20, 3),
+                __html: formatTextWithLineLimit(locationName, 17, 3),
               }}
             ></View>
+
           </View>
         </View>
       </View>

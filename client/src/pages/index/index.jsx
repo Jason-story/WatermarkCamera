@@ -1100,16 +1100,6 @@ const CameraPage = () => {
 
             {allAuth && (
               <View className="camera-btns">
-                {/* <View className="red-envelope-container">
-            <Image
-              className="red-envelope-image"
-              src={Hongbaoicon} // 替换为您的实际图片URL
-              onClick={() => {
-                Taro.navigateTo({ url: "/pages/meituan/index" });
-              }}
-            />
-          </View> */}
-
                 <View className="zoom-box">
                   <View className="zoom-text" onClick={zoomClick}>
                     {zoomLevel}
@@ -1195,7 +1185,6 @@ const CameraPage = () => {
                   <View
                     style={{
                       height: "100%",
-                      overflow: "hidden",
                       position: "relative",
                     }}
                     onClick={(e) => {
@@ -1207,7 +1196,7 @@ const CameraPage = () => {
                       style={{
                         height: "100%",
                         widh: "100%",
-                        overflow: "hidden",
+                        position: "relative",
                       }}
                     >
                       {isRealDevice && (
@@ -1232,6 +1221,7 @@ const CameraPage = () => {
                           }
                         ></Image>
                       )}
+
                       {cameraTempPath && (
                         <Image
                           src={cameraTempPath}
@@ -1247,6 +1237,27 @@ const CameraPage = () => {
                         ></Image>
                       )}
                     </View>
+                    {userInfo.type === "default" && (
+                      <View
+                        style={{
+                          color: "rgba(0,0,0,.15)",
+                          fontSize: "30px",
+                          fontWeight: "bold",
+                          position: "absolute",
+                          fontFamily: "Bebas",
+                          textAlign: "center",
+                          top: "50%",
+                          left: "50%",
+                          width:'300px',
+                          height: "100px",
+                          marginLeft: "-150px",
+                          marginTop: "-50px",
+                        }}
+                      >
+                        可修改水印相机 <br />
+                        开通会员可去掉此水印
+                      </View>
+                    )}
                     <View className="mask-inner-box">
                       {ShuiyinDoms[currentShuiyinIndex].component({
                         hours,
@@ -1274,44 +1285,47 @@ const CameraPage = () => {
                     )}
                     {/* 左下角*/}
                     {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                      "jrsy" && (
-                      <View
-                        style={{ position: "absolute", left: 0, bottom: 0 }}
-                      >
-                        {/* 如果马克相机则单独处理 其他则是默认加上相机名 */}
+                      "jrsy" &&
+                      showHasCheck && (
+                        <View
+                          style={{ position: "absolute", left: 0, bottom: 0 }}
+                        >
+                          {/* 如果马克相机则单独处理 其他则是默认加上相机名 */}
 
-                        <View className="jinri-left-copyright">
-                          <Image src={P1}></Image>
-                          <View
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
-                            <Text className="short-line"></Text>
-                            <Text>{" 时间地点真实"}</Text>
+                          <View className="jinri-left-copyright">
+                            <Image src={P1}></Image>
+                            <View
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
+                              <Text className="short-line"></Text>
+                              <Text>{" 时间地点真实"}</Text>
+                            </View>
                           </View>
                         </View>
-                      </View>
-                    )}
+                      )}
                     {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                      "mk" && (
-                      <View
-                        style={{ position: "absolute", left: 0, bottom: 0 }}
-                      >
-                        <View className="make-left-copyright">
-                          <Image src={P1}></Image>
-                          <Text>马克相机已验证照片真实性</Text>
+                      "mk" &&
+                      showHasCheck && (
+                        <View
+                          style={{ position: "absolute", left: 0, bottom: 0 }}
+                        >
+                          <View className="make-left-copyright">
+                            <Image src={P1}></Image>
+                            <Text>马克相机已验证照片真实性</Text>
+                          </View>
                         </View>
-                      </View>
-                    )}
+                      )}
 
                     {/*今日水印 右下角*/}
                     {shuiyinxiangjiName &&
                       ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                        "jrsy" && (
+                        "jrsy" &&
+                      showTrueCode && (
                         <View
                           style={{ position: "absolute", right: 0, bottom: 0 }}
                         >
@@ -1352,6 +1366,9 @@ const CameraPage = () => {
                                   right: "3px",
                                   top: "0px",
                                   fontSize: "13px",
+                                  textAlign: "center",
+                                  fontWeight: "bold",
+                                  width: "100rpx",
                                 }}
                               >
                                 {shuiyinxiangjiName}
@@ -1363,7 +1380,8 @@ const CameraPage = () => {
                     {/* 马克右下角 */}
                     {shuiyinxiangjiName &&
                       ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
-                        "mk" && (
+                        "mk" &&
+                      showTrueCode && (
                         <View
                           style={{ position: "absolute", right: 0, bottom: 0 }}
                         >
@@ -2112,7 +2130,7 @@ const CameraPage = () => {
                   <>
                     <View className="edit-item">
                       <View className="picker" style={{ height: "50px" }}>
-                        <Text>右下角防伪下标是否显示： </Text>
+                        <Text>右下角防伪水印是否显示： </Text>
                         <Switch
                           style={{
                             transform: "scale(0.7)",
