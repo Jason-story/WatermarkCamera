@@ -59,6 +59,7 @@ const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始�
 const dayD = String(now.getDate()).padStart(2, "0");
 const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
+const secondsD = String(now.getSeconds()).padStart(2, "0");
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
 const fs = wx.getFileSystemManager();
@@ -577,17 +578,56 @@ const CameraPage = () => {
           type: "arraybuffer",
           format: "png",
           success: async (res) => {
-            const f = `${wx.env.USER_DATA_PATH}/shuiyin.png`;
+            console.log(111, userInfo);
+            const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
             const fs = wx.getFileSystemManager();
-            await fs.writeFileSync(f, res.data, "binary");
+            await fs.writeFileSync(filePath, res.data, "binary");
             Taro.hideLoading();
-            wx.showToast({
-              title: "保存成功",
+            // 清空临时地址 再次拍照
+            setCameraTempPath(undefined);
+            await wx.saveImageToPhotosAlbum({
+              filePath,
+              success: async () => {
+                wx.showToast({
+                  title: "保存成功",
+                });
+                const { result } = await cloud.callFunction({
+                  name: "addUser",
+                  data: {
+                    remark: "成功使用",
+                  },
+                });
+                cloud.callFunction({
+                  name: "updateSavedConfig",
+                  data: {
+                    saveConfig: {
+                      isSaved: isShuiyinSaved,
+                      currentShuiyinIndex,
+                      locationName,
+                      latitude,
+                      longitude,
+                      showTrueCode,
+                      showHasCheck,
+                      shuiyinxiangjiName,
+                      weather,
+                      remark,
+                      dakaName,
+                      fangdaoShuiyin,
+                    },
+                  },
+                });
+                setUserInfo(result.data);
+                console.log("result: ", result);
+              },
             });
 
-            setCameraTempPath(undefined);
-            wx.saveImageToPhotosAlbum({
-              filePath: f,
+            // 上传图片
+            const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+              userInfo.type === "default" ? "" : "vip"
+            }_${userInfo.openid}.png`;
+            await cloud.uploadFile({
+              cloudPath,
+              filePath,
             });
           },
           fail(res) {
@@ -620,8 +660,6 @@ const CameraPage = () => {
       });
       return;
     }
-
-    console.log("userInfo: ", userInfo);
     if (
       selected === "视频水印" &&
       userInfo.type !== "halfYearMonth" &&
@@ -639,66 +677,90 @@ const CameraPage = () => {
       setVideoModal(true);
       return;
     }
-
+    // 弹出水印名字提示弹窗
     if (
+      userInfo.type !== "default" &&
       !shuiyinxiangjiName &&
       showTrueCode &&
-      canvasConfigState[currentShuiyinIndex]?.[0]?.right
+      ShuiyinDoms[currentShuiyinIndex].options.showRightCopyright
     ) {
       setShuiyinNameModal(true);
       return;
     }
+    if (
+      userInfo.type !== "never" &&
+      ShuiyinDoms[currentShuiyinIndex].options.vip
+    ) {
+      Taro.showModal({
+        title: "提示",
+        content: "此款水印为半年及以上会员专属，请开通会员后使用",
+        showCancel: false,
+        success(res) {
+          if (res.confirm) {
+            Taro.navigateTo({
+              url: "/pages/vip/index",
+            });
+          }
+        },
+      });
+      return;
+    }
+    // 免费体验次数用尽提示
+    if (
+      userInfo.times >= app.$app.globalData.config.mianfeicishu &&
+      userInfo.type === "default"
+    ) {
+      Taro.showModal({
+        title: "提示",
+        content: "体验次数已用尽，请购买会员后使用",
+        showCancel: false,
+        success(res) {
+          if (res.confirm) {
+            Taro.navigateTo({
+              url: "/pages/vip/index",
+            });
+          }
+        },
+      });
+      return;
+    }
     // 相机
     if (camera) {
-      // 上传时间位置 保存
-      cloud.callFunction({
-        name: "updateSavedConfig",
-        data: {
-          saveConfig: {
-            isSaved: isShuiyinSaved,
-            currentShuiyinIndex,
-            locationName,
-            latitude,
-            longitude,
-            showTrueCode,
-            showHasCheck,
-            shuiyinxiangjiName,
-            weather,
-            remark,
-            dakaName,
-            fangdaoShuiyin,
-          },
-        },
-      });
+      // 保存位置
 
-      cameraContext?.takePhoto({
-        zoom: zoomLevel,
-        quality: userInfo.type === "default" ? "low" : "original",
-        success: async (path) => {
-          await setCameraTempPath(path.tempImagePath);
-        },
-        fail: (error) => {},
-      });
+      if (!isRealDevice) {
+        await setCameraTempPath(
+          "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/placeholder.jpg?sign=70c36abd181c0db12cee0f82114561bf&t=1730346325"
+        );
+      } else {
+        cameraContext?.takePhoto({
+          zoom: zoomLevel,
+          quality: userInfo.type === "default" ? "low" : "original",
+          success: async (path) => {
+            await setCameraTempPath(path.tempImagePath);
+          },
+        });
+      }
     } else {
       // 相册
       app.$app.globalData.config.isVideo = false;
-      Taro.navigateTo({
-        url:
-          "/pages/result/index?bg=" +
-          path +
-          "&mask=" +
-          canvasImg +
-          "&serverCanvas=" +
-          (shantuiSwitch || serverCanvas) +
-          "&vip=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
-          "&id=" +
-          inviteId +
-          "&realWidth=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
-          "&realHeight=" +
-          canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
-      });
+      // Taro.navigateTo({
+      //   url:
+      //     "/pages/result/index?bg=" +
+      //     path +
+      //     "&mask=" +
+      //     canvasImg +
+      //     "&serverCanvas=" +
+      //     (shantuiSwitch || serverCanvas) +
+      //     "&vip=" +
+      //     canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
+      //     "&id=" +
+      //     inviteId +
+      //     "&realWidth=" +
+      //     canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
+      //     "&realHeight=" +
+      //     canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
+      // });
     }
   };
 
@@ -1160,7 +1222,7 @@ const CameraPage = () => {
                         ></Image>
                       )}
                     </View>
-                    {userInfo.type === "default" && (
+                    {/* {userInfo.type === "default" && (
                       <View
                         style={{
                           color: "rgba(0,0,0,.2)",
@@ -1180,7 +1242,7 @@ const CameraPage = () => {
                         可修改水印相机 <br />
                         开通会员可去掉此水印
                       </View>
-                    )}
+                    )} */}
                     <View className="mask-inner-box">
                       {ShuiyinDoms[currentShuiyinIndex].component({
                         hours,
@@ -1929,11 +1991,9 @@ const CameraPage = () => {
                             }}
                           >
                             {item.options.vip && (
-                              <Image
-                                mode="aspectFit"
-                                className="vip-arrow"
-                                src={VipArrow}
-                              ></Image>
+                              <View className="vip-arrow">
+                                半年及以上会员专属
+                              </View>
                             )}
                             <Image
                               mode="aspectFit"
@@ -1989,38 +2049,70 @@ const CameraPage = () => {
                 </View>
                 <View className="edit-item">
                   <Picker
+                    style={{
+                      color:
+                        userInfo.type === "default"
+                          ? "rgba(0,0,0,.6)"
+                          : "#050505",
+                    }}
                     mode="time"
                     value={`${hours}:${minutes}`}
                     onChange={handleTimeChange}
+                    disabled={userInfo.type === "default" ? true : false}
                   >
                     <View>选择时间： {`${hours}:${minutes}`}</View>
                   </Picker>
+
+                  {userInfo.type === "default" ? (
+                    <View
+                      className="input-tips"
+                      style={{
+                        color: "#f22c3d",
+                      }}
+                    >
+                      普通用户仅能体验，无法修改，请开通会员
+                    </View>
+                  ) : null}
                 </View>
                 <View className="edit-item">
-                  <View className="picker">
+                  <View
+                    className="picker"
+                    style={{
+                      color:
+                        userInfo.type === "default"
+                          ? "rgba(0,0,0,.6)"
+                          : "#050505",
+                    }}
+                  >
                     <Text>详细地点： </Text>
                     <Input
                       className="input"
                       value={locationName}
                       maxlength={50}
                       clear={true}
+                      disabled={userInfo.type === "default" ? true : false}
                       onInput={(e) => {
                         debounce(setLocationName(e.detail.value), 100);
                       }}
                     ></Input>
                   </View>
-                  <View className="input-tips">最多45个字</View>
+                  {userInfo.type === "default" ? (
+                    <View
+                      className="input-tips"
+                      style={{
+                        color: "#f22c3d",
+                      }}
+                    >
+                      普通用户仅能体验，无法修改，请开通会员
+                    </View>
+                  ) : (
+                    <View className="input-tips">最多45个字</View>
+                  )}
                 </View>
                 {ShuiyinDoms[currentShuiyinIndex].options?.hasDakaLabel && (
                   <View className="edit-item flex-row">
                     <View className="picker">
-                      <Text
-                        style={{
-                          color: "f22c3d",
-                        }}
-                      >
-                        打卡标签：{" "}
-                      </Text>
+                      <Text>打卡标签：</Text>
                       <Input
                         className="input"
                         value={dakaName}
@@ -2041,7 +2133,7 @@ const CameraPage = () => {
                   </View>
                 )}
                 {ShuiyinDoms[currentShuiyinIndex].options
-                  ?.showRightCopyright  && (
+                  ?.showRightCopyright && (
                   <>
                     <View className="edit-item">
                       <View className="picker" style={{ height: "50px" }}>
@@ -2059,22 +2151,37 @@ const CameraPage = () => {
                     </View>
                     {ShuiyinDoms[currentShuiyinIndex].options
                       ?.showRightCopyright &&
-                       (
+                      showTrueCode && (
                         <View className="edit-item flex-row">
-                          <View className="picker">
+                          <View
+                            className="picker"
+                            style={{
+                              color:
+                                userInfo.type === "default"
+                                  ? "rgba(0,0,0,.6)"
+                                  : "#050505",
+                            }}
+                          >
                             <Text
                               style={{
-                                color: "f22c3d",
+                                color: "#f22c3d",
                               }}
                             >
                               右下角水印名称：
                             </Text>
                             <Input
                               className="input"
-                              value={shuiyinxiangjiName}
+                              value={
+                                userInfo.type === "default"
+                                  ? "测试"
+                                  : shuiyinxiangjiName
+                              }
                               maxlength={4}
                               clear={true}
-                              placeholder="点击添加"
+                              disabled={
+                                userInfo.type === "default" ? true : false
+                              }
+                              placeholder="点击填写"
                               onInput={(e) => {
                                 debounce(
                                   setShuiyinxiangjiName(
@@ -2085,16 +2192,28 @@ const CameraPage = () => {
                               }}
                             ></Input>
                           </View>
-                          <View className="input-tips">
-                            自动显示在右下角,最多4个字
-                          </View>
+
+                          {userInfo.type === "default" ? (
+                            <View
+                              className="input-tips"
+                              style={{
+                                color: "#f22c3d",
+                              }}
+                            >
+                              普通用户仅能体验，无法修改，请开通会员
+                            </View>
+                          ) : (
+                            <View className="input-tips">
+                              自动显示在右下角,最多4个字
+                            </View>
+                          )}
                         </View>
                       )}
                   </>
                 )}
 
                 {ShuiyinDoms[currentShuiyinIndex].options
-                  ?.showLeftCopyright &&  (
+                  ?.showLeftCopyright && (
                   <View className="edit-item">
                     <View className="picker">
                       <Text>左下角已验证下标是否显示： </Text>

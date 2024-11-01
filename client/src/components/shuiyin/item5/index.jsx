@@ -16,7 +16,6 @@ const Index = ({
   year,
   remark,
 }) => {
-  console.log("remark: ", remark);
   return (
     <View className="item5-wrapper" key={"item-5"}>
       <View

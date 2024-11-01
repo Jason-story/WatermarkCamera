@@ -62,7 +62,7 @@ page {
   width: 100%;
   height: 100%;
   &.top {
-    bottom: 50%;
+    bottom: 27%;
   }
   .mask-inner-box {
     width: 100%;
@@ -433,11 +433,15 @@ page {
     height: 100%;
   }
   .vip-arrow {
-    width: 90px;
-    height: 33px;
     position: absolute;
-    right: -5px;
-    top: 0;
+    right: 0px;
+    bottom: 0;
+    padding: 6px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color:#442700;
+    background: #FFC107;
+    border-radius: 10px;
   }
   button {
     display: inline-block;

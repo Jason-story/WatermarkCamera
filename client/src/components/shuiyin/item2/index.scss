@@ -8,7 +8,6 @@
 }
 .item2-badage {
   position: relative;
-  margin-bottom: 5px;
   image {
     width: 200px;
     height: 59px;
@@ -59,13 +58,14 @@
   align-items: center;
   flex-direction: row;
   font-family: "Bebas";
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  font-size: 30px;
   text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
     1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
     2px 2px 3px rgba(0, 0, 0, 0.1);
   text {
     margin-right: 20px;
-    font-size: 34px;
+    font-size: 32px;
   }
 }
 .item2-dakaText,
