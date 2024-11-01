@@ -1082,27 +1082,6 @@ const CameraPage = () => {
               </View>
             )}
 
-            {allAuth && (
-              <View className="camera-btns">
-                <View className="zoom-box">
-                  <View className="zoom-text" onClick={zoomClick}>
-                    {zoomLevel}
-                    <View className="icon-x"></View>
-                  </View>
-                </View>
-                <View className="fanzhuan-icon" onClick={fanzhuanClick}>
-                  <Image src={fanzhuanImg}></Image>
-                </View>
-                <View className="shanguangdeng-icon" onClick={shanguangClick}>
-                  {shanguangflag === "off" ? (
-                    <Image src={shanguangdengOffImg}></Image>
-                  ) : (
-                    <Image src={shanguangdengImg}></Image>
-                  )}
-                </View>
-              </View>
-            )}
-
             {allAuth && canvasConfigState[currentShuiyinIndex]?.[0].logoY && (
               <View
                 className="logo-wrap"
@@ -1256,6 +1235,8 @@ const CameraPage = () => {
                         title,
                         weather,
                         remark,
+                        latitude,
+                        longitude,
                       })}
                     </View>
                     {/* 右下角 copyright  水印相机logo */}
@@ -1420,6 +1401,24 @@ const CameraPage = () => {
                       )}
                   </View>
                 </Snapshot>
+                <View className="camera-btns">
+                  <View className="zoom-box">
+                    <View className="zoom-text" onClick={zoomClick}>
+                      {zoomLevel}
+                      <View className="icon-x"></View>
+                    </View>
+                  </View>
+                  <View className="fanzhuan-icon" onClick={fanzhuanClick}>
+                    <Image src={fanzhuanImg}></Image>
+                  </View>
+                  <View className="shanguangdeng-icon" onClick={shanguangClick}>
+                    {shanguangflag === "off" ? (
+                      <Image src={shanguangdengOffImg}></Image>
+                    ) : (
+                      <Image src={shanguangdengImg}></Image>
+                    )}
+                  </View>
+                </View>
               </View>
             )}
           </View>
@@ -2297,18 +2296,6 @@ const CameraPage = () => {
 
                 {ShuiyinDoms[currentShuiyinIndex].options?.hasJingWeiDu && (
                   <>
-                    <View className="edit-item">
-                      <View className="picker" style={{ height: "50px" }}>
-                        <Text>是否显示： </Text>
-                        <Switch
-                          style={{ transform: "scale(0.7)" }}
-                          checked={hideJw}
-                          onChange={(e) => {
-                            setHideJw(e.detail.value);
-                          }}
-                        />
-                      </View>
-                    </View>
                     <View className="edit-item">
                       <View className="picker">
                         <Text>经度： </Text>

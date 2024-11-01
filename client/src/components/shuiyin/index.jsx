@@ -4,13 +4,14 @@ import Shuiyin3 from "./item3";
 import Shuiyin4 from "./item4";
 import Shuiyin5 from "./item5";
 import Shuiyin6 from "./item6";
+import Shuiyin7 from "./item7";
 import Shuiyin1Cover from "./item1/cover.png";
 import Shuiyin2Cover from "./item2/cover.png";
 import Shuiyin3Cover from "./item3/cover.png";
 import Shuiyin4Cover from "./item4/cover.png";
 import Shuiyin5Cover from "./item5/cover.png";
 import Shuiyin6Cover from "./item6/cover.png";
-import Shuiyin7Cover from "./item6/cover.png";
+import Shuiyin7Cover from "./item7/cover.png";
 import Shuiyin8Cover from "./item6/cover.png";
 import Shuiyin9Cover from "./item6/cover.png";
 const config = [
@@ -28,7 +29,7 @@ const config = [
       hasFangDao: false,
       hasWeather: false,
       hasJingWeiDu: false,
-      hasRemark:true,
+      hasRemark: true,
       copyright: "jrsy",
     },
   },
@@ -97,10 +98,11 @@ const config = [
       hasFangDao: false,
       hasWeather: false,
       hasJingWeiDu: false,
-      hasRemark:true,
+      hasRemark: true,
       copyright: "jrsy",
     },
-  },{
+  },
+  {
     // 6
     component: Shuiyin6,
     options: {
@@ -112,9 +114,27 @@ const config = [
       showLeftCopyright: false,
       hasTitle: false,
       hasFangDao: false,
-      hasWeather: false,
+      hasWeather: true,
       hasJingWeiDu: false,
-      hasRemark:true,
+      hasRemark: true,
+      copyright: "jrsy",
+    },
+  },
+  {
+    // 7
+    component: Shuiyin7,
+    options: {
+      title: "现场拍照 经纬度",
+      vip: false,
+      cover: Shuiyin7Cover,
+      hasDakaLabel: false,
+      showRightCopyright: true,
+      showLeftCopyright: false,
+      hasTitle: false,
+      hasFangDao: false,
+      hasWeather: true,
+      hasJingWeiDu: true,
+      hasRemark: true,
       copyright: "jrsy",
     },
   },
