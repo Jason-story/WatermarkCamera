@@ -5,6 +5,8 @@ import Shuiyin4 from "./item4";
 import Shuiyin5 from "./item5";
 import Shuiyin6 from "./item6";
 import Shuiyin7 from "./item7";
+import Shuiyin8 from "./item8";
+import Shuiyin9 from "./item9";
 import Shuiyin1Cover from "./item1/cover.png";
 import Shuiyin2Cover from "./item2/cover.png";
 import Shuiyin3Cover from "./item3/cover.png";
@@ -12,8 +14,8 @@ import Shuiyin4Cover from "./item4/cover.png";
 import Shuiyin5Cover from "./item5/cover.png";
 import Shuiyin6Cover from "./item6/cover.png";
 import Shuiyin7Cover from "./item7/cover.png";
-import Shuiyin8Cover from "./item6/cover.png";
-import Shuiyin9Cover from "./item6/cover.png";
+import Shuiyin8Cover from "./item8/cover.png";
+import Shuiyin9Cover from "./item9/cover.png";
 const config = [
   {
     // 1
@@ -136,6 +138,44 @@ const config = [
       hasJingWeiDu: true,
       hasRemark: true,
       copyright: "jrsy",
+    },
+  },
+  {
+    // 8
+    component: Shuiyin8,
+    options: {
+      title: "防盗",
+      vip: false,
+      cover: Shuiyin8Cover,
+      hasDakaLabel: false,
+      showRightCopyright: false,
+      showLeftCopyright: false,
+      hasTitle: false,
+      hasFangDao: true,
+      hasWeather: false,
+      hasJingWeiDu: false,
+      hasRemark: false,
+      copyright: false,
+    },
+  },{
+    // 9
+    component: Shuiyin9,
+    options: {
+      title: "定制",
+      vip: true,
+      cover: Shuiyin9Cover,
+      hasDakaLabel: false,
+      showRightCopyright: false,
+      showLeftCopyright: false,
+      hasTitle: false,
+      hasFangDao: false,
+      hasWeather: true,
+      hasJingWeiDu: false,
+      hasRemark: false,
+      copyright: false,
+      finalWidth: 1290,
+      finalHeight: 2160,
+      proportion: 1.674418,
     },
   },
 ];

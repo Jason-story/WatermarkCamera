@@ -1,0 +1,31 @@
+.item8-watermark-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Arial";
+}
+
+.item8-watermark-wrap {
+  position: absolute;
+  top: -50px;
+  left: -200px;
+  right: -50px;
+  bottom: -300px;
+  display: flex;
+  flex-wrap: wrap;
+  transform: rotate(20deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.item8-watermark-text {
+  padding: 40px; /* 调整水印间距 */
+  color: rgba(0, 0, 0, 0.1);
+  font-size: 60px;
+  font-weight: bold;
+  white-space: nowrap;
+  text-shadow: 0.5px 0.5px 1.2px rgba(255, 255, 255, 0.2),
+    1px 1px 1.8px rgba(255, 255, 255, 0.15), 1.5px 1.5px 2.4px rgba(255, 255, 255, 0.15),
+    2px 2px 3px rgba(255, 255, 255, 0.1);
+}

@@ -9,6 +9,7 @@ import {
   Input,
   Picker,
   Switch,
+  ScrollView,
 } from "@tarojs/components";
 import Marquee from "../../components/Marquee";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
@@ -38,7 +39,6 @@ import VipImg from "../../images/vip.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
-import VipArrow from "../../images/vip-arrow.png";
 import XiangceIcon from "../../images/xiangce.png";
 import KefuIcon from "../../images/kefu.png";
 import { appConfigs } from "../../appConfig.js";
@@ -113,6 +113,7 @@ const CameraPage = () => {
   app.$app.globalData.zphsId = zphsId;
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
   const [dakaName, setDakaName] = useState("打卡");
+  // 向上弹出修改
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [canvasConfigState, setCanvasConfigState] = useState([]);
@@ -589,7 +590,7 @@ const CameraPage = () => {
               filePath,
               success: async () => {
                 wx.showToast({
-                  title: "保存成功",
+                  title: "已保存到相册",
                 });
                 const { result } = await cloud.callFunction({
                   name: "addUser",
@@ -693,7 +694,7 @@ const CameraPage = () => {
     ) {
       Taro.showModal({
         title: "提示",
-        content: "此款水印为半年及以上会员专属，请开通会员后使用",
+        content: "此款水印为永久会员专属，请开通会员后使用",
         showCancel: false,
         success(res) {
           if (res.confirm) {
@@ -788,7 +789,10 @@ const CameraPage = () => {
         remark,
       } = userInfo.saveConfig;
       setTimeout(() => {
-        setCurrentShuiyinIndex(currentShuiyinIndex);
+        setCurrentShuiyinIndex(
+          // 去掉
+          currentShuiyinIndex >= 9 ? 0 : currentShuiyinIndex
+        );
         setWeather(weather);
         setRemark(remark);
         setLocationName(locationName);
@@ -851,9 +855,10 @@ const CameraPage = () => {
     }
     // 显示填写水印弹出提示
     if (
+      userInfo.type !== "default" &&
       !shuiyinxiangjiName &&
       showTrueCode &&
-      canvasConfigState[currentShuiyinIndex]?.[0]?.right
+      ShuiyinDoms[currentShuiyinIndex].options.showRightCopyright
     ) {
       setShuiyinNameModal(true);
       return;
@@ -894,9 +899,10 @@ const CameraPage = () => {
         count: 1,
         mediaType: ["video"],
         sourceType: ["album"],
-        success: function (res) {
+        success: async function (res) {
           const data = res.tempFiles[0];
           const path = data.tempFilePath;
+          cameraPathOnload();
           const bg = data.thumbTempFilePath;
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
           if (fileSizeInMB > 50) {
@@ -907,26 +913,89 @@ const CameraPage = () => {
             });
             return;
           }
-
-          app.$app.globalData.config.isVideo = true;
-          app.$app.globalData.config.videoPath = path;
-          Taro.navigateTo({
-            url:
-              "/pages/result/index?bg=" +
-              bg +
-              "&mask=" +
-              canvasImg +
-              "&serverCanvas=true" +
-              "&vip=" +
-              canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
-              "&id=" +
-              inviteId,
+          return;
+          async function uploadImage(filePath) {
+            const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+              userInfo.type === "default" ? "" : "vip"
+            }_${userInfo.openid}.png`;
+            const res = await cloud.uploadFile({
+              cloudPath,
+              filePath,
+            });
+            return res.fileID;
+          }
+          // 上传图片和视频
+          const [firstImageFileID, secondImageFileID, logoImageFileId] =
+            await Promise.all([
+              uploadImage(firstImagePath),
+              uploadImage(secondImagePath),
+              config?.logoConfig?.path
+                ? uploadImage(config.logoConfig.path)
+                : null,
+            ]);
+          let ytg = null;
+          if (config.type === "shared") {
+            ytg = await new Taro.cloud.Cloud({
+              resourceAppid: config.containerResourceAppid,
+              resourceEnv: config.containerResourceEnv,
+            });
+            await ytg.init();
+          } else {
+            ytg = cloud;
+          }
+          // 视频合成
+          ytg.callContainer({
+            config: {
+              env: config["containerId"],
+            },
+            path: "/process",
+            header: {
+              "X-WX-SERVICE": config["containerName"],
+              "content-type": "application/json",
+            },
+            method: "POST",
+            data: {
+              image_file_id: secondImageFileID,
+              video_file_id: firstImageFileID,
+              logo_file_id: logoImageFileId ? logoImageFileId : null,
+              openid: userInfo.openid,
+            },
+            success: (res) => {
+              setLoading(false);
+              if (res.data && res.data.taskId) {
+                setVideoModal(true);
+              } else {
+                throw new Error("处理错误");
+              }
+            },
+            fail: (error) => {
+              setLoading(false);
+              Taro.showToast({
+                title: "系统重启，请刷新后重新上传",
+                icon: "none",
+                duration: 3000,
+              });
+            },
           });
+
+          // app.$app.globalData.config.isVideo = true;
+          // app.$app.globalData.config.videoPath = path;
+          // Taro.navigateTo({
+          //   url:
+          //     "/pages/result/index?bg=" +
+          //     bg +
+          //     "&mask=" +
+          //     canvasImg +
+          //     "&serverCanvas=true" +
+          //     "&vip=" +
+          //     canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
+          //     "&id=" +
+          //     inviteId,
+          // });
         },
       });
     }
   };
-  const drawMask = () => {};
 
   useEffect(() => {
     if (app.$app.globalData.config.showHasCheck !== undefined) {
@@ -1024,18 +1093,26 @@ const CameraPage = () => {
   }
 
   const systemInfo = wx.getSystemInfoSync();
-
   // 判断是否是真机
   const isRealDevice = systemInfo.platform !== "devtools";
   return (
-    <View className="container">
+    <ScrollView
+      scroll-y={true}
+      type="list"
+      className={
+        "container " +
+        (showFloatLayout && ShuiyinDoms[currentShuiyinIndex].options.proportion
+          ? " open"
+          : "")
+      }
+    >
       {userInfo.black ? (
         "您存在违规操作，无法使用小程序"
       ) : (
         <View
           style={{
             position: "relative",
-            height: "100%",
+            minHeight: "100vh",
             width: "100%",
           }}
         >
@@ -1043,8 +1120,8 @@ const CameraPage = () => {
             className="camera-box"
             style={{
               height:
-                (canvasConfigState[currentShuiyinIndex]?.[0].proportion
-                  ? canvasConfigState[currentShuiyinIndex]?.[0].proportion *
+                (ShuiyinDoms[currentShuiyinIndex].options?.proportion
+                  ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
                     screenWidth
                   : (screenWidth / 3) * 4) + "px",
             }}
@@ -1086,12 +1163,11 @@ const CameraPage = () => {
               <View
                 className="logo-wrap"
                 style={{
-                  bottom:
-                    showFloatLayout || showSettingFloatLayout
-                      ? (screenWidth / 3) * 4 * 0.5 +
-                        (canvasRealHeight + 10) +
-                        "px"
-                      : canvasRealHeight + 10 + "px",
+                  bottom: showFloatLayout
+                    ? (screenWidth / 3) * 4 * 0.5 +
+                      (canvasRealHeight + 10) +
+                      "px"
+                    : canvasRealHeight + 10 + "px",
                 }}
                 onClick={() => {
                   uploadLogo();
@@ -1139,10 +1215,14 @@ const CameraPage = () => {
 
             {allAuth && (
               <View
-                className={
-                  "mask-box" +
-                  (showFloatLayout || showSettingFloatLayout ? " top" : "")
-                }
+                className={"mask-box"}
+                style={{
+                  bottom: showFloatLayout
+                    ? ShuiyinDoms[currentShuiyinIndex].options.proportion
+                      ? "35%"
+                      : "27%"
+                    : "0",
+                }}
               >
                 <Snapshot className="snapshot">
                   <View
@@ -1163,7 +1243,7 @@ const CameraPage = () => {
                         background: "#756666",
                       }}
                     >
-                      {isRealDevice && (
+                      {isRealDevice && selected !== "视频水印" && (
                         <Camera
                           className="camera"
                           resolution="high"
@@ -1172,6 +1252,15 @@ const CameraPage = () => {
                           frameSize="medium"
                           onError={cameraError}
                         />
+                      )}
+                      {isRealDevice && selected === "视频水印" && (
+                        <View
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            opacity: 0,
+                          }}
+                        ></View>
                       )}
                       {!isRealDevice && (
                         <Image
@@ -1237,6 +1326,7 @@ const CameraPage = () => {
                         remark,
                         latitude,
                         longitude,
+                        fangdaoShuiyin,
                       })}
                     </View>
                     {/* 右下角 copyright  水印相机logo */}
@@ -1432,77 +1522,114 @@ const CameraPage = () => {
               <Image src={AddMyApp}></Image>
             </View>
           )}
-          <View className="tools-bar">
-            <View className="tools-bar-inner">
-              <View
-                className={
-                  "xiangce " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Image
-                  src={XiangceIcon}
-                  className="xiangceIcon"
-                  onClick={selectImg}
-                ></Image>
-                <Text>相册</Text>
-              </View>
-              <View
-                className={
-                  "shuiyin " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Image
-                  src={ShuiyinIcon}
-                  className="shuiyinIcon"
-                  onClick={() => {
-                    if (!allAuth) {
-                      Taro.showToast({
-                        title: "请先授权相机、相册、位置权限",
-                        icon: "none",
-                      });
-                      return;
-                    }
-                    setShowFloatLayout(!showFloatLayout);
-                  }}
-                ></Image>
-                <Text>修改</Text>
-              </View>
-            </View>
-            <View className="take-photo" onClick={takePhoto}>
-              <View
-                className={
-                  "camera-button" +
-                  (selected === "视频水印" ? " camera-button-video" : "")
-                }
-              >
+          <View
+            className="tools-box-wrapper"
+            style={{
+              minHeight: `calc(100vh-${(screenWidth / 3) * 4})`,
+            }}
+          >
+            <View className="tools-bar">
+              <View className="tools-bar-inner">
                 <View
                   className={
-                    "camera-button-inner" +
-                    (selected === "视频水印"
-                      ? " camera-button-inner-video"
-                      : "")
+                    "xiangce " +
+                    (vipAnimate || addAnimate ? "button-animate " : "")
                   }
-                ></View>
-              </View>
-            </View>
-            <View className="tools-bar-inner">
-              {
+                >
+                  <Image
+                    src={XiangceIcon}
+                    className="xiangceIcon"
+                    onClick={selectImg}
+                  ></Image>
+                  <Text>相册</Text>
+                </View>
                 <View
                   className={
-                    "xiangce kefu vip " +
+                    "shuiyin " +
+                    (vipAnimate || addAnimate ? "button-animate " : "")
+                  }
+                >
+                  <Image
+                    src={ShuiyinIcon}
+                    className="shuiyinIcon"
+                    onClick={() => {
+                      if (!allAuth) {
+                        Taro.showToast({
+                          title: "请先授权相机、相册、位置权限",
+                          icon: "none",
+                        });
+                        return;
+                      }
+                      setShowFloatLayout(!showFloatLayout);
+                    }}
+                  ></Image>
+                  <Text>修改</Text>
+                </View>
+              </View>
+              <View className="take-photo" onClick={takePhoto}>
+                <View
+                  className={
+                    "camera-button" +
+                    (selected === "视频水印" ? " camera-button-video" : "")
+                  }
+                >
+                  <View
+                    className={
+                      "camera-button-inner" +
+                      (selected === "视频水印"
+                        ? " camera-button-inner-video"
+                        : "")
+                    }
+                  ></View>
+                </View>
+              </View>
+              <View className="tools-bar-inner">
+                {
+                  <View
+                    className={
+                      "xiangce kefu vip " +
+                      (vipAnimate || addAnimate ? "button-animate " : "")
+                    }
+                  >
+                    <Button
+                      onClick={() => {
+                        Taro.navigateTo({
+                          url:
+                            "/pages/vip/index?type=" +
+                            userInfo.type +
+                            "&id=" +
+                            inviteId,
+                        });
+                      }}
+                      style={{
+                        background: "none",
+                        color: "inherit",
+                        border: "none",
+                        padding: 0,
+                        font: "inherit",
+                        cursor: "pointer",
+                        outline: "none",
+                        height: "39px",
+                      }}
+                    >
+                      <Image src={VipImg} className="xiangceIcon"></Image>
+                    </Button>
+                    <Text>会员</Text>
+                  </View>
+                }
+                <View
+                  style={{
+                    marginRight: "auto",
+                  }}
+                  className={
+                    "xiangce kefu " +
                     (vipAnimate || addAnimate ? "button-animate " : "")
                   }
                 >
                   <Button
                     onClick={() => {
                       Taro.navigateTo({
-                        url:
-                          "/pages/vip/index?type=" +
-                          userInfo.type +
-                          "&id=" +
-                          inviteId,
+                        url: "/pages/me/index",
                       });
                     }}
                     style={{
@@ -1516,89 +1643,58 @@ const CameraPage = () => {
                       height: "39px",
                     }}
                   >
-                    <Image src={VipImg} className="xiangceIcon"></Image>
+                    <Image src={KefuIcon} className="xiangceIcon"></Image>
                   </Button>
-                  <Text>会员</Text>
+                  <Text>我的</Text>
                 </View>
-              }
-              <View
-                style={{
-                  marginRight: "auto",
-                }}
-                className={
-                  "xiangce kefu " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Button
-                  onClick={() => {
-                    Taro.navigateTo({
-                      url: "/pages/me/index",
-                    });
-                  }}
-                  style={{
-                    background: "none",
-                    color: "inherit",
-                    border: "none",
-                    padding: 0,
-                    font: "inherit",
-                    cursor: "pointer",
-                    outline: "none",
-                    height: "39px",
-                  }}
-                >
-                  <Image src={KefuIcon} className="xiangceIcon"></Image>
-                </Button>
-                <Text>我的</Text>
               </View>
             </View>
-          </View>
-          {/* ------- */}
-          <View className="tools-bar" style={{ marginTop: "-15px" }}>
-            {/* <View className="tools-bar-inner">
+            {/* ------- */}
+            <View className="tools-bar">
+              {/* <View className="tools-bar-inner">
 
             </View> */}
-            <View className="tools-bar-inner">
-              <View
-                className={
-                  "xiangce " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Image
-                  src={Mianze}
-                  className="xiangceIcon"
-                  onClick={() => {
-                    Taro.navigateTo({
-                      url: "/pages/mianze/index",
-                    });
-                  }}
-                ></Image>
-                <Text>声明</Text>
-              </View>
-              <View
-                className={
-                  "xiangce " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-                // className={
-                //   "kefu vip xiangce " +
-                //   (vipAnimate || addAnimate ? "button-animate " : "")
-                // }
-              >
-                <Image
-                  src={VideoImg}
-                  className="xiangceIcon"
-                  onClick={() => {
-                    Taro.navigateTo({
-                      url: "/pages/video/index",
-                    });
-                  }}
-                ></Image>
-                <Text>视频</Text>
-              </View>
+              <View className="tools-bar-inner">
+                <View
+                  className={
+                    "xiangce " +
+                    (vipAnimate || addAnimate ? "button-animate " : "")
+                  }
+                >
+                  <Image
+                    src={Mianze}
+                    className="xiangceIcon"
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: "/pages/mianze/index",
+                      });
+                    }}
+                  ></Image>
+                  <Text>声明</Text>
+                </View>
+                <View
+                  className={
+                    "xiangce " +
+                    (vipAnimate || addAnimate ? "button-animate " : "")
+                  }
+                  // className={
+                  //   "kefu vip xiangce " +
+                  //   (vipAnimate || addAnimate ? "button-animate " : "")
+                  // }
+                >
+                  <Image
+                    src={VideoImg}
+                    className="xiangceIcon"
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: "/pages/video/index",
+                      });
+                    }}
+                  ></Image>
+                  <Text>视频</Text>
+                </View>
 
-              {/* <View
+                {/* <View
                 className={
                   "xiangce " +
                   (vipAnimate || addAnimate ? "button-animate " : "")
@@ -1614,8 +1710,8 @@ const CameraPage = () => {
                 ></Image>
                 <Text>设置</Text>
               </View> */}
-            </View>
-            {/* <View
+              </View>
+              {/* <View
               className="shantui-btns"
               style={{ marginLeft: "-50px", width: "230px" }}
             >
@@ -1630,7 +1726,7 @@ const CameraPage = () => {
                 }}
               />
             </View> */}
-            {/* <View
+              {/* <View
               className="tools-bar-inner"
               style={{
                 position: "absolute",
@@ -1654,71 +1750,67 @@ const CameraPage = () => {
               </View>
 
             </View> */}
-          </View>
-          {fuckShenHe === false && (
-            <View
-              className="button-group"
-              style={{
-                margin: "0px auto 10px auto",
-                padding: "0 15px",
-                width: "100%",
-                boxSizing: "border-box",
-                lineHeight: 1,
-              }}
-            >
-              {["图片水印", "视频水印"].map((option, index) => {
-                return (
-                  <AtButton
-                    key={option}
-                    onClick={() => handleSelect(option)}
-                    style={{
-                      color: "white",
-                      border: "none",
-                      borderRadius: "25px",
-                      padding: "0 20px",
-                      fontSize: "30rpx",
-                      cursor: "pointer",
-                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-                      transition: "transform 0.2s, box-shadow 0.2s",
-                    }}
-                    className={`button-group__button ${
-                      selected === option
-                        ? "button-group__button--selected selected_" + index
-                        : ""
-                    }`}
-                  >
-                    {option.slice(0, 2) + "加" + option.slice(2)}
-                  </AtButton>
-                );
-              })}
             </View>
-          )}
-          <View
-            className="bottom-btns"
-            style={{ marginTop: "5px", paddingBottom: "20px" }}
-          >
-            <Button
-              className="share-btn"
-              onClick={() => {
-                Taro.navigateTo({
-                  url: "/pages/jiaocheng/index",
-                });
-              }}
-              style={{
-                background: "linear-gradient(45deg, #ff512f, #dd2476)",
-                color: "white",
-                border: "none",
-                borderRadius: "30px",
-                padding: "0 20px",
-                fontSize: "28rpx",
-                cursor: "pointer",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                height: "39px",
-                marginTop: "10px",
-              }}
-            >
-              使用教程
-            </Button>
+            {fuckShenHe === false && (
+              <View
+                className="button-group"
+                style={{
+                  padding: "0 15px",
+                  width: "100%",
+                  boxSizing: "border-box",
+                  lineHeight: 1,
+                }}
+              >
+                {["图片水印", "视频水印"].map((option, index) => {
+                  return (
+                    <AtButton
+                      key={option}
+                      onClick={() => handleSelect(option)}
+                      style={{
+                        color: "white",
+                        border: "none",
+                        borderRadius: "25px",
+                        padding: "0 20px",
+                        fontSize: "30rpx",
+                        cursor: "pointer",
+                        boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                        transition: "transform 0.2s, box-shadow 0.2s",
+                      }}
+                      className={`button-group__button ${
+                        selected === option
+                          ? "button-group__button--selected selected_" + index
+                          : ""
+                      }`}
+                    >
+                      {option.slice(0, 2) + "加" + option.slice(2)}
+                    </AtButton>
+                  );
+                })}
+              </View>
+            )}
+            <View className="bottom-btns">
+              <Button
+                className="share-btn"
+                onClick={() => {
+                  Taro.navigateTo({
+                    url: "/pages/jiaocheng/index",
+                  });
+                }}
+                style={{
+                  background: "linear-gradient(45deg, #ff512f, #dd2476)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "30px",
+                  padding: "0 20px",
+                  fontSize: "28rpx",
+                  cursor: "pointer",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                  height: "39px",
+                }}
+              >
+                使用教程
+              </Button>
+            </View>
           </View>
           <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={false}>
             <AtModalHeader>
@@ -1990,9 +2082,7 @@ const CameraPage = () => {
                             }}
                           >
                             {item.options.vip && (
-                              <View className="vip-arrow">
-                                半年及以上会员专属
-                              </View>
+                              <View className="vip-arrow">永久会员专属</View>
                             )}
                             <Image
                               mode="aspectFit"
@@ -2251,7 +2341,7 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={fangdaoShuiyin}
-                        maxlength={8}
+                        maxlength={6}
                         clear={true}
                         onInput={(e) => {
                           debounce(setFangDaoShuiyin(e.detail.value), 100);
@@ -2347,7 +2437,7 @@ const CameraPage = () => {
           <AtToast isOpened={showToast} text="请输入详细地点"></AtToast>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 export default CameraPage;
