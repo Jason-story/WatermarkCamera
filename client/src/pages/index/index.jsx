@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from "@tarojs/components";
 import Marquee from "../../components/Marquee";
+import CustomModal from "../../components/modal";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Close from "../../images/close.png";
 import P1 from "../../images/p-1.png";
@@ -568,7 +569,7 @@ const CameraPage = () => {
 
   const cameraPathOnload = () => {
     Taro.showLoading({
-      title: "图片生成中...",
+      title: "处理中...",
     });
     Taro.createSelectorQuery()
       .select(".snapshot")
@@ -580,6 +581,7 @@ const CameraPage = () => {
           format: "png",
           success: async (res) => {
             console.log(111, userInfo);
+
             const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
             const fs = wx.getFileSystemManager();
             await fs.writeFileSync(filePath, res.data, "binary");
@@ -902,7 +904,6 @@ const CameraPage = () => {
         success: async function (res) {
           const data = res.tempFiles[0];
           const path = data.tempFilePath;
-          cameraPathOnload();
           const bg = data.thumbTempFilePath;
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
           if (fileSizeInMB > 50) {
@@ -1220,7 +1221,7 @@ const CameraPage = () => {
                   bottom: showFloatLayout
                     ? ShuiyinDoms[currentShuiyinIndex].options.proportion
                       ? "35%"
-                      : "27%"
+                      : "45%"
                     : "0",
                 }}
               >
@@ -1240,10 +1241,10 @@ const CameraPage = () => {
                         height: "100%",
                         widh: "100%",
                         position: "relative",
-                        background: "#756666",
+                        background: "rgba(0,0,0,0)",
                       }}
                     >
-                      {isRealDevice && selected !== "视频水印" && (
+                      {selected === "图片水印" ? (
                         <Camera
                           className="camera"
                           resolution="high"
@@ -1252,8 +1253,7 @@ const CameraPage = () => {
                           frameSize="medium"
                           onError={cameraError}
                         />
-                      )}
-                      {isRealDevice && selected === "视频水印" && (
+                      ) : (
                         <View
                           style={{
                             width: "100%",
@@ -1262,7 +1262,8 @@ const CameraPage = () => {
                           }}
                         ></View>
                       )}
-                      {!isRealDevice && (
+
+                      {/* {!isRealDevice && (
                         <Image
                           style={{
                             width: "100%",
@@ -1273,7 +1274,7 @@ const CameraPage = () => {
                             "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/placeholder.jpg?sign=70c36abd181c0db12cee0f82114561bf&t=1730346325"
                           }
                         ></Image>
-                      )}
+                      )} */}
 
                       {cameraTempPath && (
                         <Image
@@ -1323,7 +1324,7 @@ const CameraPage = () => {
                         dakaName,
                         title,
                         weather,
-                        remark,
+                        remark: "",
                         latitude,
                         longitude,
                         fangdaoShuiyin,
@@ -1425,6 +1426,7 @@ const CameraPage = () => {
                             )}
                             {/* 今日水印 防伪码 */}
                             <Text
+                              className="fangweima"
                               style={{
                                 fontSize: "7px",
                                 fontFamily: "PTMono",
@@ -1475,6 +1477,7 @@ const CameraPage = () => {
                                 right: "1px",
                                 bottom: "-1px",
                               }}
+                              className="fangweima"
                             >
                               防伪
                               <Text
@@ -1751,7 +1754,7 @@ const CameraPage = () => {
 
             </View> */}
             </View>
-            {fuckShenHe === false && (
+            {/* {fuckShenHe === false && (
               <View
                 className="button-group"
                 style={{
@@ -1787,7 +1790,7 @@ const CameraPage = () => {
                   );
                 })}
               </View>
-            )}
+            )} */}
             <View className="bottom-btns">
               <Button
                 className="share-btn"
@@ -1812,12 +1815,56 @@ const CameraPage = () => {
               </Button>
             </View>
           </View>
-          <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={false}>
+          <CustomModal
+            visible={shuiyinNameModal}
+            title="提示"
+            phoneValidation={false}
+            customInput={
+              <View
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                  }}
+                >
+                  请先填写水印名称后再拍照或相册选图，如下图所示
+                </View>
+                <Image
+                  src={Icon8}
+                  style={{
+                    marginTop: "10px",
+                    width: "300px",
+                    height: "52px",
+                  }}
+                ></Image>
+              </View>
+            }
+            rightButtonText="去填写"
+            onRightButtonClick={() => {
+              setShowFloatLayout(!showFloatLayout);
+              setShuiyinNameModal(false);
+              setEdit(true);
+            }}
+            onLeftButtonClick={() => {
+              setShuiyinNameModal(false);
+            }}
+          />
+          {/* <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={false}>
             <AtModalHeader>
               <Text>提示</Text>
             </AtModalHeader>
             <AtModalContent>
-              <View className="modal-list">
+              <View
+                className="modal-list"
+                style={{
+                  margin: "30px 0",
+                }}
+              >
                 <View className="">
                   <View
                     style={{
@@ -1855,166 +1902,58 @@ const CameraPage = () => {
                 去填写
               </Button>
             </AtModalAction>
-          </AtModal>
+          </AtModal> */}
+          <CustomModal
+            visible={videoModal}
+            title="提示"
+            phoneValidation={false}
+            content="请用手机的 原相机
+                  拍摄一段视频，然后再从相册选择。最大支持50M以内视频，请控制视频时长。"
+            rightButtonText="确定"
+            onRightButtonClick={() => {
+              setVideoModal(false);
+            }}
+            showLeftButton={false}
+          />
 
-          <AtModal isOpened={videoModal} closeOnClickOverlay={true}>
-            <AtModalHeader>
-              <Text>提示</Text>
-              <View
-                onClick={() => {
-                  setVideoModal(false);
-                }}
-                style={{
-                  position: "absolute",
-                  right: "15px",
-                  top: "10px",
-                  width: "20px",
-                  height: "20px",
-                }}
-              >
-                <Image
-                  style={{ width: "100%", height: "100%" }}
-                  src={Close}
-                ></Image>
-              </View>
-            </AtModalHeader>
-            <AtModalContent>
-              <View className="modal-list">
-                <View className="txt1">
-                  请您用手机的 原相机
-                  拍摄一段视频后，然后再从相册选择即可。目前最大支持50M以内视频，请控制视频时长。
-                </View>
-              </View>
-            </AtModalContent>
-          </AtModal>
+          {/* 到期提示 开始 */}
+          <CustomModal
+            visible={vipClosedModal}
+            phoneValidation={false}
+            title="提示"
+            content="您的会员已到期,继续使用请重新开通会员"
+            onRightButtonClick={() => {
+              Taro.navigateTo({
+                url: "/pages/vip/index",
+              });
+            }}
+            showLeftButton={false}
+            rightButtonText="重新开通"
+          />
+          {/* 填写手机号弹窗 */}
+          <CustomModal
+            visible={addPhoneNumber}
+            title="请输入手机号"
+            content="为防止失联，请一定填写正确手机号，如有变动第一时间通知"
+            placeholder="请输入手机号码"
+            onInputChange={(e) => {
+              setPhone(e);
+            }}
+            onClose={async () => {
+              cloud.callFunction({
+                name: "addUser",
+                data: {
+                  phone,
+                },
+              });
+              setAddPhoneNumber(false);
+              Taro.setStorage({ key: "phoneInputed", data: true });
+            }}
+            onLeftButtonClick={() => console.log("取消")}
+            showLeftButton={false}
+          />
 
-          {/* 评价提示 开始 */}
-          <AtModal isOpened={rateModal} closeOnClickOverlay={false}>
-            <AtModalHeader>
-              <Text>提示</Text>
-              <View
-                onClick={() => {
-                  setRateModal(false);
-                  Taro.setStorage({
-                    key: "showRateModalStorage",
-                    data: "true",
-                  });
-                }}
-                style={{
-                  position: "absolute",
-                  right: "15px",
-                  top: "10px",
-                  width: "20px",
-                  height: "20px",
-                }}
-              >
-                <Image
-                  style={{ width: "100%", height: "100%" }}
-                  src={Close}
-                ></Image>
-              </View>
-            </AtModalHeader>
-            <AtModalContent>
-              <View className="modal-list">
-                <View className="txt1">
-                  尊敬的会员，为了更好的服务，麻烦您点击 右上角 - 体验评分
-                  给一个 文字 + 五星好评，感谢！
-                </View>
-              </View>
-            </AtModalContent>
-          </AtModal>
-          {/* 评价提示结束 */}
-          <AtModal isOpened={vipClosedModal} closeOnClickOverlay={false}>
-            <AtModalHeader>
-              <Text style={{ color: "#ffaa00" }}>提示</Text>
-            </AtModalHeader>
-            <AtModalContent>
-              <View className="modal-list">
-                <View className="txt1">
-                  您的会员已到期,继续使用请重新开通会员
-                </View>
-              </View>
-            </AtModalContent>
-            <AtModalAction>
-              <Button
-                onClick={() => {
-                  setVipClosedModal(false);
-                }}
-                style={{ flex: 1 }}
-              >
-                关闭
-              </Button>
-              <Button
-                onClick={() => {
-                  Taro.navigateTo({
-                    url: "/pages/vip/index",
-                  });
-                }}
-                style={{ flex: 1 }}
-              >
-                重新开通
-              </Button>
-            </AtModalAction>
-          </AtModal>
-          {/* 会员填写手机号 防失联 */}
-
-          {addPhoneNumber && (
-            <AtModal isOpened={addPhoneNumber} closeOnClickOverlay={false}>
-              <AtModalHeader>
-                <Text style={{ color: "#ffaa00" }}>提示</Text>
-              </AtModalHeader>
-              <AtModalContent>
-                <View className="modal-list">
-                  <View className="txt1">
-                    尊敬的会员，为防止失联，请填一定填写正确手机号，如有变动第一时间通知您！如果填写错误请联系客服修改。
-                  </View>
-                  <View>
-                    <AtInput
-                      title="手机号"
-                      type="number"
-                      maxLength={11}
-                      value={phone}
-                      onChange={(e) => {
-                        setPhone(e);
-                      }}
-                    />
-                  </View>
-                </View>
-              </AtModalContent>
-              <AtModalAction>
-                <Button
-                  style={{ flex: 1 }}
-                  onClick={async () => {
-                    const validatePhone = (phoneNumber) => {
-                      // 中国大陆手机号的正则
-                      const phoneRegex = /^1[3-9]\d{9}$/;
-                      return phoneRegex.test(phoneNumber);
-                    };
-                    if (!validatePhone(phone)) {
-                      Taro.showToast({
-                        title: "手机号格式不正确",
-                        icon: "none",
-                        duration: 2000,
-                      });
-                      return;
-                    }
-                    setAddPhoneNumber(false);
-
-                    await cloud.callFunction({
-                      name: "addUser",
-                      data: {
-                        phone,
-                      },
-                    });
-                    Taro.setStorage({ key: "phoneInputed", data: true });
-                  }}
-                >
-                  提交
-                </Button>
-              </AtModalAction>
-            </AtModal>
-          )}
-          <AtFloatLayout
+          {/* <AtFloatLayout
             isOpened={showSetting}
             title="设置"
             onClose={(e) => {
@@ -2022,7 +1961,7 @@ const CameraPage = () => {
               setShowSettingFloatLayout(!showSettingFloatLayout);
             }}
           >
-            {/* <View className="shuiyin-list shuiyin-list-no-grid">
+            <View className="shuiyin-list shuiyin-list-no-grid">
               <View className="shantui-btns" style={{ marginBottom: "10px" }}>
                 <View style={{ marginRight: "10px" }}>
                   微信闪退、保存失败请打开此开关
@@ -2048,8 +1987,8 @@ const CameraPage = () => {
                   }}
                 />
               </View>
-            </View> */}
-          </AtFloatLayout>
+            </View>
+          </AtFloatLayout> */}
           <AtFloatLayout
             isOpened={showFloatLayout}
             title="水印选择、修改"

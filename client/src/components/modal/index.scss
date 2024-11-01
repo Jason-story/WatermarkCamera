@@ -1,0 +1,148 @@
+.custom-modal {
+  &-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 8888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  }
+  &-footer {
+    display: flex;
+    flex-direction: row;
+    border-top: 1PX solid #eee;
+
+    // 两个按钮的布局
+    &-two-buttons {
+      .custom-modal-button {
+        flex: 1;
+        border-right: 1PX solid #eee;
+
+        &-right {
+          border-right: none;
+        }
+      }
+    }
+
+    // 单个按钮的布局
+    &-one-button {
+      .custom-modal-button {
+        flex: 1;
+      }
+    }
+
+    // 没有按钮时的布局
+    &-no-buttons {
+      display: none;
+    }
+  }
+  &-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &-content {
+    position: relative;
+    width: 80%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 9999;
+  }
+
+  &-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+
+  &-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  &-body {
+    padding: 30px 20px;
+    min-height: 100px;
+  }
+
+  &-text {
+    font-size: 28px;
+    color: #666;
+    line-height: 1.5;
+    text-align: center;
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  &-input-container {
+    position: relative;
+  }
+
+  &-input {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0 20px;
+    font-size: 28px;
+    transition: all 0.3s ease;
+
+    &-error {
+      border-color: #ff4d4f;
+      background-color: #fff1f0;
+    }
+  }
+
+  &-error-message {
+    position: absolute;
+    left: 0;
+    bottom: -40px;
+    font-size: 24px;
+    color: #ff4d4f;
+  }
+
+  &-footer {
+    display: flex;
+    flex-direction: row;
+
+    border-top: 1px solid #eee;
+    margin-top: 0px;
+  }
+
+  &-button {
+    flex: 1;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    font-size: 32px;
+
+    &-left {
+      color: #666;
+      border-right: 1px solid #eee;
+    }
+
+    &-right {
+      color: #07c160;
+
+      &.custom-modal-button-disabled {
+        color: #999;
+        background-color: #f5f5f5;
+      }
+    }
+
+    &:active:not(.custom-modal-button-disabled) {
+      background-color: #f5f5f5;
+    }
+  }
+}
