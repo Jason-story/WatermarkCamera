@@ -14,7 +14,6 @@ import {
 import Marquee from "../../components/Marquee";
 import CustomModal from "../../components/modal";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
-import Close from "../../images/close.png";
 import P1 from "../../images/p-1.png";
 import P2 from "../../images/p-2.png";
 import P3 from "../../images/p-3.png";
@@ -23,16 +22,7 @@ import P5 from "../../images/p-5.png";
 import ShuiyinDoms from "../../components/shuiyin";
 import { generateRandomString } from "../../components/utils.js";
 
-import {
-  AtModal,
-  AtToast,
-  AtInput,
-  AtButton,
-  AtModalHeader,
-  AtModalContent,
-  AtModalAction,
-  AtFloatLayout,
-} from "taro-ui";
+import { AtToast, AtFloatLayout } from "taro-ui";
 import Taro from "@tarojs/taro";
 import QQMapWX from "qqmap-wx-jssdk";
 import ShareImg from "../../images/logo.jpg";
@@ -148,6 +138,8 @@ const CameraPage = () => {
   const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
   const [fangdaoShuiyin, setFangDaoShuiyin] = useState("盗图必究");
   const [cameraTempPath, setCameraTempPath] = useState("");
+  const [xiangceTempPath, setXiangceTempPath] = useState("");
+  const [xiangceImgHeight, setXiangceImgHeight] = useState(0);
   const [remark, setRemark] = useState("");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
@@ -173,12 +165,26 @@ const CameraPage = () => {
       setRateModal(true);
     }
   }, []);
+  let interstitialAd = null;
+
   useEffect(() => {
     // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
+    // 在页面中定义插屏广告
     const init = async () => {
       const appid = Taro.getAccountInfoSync().miniProgram.appId;
       const config = appConfigs[appid];
+      // 在页面onLoad回调事件中创建插屏广告实例
+      if (wx.createInterstitialAd) {
+        interstitialAd = wx.createInterstitialAd({
+          adUnitId: config.ad,
+        });
+        interstitialAd.onLoad(() => {});
+        interstitialAd.onError((err) => {
+          console.error("插屏广告加载失败", err);
+        });
+        interstitialAd.onClose(() => {});
+      }
       if (config.type === "shared") {
         cloud = await new Taro.cloud.Cloud({
           resourceAppid: config.resourceAppid,
@@ -407,7 +413,6 @@ const CameraPage = () => {
       },
     });
   };
-  let interstitialAd = null;
   useEffect(() => {
     checkPermissions();
     requestPermission();
@@ -556,7 +561,6 @@ const CameraPage = () => {
       }
     });
   };
-
   const shanguangClick = (event) => {
     setShanguangFlag((prevvalue) => {
       if (prevvalue === "off") {
@@ -566,11 +570,12 @@ const CameraPage = () => {
       }
     });
   };
-
-  const cameraPathOnload = () => {
+  // 相机拍照 onload 后执行
+  const cameraPathOnload = async () => {
     Taro.showLoading({
       title: "处理中...",
     });
+    await new Promise((resolve) => setTimeout(resolve, 200));
     Taro.createSelectorQuery()
       .select(".snapshot")
       .node()
@@ -594,6 +599,12 @@ const CameraPage = () => {
                 wx.showToast({
                   title: "已保存到相册",
                 });
+                // 在适合的场景显示插屏广告
+                if (interstitialAd && userInfo.type === "default") {
+                  interstitialAd.show().catch((err) => {
+                    console.error("插屏广告显示失败", err);
+                  });
+                }
                 const { result } = await cloud.callFunction({
                   name: "addUser",
                   data: {
@@ -644,7 +655,92 @@ const CameraPage = () => {
         });
       });
   };
-  const takePhoto = async (camera = true, path, serverCanvas) => {
+
+  // 相册选图 离屏
+  const xiangcePathOnload = async () => {
+    Taro.showLoading({
+      title: "处理中...",
+    });
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    Taro.createSelectorQuery()
+      .select(".snapshot-outside")
+      .node()
+      .exec((res) => {
+        const node = res[0].node;
+        node.takeSnapshot({
+          type: "arraybuffer",
+          format: "png",
+          success: async (res) => {
+            const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
+            const fs = wx.getFileSystemManager();
+            await fs.writeFileSync(filePath, res.data, "binary");
+            Taro.hideLoading();
+            // 清空临时地址 再次拍照
+            setXiangceTempPath(undefined);
+            await wx.saveImageToPhotosAlbum({
+              filePath,
+              success: async () => {
+                wx.showToast({
+                  title: "已保存到相册",
+                });
+                // 在适合的场景显示插屏广告
+                if (interstitialAd && userInfo.type === "default") {
+                  interstitialAd.show().catch((err) => {
+                    console.error("插屏广告显示失败", err);
+                  });
+                }
+                const { result } = await cloud.callFunction({
+                  name: "addUser",
+                  data: {
+                    remark: "成功使用",
+                  },
+                });
+                cloud.callFunction({
+                  name: "updateSavedConfig",
+                  data: {
+                    saveConfig: {
+                      isSaved: isShuiyinSaved,
+                      currentShuiyinIndex,
+                      locationName,
+                      latitude,
+                      longitude,
+                      showTrueCode,
+                      showHasCheck,
+                      shuiyinxiangjiName,
+                      weather,
+                      remark,
+                      dakaName,
+                      fangdaoShuiyin,
+                    },
+                  },
+                });
+                setUserInfo(result.data);
+              },
+            });
+
+            // 上传图片
+            const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+              userInfo.type === "default" ? "" : "vip"
+            }_${userInfo.openid}.png`;
+            await cloud.uploadFile({
+              cloudPath,
+              filePath,
+            });
+          },
+          fail(res) {
+            console.log("res: ", res);
+            Taro.hideLoading();
+            wx.showToast({
+              icon: "error",
+              title: "失败，请重试",
+            });
+            setXiangceTempPath(undefined);
+          },
+        });
+      });
+  };
+
+  const takePhoto = async (camera = true) => {
     // console.log("canvasImg: ", canvasImg);
     // Taro.saveImageToPhotosAlbum({
     //   filePath: canvasImg,
@@ -731,22 +827,16 @@ const CameraPage = () => {
     if (camera) {
       // 保存位置
 
-      if (!isRealDevice) {
-        await setCameraTempPath(
-          "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/placeholder.jpg?sign=70c36abd181c0db12cee0f82114561bf&t=1730346325"
-        );
-      } else {
-        cameraContext?.takePhoto({
-          zoom: zoomLevel,
-          quality: userInfo.type === "default" ? "low" : "original",
-          success: async (path) => {
-            await setCameraTempPath(path.tempImagePath);
-          },
-        });
-      }
+      cameraContext?.takePhoto({
+        zoom: zoomLevel,
+        quality: userInfo.type === "default" ? "low" : "original",
+        success: async (path) => {
+          await setCameraTempPath(path.tempImagePath);
+        },
+      });
     } else {
       // 相册
-      app.$app.globalData.config.isVideo = false;
+      // app.$app.globalData.config.isVideo = false;
       // Taro.navigateTo({
       //   url:
       //     "/pages/result/index?bg=" +
@@ -871,26 +961,30 @@ const CameraPage = () => {
         mediaType: ["image"],
         sourceType: ["album"],
 
-        success: function (res) {
+        success: async function (res) {
           const data = res.tempFiles[0];
           const filePath = data.tempFilePath;
 
-          Taro.getFileInfo({
-            filePath,
+          Taro.getImageInfo({
+            src: filePath,
             success: async function (info) {
-              const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
+              // const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
-              if (fileSizeInMB > 3) {
-                Taro.showModal({
-                  title: "提示",
-                  content: "图片体积过大，请重新选择",
-                  showCancel: false,
-                });
-              } else if (fileSizeInMB > 1 && fileSizeInMB < 3) {
-                takePhoto(false, filePath, true);
-              } else {
-                takePhoto(false, filePath);
-              }
+              // if (fileSizeInMB > 3) {
+              //   Taro.showModal({
+              //     title: "提示",
+              //     content: "图片体积过大，请重新选择",
+              //     showCancel: false,
+              //   });
+              // } else {
+              // 设置完相册选图的path后需要设置离屏截图的尺寸 根据所选图片计算高度
+              await setXiangceImgHeight(
+                info.orientation == "right"
+                  ? (info.width / info.height) * screenWidth
+                  : (info.height / info.width) * screenWidth
+              );
+              await setXiangceTempPath(filePath);
+              // }
             },
           });
         },
@@ -1027,8 +1121,8 @@ const CameraPage = () => {
         const data = res.tempFiles[0];
         const filePath = data.tempFilePath;
 
-        Taro.getFileInfo({
-          filePath,
+        Taro.getImageInfo({
+          src: filePath,
           success: async function (info) {
             const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
@@ -1494,6 +1588,229 @@ const CameraPage = () => {
                       )}
                   </View>
                 </Snapshot>
+                {/* 相册选图 离屏截图 */}
+                {/* cliclXiangce */}
+                <Snapshot
+                  className="snapshot-outside"
+                  style={{
+                    position: "absolute",
+                    transform: "scale(0)",
+                    width: "100%",
+                  }}
+                >
+                  <View
+                    style={{
+                      height: xiangceImgHeight,
+                      position: "relative",
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: "100%",
+                        widh: "100%",
+                        position: "relative",
+                        background: "rgba(0,0,0,0)",
+                      }}
+                    >
+                      {xiangceTempPath && (
+                        <Image
+                          src={xiangceTempPath}
+                          onLoad={xiangcePathOnload}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            position: "absolute",
+                            zIndex: 2,
+                            top: "0",
+                            left: "0",
+                          }}
+                        ></Image>
+                      )}
+                    </View>
+                    <View className="mask-inner-box">
+                      {ShuiyinDoms[currentShuiyinIndex].component({
+                        hours,
+                        minutes,
+                        day,
+                        month,
+                        year,
+                        weekly,
+                        locationName,
+                        dakaName,
+                        title,
+                        weather,
+                        remark: "",
+                        latitude,
+                        longitude,
+                        fangdaoShuiyin,
+                      })}
+                    </View>
+                    {/* 右下角 copyright  水印相机logo */}
+                    {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                      "syxj" && (
+                      <View className="copySYXJ">
+                        <Image
+                          src={Icon2}
+                          style={{
+                            width: "52px",
+                            height: "14px",
+                          }}
+                        ></Image>
+                      </View>
+                    )}
+                    {/* 左下角*/}
+                    {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                      "jrsy" &&
+                      showHasCheck &&
+                      ShuiyinDoms[currentShuiyinIndex].options
+                        ?.showLeftCopyright && (
+                        <View
+                          style={{ position: "absolute", left: 0, bottom: 0 }}
+                        >
+                          {/* 如果马克相机则单独处理 其他则是默认加上相机名 */}
+
+                          <View className="jinri-left-copyright">
+                            <Image src={P1}></Image>
+                            <View
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
+                              <Text className="short-line"></Text>
+                              <Text>{" 时间地点真实"}</Text>
+                            </View>
+                          </View>
+                        </View>
+                      )}
+                    {ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                      "mk" &&
+                      showHasCheck && (
+                        <View
+                          style={{ position: "absolute", left: 0, bottom: 0 }}
+                        >
+                          <View className="make-left-copyright">
+                            <Image src={P1}></Image>
+                            <Text>马克相机已验证照片真实性</Text>
+                          </View>
+                        </View>
+                      )}
+                    {/* 提示填写水印名字图标 */}
+                    {disableTrueCode && showTrueCode && !shuiyinxiangjiName && (
+                      <View
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          bottom: "10px",
+                        }}
+                      >
+                        <Image
+                          src={P5}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                          }}
+                        ></Image>
+                      </View>
+                    )}
+                    {/*今日水印 右下角*/}
+                    {shuiyinxiangjiName &&
+                      ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                        "jrsy" &&
+                      showTrueCode && (
+                        <View
+                          style={{ position: "absolute", right: 0, bottom: 0 }}
+                        >
+                          <View className="jinri-right-copyright">
+                            {/* 今日水印 右下角背景图 */}
+                            <Image src={P2}></Image>
+                            {/* 右下角今日水印四个字图片 */}
+                            {shuiyinxiangjiName.includes("今日水印") && (
+                              <Image
+                                src={P3}
+                                style={{
+                                  position: "absolute",
+                                  right: "2px",
+                                  top: "0px",
+                                  width: "56px",
+                                  height: "12.3px",
+                                }}
+                              ></Image>
+                            )}
+                            {/* 今日水印 防伪码 */}
+                            <Text
+                              className="fangweima"
+                              style={{
+                                fontSize: "7px",
+                                fontFamily: "PTMono",
+                                position: "absolute",
+                                color: "rgba(255,255,255,.9)",
+                                right: "1px",
+                                bottom: "-1px",
+                              }}
+                            >
+                              {generateRandomString(4)}
+                            </Text>
+                            {!shuiyinxiangjiName.includes("今日水印") && (
+                              <Text
+                                style={{
+                                  position: "absolute",
+                                  color: "rgba(255, 255, 255,.9)",
+                                  right: "3px",
+                                  top: "0px",
+                                  fontSize: "13px",
+                                  textAlign: "center",
+                                  fontWeight: "bold",
+                                  width: "100rpx",
+                                }}
+                              >
+                                {shuiyinxiangjiName}
+                              </Text>
+                            )}
+                          </View>
+                        </View>
+                      )}
+                    {/* 马克右下角 */}
+                    {shuiyinxiangjiName &&
+                      ShuiyinDoms[currentShuiyinIndex].options?.copyright ===
+                        "mk" &&
+                      showTrueCode && (
+                        <View
+                          style={{ position: "absolute", right: 0, bottom: 0 }}
+                        >
+                          <View className="make-right-copyright">
+                            {/* 马克 右下角背景图 */}
+                            <Image src={P4}></Image>
+                            {/* 马克 防伪码 */}
+                            <Text
+                              style={{
+                                fontSize: "10px",
+                                position: "absolute",
+                                color: "rgba(255,255,255,.85)",
+                                right: "1px",
+                                bottom: "-1px",
+                              }}
+                              className="fangweima"
+                            >
+                              防伪
+                              <Text
+                                style={{
+                                  fontSize: "9px",
+                                  fontFamily: "Monaco",
+                                }}
+                              >
+                                {" " + generateRandomString(3)}
+                              </Text>
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                  </View>
+                </Snapshot>
+                {/* 相册离屏截图结束 */}
+
                 <View className="camera-btns">
                   <View className="zoom-box">
                     <View className="zoom-text" onClick={zoomClick}>

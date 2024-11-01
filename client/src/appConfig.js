@@ -8,6 +8,7 @@ const appConfigs = {
     notify_url: "https://1326662896-fn1j227njy-sh.scf.tencentcs.com",
     containerId: "prod-9g5wnloybe56625b",
     containerName: "express-loc1",
+    ad: "adunit-39ab5f712a4521b4",
   },
   // 可修改定位水印相机 被共享
   wxb5e2af22e727269d: {
@@ -22,6 +23,7 @@ const appConfigs = {
     containerResourceEnv: "prod-9g5wnloybe56625b",
     containerName: "express-loc1",
     userToApp: "子小程序",
+    ad: "adunit-58e7bd94d036305e",
   },
 
   wx8d21222bcb51c801: {

@@ -28,6 +28,7 @@
 }
 .item3-week {
   margin-left: 12px;
+  font-weight: bold;
 }
 
 .item3-addr-wrap {
@@ -37,8 +38,8 @@
   position: relative;
   min-height: 90px;
   image {
-    width: 28px;
-    height: 38.4px;
+    width: 27px;
+    height: 40px;
     margin: 0 0px 0 14px;
     transform: translate3d(-5px, 13px, 0);
     flex-shrink: 0;
