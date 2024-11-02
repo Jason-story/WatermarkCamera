@@ -113,7 +113,7 @@ const config = [
       cover: Shuiyin6Cover,
       hasDakaLabel: false,
       showRightCopyright: true,
-      showLeftCopyright: false,
+      showLeftCopyright: true,
       hasTitle: false,
       hasFangDao: false,
       hasWeather: true,
