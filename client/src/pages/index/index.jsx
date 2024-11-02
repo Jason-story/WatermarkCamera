@@ -955,7 +955,7 @@ const CameraPage = () => {
                         position: "absolute",
                         color: "rgba(255, 255, 255,.9)",
                         right: "3px",
-                        top: "0px",
+                        top: "2px",
                         fontSize: "13px",
                         textAlign: "center",
                         fontWeight: "bold",
@@ -1042,9 +1042,9 @@ const CameraPage = () => {
                   <Text
                     style={{
                       position: "absolute",
-                      color: "rgba(255, 255, 255,.85)",
+                      color: "#fafafa",
                       right: "3px",
-                      top: "0px",
+                      top: "2px",
                       fontSize: "12px",
                       textAlign: "center",
                       fontWeight: "bold",
@@ -1084,9 +1084,9 @@ const CameraPage = () => {
                     <Text
                       style={{
                         position: "absolute",
-                        color: "rgba(255, 255, 255,.85)",
+                        color: "#fafafa",
                         right: "3px",
-                        top: "0px",
+                        top: "2px",
                         fontSize: "12px",
                         textAlign: "center",
                         fontWeight: "bold",
