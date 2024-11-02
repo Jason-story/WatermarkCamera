@@ -180,9 +180,7 @@ const CameraPage = () => {
           adUnitId: config.ad,
         });
 
-        interstitialAd.onLoad(() => {
-          console.log("interstitialAd:111 ", interstitialAd);
-        });
+        interstitialAd.onLoad(() => {});
         interstitialAd.onError((err) => {
           console.error("插屏广告加载失败", err);
         });
@@ -601,7 +599,7 @@ const CameraPage = () => {
           Taro.navigateTo({
             url: "/pages/vip/index",
           });
-        }, 2000);
+        }, 2500);
         return;
       }
 
@@ -881,7 +879,273 @@ const CameraPage = () => {
     const tempPath = isCamera ? cameraTempPath : xiangceTempPath;
     const onLoadHandler = isCamera ? cameraPathOnload : xiangcePathOnload;
     const height = isCamera ? "100%" : xiangceImgHeight;
+    const option = ShuiyinDoms[currentShuiyinIndex].options;
 
+    const renderLeftCopyright = () => {
+      if (
+        option?.copyright === "mk" &&
+        showHasCheck &&
+        option?.showLeftCopyright
+      ) {
+        // 左下角今日水印风格下标
+
+        return (
+          <View style={{ position: "absolute", left: 0, bottom: 0 }}>
+            <View className="make-left-copyright">
+              <Image src={P1}></Image>
+              <Text>马克相机已验证照片真实性</Text>
+            </View>
+          </View>
+        );
+      } else if (
+        option?.copyright === "jrsy" &&
+        showHasCheck &&
+        option?.showLeftCopyright
+      ) {
+        // 左下角马克水印风格下标
+        return (
+          <View style={{ position: "absolute", left: 0, bottom: 0 }}>
+            <View className="jinri-left-copyright">
+              <Image src={P1}></Image>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
+                <Text className="short-line"></Text>
+                <Text>{" 时间地点真实"}</Text>
+              </View>
+            </View>
+          </View>
+        );
+      } else {
+      }
+    };
+    const renderRightCopyright = () => {
+      if (option?.showRightCopyright && showTrueCode) {
+        if (option?.copyright === "mk") {
+          if (userInfo.type === "default") {
+            // 马克相机 如果是普通用户则显示今日水印风格右下角
+            return (
+              <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+                <View className="jinri-right-copyright">
+                  {/* 今日水印 右下角背景图 */}
+                  <Image src={P2}></Image>
+                  {/* 今日水印 防伪码 */}
+                  <Text
+                    className="fangweima"
+                    style={{
+                      fontSize: "7px",
+                      fontFamily: "PTMono",
+                      position: "absolute",
+                      color: "rgba(255,255,255,.9)",
+                      right: "1px",
+                      bottom: "0px",
+                    }}
+                  >
+                    {generateRandomString(4)}
+                  </Text>
+                  {/* 输入什么就显示什么 */}
+                  {/* {!shuiyinxiangjiName.includes("今日水印") && (
+                    <Text
+                      style={{
+                        position: "absolute",
+                        color: "rgba(255, 255, 255,.9)",
+                        right: "3px",
+                        top: "0px",
+                        fontSize: "13px",
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        width: "100rpx",
+                        fontFamily: "qimiaotype",
+                      }}
+                    >
+                      可修改
+                    </Text>
+                  )} */}
+                </View>
+              </View>
+            );
+          } else {
+            return shuiyinxiangjiName ? (
+              <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+                <View className="make-right-copyright">
+                  {/* 马克 右下角背景图 */}
+                  <Image src={P4}></Image>
+                  {/* 马克 防伪码 */}
+                  <Text
+                    style={{
+                      fontSize: "10px",
+                      position: "absolute",
+                      color: "rgba(255,255,255,.85)",
+                      right: "1px",
+                      bottom: "-1px",
+                    }}
+                    className="fangweima"
+                  >
+                    防伪
+                    <Text
+                      style={{
+                        fontSize: "9px",
+                        fontFamily: "Monaco",
+                      }}
+                    >
+                      {" " + generateRandomString(3)}
+                    </Text>
+                  </Text>
+                </View>
+              </View>
+            ) : (
+              <View
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  bottom: "10px",
+                }}
+              >
+                <Image
+                  src={P5}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                  }}
+                ></Image>
+              </View>
+            );
+          }
+        } else if (option?.copyright === "jrsy") {
+          if (userInfo.type === "default") {
+            // 今日水印相机 如果是普通用户则显示体验相机右下角
+            return (
+              <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+                <View className="jinri-right-copyright">
+                  {/* 今日水印 右下角背景图 */}
+                  <Image src={P2}></Image>
+                  {/* 今日水印 防伪码 */}
+                  <Text
+                    className="fangweima"
+                    style={{
+                      fontSize: "7px",
+                      fontFamily: "PTMono",
+                      position: "absolute",
+                      color: "rgba(255,255,255,.9)",
+                      right: "1px",
+                      bottom: "0px",
+                    }}
+                  >
+                    {generateRandomString(4)}
+                  </Text>
+                  {/* 输入什么就显示什么 */}
+                  <Text
+                    style={{
+                      position: "absolute",
+                      color: "rgba(255, 255, 255,.85)",
+                      right: "3px",
+                      top: "0px",
+                      fontSize: "12px",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      fontFamily: "qimiaotype",
+
+                      width: "100rpx",
+                    }}
+                  >
+                    {shuiyinxiangjiName}
+                  </Text>
+                </View>
+              </View>
+            );
+          } else {
+            // 如果是付费用户 则显示今日水印相机的logo
+            return shuiyinxiangjiName ? (
+              <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+                <View className="jinri-right-copyright">
+                  {/* 今日水印 右下角背景图 */}
+                  <Image src={P2}></Image>
+                  {/* 今日水印 防伪码 */}
+                  <Text
+                    className="fangweima"
+                    style={{
+                      fontSize: "7px",
+                      fontFamily: "PTMono",
+                      position: "absolute",
+                      color: "rgba(255,255,255,.9)",
+                      right: "1px",
+                      bottom: "0px",
+                    }}
+                  >
+                    {generateRandomString(4)}
+                  </Text>
+                  {/* 输入什么就显示什么 */}
+                  {!shuiyinxiangjiName.includes("今日水印") ? (
+                    <Text
+                      style={{
+                        position: "absolute",
+                        color: "rgba(255, 255, 255,.85)",
+                        right: "3px",
+                        top: "0px",
+                        fontSize: "12px",
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        width: "100rpx",
+                        fontFamily: "qimiaotype",
+                      }}
+                    >
+                      {shuiyinxiangjiName}
+                    </Text>
+                  ) : (
+                    /* 右下角今日水印四个字图片 */
+                    <Image
+                      src={P3}
+                      style={{
+                        position: "absolute",
+                        right: "2px",
+                        top: "0px",
+                        width: "56px",
+                        height: "12.3px",
+                      }}
+                    ></Image>
+                  )}
+                </View>
+              </View>
+            ) : (
+              <View
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  bottom: "10px",
+                }}
+              >
+                <Image
+                  src={P5}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                  }}
+                ></Image>
+              </View>
+            );
+          }
+        }
+      } else {
+      }
+      if (option?.copyright === "syxj") {
+        return (
+          <View className="copySYXJ">
+            <Image
+              src={Icon2}
+              style={{
+                width: "54px",
+                height: "14px",
+              }}
+            ></Image>
+          </View>
+        );
+      }
+    };
     return (
       <Snapshot
         className={isCamera ? "snapshot" : "snapshot-outside"}
@@ -941,9 +1205,8 @@ const CameraPage = () => {
                 style={{
                   width: "100%",
                   height: "100%",
-                  opacity: 0.1,
                 }}
-                src="https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/placeholder.jpg?sign=70c36abd181c0db12cee0f82114561bf&t=1730346325"
+                src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.png"
               ></Image>
             )}
             {tempPath && (
@@ -964,10 +1227,10 @@ const CameraPage = () => {
               ></Image>
             )}
           </View>
-          {userInfo.type === "default" && tempPath &&  (
+          {userInfo.type === "default" && tempPath && (
             <View
               style={{
-                color: "rgba(0,0,0,.2)",
+                color: "#fff",
                 fontSize: "30px",
                 fontWeight: "bold",
                 position: "absolute",
@@ -979,6 +1242,8 @@ const CameraPage = () => {
                 height: "100px",
                 marginLeft: "-150px",
                 marginTop: "-50px",
+                textShadow:
+                  "-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000",
               }}
             >
               可修改水印相机 <br />
@@ -1003,161 +1268,8 @@ const CameraPage = () => {
               fangdaoShuiyin,
             })}
           </View>
-          {/* 右下角 copyright  水印相机logo */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.copyright === "syxj" && (
-            <View className="copySYXJ">
-              <Image
-                src={Icon2}
-                style={{
-                  width: "52px",
-                  height: "14px",
-                }}
-              ></Image>
-            </View>
-          )}
-          {/* 左下角*/}
-          {ShuiyinDoms[currentShuiyinIndex].options?.copyright === "jrsy" &&
-            showHasCheck &&
-            ShuiyinDoms[currentShuiyinIndex].options?.showLeftCopyright && (
-              <View style={{ position: "absolute", left: 0, bottom: 0 }}>
-                <View className="jinri-left-copyright">
-                  <Image src={P1}></Image>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text>{shuiyinxiangjiName + "相机已验证"}</Text>
-                    <Text className="short-line"></Text>
-                    <Text>{" 时间地点真实"}</Text>
-                  </View>
-                </View>
-              </View>
-            )}
-          {ShuiyinDoms[currentShuiyinIndex].options?.copyright === "mk" &&
-            showHasCheck && (
-              <View style={{ position: "absolute", left: 0, bottom: 0 }}>
-                <View className="make-left-copyright">
-                  <Image src={P1}></Image>
-                  <Text>马克相机已验证照片真实性</Text>
-                </View>
-              </View>
-            )}
-          {/* 提示填写水印名字图标 */}
-          {disableTrueCode &&
-            showTrueCode &&
-            !shuiyinxiangjiName &&
-            userInfo.type !== "default" &&
-            ShuiyinDoms[currentShuiyinIndex].options?.showRightCopyright &&
-            ShuiyinDoms[currentShuiyinIndex].options?.copyright === "mk" && (
-              <View
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  bottom: "10px",
-                }}
-              >
-                <Image
-                  src={P5}
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                  }}
-                ></Image>
-              </View>
-            )}
-          {/*今日水印 右下角*/}
-          {(shuiyinxiangjiName ||
-            (!shuiyinxiangjiName && userInfo.type === "default")) &&
-            ShuiyinDoms[currentShuiyinIndex].options?.copyright === "jrsy" &&
-            showTrueCode && (
-              <View style={{ position: "absolute", right: 0, bottom: 0 }}>
-                <View className="jinri-right-copyright">
-                  {/* 今日水印 右下角背景图 */}
-                  <Image src={P2}></Image>
-                  {/* 右下角今日水印四个字图片 */}
-                  {shuiyinxiangjiName.includes("今日水印") && (
-                    <Image
-                      src={P3}
-                      style={{
-                        position: "absolute",
-                        right: "2px",
-                        top: "0px",
-                        width: "56px",
-                        height: "12.3px",
-                      }}
-                    ></Image>
-                  )}
-                  {/* 今日水印 防伪码 */}
-                  <Text
-                    className="fangweima"
-                    style={{
-                      fontSize: "7px",
-                      fontFamily: "PTMono",
-                      position: "absolute",
-                      color: "rgba(255,255,255,.9)",
-                      right: "1px",
-                      bottom: "0px",
-                    }}
-                  >
-                    {generateRandomString(4)}
-                  </Text>
-                  {/* 输入什么就显示什么 */}
-                  {!shuiyinxiangjiName.includes("今日水印") && (
-                    <Text
-                      style={{
-                        position: "absolute",
-                        color: "rgba(255, 255, 255,.9)",
-                        right: "3px",
-                        top: "0px",
-                        fontSize: "13px",
-                        textAlign: "center",
-                        fontWeight: "bold",
-                        width: "100rpx",
-                      }}
-                    >
-                      {userInfo.type === "default"
-                        ? "测试"
-                        : shuiyinxiangjiName}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            )}
-          {/* 马克右下角 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.copyright === "mk" &&
-            userInfo.type !== "default" &&
-            showTrueCode && (
-              <View style={{ position: "absolute", right: 0, bottom: 0 }}>
-                <View className="make-right-copyright">
-                  {/* 马克 右下角背景图 */}
-                  <Image src={P4}></Image>
-                  {/* 马克 防伪码 */}
-                  <Text
-                    style={{
-                      fontSize: "10px",
-                      position: "absolute",
-                      color: "rgba(255,255,255,.85)",
-                      right: "1px",
-                      bottom: "-1px",
-                    }}
-                    className="fangweima"
-                  >
-                    防伪
-                    <Text
-                      style={{
-                        fontSize: "9px",
-                        fontFamily: "Monaco",
-                      }}
-                    >
-                      {" " + generateRandomString(3)}
-                    </Text>
-                  </Text>
-                </View>
-              </View>
-            )}
+          {renderLeftCopyright()}
+          {renderRightCopyright()}
         </View>
       </Snapshot>
     );
@@ -1920,7 +2032,7 @@ const CameraPage = () => {
                           : ""
                       }`}
                     >
-                      {option.slice(0, 2) + "加" + option.slice(2)}
+                      {option?.slice(0, 2) + "加" + option?.slice(2)}
                     </AtButton>
                   );
                 })}
@@ -2099,11 +2211,11 @@ const CameraPage = () => {
                 您的会员已到期,继续使用请重新开通会员
               </View>
             }
-            onRightButtonClick={() => {
-              Taro.navigateTo({
-                url: "/pages/vip/index",
-              });
-            }}
+            // onRightButtonClick={() => {
+            //   Taro.navigateTo({
+            //     url: "/pages/vip/index",
+            //   });
+            // }}
             showLeftButton={false}
             rightButtonText="重新开通"
           />
@@ -2255,64 +2367,30 @@ const CameraPage = () => {
                 <View className="edit-item">
                   <Picker
                     style={{
-                      color:
-                        userInfo.type === "default"
-                          ? "rgba(0,0,0,.6)"
-                          : "#050505",
+                      color: "#050505",
                     }}
                     mode="time"
                     value={`${hours}:${minutes}`}
                     onChange={handleTimeChange}
-                    disabled={userInfo.type === "default" ? true : false}
                   >
                     <View>选择时间： {`${hours}:${minutes}`}</View>
                   </Picker>
-
-                  {userInfo.type === "default" ? (
-                    <View
-                      className="input-tips"
-                      style={{
-                        color: "#f22c3d",
-                      }}
-                    >
-                      普通用户仅能体验，无法修改，请开通会员
-                    </View>
-                  ) : null}
                 </View>
                 <View className="edit-item">
-                  <View
-                    className="picker"
-                    style={{
-                      color:
-                        userInfo.type === "default"
-                          ? "rgba(0,0,0,.6)"
-                          : "#050505",
-                    }}
-                  >
+                  <View className="picker">
                     <Text>详细地点： </Text>
                     <Input
                       className="input"
                       value={locationName}
                       maxlength={50}
                       clear={true}
-                      disabled={userInfo.type === "default" ? true : false}
                       onInput={(e) => {
                         debounce(setLocationName(e.detail.value), 100);
                       }}
                     ></Input>
                   </View>
-                  {userInfo.type === "default" ? (
-                    <View
-                      className="input-tips"
-                      style={{
-                        color: "#f22c3d",
-                      }}
-                    >
-                      普通用户仅能体验，无法修改，请开通会员
-                    </View>
-                  ) : (
-                    <View className="input-tips">最多45个字</View>
-                  )}
+
+                  <View className="input-tips">最多45个字</View>
                 </View>
                 {ShuiyinDoms[currentShuiyinIndex].options?.hasDakaLabel && (
                   <View className="edit-item flex-row">
@@ -2358,15 +2436,7 @@ const CameraPage = () => {
                       ?.showRightCopyright &&
                       showTrueCode && (
                         <View className="edit-item flex-row">
-                          <View
-                            className="picker"
-                            style={{
-                              color:
-                                userInfo.type === "default"
-                                  ? "rgba(0,0,0,.6)"
-                                  : "#050505",
-                            }}
-                          >
+                          <View className="picker">
                             <Text
                               style={{
                                 color: "#f22c3d",
@@ -2376,16 +2446,9 @@ const CameraPage = () => {
                             </Text>
                             <Input
                               className="input"
-                              value={
-                                userInfo.type === "default"
-                                  ? "测试"
-                                  : shuiyinxiangjiName
-                              }
+                              value={shuiyinxiangjiName}
                               maxlength={4}
                               clear={true}
-                              disabled={
-                                userInfo.type === "default" ? true : false
-                              }
                               placeholder="点击填写"
                               onInput={(e) => {
                                 debounce(
@@ -2398,20 +2461,9 @@ const CameraPage = () => {
                             ></Input>
                           </View>
 
-                          {userInfo.type === "default" ? (
-                            <View
-                              className="input-tips"
-                              style={{
-                                color: "#f22c3d",
-                              }}
-                            >
-                              普通用户仅能体验，无法修改，请开通会员
-                            </View>
-                          ) : (
-                            <View className="input-tips">
-                              自动显示在右下角,最多4个字
-                            </View>
-                          )}
+                          <View className="input-tips">
+                            自动显示在右下角,最多4个字
+                          </View>
                         </View>
                       )}
                   </>
@@ -2550,7 +2602,7 @@ const CameraPage = () => {
               </View>
             )}
           </AtFloatLayout>
-          <AtToast isOpened={showToast} text="请输入详细地点"></AtToast>
+          {/* <AtToast isOpened={showToast} text="请输入详细地点"></AtToast> */}
         </View>
       )}
     </ScrollView>

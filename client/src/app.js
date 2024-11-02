@@ -20,6 +20,13 @@ class App extends Component {
 
   componentDidMount() {
     wx.loadFontFace({
+      family: "qimiaotype",
+      global: true,
+      scopes: ["webview", "native", "skyline"],
+      source:
+        'url("https://fonts-1326662896.cos.ap-guangzhou.myqcloud.com/qimiaotype-bold.ttf")',
+    });
+    wx.loadFontFace({
       family: "Helvetica Neue",
       global: true,
       scopes: ["webview", "native", "skyline"],

@@ -48,6 +48,7 @@
     flex-direction: row;
     margin-bottom: -11px;
     opacity: 0.9;
+    font-family: "Arial";
     text-shadow: 0.5px 0.5px 1.2px rgba(0, 0, 0, 0.2),
       1px 1px 1.8px rgba(0, 0, 0, 0.15), 1.5px 1.5px 2.4px rgba(0, 0, 0, 0.15),
       2px 2px 3px rgba(0, 0, 0, 0.1);
@@ -66,7 +67,7 @@
   font-family: "MiSans";
   color: #000;
   left: 8px;
-  top: 12px;
+  top: 11px;
   font-size: 32px;
 }
 .item1-time-box {
@@ -92,8 +93,8 @@
 }
 .item1-time-cover {
   color: #000;
-  -webkit-mask-image: url("https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/mask.png?33");
-  mask-image: url("https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/mask.png?33");
+  -webkit-mask-image: url("./mask.png");
+  mask-image: url("./mask.png");
   mask-size: 100% 100%;
   mask-position: center;
 }
