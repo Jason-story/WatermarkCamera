@@ -1042,7 +1042,7 @@ const CameraPage = () => {
                   <Text
                     style={{
                       position: "absolute",
-                      color: "#fafafa",
+                      color: "#d6d6d5",
                       right: "3px",
                       top: "2px",
                       fontSize: "12px",
@@ -1084,7 +1084,7 @@ const CameraPage = () => {
                     <Text
                       style={{
                         position: "absolute",
-                        color: "#fafafa",
+                        color: "#d6d6d5",
                         right: "3px",
                         top: "2px",
                         fontSize: "12px",
