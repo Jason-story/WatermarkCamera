@@ -96,7 +96,7 @@ const config = [
       hasDakaLabel: false,
       showRightCopyright: true,
       showLeftCopyright: false,
-      hasTitle: false,
+      hasTitle: true,
       hasFangDao: false,
       hasWeather: false,
       hasJingWeiDu: false,
