@@ -98,7 +98,7 @@ const config = [
       showLeftCopyright: false,
       hasTitle: true,
       hasFangDao: false,
-      hasWeather: false,
+      hasWeather: true,
       hasJingWeiDu: false,
       hasRemark: true,
       copyright: "jrsy",

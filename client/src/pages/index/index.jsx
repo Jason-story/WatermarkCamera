@@ -285,6 +285,7 @@ const CameraPage = () => {
     writePhotosAlbum: false,
     userLocation: false,
   });
+
   const fetchWeather = (longitude, latitude) => {
     // https://www.seniverse.com/
     const url =
@@ -313,9 +314,9 @@ const CameraPage = () => {
     });
   };
   useEffect(() => {
-    allAuth && permissions.userLocation && !city && getLocation();
-    longitude && latitude && fetchWeather(longitude, latitude);
-  }, [allAuth, permissions, city, longitude, latitude]);
+    allAuth && permissions.userLocation && getLocation();
+    // longitude && latitude && fetchWeather(longitude, latitude);
+  }, [allAuth, permissions]);
 
   const getLocation = () => {
     if (latitude) return;
@@ -327,6 +328,7 @@ const CameraPage = () => {
         setLatitude(res.latitude);
         setLongitude(res.longitude);
         reverseGeocode(res.latitude, res.longitude);
+        fetchWeather(res.longitude, res.latitude);
       },
       fail: (err) => {
         Taro.showToast({
@@ -1277,8 +1279,8 @@ const CameraPage = () => {
               title,
               weather,
               remark: remark || "",
-              latitude: parseFloat((latitude * 1).toFixed(6)),
-              longitude: parseFloat((longitude * 1).toFixed(6)),
+              latitude,
+              longitude,
               fangdaoShuiyin,
             })}
           </View>
@@ -2470,15 +2472,11 @@ const CameraPage = () => {
                               }}
                             ></Input>
                           </View>
-
-                          <View className="input-tips">
-                            自动显示在右下角,最多4个字
-                          </View>
+                          <View className="input-tips">最多4个字</View>
                         </View>
                       )}
                   </>
                 )}
-
                 {ShuiyinDoms[currentShuiyinIndex].options
                   ?.showLeftCopyright && (
                   <View className="edit-item">
@@ -2538,11 +2536,43 @@ const CameraPage = () => {
                         maxlength={8}
                         clear={true}
                         onInput={(e) => {
-                          debounce(setWeather(e.detail.value), 100);
+                          setWeather(e.detail.value);
                         }}
                       ></Input>
                     </View>
                   </View>
+                )}
+                {ShuiyinDoms[currentShuiyinIndex].options?.hasJingWeiDu && (
+                  <>
+                    <View className="edit-item">
+                      <View className="picker">
+                        <Text>经度： </Text>
+                        <Input
+                          className="input"
+                          value={longitude}
+                          maxlength={14}
+                          clear={true}
+                          onInput={(e) => {
+                            setLongitude(e.detail.value);
+                          }}
+                        ></Input>
+                      </View>
+                    </View>
+                    <View className="edit-item">
+                      <View className="picker">
+                        <Text>纬度： </Text>
+                        <Input
+                          className="input"
+                          value={latitude}
+                          maxlength={14}
+                          clear={true}
+                          onInput={(e) => {
+                            setLatitude(e.detail.value);
+                          }}
+                        ></Input>
+                      </View>
+                    </View>
+                  </>
                 )}
                 {ShuiyinDoms[currentShuiyinIndex].options?.hasRemark && (
                   <View className="edit-item">
@@ -2560,41 +2590,6 @@ const CameraPage = () => {
                     </View>
                     <View className="input-tips">最多20个字</View>
                   </View>
-                )}
-
-                {ShuiyinDoms[currentShuiyinIndex].options?.hasJingWeiDu && (
-                  <>
-                    <View className="edit-item">
-                      <View className="picker">
-                        <Text>经度： </Text>
-                        <Input
-                          className="input"
-                          value={longitude}
-                          maxlength={14}
-                          clear={true}
-                          type="number"
-                          onInput={(e) => {
-                            debounce(setLongitude(e.detail.value), 100);
-                          }}
-                        ></Input>
-                      </View>
-                    </View>
-                    <View className="edit-item">
-                      <View className="picker">
-                        <Text>纬度： </Text>
-                        <Input
-                          className="input"
-                          value={latitude}
-                          type="number"
-                          maxlength={14}
-                          clear={true}
-                          onInput={(e) => {
-                            debounce(setLatitude(e.detail.value), 100);
-                          }}
-                        ></Input>
-                      </View>
-                    </View>
-                  </>
                 )}
               </View>
             )}
