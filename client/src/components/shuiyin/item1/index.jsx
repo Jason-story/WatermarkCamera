@@ -20,7 +20,7 @@ const Index = ({
     <View className="item1-wrapper" key={"item-1"}>
       <View className="item1-badage">
         <Image src={Icon1}></Image>
-        <Text className="item1-dakaText">{dakaName}</Text>
+        {/* <Text className="item1-dakaText">{dakaName}</Text> */}
         <View className="item1-time-box">
           <Text className="item1-time item1-time-base">{`${hours}:${minutes}`}</Text>
           <Text className="item1-time item1-time-cover">{`${hours}:${minutes}`}</Text>

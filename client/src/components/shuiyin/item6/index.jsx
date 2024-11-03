@@ -15,6 +15,8 @@ const Index = ({
   month,
   year,
   remark,
+  latitude,
+  longitude,
 }) => {
   return (
     <View className="item6-wrapper" key={"item-6"}>
@@ -36,6 +38,7 @@ const Index = ({
           __html: formatTextWithLineLimit(locationName, 20, 3),
         }}
       ></View>
+      <View className="ite6-jingweidu">{`经纬度：${longitude},${latitude}`}</View>
       {remark.length > 0 && (
         <View className="item6-remark item6-flex">
           <View

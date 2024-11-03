@@ -21,7 +21,7 @@ const Index = ({
       <View
         className="item5-title"
         dangerouslySetInnerHTML={{
-          __html: formatTextWithLineLimit(title, 7, 1),
+          __html: formatTextWithLineLimit(title, 12, 1),
         }}
       ></View>
       <View className="item5-label-item">

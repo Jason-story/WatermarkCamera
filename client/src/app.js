@@ -11,10 +11,10 @@ const FONT_CONFIG = [
     family: "Bebas",
     url: "https://gitee.com/jasonstory/fonts/raw/master/Bebas-regular.ttf",
   },
-  {
-    family: "qimiaotype",
-    url: "https://gitee.com/jasonstory/fonts/raw/master/qimiaotype-bold.ttf",
-  },
+  // {
+  //   family: "qimiaotype",
+  //   url: "https://gitee.com/jasonstory/fonts/raw/master/qimiaotype-bold.ttf",
+  // },
   {
     family: "Helvetica Neue",
     url: "https://gitee.com/jasonstory/fonts/raw/master/HelveticaNeue.ttf",
@@ -51,6 +51,7 @@ class App extends Component {
 
     this.globalData = {
       config: {},
+      // false 显示 true 隐藏
       // fuckShenHe:false,
       fuckShenHe:
         wx.getAccountInfoSync().miniProgram.envVersion !== "release" &&
@@ -77,61 +78,60 @@ class App extends Component {
   }
 
   // 加载MiSans字体
-  loadMiSansFont() {
-    return new Promise((resolve, reject) => {
-      wx.loadFontFace({
-        family: "MiSans",
-        global: true,
-        scopes: ["webview", "native", "skyline"],
-        source:
-          'url("https://gitee.com/jasonstory/fonts/raw/master/MiSans-Bold.ttf")',
-        success: () => {
-          console.log("MiSans 字体加载成功");
-          this.setState(
-            {
-              miSansLoaded: true,
-              shouldRerender: true,
-            },
-            () => {
-              resolve(true);
-            }
-          );
-        },
-        fail: (err) => {
-          console.error("MiSans 字体加载失败:", err);
-          reject(err);
-        },
-      });
-    });
-  }
+  // loadMiSansFont() {
+  //   return new Promise((resolve, reject) => {
+  //     wx.loadFontFace({
+  //       family: "MiSans",
+  //       global: true,
+  //       scopes: ["webview", "native", "skyline"],
+  //       source:
+  //         'url("https://gitee.com/jasonstory/fonts/raw/master/MiSans-Bold.ttf")',
+  //       success: () => {
+  //         console.log("MiSans 字体加载成功");
+  //         this.setState(
+  //           {
+  //             miSansLoaded: true,
+  //             shouldRerender: true,
+  //           },
+  //           () => {
+  //             resolve(true);
+  //           }
+  //         );
+  //       },
+  //       fail: (err) => {
+  //         console.error("MiSans 字体加载失败:", err);
+  //         reject(err);
+  //       },
+  //     });
+  //   });
+  // }
 
   async componentDidMount() {
-     // 加载其他字体
-     this.loadNormalFonts();
-    try {
-      // 检查缓存中是否已经加载过MiSans
-      const fontCache = wx.getStorageSync("miSansFontCache");
-      const now = new Date().getTime();
+    this.loadNormalFonts();
+    // try {
+    //   // 检查缓存中是否已经加载过MiSans
+    //   const fontCache = wx.getStorageSync("miSansFontCache");
+    //   const now = new Date().getTime();
 
-      if (fontCache && now - fontCache.timestamp < 24 * 60 * 60 * 1000) {
-        // 如果缓存存在且未过期，直接标记为已加载
-        this.setState({
-          miSansLoaded: true,
-          shouldRerender: true,
-        });
-        console.log("使用缓存的 MiSans 字体");
-      } else {
-        // 否则先加载MiSans字体
-        await this.loadMiSansFont();
-        // 设置缓存
-        wx.setStorageSync("miSansFontCache", {
-          timestamp: now,
-          family: "MiSans",
-        });
-      }
-    } catch (error) {
-      console.error("字体加载错误:", error);
-    }
+    //   if (fontCache && now - fontCache.timestamp < 24 * 60 * 60 * 1000) {
+    //     // 如果缓存存在且未过期，直接标记为已加载
+    //     this.setState({
+    //       miSansLoaded: true,
+    //       shouldRerender: true,
+    //     });
+    //     console.log("使用缓存的 MiSans 字体");
+    //   } else {
+    //     // 否则先加载MiSans字体
+    //     await this.loadMiSansFont();
+    //     // 设置缓存
+    //     wx.setStorageSync("miSansFontCache", {
+    //       timestamp: now,
+    //       family: "MiSans",
+    //     });
+    //   }
+    // } catch (error) {
+    //   console.error("字体加载错误:", error);
+    // }
   }
 
   componentDidUpdate(prevProps, prevState) {

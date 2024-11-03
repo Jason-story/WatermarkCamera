@@ -16,9 +16,11 @@ import CustomModal from "../../components/modal";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import P1 from "../../images/p-1.png";
 import P2 from "../../images/p-2.png";
+import P2_1 from "../../images/p-2-1.png";
 import P3 from "../../images/p-3.png";
 import P4 from "../../images/p-4.png";
 import P5 from "../../images/p-5.png";
+import Fw from "../../images/fw.png";
 import ShuiyinDoms from "../../components/shuiyin";
 import { generateRandomString } from "../../components/utils.js";
 
@@ -636,6 +638,7 @@ const CameraPage = () => {
       await new Promise((resolve) =>
         setTimeout(resolve, type === "camera" ? 100 : 200)
       );
+      await new Promise((resolve) => setTimeout(resolve, 50));
       // 等待图片加载完成
       await ensureImageLoaded();
 
@@ -680,9 +683,7 @@ const CameraPage = () => {
           wx.showToast({
             title: "已保存到相册",
           });
-
           // 显示广告
-          console.log("interstitialAd: ", interstitialAd);
           if (interstitialAd && userInfo.type === "default") {
             interstitialAd.show().catch((err) => {
               console.error("插屏广告显示失败", err);
@@ -934,38 +935,10 @@ const CameraPage = () => {
                 <View className="jinri-right-copyright">
                   {/* 今日水印 右下角背景图 */}
                   <Image src={P2}></Image>
-                  {/* 今日水印 防伪码 */}
-                  <Text
-                    className="fangweima"
-                    style={{
-                      fontSize: "7px",
-                      fontFamily: "PTMono",
-                      position: "absolute",
-                      color: "rgba(255,255,255,.9)",
-                      right: "1px",
-                      bottom: "0px",
-                    }}
-                  >
-                    {generateRandomString(4)}
-                  </Text>
-                  {/* 输入什么就显示什么 */}
-                  {/* {!shuiyinxiangjiName.includes("今日水印") && (
-                    <Text
-                      style={{
-                        position: "absolute",
-                        color: "rgba(255, 255, 255,.9)",
-                        right: "3px",
-                        top: "2px",
-                        fontSize: "13px",
-                        textAlign: "center",
-                        fontWeight: "bold",
-                        width: "100rpx",
-                        fontFamily: "qimiaotype",
-                      }}
-                    >
-                      可修改
-                    </Text>
-                  )} */}
+                  <View className="fw-box">
+                    <Image src={Fw} className="fwm"></Image>
+                    <Text className="fangweima">{generateRandomString(4)}</Text>
+                  </View>
                 </View>
               </View>
             );
@@ -1023,38 +996,36 @@ const CameraPage = () => {
               <View style={{ position: "absolute", right: 0, bottom: 0 }}>
                 <View className="jinri-right-copyright">
                   {/* 今日水印 右下角背景图 */}
-                  <Image src={P2}></Image>
-                  {/* 今日水印 防伪码 */}
-                  <Text
-                    className="fangweima"
-                    style={{
-                      fontSize: "7px",
-                      fontFamily: "PTMono",
-                      position: "absolute",
-                      color: "rgba(255,255,255,.9)",
-                      right: "1px",
-                      bottom: "0px",
-                    }}
-                  >
-                    {generateRandomString(4)}
-                  </Text>
-                  {/* 输入什么就显示什么 */}
-                  <Text
-                    style={{
-                      position: "absolute",
-                      color: "#e2e2e1",
-                      right: "3px",
-                      top: "2px",
-                      fontSize: "12px",
-                      textAlign: "center",
-                      fontWeight: "bold",
-                      fontFamily: "qimiaotype",
+                  {shuiyinxiangjiName.includes("今日水印") ? (
+                    <Image src={P2_1}></Image>
+                  ) : (
+                    <Image src={P2}></Image>
+                  )}
+                  <View className="fw-box">
+                    <Image src={Fw} className="fwm"></Image>
+                    <Text className="fangweima">{generateRandomString(4)}</Text>
+                  </View>
 
-                      width: "100rpx",
-                    }}
-                  >
-                    {shuiyinxiangjiName}
-                  </Text>
+                  {/* 输入什么就显示什么 */}
+                  {!shuiyinxiangjiName.includes("今日水印") ? (
+                    <Text
+                      style={{
+                        position: "absolute",
+                        color: "#fbfbfb",
+                        right: "3px",
+                        top: "2px",
+                        fontSize: "12px",
+                        textAlign: "center",
+                        fontWeight: 700,
+                        width: "100rpx",
+                        textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
+                        fontFamily: "黑体",
+                        opacity: ".85",
+                      }}
+                    >
+                      {shuiyinxiangjiName}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             );
@@ -1064,51 +1035,37 @@ const CameraPage = () => {
               <View style={{ position: "absolute", right: 0, bottom: 0 }}>
                 <View className="jinri-right-copyright">
                   {/* 今日水印 右下角背景图 */}
-                  <Image src={P2}></Image>
-                  {/* 今日水印 防伪码 */}
-                  <Text
-                    className="fangweima"
-                    style={{
-                      fontSize: "7px",
-                      fontFamily: "PTMono",
-                      position: "absolute",
-                      color: "rgba(255,255,255,.9)",
-                      right: "1px",
-                      bottom: "0px",
-                    }}
-                  >
-                    {generateRandomString(4)}
-                  </Text>
+                  {shuiyinxiangjiName.includes("今日水印") ? (
+                    <Image src={P2_1}></Image>
+                  ) : (
+                    <Image src={P2}></Image>
+                  )}
+                  <View className="fw-box">
+                    <Image src={Fw} className="fwm"></Image>
+                    <Text className="fangweima">{generateRandomString(4)}</Text>
+                  </View>
+
                   {/* 输入什么就显示什么 */}
                   {!shuiyinxiangjiName.includes("今日水印") ? (
                     <Text
                       style={{
                         position: "absolute",
-                        color: "#e2e2e1",
+                        color: "#fbfbfb",
                         right: "3px",
                         top: "2px",
                         fontSize: "12px",
                         textAlign: "center",
-                        fontWeight: "bold",
+                        fontWeight: 700,
                         width: "100rpx",
-                        fontFamily: "qimiaotype",
+                        textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
+                        fontFamily: "黑体",
+                        opacity: ".85",
                       }}
                     >
                       {shuiyinxiangjiName}
                     </Text>
-                  ) : (
-                    /* 右下角今日水印四个字图片 */
-                    <Image
-                      src={P3}
-                      style={{
-                        position: "absolute",
-                        right: "2px",
-                        top: "0px",
-                        width: "56px",
-                        height: "12.3px",
-                      }}
-                    ></Image>
-                  )}
+                  ) : /* 右下角今日水印四个字图片 */
+                  null}
                 </View>
               </View>
             ) : (
@@ -1179,7 +1136,7 @@ const CameraPage = () => {
               height: "100%",
               widh: "100%",
               position: "relative",
-              background: "rgba(0,0,0,0)",
+              // background: "rgba(0,0,0,0)",
             }}
           >
             {isCamera && selected === "图片水印" ? (
@@ -1200,15 +1157,15 @@ const CameraPage = () => {
                 }}
               ></View>
             )}
-            {isCamera && !isRealDevice && (
+            {/* {isCamera && !isRealDevice && (
               <Image
                 style={{
                   width: "100%",
                   height: "100%",
                 }}
-                src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.png"
+                src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.png?111"
               ></Image>
-            )}
+            )} */}
             {tempPath && (
               <Image
                 src={tempPath}
@@ -1227,10 +1184,11 @@ const CameraPage = () => {
               ></Image>
             )}
           </View>
-          {userInfo.type === "default" && tempPath && (
+          {!fuckShenHe && userInfo.type === "default" && (
             <View
               style={{
-                color: "#fff",
+                color:
+                  userInfo.type === "default" ? "rgba(255, 255, 255, .3)" : "",
                 fontSize: "30px",
                 fontWeight: "bold",
                 position: "absolute",
@@ -1243,7 +1201,9 @@ const CameraPage = () => {
                 marginLeft: "-150px",
                 marginTop: "-50px",
                 textShadow:
-                  "-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000",
+                  userInfo.type === "default"
+                    ? "-1px -1px 0 rgba(0, 0, 0, .1)"
+                    : "",
               }}
             >
               可修改水印相机 <br />
@@ -1262,9 +1222,9 @@ const CameraPage = () => {
               dakaName,
               title,
               weather,
-              remark: "",
-              latitude,
-              longitude,
+              remark: remark || "",
+              latitude: parseFloat(latitude.toFixed(6)),
+              longitude: parseFloat(longitude.toFixed(6)),
               fangdaoShuiyin,
             })}
           </View>
@@ -2493,7 +2453,7 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={title}
-                        maxlength={8}
+                        maxlength={12}
                         clear={true}
                         onInput={(e) => {
                           debounce(setTitle(e.detail.value), 100);
