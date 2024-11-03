@@ -132,7 +132,6 @@ const CameraPage = () => {
   const [update, setUpdate] = useState(false);
   const [showHasCheck, setShowHasCheck] = useState(undefined);
   const [showTrueCode, setShowTrueCode] = useState(undefined);
-  const [disableTrueCode, setdisableTrueCode] = useState(null);
   const [showSettingFloatLayout, setShowSettingFloatLayout] = useState(false);
   const [logoPath, setLogoPath] = useState("");
   const [logoWidth, setLogoWidth] = useState(0);
@@ -886,7 +885,8 @@ const CameraPage = () => {
       if (
         option?.copyright === "mk" &&
         showHasCheck &&
-        option?.showLeftCopyright
+        option?.showLeftCopyright &&
+        showHasCheck
       ) {
         // 左下角今日水印风格下标
 
@@ -901,7 +901,8 @@ const CameraPage = () => {
       } else if (
         option?.copyright === "jrsy" &&
         showHasCheck &&
-        option?.showLeftCopyright
+        option?.showLeftCopyright &&
+        showHasCheck
       ) {
         // 左下角马克水印风格下标
         return (
@@ -930,15 +931,68 @@ const CameraPage = () => {
         if (option?.copyright === "mk") {
           if (userInfo.type === "default") {
             // 马克相机 如果是普通用户则显示今日水印风格右下角
-            return (
+            return shuiyinxiangjiName.includes("马克") ? (
+              <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+                <View className="make-right-copyright">
+                  {/* 马克 右下角背景图 */}
+                  <Image src={P4}></Image>
+                  {/* 马克 防伪码 */}
+                  <Text
+                    style={{
+                      fontSize: "10px",
+                      position: "absolute",
+                      color: "rgba(255,255,255,.85)",
+                      right: "1px",
+                      bottom: "-1px",
+                    }}
+                    className="fangweima"
+                  >
+                    防伪
+                    <Text
+                      style={{
+                        fontSize: "9px",
+                        fontFamily: "Monaco",
+                      }}
+                    >
+                      {" " + generateRandomString(3)}
+                    </Text>
+                  </Text>
+                </View>
+              </View>
+            ) : (
               <View style={{ position: "absolute", right: 0, bottom: 0 }}>
                 <View className="jinri-right-copyright">
                   {/* 今日水印 右下角背景图 */}
-                  <Image src={P2}></Image>
+                  {shuiyinxiangjiName.includes("今日水印") ? (
+                    <Image src={P2_1}></Image>
+                  ) : (
+                    <Image src={P2}></Image>
+                  )}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
                     <Text className="fangweima">{generateRandomString(4)}</Text>
                   </View>
+
+                  {/* 输入什么就显示什么 */}
+                  {!shuiyinxiangjiName.includes("今日水印") ? (
+                    <Text
+                      style={{
+                        position: "absolute",
+                        color: "#fbfbfb",
+                        right: "3px",
+                        top: "2px",
+                        fontSize: "12px",
+                        textAlign: "center",
+                        fontWeight: 700,
+                        width: "100rpx",
+                        textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
+                        fontFamily: "黑体",
+                        opacity: ".85",
+                      }}
+                    >
+                      {shuiyinxiangjiName}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             );
@@ -1188,7 +1242,7 @@ const CameraPage = () => {
             <View
               style={{
                 color:
-                  userInfo.type === "default" ? "rgba(255, 255, 255, .3)" : "",
+                  userInfo.type === "default" ? "rgba(255, 255, 255, .5)" : "",
                 fontSize: "30px",
                 fontWeight: "bold",
                 position: "absolute",
@@ -1202,7 +1256,7 @@ const CameraPage = () => {
                 marginTop: "-50px",
                 textShadow:
                   userInfo.type === "default"
-                    ? "-1px -1px 0 rgba(0, 0, 0, .1)"
+                    ? "-0.5px -0.5px -0.5px rgba(0, 0, 0, .2)"
                     : "",
               }}
             >
@@ -1223,8 +1277,8 @@ const CameraPage = () => {
               title,
               weather,
               remark: remark || "",
-              latitude: parseFloat(latitude.toFixed(6)),
-              longitude: parseFloat(longitude.toFixed(6)),
+              latitude: parseFloat((latitude * 1).toFixed(6)),
+              longitude: parseFloat((longitude * 1).toFixed(6)),
               fangdaoShuiyin,
             })}
           </View>
@@ -1480,10 +1534,6 @@ const CameraPage = () => {
       setShowTrueCode(app.$app.globalData.config.showTrueCode);
     }
   }, [app.$app.globalData.config.showTrueCode]);
-
-  useEffect(() => {
-    setdisableTrueCode(app.$app.globalData.config.disableTrueCode);
-  }, [app.$app.globalData.config.disableTrueCode]);
 
   const updateShuiyinIndex = (current) => {
     setCurrentShuiyinIndex(current);

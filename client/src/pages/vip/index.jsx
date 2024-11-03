@@ -260,7 +260,7 @@ const Index = () => {
               <Text style={{ fontWeight: "bold" }}>会员权益</Text>
             </View>
             <View>• 不限使用次数</View>
-            <View>• 批量处理，单次最多9张(需半年及以上会员)</View>
+            {/* <View>• 批量处理，单次最多9张(需半年及以上会员)</View> */}
             <View>• 去除封面广告以外的所有广告</View>
             <View>• 高清水印图片</View>
             <View>• 视频加水印功能(需半年及以上会员)</View>

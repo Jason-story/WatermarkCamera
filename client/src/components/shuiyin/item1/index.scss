@@ -4,6 +4,7 @@
   left: 22px;
   bottom: 63px;
   font-size: 27px;
+  font-family: "HYQiHei 65J";
 }
 .item1-badage {
   position: relative;
@@ -29,7 +30,6 @@
     align-items: flex-start;
   }
   .item1-location {
-    font-family: "HYQiHei 65J";
     margin-top: -6px;
     margin-left: -1px;
     opacity: 0.95;
@@ -45,13 +45,13 @@
     flex-direction: row;
     margin-bottom: -11px;
     opacity: 0.95;
-    font-family: "Arial";
     text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
-
+    font-size: 26px;
     text {
       font-weight: normal;
       margin-right: 11px;
-      font-family: "Arial";
+      // font-family: "Roboto";
+      font-size: 27px;
     }
   }
 }
