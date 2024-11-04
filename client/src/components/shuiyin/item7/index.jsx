@@ -19,18 +19,18 @@ const Index = ({
   latitude,
   longitude,
 }) => {
-  latitude = parseFloat((latitude * 1).toFixed(6));
-  longitude = parseFloat((longitude * 1).toFixed(6));
+  latitude = parseFloat((latitude * 1).toFixed(6)) || "";
+  longitude = parseFloat((longitude * 1).toFixed(6)) || "";
   return (
     <View className="item7-wrapper" key={"item-7"}>
       <View className="item7-box">
-        {longitude && longitude !== 0 && (
+        {longitude && (
           <View className="item7-label-item">
             <View className="item7-label-title">经度:</View>
             <View>{`${longitude}`}</View>
           </View>
         )}
-        {latitude && latitude !== 0 && (
+        {latitude && (
           <View className="item7-label-item">
             <View className="item7-label-title">纬度:</View>
             <View>{`${latitude}`}</View>

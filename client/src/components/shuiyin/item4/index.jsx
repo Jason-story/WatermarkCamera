@@ -7,10 +7,13 @@ import "./index.scss";
 
 const Index = ({ hours, minutes, locationName, weekly, day, month, year }) => {
   return (
-    <View className="item4-wrapper" key={'item-4'}>
+    <View className="item4-wrapper" key={"item-4"}>
       <View className="item4-badage">
         <View className="item4-daka-text">打卡记录</View>
-        <View className="item4-time">{`${hours}:${minutes}`}</View>
+        <View className="item4-time">
+          {`${hours}：`}
+          <Text>{minutes}</Text>
+        </View>
       </View>
       <View className="item4-date">
         <Text>{`${year}-${month}-${day}`}</Text>
@@ -27,6 +30,7 @@ const Index = ({ hours, minutes, locationName, weekly, day, month, year }) => {
         style={{
           width: 165,
           height: 17,
+          opacity: 0.7,
         }}
       ></Image>
     </View>

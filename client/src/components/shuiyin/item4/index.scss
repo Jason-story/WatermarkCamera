@@ -31,10 +31,18 @@
 }
 .item4-time {
   margin-top: 54px;
-  font-size: 46px;
-  font-family: "fangsong";
+  font-size: 42px;
+  font-family: "NotoSansHans";
   color: #273f60;
   font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  transform: translateX(18px);
+  text {
+    margin-left: -20px;
+    margin-top: -5px;
+  }
 }
 
 .item4-location {
@@ -49,7 +57,7 @@
   text {
     line-height: 1.3;
     font-size: 23px;
-    color: rgba(255,255,255,.85);
+    color: rgba(255, 255, 255, 0.85);
   }
 }
 .item4-date {
@@ -58,8 +66,8 @@
   flex-direction: row;
   font-family: "Arial";
   margin-bottom: 15px;
-  color: rgba(255,255,255,.85);
-      text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
 
   text {
     margin-right: 15px;

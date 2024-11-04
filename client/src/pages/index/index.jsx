@@ -58,6 +58,8 @@ const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
 const fs = wx.getFileSystemManager();
 const CACHE_LIMIT = 30 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
+let fangweimaText = generateRandomString(4);
+let makefangweimaText = generateRandomString(3);
 function getCacheSize(path) {
   let totalSize = 0;
   try {
@@ -589,6 +591,8 @@ const CameraPage = () => {
     imageSelector = ".cameraSelectedImage",
     setTempPath = setCameraTempPath,
   }) => {
+    fangweimaText = generateRandomString(4);
+    makefangweimaText = generateRandomString(3);
     try {
       // 免费体验次数检查
       if (
@@ -946,6 +950,7 @@ const CameraPage = () => {
                       color: "rgba(255,255,255,.85)",
                       right: "1px",
                       bottom: "-1px",
+                      fontFamily: "HYQiHei 65J",
                     }}
                     className="fangweima"
                   >
@@ -956,7 +961,7 @@ const CameraPage = () => {
                         fontFamily: "Monaco",
                       }}
                     >
-                      {" " + generateRandomString(3)}
+                      {" " + makefangweimaText}
                     </Text>
                   </Text>
                 </View>
@@ -972,7 +977,7 @@ const CameraPage = () => {
                   )}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
-                    <Text className="fangweima">{generateRandomString(4)}</Text>
+                    <Text className="fangweima">{fangweima}</Text>
                   </View>
 
                   {/* 输入什么就显示什么 */}
@@ -1012,6 +1017,7 @@ const CameraPage = () => {
                       color: "rgba(255,255,255,.85)",
                       right: "1px",
                       bottom: "-1px",
+                      fontFamily: "HYQiHei 65J",
                     }}
                     className="fangweima"
                   >
@@ -1022,7 +1028,7 @@ const CameraPage = () => {
                         fontFamily: "Monaco",
                       }}
                     >
-                      {" " + generateRandomString(3)}
+                      {" " + makefangweimaText}
                     </Text>
                   </Text>
                 </View>
@@ -1059,7 +1065,7 @@ const CameraPage = () => {
                   )}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
-                    <Text className="fangweima">{generateRandomString(4)}</Text>
+                    <Text className="fangweima">{fangweimaText}</Text>
                   </View>
 
                   {/* 输入什么就显示什么 */}
@@ -1098,7 +1104,7 @@ const CameraPage = () => {
                   )}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
-                    <Text className="fangweima">{generateRandomString(4)}</Text>
+                    <Text className="fangweima">{fangweimaText}</Text>
                   </View>
 
                   {/* 输入什么就显示什么 */}
@@ -1213,7 +1219,7 @@ const CameraPage = () => {
                 }}
               ></View>
             )}
-            {/* {isCamera && !isRealDevice && (
+            {isCamera && !isRealDevice && (
               <Image
                 style={{
                   width: "100%",
@@ -1221,7 +1227,7 @@ const CameraPage = () => {
                 }}
                 src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.png?111"
               ></Image>
-            )} */}
+            )}
             {tempPath && (
               <Image
                 src={tempPath}

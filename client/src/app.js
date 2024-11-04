@@ -11,10 +11,10 @@ const FONT_CONFIG = [
     family: "Bebas",
     url: "https://gitee.com/jasonstory/fonts/raw/master/Bebas-regular.ttf",
   },
-  // {
-  //   family: "qimiaotype",
-  //   url: "https://gitee.com/jasonstory/fonts/raw/master/qimiaotype-bold.ttf",
-  // },
+  {
+    family: "NotoSansHans",
+    url: "https://gitee.com/jasonstory/fonts/raw/master/NotoSansHans-Bold.ttf",
+  },
   {
     family: "Helvetica Neue",
     url: "https://gitee.com/jasonstory/fonts/raw/master/HelveticaNeue.ttf",
