@@ -585,7 +585,7 @@ const CameraPage = () => {
    * @param {string} options.imageSelector 图片节点选择器
    * @param {Function} options.setTempPath 设置临时路径的函数
    */
-  const handleSnapshot = async ({
+  const handleSnapshot = ({
     type = "camera",
     containerSelector = ".snapshot",
     imageSelector = ".cameraSelectedImage",
@@ -593,175 +593,177 @@ const CameraPage = () => {
   }) => {
     fangweimaText = generateRandomString(4);
     makefangweimaText = generateRandomString(3);
-    try {
-      // 免费体验次数检查
-      if (
-        userInfo.times >= app.$app.globalData.config.mianfeicishu &&
-        userInfo.type === "default"
-      ) {
-        setTempPath(undefined);
-        setTiYanModalShow(true);
-        setTimeout(() => {
-          setTiYanModalShow(false);
-          Taro.navigateTo({
-            url: "/pages/vip/index",
+    requestAnimationFrame(async () => {
+      try {
+        // 免费体验次数检查
+        if (
+          userInfo.times >= app.$app.globalData.config.mianfeicishu &&
+          userInfo.type === "default"
+        ) {
+          setTempPath(undefined);
+          setTiYanModalShow(true);
+          setTimeout(() => {
+            setTiYanModalShow(false);
+            Taro.navigateTo({
+              url: "/pages/vip/index",
+            });
+          }, 2500);
+          return;
+        }
+
+        Taro.showLoading({
+          title: "处理中...",
+        });
+
+        // 确保图片完全加载
+        const ensureImageLoaded = () => {
+          return new Promise((resolve, reject) => {
+            const query = Taro.createSelectorQuery();
+            query
+              .select(`${containerSelector} ${imageSelector}`)
+              .fields({
+                node: true,
+                size: true,
+              })
+              .exec((res) => {
+                const image = res[0];
+                if (!image || !image.width) {
+                  reject(new Error("找不到图片节点1"));
+                  return;
+                }
+
+                if (image.width > 0 && image.height > 0) {
+                  resolve();
+                } else {
+                  image.onload = resolve;
+                  image.onerror = () => reject(new Error("图片加载失败"));
+                }
+              });
           });
-        }, 2500);
-        return;
-      }
+        };
+        await new Promise((resolve) =>
+          setTimeout(resolve, type === "camera" ? 100 : 200)
+        );
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        // 等待图片加载完成
+        await ensureImageLoaded();
 
-      Taro.showLoading({
-        title: "处理中...",
-      });
-
-      // 确保图片完全加载
-      const ensureImageLoaded = () => {
-        return new Promise((resolve, reject) => {
-          const query = Taro.createSelectorQuery();
-          query
-            .select(`${containerSelector} ${imageSelector}`)
-            .fields({
-              node: true,
-              size: true,
-            })
+        // 执行截图
+        const [res] = await new Promise((resolve, reject) => {
+          Taro.createSelectorQuery()
+            .select(containerSelector)
+            .node()
             .exec((res) => {
-              const image = res[0];
-              if (!image || !image.width) {
-                reject(new Error("找不到图片节点1"));
+              if (!res[0] || !res[0].node) {
+                reject(new Error("找不到截图节点2"));
                 return;
               }
-
-              if (image.width > 0 && image.height > 0) {
-                resolve();
-              } else {
-                image.onload = resolve;
-                image.onerror = () => reject(new Error("图片加载失败"));
-              }
+              resolve(res);
             });
         });
-      };
-      await new Promise((resolve) =>
-        setTimeout(resolve, type === "camera" ? 100 : 200)
-      );
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      // 等待图片加载完成
-      await ensureImageLoaded();
 
-      // 执行截图
-      const [res] = await new Promise((resolve, reject) => {
-        Taro.createSelectorQuery()
-          .select(containerSelector)
-          .node()
-          .exec((res) => {
-            if (!res[0] || !res[0].node) {
-              reject(new Error("找不到截图节点2"));
-              return;
+        const node = res.node;
+
+        // 执行截图操作
+        const snapshotResult = await new Promise((resolve, reject) => {
+          node.takeSnapshot({
+            type: "arraybuffer",
+            format: "png",
+            success: resolve,
+            fail: reject,
+          });
+        });
+
+        // 保存图片到本地文件系统
+        const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
+        const fs = wx.getFileSystemManager();
+        fs.writeFileSync(filePath, snapshotResult.data, "binary");
+
+        // 清空临时地址
+        setTempPath(undefined);
+
+        // 保存到相册
+        await wx.saveImageToPhotosAlbum({
+          filePath,
+          success: async () => {
+            wx.showToast({
+              title: "已保存到相册",
+            });
+            // 显示广告
+            if (interstitialAd && userInfo.type === "default") {
+              interstitialAd.show().catch((err) => {
+                console.error("插屏广告显示失败", err);
+              });
             }
-            resolve(res);
-          });
-      });
 
-      const node = res.node;
-
-      // 执行截图操作
-      const snapshotResult = await new Promise((resolve, reject) => {
-        node.takeSnapshot({
-          type: "arraybuffer",
-          format: "png",
-          success: resolve,
-          fail: reject,
-        });
-      });
-
-      // 保存图片到本地文件系统
-      const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
-      const fs = wx.getFileSystemManager();
-      fs.writeFileSync(filePath, snapshotResult.data, "binary");
-
-      // 清空临时地址
-      setTempPath(undefined);
-
-      // 保存到相册
-      await wx.saveImageToPhotosAlbum({
-        filePath,
-        success: async () => {
-          wx.showToast({
-            title: "已保存到相册",
-          });
-          // 显示广告
-          if (interstitialAd && userInfo.type === "default") {
-            interstitialAd.show().catch((err) => {
-              console.error("插屏广告显示失败", err);
-            });
-          }
-
-          try {
-            // 更新用户信息
-            const { result } = await cloud.callFunction({
-              name: "addUser",
-              data: {
-                remark: "成功使用",
-              },
-            });
-
-            // 更新配置
-            await cloud.callFunction({
-              name: "updateSavedConfig",
-              data: {
-                saveConfig: {
-                  isSaved: isShuiyinSaved,
-                  currentShuiyinIndex,
-                  locationName,
-                  latitude,
-                  longitude,
-                  showTrueCode,
-                  showHasCheck,
-                  shuiyinxiangjiName,
-                  weather,
-                  remark,
-                  dakaName,
-                  fangdaoShuiyin,
+            try {
+              // 更新用户信息
+              const { result } = await cloud.callFunction({
+                name: "addUser",
+                data: {
+                  remark: "成功使用",
                 },
-              },
-            });
+              });
 
-            setUserInfo(result.data);
+              // 更新配置
+              await cloud.callFunction({
+                name: "updateSavedConfig",
+                data: {
+                  saveConfig: {
+                    isSaved: isShuiyinSaved,
+                    currentShuiyinIndex,
+                    locationName,
+                    latitude,
+                    longitude,
+                    showTrueCode,
+                    showHasCheck,
+                    shuiyinxiangjiName,
+                    weather,
+                    remark,
+                    dakaName,
+                    fangdaoShuiyin,
+                  },
+                },
+              });
 
-            // 上传到云存储
-            const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
-              userInfo.type === "default" ? "" : "vip"
-            }_${userInfo.openid}.png`;
+              setUserInfo(result.data);
 
-            await cloud.uploadFile({
-              cloudPath,
-              filePath,
-            });
-          } catch (error) {
-            console.error("云函数调用失败:", error);
+              // 上传到云存储
+              const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+                userInfo.type === "default" ? "" : "vip"
+              }_${userInfo.openid}.png`;
+
+              await cloud.uploadFile({
+                cloudPath,
+                filePath,
+              });
+            } catch (error) {
+              console.error("云函数调用失败:", error);
+              wx.showToast({
+                icon: "error",
+                title: "保存成功，但同步失败",
+              });
+            }
+          },
+          fail: (error) => {
+            console.error("保存到相册失败:", error);
             wx.showToast({
               icon: "error",
-              title: "保存成功，但同步失败",
+              title: "保存失败，请重试",
             });
-          }
-        },
-        fail: (error) => {
-          console.error("保存到相册失败:", error);
-          wx.showToast({
-            icon: "error",
-            title: "保存失败，请重试",
-          });
-        },
-      });
-    } catch (error) {
-      console.error("处理失败:", error);
-      wx.showToast({
-        icon: "error",
-        title: "失败，请重试",
-      });
-      setTempPath(undefined);
-    } finally {
-      Taro.hideLoading();
-    }
+          },
+        });
+      } catch (error) {
+        console.error("处理失败:", error);
+        wx.showToast({
+          icon: "error",
+          title: "失败，请重试",
+        });
+        setTempPath(undefined);
+      } finally {
+        Taro.hideLoading();
+      }
+    });
   };
 
   // 相机拍照 onload 后执行
@@ -2298,6 +2300,7 @@ const CameraPage = () => {
           </AtFloatLayout> */}
           <AtFloatLayout
             isOpened={showFloatLayout}
+            scrollY={true}
             title="水印选择、修改"
             onClose={(e) => {
               setEdit(false);
