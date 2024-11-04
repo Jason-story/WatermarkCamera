@@ -972,36 +972,34 @@ const CameraPage = () => {
               <View style={{ position: "absolute", right: 0, bottom: 0 }}>
                 <View className="jinri-right-copyright">
                   {/* 今日水印 右下角背景图 */}
-                  {shuiyinxiangjiName.includes("今日水印") ? (
-                    <Image src={P2_1}></Image>
-                  ) : (
-                    <Image src={P2}></Image>
-                  )}
+                  {/* {shuiyinxiangjiName.includes("今日水印") ? ( */}
+                  <Image src={P2_1}></Image>
+                  // ) : ( // <Image src={P2}></Image>
+                  // )}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
-                    <Text className="fangweima">{fangweima}</Text>
+                    <Text className="fangweima">{fangweimaText}</Text>
                   </View>
-
                   {/* 输入什么就显示什么 */}
-                  {!shuiyinxiangjiName.includes("今日水印") ? (
-                    <Text
-                      style={{
-                        position: "absolute",
-                        color: "#fbfbfb",
-                        right: "3px",
-                        top: "2px",
-                        fontSize: "12px",
-                        textAlign: "center",
-                        fontWeight: 700,
-                        width: "100rpx",
-                        textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
-                        fontFamily: "黑体",
-                        opacity: ".85",
-                      }}
-                    >
-                      {shuiyinxiangjiName}
-                    </Text>
-                  ) : null}
+                  {/* {!shuiyinxiangjiName.includes("今日水印") ? ( */}
+                  <Text
+                    style={{
+                      position: "absolute",
+                      color: "#fbfbfb",
+                      right: "3px",
+                      top: "2px",
+                      fontSize: "12px",
+                      textAlign: "center",
+                      fontWeight: 700,
+                      width: "100rpx",
+                      textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
+                      fontFamily: "黑体",
+                      opacity: ".85",
+                    }}
+                  >
+                    {shuiyinxiangjiName}
+                  </Text>
+                  {/* ) : null} */}
                 </View>
               </View>
             );
@@ -1060,36 +1058,36 @@ const CameraPage = () => {
               <View style={{ position: "absolute", right: 0, bottom: 0 }}>
                 <View className="jinri-right-copyright">
                   {/* 今日水印 右下角背景图 */}
-                  {shuiyinxiangjiName.includes("今日水印") ? (
+                  {/* {shuiyinxiangjiName.includes("今日水印") ? (
                     <Image src={P2_1}></Image>
-                  ) : (
-                    <Image src={P2}></Image>
-                  )}
+                  ) : ( */}
+                  <Image src={P2}></Image>
+                  {/* )} */}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
                     <Text className="fangweima">{fangweimaText}</Text>
                   </View>
 
                   {/* 输入什么就显示什么 */}
-                  {!shuiyinxiangjiName.includes("今日水印") ? (
-                    <Text
-                      style={{
-                        position: "absolute",
-                        color: "#fbfbfb",
-                        right: "3px",
-                        top: "2px",
-                        fontSize: "12px",
-                        textAlign: "center",
-                        fontWeight: 700,
-                        width: "100rpx",
-                        textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
-                        fontFamily: "黑体",
-                        opacity: ".85",
-                      }}
-                    >
-                      {shuiyinxiangjiName}
-                    </Text>
-                  ) : null}
+                  {/* {!shuiyinxiangjiName.includes("今日水印") ? ( */}
+                  <Text
+                    style={{
+                      position: "absolute",
+                      color: "#fbfbfb",
+                      right: "3px",
+                      top: "2px",
+                      fontSize: "12px",
+                      textAlign: "center",
+                      fontWeight: 700,
+                      width: "100rpx",
+                      textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
+                      fontFamily: "黑体",
+                      opacity: ".85",
+                    }}
+                  >
+                    {shuiyinxiangjiName}
+                  </Text>
+                  {/* ) : null} */}
                 </View>
               </View>
             );
@@ -1159,8 +1157,8 @@ const CameraPage = () => {
             <Image
               src={Icon2}
               style={{
-                width: "54px",
-                height: "14px",
+                width: "147rpx",
+                height: "46rpx",
               }}
             ></Image>
           </View>
@@ -1203,7 +1201,7 @@ const CameraPage = () => {
               // background: "rgba(0,0,0,0)",
             }}
           >
-            {isCamera && selected === "图片水印" ? (
+            {/* {isCamera && selected === "图片水印" ? (
               <Camera
                 className="camera"
                 resolution="high"
@@ -1220,16 +1218,16 @@ const CameraPage = () => {
                   opacity: 0,
                 }}
               ></View>
-            )}
-            {/* {isCamera && !isRealDevice && (
+            )} */}
+            {isCamera && !isRealDevice && (
               <Image
                 style={{
                   width: "100%",
                   height: "100%",
                 }}
-                src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.png?111"
+                src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.jpg?111"
               ></Image>
-            )} */}
+            )}
             {tempPath && (
               <Image
                 src={tempPath}
