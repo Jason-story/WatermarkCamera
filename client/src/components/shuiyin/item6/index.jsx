@@ -18,8 +18,6 @@ const Index = ({
   latitude,
   longitude,
 }) => {
-  latitude = parseFloat((latitude * 1).toFixed(6));
-  longitude = parseFloat((longitude * 1).toFixed(6));
   return (
     <View className="item6-wrapper" key={"item-6"}>
       <View className="item6-time-box item6-flex">

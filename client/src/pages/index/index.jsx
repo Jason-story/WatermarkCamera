@@ -1219,7 +1219,7 @@ const CameraPage = () => {
                 }}
               ></View>
             )}
-            {isCamera && !isRealDevice && (
+            {/* {isCamera && !isRealDevice && (
               <Image
                 style={{
                   width: "100%",
@@ -1227,7 +1227,7 @@ const CameraPage = () => {
                 }}
                 src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.png?111"
               ></Image>
-            )}
+            )} */}
             {tempPath && (
               <Image
                 src={tempPath}
@@ -2557,29 +2557,29 @@ const CameraPage = () => {
                     <View className="edit-item">
                       <View className="picker">
                         <Text>经度： </Text>
-                        <Input
+                        <input
                           className="input"
-                          value={longitude}
+                          value={longitude + ""}
                           maxlength={14}
                           clear={true}
                           onInput={(e) => {
-                            setLongitude(e.detail.value);
+                            setLongitude(e.detail.value + "");
                           }}
-                        ></Input>
+                        ></input>
                       </View>
                     </View>
                     <View className="edit-item">
                       <View className="picker">
                         <Text>纬度： </Text>
-                        <Input
+                        <input
                           className="input"
-                          value={latitude}
+                          value={latitude + ""}
                           maxlength={14}
                           clear={true}
                           onInput={(e) => {
-                            setLatitude(e.detail.value);
+                            setLatitude(e.detail.value + "");
                           }}
-                        ></Input>
+                        ></input>
                       </View>
                     </View>
                   </>
