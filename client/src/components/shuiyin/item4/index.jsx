@@ -11,8 +11,9 @@ const Index = ({ hours, minutes, locationName, weekly, day, month, year }) => {
       <View className="item4-badage">
         <View className="item4-daka-text">打卡记录</View>
         <View className="item4-time">
-          {`${hours}：`}
-          <Text>{minutes}</Text>
+          {hours}
+          <Text>：</Text>
+          {minutes}
         </View>
       </View>
       <View className="item4-date">
