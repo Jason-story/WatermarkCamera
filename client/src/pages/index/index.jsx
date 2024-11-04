@@ -2478,7 +2478,11 @@ const CameraPage = () => {
                               }}
                             ></Input>
                           </View>
-                          <View className="input-tips">最多4个字</View>
+                          <View className="input-tips">
+                            {userInfo.type !== "default"
+                              ? "最多4个字，可填写 衿日水印"
+                              : "最多4个字"}
+                          </View>
                         </View>
                       )}
                   </>

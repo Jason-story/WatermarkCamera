@@ -926,12 +926,13 @@ text {
       margin-left: 5px;
       font-size: 12px;
       font-family: PTMono;
-      color: rgba(255, 255, 255,1);
+      color: rgba(255, 255, 255, 1);
       margin-top: 2px;
     }
   }
 }
 .make-right-copyright {
+  margin-bottom: 10px;
   image {
     width: 105px;
     height: 96.6px;
@@ -939,6 +940,6 @@ text {
   }
 }
 .fangweima {
-      text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
-
+  text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
+  font-weight: 500;
 }

@@ -32,7 +32,7 @@ const Index = ({
             <View className="item2-dot"></View>
             <View
               dangerouslySetInnerHTML={{
-                __html: formatTextWithLineLimit(locationName, 17, 3),
+                __html: formatTextWithLineLimit(locationName, 24, 2),
               }}
             ></View>
 
