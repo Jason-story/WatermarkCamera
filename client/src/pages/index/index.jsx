@@ -2402,11 +2402,11 @@ const CameraPage = () => {
                     mode="time"
                     value={`${hours}:${minutes}`}
                     onChange={handleTimeChange}
-                    disabled={userInfo.type == "default"}
+                    disabled={userInfo.type === "default"}
                   >
                     <View>选择时间： {`${hours}:${minutes}`}</View>
                   </Picker>
-                  {userInfo.type == "default" && (
+                  {userInfo.type === "default" && (
                     <View
                       className="input-tips"
                       style={{
@@ -2431,7 +2431,7 @@ const CameraPage = () => {
                       }}
                     ></Input>
                   </View>
-                  {userInfo.type == "default" ? (
+                  {userInfo.type === "default" ? (
                     <View
                       className="input-tips"
                       style={{

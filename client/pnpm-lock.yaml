@@ -28,7 +28,7 @@ importers:
         version: 3.6.30(@pmmmwh/react-refresh-webpack-plugin@0.5.15(react-refresh@0.11.0)(type-fest@2.19.0)(webpack-dev-server@4.11.1(webpack@5.96.1(@swc/core@1.3.96)))(webpack@5.96.1(@swc/core@1.3.96)))(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@tarojs/shared@3.6.30)(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))(react-refresh@0.11.0)(react@18.3.1)
       '@tarojs/plugin-html':
         specifier: ^3.6.30
-        version: 3.6.30(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))
+        version: 3.6.35(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))
       '@tarojs/plugin-platform-alipay':
         specifier: 3.6.30
         version: 3.6.30(@tarojs/components@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@tarojs/shared@3.6.30)(@types/react@18.3.12)(postcss@8.4.47)(react@18.3.1))(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))
@@ -62,9 +62,6 @@ importers:
       '@tarojs/taro':
         specifier: 3.6.30
         version: 3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47)
-      driver.js:
-        specifier: ^1.3.1
-        version: 1.3.1
       lodash:
         specifier: 4.17.15
         version: 4.17.15
@@ -1860,6 +1857,9 @@ packages:
   '@tarojs/helper@3.6.30':
     resolution: {integrity: sha512-q59t6sboGjklrcIKXXZLiRUle/CxGv/4/55sAmes1axFFX+28CYmkz5dZv8HrpYDlhFG2tbaaa4bRqyFvJX+Mg==}
 
+  '@tarojs/helper@3.6.35':
+    resolution: {integrity: sha512-BJblrUEyLchSWse9G9FT1HZYpmylS/+3XMBZ65DiifQd1/KhLhVHa2qiZoJpPfGQi8aG95qrNMUVZKmziXB5Pg==}
+
   '@tarojs/plugin-doctor-darwin-arm64@0.0.11':
     resolution: {integrity: sha512-H3C0TQD7k9YalSR2kgrVEvP1TfhSeRQDQQXhSurLStNuTqhrk8JSzxbxYC/Of5edM/uu+5xOzT0YfMV2LKG5UA==}
     engines: {node: '>= 10'}
@@ -1951,8 +1951,8 @@ packages:
       react-refresh:
         optional: true
 
-  '@tarojs/plugin-html@3.6.30':
-    resolution: {integrity: sha512-N4B/1zStNGp5wE8wmdcuv6vvWjjxvV+SUI2pULj8DmDbc0b4rL1PkcyHGaCGQhBQnywjB7XT1q0o5Xgbzc3Kdg==}
+  '@tarojs/plugin-html@3.6.35':
+    resolution: {integrity: sha512-yWP+PeVou+4Iso/WdEhkss363s4u616Tlbxoo+l9Srp8Cf/Z/xJia5fLMGLZlcFVlhgso1UEBHVa9SKR0C5o6g==}
 
   '@tarojs/plugin-platform-alipay@3.6.30':
     resolution: {integrity: sha512-xv6w8HEAXtXS2KLeMvKuFbQYjIuMavWmuCRy7Kjd/jvwJnJtsr/iDVzCMtXsGEltxRmH5zf1oRwWr1HgEzydiQ==}
@@ -2028,6 +2028,11 @@ packages:
     peerDependencies:
       '@tarojs/shared': ~3.6.30
 
+  '@tarojs/runtime@3.6.35':
+    resolution: {integrity: sha512-W8DbKfsChflWoSplYYf8IcWEemjPt6lwTATJn0YzLqSAWhtVfsQ8I5+Dw8qZVzdBxUwJI6WEywOgDgfxUQ0EEg==}
+    peerDependencies:
+      '@tarojs/shared': ~3.6.35
+
   '@tarojs/runtime@4.0.7':
     resolution: {integrity: sha512-oScnP3IAv3pQmJonzBSN6/NytKz4StRZzFFmxmcAkqsF4gT7dVPVF++E4vPG7OWh+zmowQUhs7P1qVdSCuQFDw==}
     engines: {node: '>= 18'}
@@ -2038,8 +2043,17 @@ packages:
       '@tarojs/shared': ~3.6.30
       '@tarojs/taro': ~3.6.30
 
+  '@tarojs/service@3.6.35':
+    resolution: {integrity: sha512-xwNmgGYXQt76RBmV+x1khmsO70gCESQNMJuoM7xjLJ32TQ+sRAf/T7QUJoKTfuPrfJuxtmt3lBCcWBx9sfr37A==}
+    peerDependencies:
+      '@tarojs/shared': ~3.6.35
+      '@tarojs/taro': ~3.6.35
+
   '@tarojs/shared@3.6.30':
     resolution: {integrity: sha512-lS70MNmPARc3W28ZWIWJ4y2fk52uVHmYgHmMsEy0SmcjARihn0ED2j/AIvDWsZR8vxt33KEnG/7ZH6ZgRlp0gA==}
+
+  '@tarojs/shared@3.6.35':
+    resolution: {integrity: sha512-QqqxEtGAD9QMl62iXHANMYvKntEnx5srdr7xEqOYt21UJode81yv05eIyQ8NEOdmtXXkHJuzXPxivldSSTVDIg==}
 
   '@tarojs/shared@4.0.7':
     resolution: {integrity: sha512-DaVXA02Ctze6c+INSS5pDxCBKOX2XIa2CtZtpmrSLKYUZjEvGH3IiHjegoyjldpBS0s9jZ3KLzOetHDuiScESg==}
@@ -4054,9 +4068,6 @@ packages:
     resolution: {integrity: sha512-xqnBTVd/E+GxJVrX5/eUJiLYjCGPwMpdL+jGhGU57BvtcA7wwhtHVbXBeUk51kOpW3S7Jn3BQbN9Q1R1Km2qDQ==}
     engines: {node: '>=6'}
 
-  driver.js@1.3.1:
-    resolution: {integrity: sha512-MvUdXbqSgEsgS/H9KyWb5Rxy0aE6BhOVT4cssi2x2XjmXea6qQfgdx32XKVLLSqTaIw7q/uxU5Xl3NV7+cN6FQ==}
-
   duplexer3@0.1.5:
     resolution: {integrity: sha512-1A8za6ws41LQgv9HrE/66jyC5yuSjQ3L/KOpFtoBilsAK2iA2wuS5rTt1OCzIvtS2V7nVmedsUU+DGRcjBmOYA==}
 
@@ -4069,8 +4080,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.50:
-    resolution: {integrity: sha512-eMVObiUQ2LdgeO1F/ySTXsvqvxb6ZH2zPGaMYsWzRDdOddUa77tdmI0ltg+L16UpbWdhPmuF3wIQYyQq65WfZw==}
+  electron-to-chromium@1.5.51:
+    resolution: {integrity: sha512-kKeWV57KSS8jH4alKt/jKnvHPmJgBxXzGUSbMd4eQF+iOsVPl7bz2KUmu6eo80eMP8wVioTfTyTzdMgM15WXNg==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -4141,8 +4152,8 @@ packages:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
 
-  es-iterator-helpers@1.1.0:
-    resolution: {integrity: sha512-/SurEfycdyssORP/E+bj4sEu1CWw4EmLDsHynHwSXQ7utgbrMRWW195pTrCjFgFCddf/UkYm3oqKPRq5i8bJbw==}
+  es-iterator-helpers@1.2.0:
+    resolution: {integrity: sha512-tpxqxncxnpw3c93u8n3VOzACmRFoVmWJqbWXvX/JfKbkhBw1oslgPrUfeSt2psuqyEJFD6N/9lg5i7bsKpoq+Q==}
     engines: {node: '>= 0.4'}
 
   es-module-lexer@0.10.5:
@@ -10554,7 +10565,7 @@ snapshots:
       '@babel/parser': 7.26.2
       '@babel/template': 7.25.9
       '@babel/types': 7.26.0
-      debug: 4.3.4
+      debug: 4.3.7
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -11914,6 +11925,39 @@ snapshots:
       - '@swc/helpers'
       - supports-color
 
+  '@tarojs/helper@3.6.35':
+    dependencies:
+      '@babel/core': 7.26.0
+      '@babel/parser': 7.26.2
+      '@babel/plugin-proposal-decorators': 7.25.9(@babel/core@7.26.0)
+      '@babel/plugin-proposal-object-rest-spread': 7.20.7(@babel/core@7.26.0)
+      '@babel/plugin-transform-runtime': 7.25.9(@babel/core@7.26.0)
+      '@babel/preset-env': 7.26.0(@babel/core@7.26.0)
+      '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
+      '@babel/register': 7.25.9(@babel/core@7.26.0)
+      '@babel/runtime': 7.26.0
+      '@babel/traverse': 7.25.9
+      '@swc/core': 1.3.96
+      '@swc/register': 0.1.10(@swc/core@1.3.96)
+      ansi-escapes: 4.3.2
+      chalk: 3.0.0
+      chokidar: 3.6.0
+      cross-spawn: 7.0.3
+      debug: 4.3.4
+      dotenv: 16.4.5
+      dotenv-expand: 9.0.0
+      esbuild: 0.19.12
+      find-yarn-workspace-root: 2.0.0
+      fs-extra: 8.1.0
+      lodash: 4.17.21
+      require-from-string: 2.0.2
+      resolve: 1.22.8
+      supports-hyperlinks: 2.3.0
+      yauzl: 2.10.0
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - supports-color
+
   '@tarojs/plugin-doctor-darwin-arm64@0.0.11':
     optional: true
 
@@ -11984,15 +12028,15 @@ snapshots:
       - '@tarojs/taro'
       - supports-color
 
-  '@tarojs/plugin-html@3.6.30(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))':
+  '@tarojs/plugin-html@3.6.35(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))':
     dependencies:
       '@babel/generator': 7.26.2
       '@babel/parser': 7.26.2
       '@babel/traverse': 7.25.9
       '@babel/types': 7.26.0
-      '@tarojs/runtime': 3.6.30(@tarojs/shared@3.6.30)
-      '@tarojs/service': 3.6.30(@tarojs/shared@3.6.30)(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))
-      '@tarojs/shared': 3.6.30
+      '@tarojs/runtime': 3.6.35(@tarojs/shared@3.6.35)
+      '@tarojs/service': 3.6.35(@tarojs/shared@3.6.35)(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))
+      '@tarojs/shared': 3.6.35
     transitivePeerDependencies:
       - '@swc/helpers'
       - '@tarojs/taro'
@@ -12171,6 +12215,12 @@ snapshots:
       lodash-es: 4.17.21
       tslib: 2.8.1
 
+  '@tarojs/runtime@3.6.35(@tarojs/shared@3.6.35)':
+    dependencies:
+      '@tarojs/shared': 3.6.35
+      lodash-es: 4.17.21
+      tslib: 2.8.1
+
   '@tarojs/runtime@4.0.7':
     dependencies:
       '@tarojs/shared': 4.0.7
@@ -12191,7 +12241,24 @@ snapshots:
       - '@swc/helpers'
       - supports-color
 
+  '@tarojs/service@3.6.35(@tarojs/shared@3.6.35)(@tarojs/taro@3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47))':
+    dependencies:
+      '@tarojs/helper': 3.6.35
+      '@tarojs/shared': 3.6.35
+      '@tarojs/taro': 3.6.30(@tarojs/helper@3.6.30)(@tarojs/runtime@3.6.30(@tarojs/shared@3.6.30))(@types/react@18.3.12)(postcss@8.4.47)
+      joi: 17.13.3
+      lodash: 4.17.21
+      ora: 5.4.1
+      resolve: 1.22.8
+      tapable: 1.1.3
+      webpack-merge: 4.2.2
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - supports-color
+
   '@tarojs/shared@3.6.30': {}
+
+  '@tarojs/shared@3.6.35': {}
 
   '@tarojs/shared@4.0.7': {}
 
@@ -13585,12 +13652,12 @@ snapshots:
   browserslist@3.2.8:
     dependencies:
       caniuse-lite: 1.0.30001677
-      electron-to-chromium: 1.5.50
+      electron-to-chromium: 1.5.51
 
   browserslist@4.24.2:
     dependencies:
       caniuse-lite: 1.0.30001677
-      electron-to-chromium: 1.5.50
+      electron-to-chromium: 1.5.51
       node-releases: 2.0.18
       update-browserslist-db: 1.1.1(browserslist@4.24.2)
 
@@ -14638,8 +14705,6 @@ snapshots:
       p-event: 2.3.1
       pify: 3.0.0
 
-  driver.js@1.3.1: {}
-
   duplexer3@0.1.5: {}
 
   eastasianwidth@0.2.0: {}
@@ -14651,7 +14716,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.50: {}
+  electron-to-chromium@1.5.51: {}
 
   emoji-regex@8.0.0: {}
 
@@ -14752,7 +14817,7 @@ snapshots:
 
   es-errors@1.3.0: {}
 
-  es-iterator-helpers@1.1.0:
+  es-iterator-helpers@1.2.0:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
@@ -14762,6 +14827,7 @@ snapshots:
       function-bind: 1.1.2
       get-intrinsic: 1.2.4
       globalthis: 1.0.4
+      gopd: 1.0.1
       has-property-descriptors: 1.0.2
       has-proto: 1.0.3
       has-symbols: 1.0.3
@@ -14998,7 +15064,7 @@ snapshots:
       array.prototype.flatmap: 1.3.2
       array.prototype.tosorted: 1.1.4
       doctrine: 2.1.0
-      es-iterator-helpers: 1.1.0
+      es-iterator-helpers: 1.2.0
       eslint: 8.57.1
       estraverse: 5.3.0
       hasown: 2.0.2
@@ -16773,7 +16839,7 @@ snapshots:
       '@babel/register': 7.25.9(@babel/core@7.26.0)
       babel-core: 7.0.0-bridge.0(@babel/core@7.26.0)
       colors: 1.4.0
-      flow-parser: 0.251.1
+      flow-parser: 0.121.0
       graceful-fs: 4.2.11
       micromatch: 3.1.10
       neo-async: 2.6.2
@@ -18306,7 +18372,7 @@ snapshots:
     dependencies:
       htmlparser2: 3.10.1
       postcss: 6.0.23
-      postcss-syntax: 0.28.0(postcss-html@0.28.0)(postcss-less@2.0.0)(postcss-markdown@0.28.0)(postcss-scss@1.0.6)(postcss@6.0.23)
+      postcss-syntax: 0.28.0(postcss-html@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-less@2.0.0)(postcss-markdown@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-scss@1.0.6)(postcss@6.0.23)
 
   postcss-import@14.1.0(postcss@8.4.47):
     dependencies:
@@ -18332,7 +18398,7 @@ snapshots:
   postcss-markdown@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23):
     dependencies:
       postcss: 6.0.23
-      postcss-syntax: 0.28.0(postcss-html@0.28.0)(postcss-less@2.0.0)(postcss-markdown@0.28.0)(postcss-scss@1.0.6)(postcss@6.0.23)
+      postcss-syntax: 0.28.0(postcss-html@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-less@2.0.0)(postcss-markdown@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-scss@1.0.6)(postcss@6.0.23)
       remark: 9.0.0
       unist-util-find-all-after: 1.0.5
 
@@ -18507,7 +18573,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       svgo: 2.8.0
 
-  postcss-syntax@0.28.0(postcss-html@0.28.0)(postcss-less@2.0.0)(postcss-markdown@0.28.0)(postcss-scss@1.0.6)(postcss@6.0.23):
+  postcss-syntax@0.28.0(postcss-html@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-less@2.0.0)(postcss-markdown@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-scss@1.0.6)(postcss@6.0.23):
     dependencies:
       postcss: 6.0.23
     optionalDependencies:
@@ -19874,7 +19940,7 @@ snapshots:
       postcss-sass: 0.3.5
       postcss-scss: 1.0.6
       postcss-selector-parser: 3.1.2
-      postcss-syntax: 0.28.0(postcss-html@0.28.0)(postcss-less@2.0.0)(postcss-markdown@0.28.0)(postcss-scss@1.0.6)(postcss@6.0.23)
+      postcss-syntax: 0.28.0(postcss-html@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-less@2.0.0)(postcss-markdown@0.28.0(postcss-syntax@0.28.0(postcss@8.4.47))(postcss@6.0.23))(postcss-scss@1.0.6)(postcss@6.0.23)
       postcss-value-parser: 3.3.1
       resolve-from: 4.0.0
       signal-exit: 3.0.7
