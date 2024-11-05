@@ -68,7 +68,7 @@ exports.main = async (event, context) => {
         await sendCustomerServiceMessage(userOpenId, 'text', {
             content:
                 // '您好，欢迎使用水印相机。如果您要开通会员请复制下面链接到浏览器中打开。如有问题请留言，我会第一时间回复您。'
-                '感谢使用，觉得好用就开个会员支持一下吧 ☺️ 有任何问题可留言，第一时间回复。'
+                '你好，每个微信号有一次免费体验次数，觉得好用就开个会员吧，承诺永不失联，请放心使用'
         });
         // 发送微信号
         // await sendCustomerServiceMessage(userOpenId, 'text', {
