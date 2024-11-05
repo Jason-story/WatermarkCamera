@@ -1247,7 +1247,7 @@ const CameraPage = () => {
               ></Image>
             )}
           </View>
-          {!fuckShenHe && userInfo.type === "default" && (
+          {/* {!fuckShenHe && userInfo.type === "default" && (
             <View
               style={{
                 color:
@@ -1272,7 +1272,7 @@ const CameraPage = () => {
               可修改水印相机 <br />
               开通会员可去掉此水印
             </View>
-          )}
+          )} */}
           <View className="mask-inner-box">
             {ShuiyinDoms[currentShuiyinIndex].component({
               hours,
@@ -2299,10 +2299,12 @@ const CameraPage = () => {
           </AtFloatLayout> */}
           <Popup
             visible={showFloatLayout}
-            closeable
+            overlay={false}
+            closeable={true}
             style={{ height: "100%" }}
             position="bottom"
             title="水印选择、修改"
+            destroyOnClose={true}
             onClose={(e) => {
               setEdit(false);
               setShowFloatLayout(!showFloatLayout);
