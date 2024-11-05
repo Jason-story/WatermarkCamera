@@ -2365,7 +2365,6 @@ const CameraPage = () => {
             ) : (
               // 编辑页
               <ScrollView scroll-y className="edit-box">
-
                 <View className="shantui-btns">
                   <View
                     style={{
@@ -2401,9 +2400,20 @@ const CameraPage = () => {
                     mode="time"
                     value={`${hours}:${minutes}`}
                     onChange={handleTimeChange}
+                    disabled={userInfo.type == "default"}
                   >
                     <View>选择时间： {`${hours}:${minutes}`}</View>
                   </Picker>
+                  {userInfo.type == "default" && (
+                    <View
+                      className="input-tips"
+                      style={{
+                        color: "#f22c3d",
+                      }}
+                    >
+                      开通会员可修改时间
+                    </View>
+                  )}
                 </View>
                 <View className="edit-item">
                   <View className="picker">
@@ -2413,13 +2423,24 @@ const CameraPage = () => {
                       value={locationName}
                       maxlength={50}
                       clear={true}
+                      disabled={userInfo.type == "default"}
                       onInput={(e) => {
                         debounce(setLocationName(e.detail.value), 100);
                       }}
                     ></Input>
                   </View>
-
-                  <View className="input-tips">最多45个字</View>
+                  {userInfo.type == "default" ? (
+                    <View
+                      className="input-tips"
+                      style={{
+                        color: "#f22c3d",
+                      }}
+                    >
+                      开通会员可修改地点
+                    </View>
+                  ) : (
+                    <View className="input-tips">最多45个字</View>
+                  )}
                 </View>
                 {ShuiyinDoms[currentShuiyinIndex].options?.hasDakaLabel && (
                   <View className="edit-item flex-row">
