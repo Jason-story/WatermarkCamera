@@ -18,13 +18,14 @@ import P1 from "../../images/p-1.png";
 import P2 from "../../images/p-2.png";
 import P2_1 from "../../images/p-2-1.png";
 import P3 from "../../images/p-3.png";
+
+import closeIcon from "../../images/close.png";
 import P4 from "../../images/p-4.png";
 import P5 from "../../images/p-5.png";
 import Fw from "../../images/fw.png";
 import ShuiyinDoms from "../../components/shuiyin";
 import { generateRandomString } from "../../components/utils.js";
-
-import { AtToast, AtFloatLayout } from "taro-ui";
+import { Popup } from "@nutui/nutui-react-taro";
 import Taro from "@tarojs/taro";
 import QQMapWX from "qqmap-wx-jssdk";
 import ShareImg from "../../images/logo.jpg";
@@ -973,9 +974,9 @@ const CameraPage = () => {
                 <View className="jinri-right-copyright">
                   {/* 今日水印 右下角背景图 */}
                   {/* {shuiyinxiangjiName.includes("今日水印") ? ( */}
-                  <Image src={P2_1}></Image>
-                  // ) : ( // <Image src={P2}></Image>
-                  // )}
+                  {/* <Image src={P2_1}></Image> */}
+                  <Image src={P2}></Image>
+                  {/* )} */}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
                     <Text className="fangweima">{fangweimaText}</Text>
@@ -1201,7 +1202,7 @@ const CameraPage = () => {
               // background: "rgba(0,0,0,0)",
             }}
           >
-            {/* {isCamera && selected === "图片水印" ? (
+            {isCamera && selected === "图片水印" ? (
               <Camera
                 className="camera"
                 resolution="high"
@@ -1218,7 +1219,7 @@ const CameraPage = () => {
                   opacity: 0,
                 }}
               ></View>
-            )} */}
+            )}
             {isCamera && !isRealDevice && (
               <Image
                 style={{
@@ -2296,9 +2297,11 @@ const CameraPage = () => {
               </View>
             </View>
           </AtFloatLayout> */}
-          <AtFloatLayout
-            isOpened={showFloatLayout}
-            scrollY={true}
+          <Popup
+            visible={showFloatLayout}
+            closeable
+            style={{ height: "100%" }}
+            position="bottom"
             title="水印选择、修改"
             onClose={(e) => {
               setEdit(false);
@@ -2306,7 +2309,13 @@ const CameraPage = () => {
             }}
           >
             {!edit ? (
-              <View className="shuiyin-list">
+              <View
+                className="shuiyin-list"
+                style={{
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                }}
+              >
                 {ShuiyinDoms.map((item, index) => {
                   return (
                     <View key={index}>
@@ -2355,7 +2364,8 @@ const CameraPage = () => {
               </View>
             ) : (
               // 编辑页
-              <View className="edit-box">
+              <ScrollView scroll-y className="edit-box">
+
                 <View className="shantui-btns">
                   <View
                     style={{
@@ -2601,8 +2611,8 @@ const CameraPage = () => {
                     </View>
                     <View className="input-tips">最多20个字</View>
                   </View>
-                )}
-              </View>
+                )}{" "}
+              </ScrollView>
             )}
             {!edit && (
               <View>
@@ -2617,7 +2627,7 @@ const CameraPage = () => {
                 </Text>
               </View>
             )}
-          </AtFloatLayout>
+          </Popup>
           {/* <AtToast isOpened={showToast} text="请输入详细地点"></AtToast> */}
         </View>
       )}

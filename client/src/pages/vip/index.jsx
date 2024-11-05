@@ -353,7 +353,7 @@ const Index = () => {
           )}
           {!fuckShenHe && (
             <Button
-              // openType="contact"
+              openType="contact"
               style={{
                 background: "linear-gradient(45deg,#fc4a1a, #f7b733)",
                 color: "white",
@@ -377,57 +377,7 @@ const Index = () => {
             </Button>
           )}
         </View>
-        <AtModal
-          isOpened={isShowModal}
-          closeOnClickOverlay={true}
-          onClose={() => {
-            setIsShowModal(false);
-          }}
-        >
-          <AtModalHeader>
-            <Text>提示</Text>
-            <View
-              onClick={() => {
-                setIsShowModal(false);
-              }}
-              style={{
-                position: "absolute",
-                right: "15px",
-                top: "10px",
-                width: "20px",
-                height: "20px",
-              }}
-            >
-              <Image
-                style={{ width: "100%", height: "100%" }}
-                src={Close}
-              ></Image>
-            </View>
-          </AtModalHeader>
 
-          <AtModalContent>
-            <View className="modal-list">
-              <View style={{ lineHeight: 1.6 }}>
-                使用问题请先查看教程，如仍然无法解决请联系客服。
-              </View>
-            </View>
-          </AtModalContent>
-          <AtModalAction>
-            <Button
-              onClick={() => {
-                setIsShowModal(false);
-                Taro.navigateTo({
-                  url: "/pages/jiaocheng/index",
-                });
-              }}
-            >
-              查看教程
-            </Button>
-            <Button openType="contact" type="default" className="guide-btn">
-              联系客服
-            </Button>
-          </AtModalAction>
-        </AtModal>
         {fuckShenHe === false && (
           <View className="user-details" style={{ marginTop: "20px" }}>
             <View>
