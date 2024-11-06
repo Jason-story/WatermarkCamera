@@ -43,7 +43,7 @@ exports.main = async (event, context) => {
         halfYearMonth: 180,
         year: 365,
         never: 999999,
-        dingzhi: 30
+        dingzhi: 0
     };
 
     try {
@@ -63,6 +63,9 @@ exports.main = async (event, context) => {
             endTime = endTime + (end_time - currentTime);
         }
         // 更新用户信息
+        if (type === 'dingzhi') {
+            type = 'default';
+        }
         await transaction
             .collection('users')
             .where({
