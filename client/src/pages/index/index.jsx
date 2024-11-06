@@ -147,6 +147,7 @@ const CameraPage = () => {
   const [xiangceImgHeight, setXiangceImgHeight] = useState(0);
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
   const [remark, setRemark] = useState("");
+  const [videoMaskImg, setVideoMaskImg] = useState("");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
@@ -359,7 +360,7 @@ const CameraPage = () => {
       Taro.showToast({
         title: "此功能只对半年及以上会员开放,最大支持50M视频",
         icon: "none",
-        duration: 5000,
+        duration: 3000,
       });
     }
   };
@@ -816,7 +817,7 @@ const CameraPage = () => {
       Taro.showToast({
         title: "此功能只对半年及以上会员开放,最大支持50M视频",
         icon: "none",
-        duration: 5000,
+        duration: 3000,
       });
       return;
     }
@@ -1203,7 +1204,7 @@ const CameraPage = () => {
               // background: "rgba(0,0,0,0)",
             }}
           >
-            {selected === "图片水印" ? (
+            {selected === "图片水印" && isCamera && (
               <Camera
                 className="camera"
                 resolution="high"
@@ -1212,15 +1213,8 @@ const CameraPage = () => {
                 frameSize="medium"
                 onError={cameraError}
               />
-            ) : (
-              <View
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                }}
-              ></View>
             )}
+
             {isCamera && !isRealDevice && (
               <Image
                 style={{
@@ -1248,7 +1242,7 @@ const CameraPage = () => {
               ></Image>
             )}
           </View>
-          {/* {!fuckShenHe && userInfo.type === "default" && (
+          {!fuckShenHe && userInfo.type === "default" && (
             <View
               style={{
                 color:
@@ -1273,7 +1267,7 @@ const CameraPage = () => {
               可修改水印相机 <br />
               开通会员可去掉此水印
             </View>
-          )} */}
+          )}
           <View className="mask-inner-box">
             {ShuiyinDoms[currentShuiyinIndex].component({
               hours,
@@ -1364,7 +1358,7 @@ const CameraPage = () => {
 
     return () => clearInterval(interval); // 清除副作用
   }, []);
-  const selectImg = () => {
+  const selectImgFromXiangce = () => {
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -1382,7 +1376,7 @@ const CameraPage = () => {
       Taro.showToast({
         title: "此功能只对半年及以上会员开放,最大支持50M视频",
         icon: "none",
-        duration: 5000,
+        duration: 3000,
       });
       return;
     }
@@ -1409,15 +1403,6 @@ const CameraPage = () => {
           Taro.getImageInfo({
             src: filePath,
             success: async function (info) {
-              // const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
-
-              // if (fileSizeInMB > 3) {
-              //   Taro.showModal({
-              //     title: "提示",
-              //     content: "图片体积过大，请重新选择",
-              //     showCancel: false,
-              //   });
-              // } else {
               // 设置完相册选图的path后需要设置离屏截图的尺寸 根据所选图片计算高度
               await setXiangceImgHeight(
                 info.orientation == "right"
@@ -1425,7 +1410,6 @@ const CameraPage = () => {
                   : (info.height / info.width) * screenWidth
               );
               await setXiangceTempPath(filePath);
-              // }
             },
           });
         },
@@ -1449,90 +1433,76 @@ const CameraPage = () => {
             });
             return;
           }
-          return;
-          async function uploadImage(filePath) {
-            const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
-              userInfo.type === "default" ? "" : "vip"
-            }_${userInfo.openid}.png`;
-            const res = await cloud.uploadFile({
-              cloudPath,
-              filePath,
-            });
-            return res.fileID;
-          }
-          // 上传图片和视频
-          const [firstImageFileID, secondImageFileID, logoImageFileId] =
-            await Promise.all([
-              uploadImage(firstImagePath),
-              uploadImage(secondImagePath),
-              config?.logoConfig?.path
-                ? uploadImage(config.logoConfig.path)
-                : null,
-            ]);
-          let ytg = null;
-          if (config.type === "shared") {
-            ytg = await new Taro.cloud.Cloud({
-              resourceAppid: config.containerResourceAppid,
-              resourceEnv: config.containerResourceEnv,
-            });
-            await ytg.init();
-          } else {
-            ytg = cloud;
-          }
-          // 视频合成
-          ytg.callContainer({
-            config: {
-              env: config["containerId"],
-            },
-            path: "/process",
-            header: {
-              "X-WX-SERVICE": config["containerName"],
-              "content-type": "application/json",
-            },
-            method: "POST",
-            data: {
-              image_file_id: secondImageFileID,
-              video_file_id: firstImageFileID,
-              logo_file_id: logoImageFileId ? logoImageFileId : null,
-              openid: userInfo.openid,
-            },
-            success: (res) => {
-              setLoading(false);
-              if (res.data && res.data.taskId) {
-                setVideoModal(true);
-              } else {
-                throw new Error("处理错误");
-              }
-            },
-            fail: (error) => {
-              setLoading(false);
-              Taro.showToast({
-                title: "系统重启，请刷新后重新上传",
-                icon: "none",
-                duration: 3000,
-              });
-            },
-          });
-
-          // app.$app.globalData.config.isVideo = true;
-          // app.$app.globalData.config.videoPath = path;
-          // Taro.navigateTo({
-          //   url:
-          //     "/pages/result/index?bg=" +
-          //     bg +
-          //     "&mask=" +
-          //     canvasImg +
-          //     "&serverCanvas=true" +
-          //     "&vip=" +
-          //     canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
-          //     "&id=" +
-          //     inviteId,
-          // });
         },
       });
     }
   };
 
+  useEffect(() => {
+    const fn = async () => {
+      async function uploadImage(filePath) {
+        const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+          userInfo.type === "default" ? "" : "vip"
+        }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
+        const res = await cloud.uploadFile({
+          cloudPath,
+          filePath,
+        });
+        return res.fileID;
+      }
+      // 上传图片和视频
+      const [firstImageFileID, secondImageFileID, logoImageFileId] =
+        await Promise.all([
+          uploadImage(firstImagePath),
+          uploadImage(secondImagePath),
+          config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
+        ]);
+      let ytg = null;
+      if (config.type === "shared") {
+        ytg = await new Taro.cloud.Cloud({
+          resourceAppid: config.containerResourceAppid,
+          resourceEnv: config.containerResourceEnv,
+        });
+        await ytg.init();
+      } else {
+        ytg = cloud;
+      }
+      // 视频合成
+      ytg.callContainer({
+        config: {
+          env: config["containerId"],
+        },
+        path: "/process",
+        header: {
+          "X-WX-SERVICE": config["containerName"],
+          "content-type": "application/json",
+        },
+        method: "POST",
+        data: {
+          image_file_id: secondImageFileID,
+          video_file_id: firstImageFileID,
+          logo_file_id: logoImageFileId ? logoImageFileId : null,
+          openid: userInfo.openid,
+        },
+        success: (res) => {
+          setLoading(false);
+          if (res.data && res.data.taskId) {
+            setVideoModal(true);
+          } else {
+            throw new Error("处理错误");
+          }
+        },
+        fail: (error) => {
+          setLoading(false);
+          Taro.showToast({
+            title: "系统重启，请刷新后重新上传",
+            icon: "none",
+            duration: 3000,
+          });
+        },
+      });
+    };
+  }, [videoMaskImg]);
   useEffect(() => {
     if (app.$app.globalData.config.showHasCheck !== undefined) {
       setShowHasCheck(app.$app.globalData.config.showHasCheck);
@@ -1823,7 +1793,7 @@ const CameraPage = () => {
                   <Image
                     src={XiangceIcon}
                     className="xiangceIcon"
-                    onClick={selectImg}
+                    onClick={selectImgFromXiangce}
                   ></Image>
                   <Text>相册</Text>
                 </View>
