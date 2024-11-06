@@ -24,7 +24,7 @@ const QRCodePage = () => {
         });
         await cloud.init();
       } else {
-         await Taro.cloud.init({
+        await Taro.cloud.init({
           env: config.env,
         });
         cloud = Taro.cloud;
@@ -97,7 +97,11 @@ const QRCodePage = () => {
       },
     });
   };
-  return (
+  let fuckShenHe = app.$app.globalData.fuckShenHe;
+
+  return fuckShenHe ? (
+    "无"
+  ) : (
     <View className="qr-code-page">
       <View className="user-details">
         <View>为了保护隐私，所有视频都会在每天0点清空，请及时下载</View>

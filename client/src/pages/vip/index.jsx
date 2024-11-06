@@ -149,12 +149,15 @@ const Index = () => {
     price && setSelected(price.current);
     if (price) {
       const data = price?.[config["priceMap"]]?.map((item) => {
-        const [key, title, amount, text = ""] = item.split("|");
+        const [key, title, totaldays = "", amount] = item.split("|");
         return {
           key,
-          title: `${title}会员${amount}元`,
+          title:
+            key !== "dingzhi"
+              ? title + "会员" + amount + "元"
+              : title + amount + "元",
           price: amount,
-          text,
+          text: (amount / totaldays).toFixed(3),
         };
       });
       setVipConfig(data);
@@ -293,21 +296,14 @@ const Index = () => {
                       }}
                     >
                       <Text>{item.title}</Text>
-                      {item.text && (
-                        <Text
-                          style={{
-                            fontSize: "15px",
-                            fontStyle: "italic",
-                          }}
-                        >
-                          {item.key !== "1day" &&
-                            item.key !== "never" &&
-                            "，平均每月" +
-                              item.text +
-                              "元" +
-                              (item.key === "year" ? "，推荐" : "")}
-                        </Text>
-                      )}
+                      <Text>
+                        {item.key !== "1day" &&
+                          item.key !== "dingzhi" &&
+                          "，平均每天" +
+                            item.text +
+                            "元" +
+                            (item.key === "year" ? "，推荐" : "")}
+                      </Text>
                     </View>
                   </Label>
                 );

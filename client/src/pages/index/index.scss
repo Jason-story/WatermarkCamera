@@ -797,6 +797,8 @@ picker,
     line-height: 1;
     color: rgb(24, 24, 24);
     border: 1px solid #c5d9e8;
+    color: #4c4848;
+
     &:last-child {
       margin-right: 0;
     }
@@ -806,8 +808,8 @@ picker,
     }
 
     &--selected {
-      color: #fff;
       border: none;
+      color: #fff;
       &.selected_0 {
         background: linear-gradient(45deg, #5675fa, #67b3f4);
       }

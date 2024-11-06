@@ -18,7 +18,7 @@ import P1 from "../../images/p-1.png";
 import P2 from "../../images/p-2.png";
 import P2_1 from "../../images/p-2-1.png";
 import P3 from "../../images/p-3.png";
-
+import { Tour } from "@nutui/nutui-react";
 import closeIcon from "../../images/close.png";
 import P4 from "../../images/p-4.png";
 import P5 from "../../images/p-5.png";
@@ -165,6 +165,7 @@ const CameraPage = () => {
     return weekDays[weekday];
   }
   useEffect(() => {
+    // setShowTour(true);
     const phoneInputed = Taro.getStorageSync("phoneInputed");
     const showRateModalStorage = Taro.getStorageSync("showRateModalStorage");
     if (phoneInputed && !showRateModalStorage) {
@@ -690,6 +691,8 @@ const CameraPage = () => {
             wx.showToast({
               title: "已保存到相册",
             });
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             // 显示广告
             if (interstitialAd && userInfo.type === "default") {
               interstitialAd.show().catch((err) => {
@@ -1185,14 +1188,12 @@ const CameraPage = () => {
             height: height,
             position: "relative",
           }}
-          onClick={
-            isCamera
-              ? (e) => {
-                  setShowFloatLayout(!showFloatLayout);
-                  setEdit(true);
-                }
-              : undefined
-          }
+          onClick={(e) => {
+            if (!showFloatLayout) {
+              setEdit(true);
+              setShowFloatLayout(!showFloatLayout);
+            }
+          }}
         >
           <View
             style={{
@@ -1202,7 +1203,7 @@ const CameraPage = () => {
               // background: "rgba(0,0,0,0)",
             }}
           >
-            {isCamera && selected === "图片水印" ? (
+            {selected === "图片水印" ? (
               <Camera
                 className="camera"
                 resolution="high"
@@ -1626,6 +1627,20 @@ const CameraPage = () => {
   const systemInfo = wx.getSystemInfoSync();
   // 判断是否是真机
   const isRealDevice = systemInfo.platform !== "devtools";
+
+  const [showTour, setShowTour] = useState(false);
+
+  const closeTour = () => {
+    setShowTour(false);
+  };
+
+  const steps = [
+    {
+      content: "70+ 高质量组件，覆盖移动端主流场景",
+      target: "target1",
+    },
+  ];
+
   return (
     <ScrollView
       scroll-y={true}
@@ -1832,9 +1847,20 @@ const CameraPage = () => {
                       setShowFloatLayout(!showFloatLayout);
                     }}
                   ></Image>
-                  <Text>修改</Text>
+                  <Text id="target1">修改</Text>
                 </View>
+                {/* <Tour
+                  className="nut-custom-tour"
+                  visible={showTour}
+                  onClose={closeTour}
+                  list={steps}
+                  location="top-start"
+                  offset={[0, 0]}
+                  maskWidth={60}
+                  maskHeight={50}
+                /> */}
               </View>
+
               <View className="take-photo" onClick={takePhoto}>
                 <View
                   className={
@@ -2020,7 +2046,7 @@ const CameraPage = () => {
 
             </View> */}
             </View>
-            {/* {fuckShenHe === false && (
+            {fuckShenHe === false && (
               <View
                 className="button-group"
                 style={{
@@ -2032,15 +2058,14 @@ const CameraPage = () => {
               >
                 {["图片水印", "视频水印"].map((option, index) => {
                   return (
-                    <AtButton
+                    <Button
                       key={option}
                       onClick={() => handleSelect(option)}
                       style={{
-                        color: "white",
                         border: "none",
                         borderRadius: "25px",
                         padding: "0 20px",
-                        fontSize: "30rpx",
+                        fontSize: "28rpx",
                         cursor: "pointer",
                         boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
                         transition: "transform 0.2s, box-shadow 0.2s",
@@ -2052,11 +2077,11 @@ const CameraPage = () => {
                       }`}
                     >
                       {option?.slice(0, 2) + "加" + option?.slice(2)}
-                    </AtButton>
+                    </Button>
                   );
                 })}
               </View>
-            )} */}
+            )}
             <View className="bottom-btns">
               <Button
                 className="share-btn"
@@ -2073,8 +2098,9 @@ const CameraPage = () => {
                   padding: "0 20px",
                   fontSize: "28rpx",
                   cursor: "pointer",
+                  fontWeight: "500",
                   transition: "transform 0.2s, box-shadow 0.2s",
-                  height: "39px",
+                  height: "40px",
                 }}
               >
                 使用教程
@@ -2101,9 +2127,9 @@ const CameraPage = () => {
             showLeftButton={false}
             onRightButtonClick={() => {
               setTiYanModalShow(false);
-              Taro.navigateTo({
-                url: "/pages/vip/index",
-              });
+              // Taro.navigateTo({
+              //   url: "/pages/vip/index",
+              // });
             }}
           />
 
@@ -2397,7 +2423,8 @@ const CameraPage = () => {
                 <View className="edit-item">
                   <Picker
                     style={{
-                      color: "#050505",
+                      color:
+                        userInfo.type === "default" ? "#a5a5a5" : "#050505",
                     }}
                     mode="time"
                     value={`${hours}:${minutes}`}
@@ -2418,7 +2445,13 @@ const CameraPage = () => {
                   )}
                 </View>
                 <View className="edit-item">
-                  <View className="picker">
+                  <View
+                    className="picker"
+                    style={{
+                      color:
+                        userInfo.type === "default" ? "#a5a5a5" : "#050505",
+                    }}
+                  >
                     <Text>详细地点： </Text>
                     <Input
                       className="input"
