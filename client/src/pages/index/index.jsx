@@ -20,6 +20,7 @@ import P2_1 from "../../images/p-2-1.png";
 import P3 from "../../images/p-3.png";
 import { Tour } from "@nutui/nutui-react";
 import closeIcon from "../../images/close.png";
+import Touming from "../../images/touming.png";
 import P4 from "../../images/p-4.png";
 import P5 from "../../images/p-5.png";
 import Fw from "../../images/fw.png";
@@ -90,7 +91,8 @@ function clearCacheIfNeeded(path) {
     }
   }
 }
-
+const appid = Taro.getAccountInfoSync().miniProgram.appId;
+const config = appConfigs[appid];
 const CameraPage = () => {
   const [shuiyinNameModal, setShuiyinNameModal] = useState(false);
   const [cameraContext, setCameraContext] = useState(null);
@@ -179,8 +181,6 @@ const CameraPage = () => {
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
     // 在页面中定义插屏广告
     const init = async () => {
-      const appid = Taro.getAccountInfoSync().miniProgram.appId;
-      const config = appConfigs[appid];
       if (wx.createInterstitialAd) {
         interstitialAd = wx.createInterstitialAd({
           adUnitId: config.ad,
@@ -246,19 +246,7 @@ const CameraPage = () => {
     // 邀请存档
     if (inviteId) {
       Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
-      // cloud.callFunction({
-      //   name: "invite",
-      //   data: {
-      //     invite_id: inviteId,
-      //   },
-      // });
     }
-    // cloud.callFunction({
-    //   name: "getPrice",
-    //   success: function (res) {
-    //     setPrice(res.result.data);
-    //   },
-    // });
     wx.getSystemInfo({
       success: function (res) {
         setScreenWidth(res.screenWidth); // 输出屏幕宽度
@@ -278,11 +266,6 @@ const CameraPage = () => {
     const [hours, minutes] = e.detail.value.split(":");
     setHours(hours);
     setMinutes(minutes);
-  };
-
-  const handleCityChange = (e) => {
-    geocoder(e.detail.value);
-    setEditCity(e.detail.value);
   };
 
   const [permissions, setPermissions] = useState({
@@ -321,7 +304,7 @@ const CameraPage = () => {
   useEffect(() => {
     allAuth && permissions.userLocation && getLocation();
     // longitude && latitude && fetchWeather(longitude, latitude);
-  }, [allAuth, permissions]);
+  }, [allAuth, permissions.userLocation]);
 
   const getLocation = () => {
     if (latitude) return;
@@ -364,22 +347,6 @@ const CameraPage = () => {
       });
     }
   };
-  const geocoder = (addr) => {
-    const qqmapsdk = new QQMapWX({
-      key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
-    });
-    qqmapsdk.geocoder({
-      address: addr,
-      success: (res) => {
-        const { lat, lng } = res.result.location;
-        setLatitude(lat);
-        setLongitude(lng);
-      },
-      fail: (err) => {
-        console.error("Failed to reverse geocode:", err);
-      },
-    });
-  };
   // 防抖函数
   function debounce(func, delay) {
     let timer;
@@ -391,9 +358,6 @@ const CameraPage = () => {
     };
   }
   const reverseGeocode = (lat, lng) => {
-    // if (city) {
-    //   return;
-    // }
     const qqmapsdk = new QQMapWX({
       key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
     });
@@ -613,15 +577,18 @@ const CameraPage = () => {
           }, 2500);
           return;
         }
-
+        console.log(444);
         Taro.showLoading({
           title: "处理中...",
         });
+        console.log(777);
 
         // 确保图片完全加载
         const ensureImageLoaded = () => {
           return new Promise((resolve, reject) => {
             const query = Taro.createSelectorQuery();
+            console.log("containerSelector: ", containerSelector);
+            console.log("imageSelector: ", imageSelector);
             query
               .select(`${containerSelector} ${imageSelector}`)
               .fields({
@@ -636,6 +603,8 @@ const CameraPage = () => {
                 }
 
                 if (image.width > 0 && image.height > 0) {
+                  console.log("image: ", image);
+
                   resolve();
                 } else {
                   image.onload = resolve;
@@ -648,8 +617,11 @@ const CameraPage = () => {
           setTimeout(resolve, type === "camera" ? 100 : 200)
         );
         await new Promise((resolve) => setTimeout(resolve, 50));
+        console.log(3333);
+
         // 等待图片加载完成
         await ensureImageLoaded();
+        console.log(555);
 
         // 执行截图
         const [res] = await new Promise((resolve, reject) => {
@@ -676,15 +648,39 @@ const CameraPage = () => {
             fail: reject,
           });
         });
-
+        console.log("snapshotResult: ", snapshotResult);
         // 保存图片到本地文件系统
         const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
         const fs = wx.getFileSystemManager();
         fs.writeFileSync(filePath, snapshotResult.data, "binary");
-
+        console.log(333444);
         // 清空临时地址
+        // 更新配置
+        await cloud.callFunction({
+          name: "updateSavedConfig",
+          data: {
+            saveConfig: {
+              isSaved: isShuiyinSaved,
+              currentShuiyinIndex,
+              locationName,
+              latitude,
+              longitude,
+              showTrueCode,
+              showHasCheck,
+              shuiyinxiangjiName,
+              weather,
+              remark,
+              dakaName,
+              fangdaoShuiyin,
+            },
+          },
+        });
         setTempPath(undefined);
 
+        if (selected === "视频水印") {
+          setVideoMaskPath(filePath);
+          return;
+        }
         // 保存到相册
         await wx.saveImageToPhotosAlbum({
           filePath,
@@ -707,27 +703,6 @@ const CameraPage = () => {
                 name: "addUser",
                 data: {
                   remark: "成功使用",
-                },
-              });
-
-              // 更新配置
-              await cloud.callFunction({
-                name: "updateSavedConfig",
-                data: {
-                  saveConfig: {
-                    isSaved: isShuiyinSaved,
-                    currentShuiyinIndex,
-                    locationName,
-                    latitude,
-                    longitude,
-                    showTrueCode,
-                    showHasCheck,
-                    shuiyinxiangjiName,
-                    weather,
-                    remark,
-                    dakaName,
-                    fangdaoShuiyin,
-                  },
                 },
               });
 
@@ -864,26 +839,6 @@ const CameraPage = () => {
           await setCameraTempPath(path.tempImagePath);
         },
       });
-    } else {
-      // 相册
-      // app.$app.globalData.config.isVideo = false;
-      // Taro.navigateTo({
-      //   url:
-      //     "/pages/result/index?bg=" +
-      //     path +
-      //     "&mask=" +
-      //     canvasImg +
-      //     "&serverCanvas=" +
-      //     (shantuiSwitch || serverCanvas) +
-      //     "&vip=" +
-      //     canvasConfigState[currentShuiyinIndex]?.[0]?.vip +
-      //     "&id=" +
-      //     inviteId +
-      //     "&realWidth=" +
-      //     canvasConfigState[currentShuiyinIndex]?.[0]?.finalWidth +
-      //     "&realHeight=" +
-      //     canvasConfigState[currentShuiyinIndex]?.[0]?.finalHeight,
-      // });
     }
   };
   // 统一的水印渲染方法
@@ -1180,14 +1135,23 @@ const CameraPage = () => {
                 left: "-999999px",
                 width: "100%",
                 pointerEvents: "none",
+                height:
+                  (ShuiyinDoms[currentShuiyinIndex].options?.proportion
+                    ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
+                      screenWidth
+                    : (screenWidth / 3) * 4) + "px",
               }
             : undefined
         }
       >
         <View
           style={{
-            height: height,
             position: "relative",
+            height:
+              (ShuiyinDoms[currentShuiyinIndex].options?.proportion
+                ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
+                  screenWidth
+                : (screenWidth / 3) * 4) + "px",
           }}
           onClick={(e) => {
             if (!showFloatLayout) {
@@ -1198,10 +1162,13 @@ const CameraPage = () => {
         >
           <View
             style={{
-              height: "100%",
               widh: "100%",
               position: "relative",
-              // background: "rgba(0,0,0,0)",
+              height:
+                (ShuiyinDoms[currentShuiyinIndex].options?.proportion
+                  ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
+                    screenWidth
+                  : (screenWidth / 3) * 4) + "px",
             }}
           >
             {selected === "图片水印" && isCamera && (
@@ -1215,7 +1182,7 @@ const CameraPage = () => {
               />
             )}
 
-            {isCamera && !isRealDevice && (
+            {/* {isCamera && !isRealDevice && (
               <Image
                 style={{
                   width: "100%",
@@ -1223,45 +1190,38 @@ const CameraPage = () => {
                 }}
                 src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.jpg?111"
               ></Image>
-            )}
-            {tempPath && (
-              <Image
-                src={tempPath}
-                onLoad={onLoadHandler}
-                className={
-                  isCamera ? "cameraSelectedImage" : "xiangceSelectedImage"
-                }
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  position: "absolute",
-                  zIndex: 2,
-                  top: "0",
-                  left: "0",
-                }}
-              ></Image>
-            )}
+            )} */}
+            <Image
+              src={tempPath}
+              onLoad={onLoadHandler}
+              className={
+                isCamera ? "cameraSelectedImage" : "xiangceSelectedImage"
+              }
+              style={{
+                width: "100%",
+                position: "absolute",
+                zIndex: 2,
+                top: "0",
+                left: "0",
+                height:
+                  (ShuiyinDoms[currentShuiyinIndex].options?.proportion
+                    ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
+                      screenWidth
+                    : (screenWidth / 3) * 4) + "px",
+              }}
+            ></Image>
           </View>
           {!fuckShenHe && userInfo.type === "default" && (
             <View
               style={{
-                color:
-                  userInfo.type === "default" ? "rgba(255, 255, 255, .5)" : "",
-                fontSize: "30px",
-                fontWeight: "bold",
+                color: "rgba(255, 255, 255, .7)",
+                fontSize: "14px",
                 position: "absolute",
-                fontFamily: "Bebas",
+                fontFamily: "黑体",
                 textAlign: "center",
-                top: "50%",
-                left: "50%",
-                width: "300px",
-                height: "100px",
-                marginLeft: "-150px",
-                marginTop: "-50px",
-                textShadow:
-                  userInfo.type === "default"
-                    ? "-0.5px -0.5px -0.5px rgba(0, 0, 0, .2)"
-                    : "",
+                bottom: "110px",
+                right: "20px",
+                textShadow: "-0.5px -0.5px -0.5px rgba(0, 0, 0, .2)",
               }}
             >
               可修改水印相机 <br />
@@ -1423,7 +1383,6 @@ const CameraPage = () => {
         success: async function (res) {
           const data = res.tempFiles[0];
           const path = data.tempFilePath;
-          const bg = data.thumbTempFilePath;
           const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
           if (fileSizeInMB > 50) {
             Taro.showModal({
@@ -1433,30 +1392,48 @@ const CameraPage = () => {
             });
             return;
           }
+          setVideoPath(path);
         },
       });
     }
   };
+  const [videoPath, setVideoPath] = useState("");
+  const [videoMaskPath, setVideoMaskPath] = useState("");
 
   useEffect(() => {
+    if (!videoPath) {
+      return;
+    }
+    setXiangceTempPath(Touming);
+  }, [videoPath]);
+  const uploadImage = async (filePath) => {
+    const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+      userInfo.type === "default" ? "" : "vip"
+    }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
+    const res = await cloud.uploadFile({
+      cloudPath,
+      filePath,
+    });
+    return res.fileID;
+  };
+  useEffect(() => {
+    if (!videoMaskPath) {
+      return;
+    }
+
     const fn = async () => {
-      async function uploadImage(filePath) {
-        const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
-          userInfo.type === "default" ? "" : "vip"
-        }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
-        const res = await cloud.uploadFile({
-          cloudPath,
-          filePath,
-        });
-        return res.fileID;
-      }
       // 上传图片和视频
-      const [firstImageFileID, secondImageFileID, logoImageFileId] =
-        await Promise.all([
-          uploadImage(firstImagePath),
-          uploadImage(secondImagePath),
+      Taro.showLoading({
+        title: "上传中...",
+      });
+
+      const [videoFileId, videoMaskFileId, logoImageFileId] = await Promise.all(
+        [
+          uploadImage(videoPath),
+          uploadImage(videoMaskPath),
           config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
-        ]);
+        ]
+      );
       let ytg = null;
       if (config.type === "shared") {
         ytg = await new Taro.cloud.Cloud({
@@ -1479,21 +1456,26 @@ const CameraPage = () => {
         },
         method: "POST",
         data: {
-          image_file_id: secondImageFileID,
-          video_file_id: firstImageFileID,
+          image_file_id: videoMaskFileId,
+          video_file_id: videoFileId,
           logo_file_id: logoImageFileId ? logoImageFileId : null,
           openid: userInfo.openid,
         },
         success: (res) => {
-          setLoading(false);
+          Taro.hideLoading();
           if (res.data && res.data.taskId) {
-            setVideoModal(true);
+            Taro.showModal({
+              title: "视频生成中",
+              content:
+                "视频生成中，请您2~3分钟后到 首页 - 视频 页面中查看下载。",
+              confirmText: "确认",
+            });
           } else {
             throw new Error("处理错误");
           }
         },
         fail: (error) => {
-          setLoading(false);
+          Taro.hideLoading();
           Taro.showToast({
             title: "系统重启，请刷新后重新上传",
             icon: "none",
@@ -1502,7 +1484,8 @@ const CameraPage = () => {
         },
       });
     };
-  }, [videoMaskImg]);
+    fn();
+  }, [videoMaskPath]);
   useEffect(() => {
     if (app.$app.globalData.config.showHasCheck !== undefined) {
       setShowHasCheck(app.$app.globalData.config.showHasCheck);
@@ -2142,55 +2125,6 @@ const CameraPage = () => {
               setShuiyinNameModal(false);
             }}
           />
-          {/* <AtModal isOpened={shuiyinNameModal} closeOnClickOverlay={false}>
-            <AtModalHeader>
-              <Text>提示</Text>
-            </AtModalHeader>
-            <AtModalContent>
-              <View
-                className="modal-list"
-                style={{
-                  margin: "30px 0",
-                }}
-              >
-                <View className="">
-                  <View
-                    style={{
-                      textAlign: "center",
-                    }}
-                  >
-                    <View>请先填写水印名称后再拍照或相册选图，如下图所示</View>
-                    <Image
-                      src={Icon8}
-                      style={{
-                        marginTop: "10px",
-                        width: "280px",
-                        height: "67px",
-                      }}
-                    ></Image>
-                  </View>
-                </View>
-              </View>
-            </AtModalContent>
-            <AtModalAction>
-              <Button
-                onClick={() => {
-                  setShuiyinNameModal(false);
-                }}
-              >
-                取消
-              </Button>
-              <Button
-                onClick={() => {
-                  setShowFloatLayout(!showFloatLayout);
-                  setShuiyinNameModal(false);
-                  setEdit(true);
-                }}
-              >
-                去填写
-              </Button>
-            </AtModalAction>
-          </AtModal> */}
           <CustomModal
             visible={videoModal}
             title="提示"
@@ -2226,11 +2160,6 @@ const CameraPage = () => {
                 您的会员已到期,继续使用请重新开通会员
               </View>
             }
-            // onRightButtonClick={() => {
-            //   Taro.navigateTo({
-            //     url: "/pages/vip/index",
-            //   });
-            // }}
             showLeftButton={false}
             rightButtonText="重新开通"
           />
@@ -2256,43 +2185,6 @@ const CameraPage = () => {
             onLeftButtonClick={() => console.log("取消")}
             showLeftButton={false}
           />
-
-          {/* <AtFloatLayout
-            isOpened={showSetting}
-            title="设置"
-            onClose={(e) => {
-              setShowSetting(!showSetting);
-              setShowSettingFloatLayout(!showSettingFloatLayout);
-            }}
-          >
-            <View className="shuiyin-list shuiyin-list-no-grid">
-              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
-                <View style={{ marginRight: "10px" }}>
-                  微信闪退、保存失败请打开此开关
-                </View>
-                <Switch
-                  style={{ transform: "scale(0.7)" }}
-                  checked={shantuiSwitch}
-                  onChange={(e) => {
-                    setShantuiSwitch(e.detail.value);
-                  }}
-                />
-              </View>
-              <View className="shantui-btns" style={{ marginBottom: "10px" }}>
-                <View style={{ marginRight: "10px" }}>
-                  地点、标题、水印名称等数据，下次使用时无需再次修改
-                </View>
-                <Switch
-                  style={{ transform: "scale(0.7)" }}
-                  disabled={!locationName}
-                  checked={isShuiyinSaved}
-                  onChange={(e) => {
-                    saveChange(e.detail.value);
-                  }}
-                />
-              </View>
-            </View>
-          </AtFloatLayout> */}
           <Popup
             visible={showFloatLayout}
             overlay={false}
@@ -2427,6 +2319,7 @@ const CameraPage = () => {
                       className="input"
                       value={locationName}
                       maxlength={50}
+                      adjustPosition={true}
                       clear={true}
                       disabled={userInfo.type == "default"}
                       onInput={(e) => {
@@ -2454,6 +2347,7 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={dakaName}
+                        adjustPosition={true}
                         maxlength={2}
                         placeholder="点击添加"
                         clear={true}
@@ -2503,6 +2397,7 @@ const CameraPage = () => {
                               className="input"
                               value={shuiyinxiangjiName}
                               maxlength={4}
+                              adjustPosition={true}
                               clear={true}
                               placeholder="点击填写"
                               onInput={(e) => {
@@ -2549,6 +2444,7 @@ const CameraPage = () => {
                         className="input"
                         value={title}
                         maxlength={12}
+                        adjustPosition={true}
                         clear={true}
                         onInput={(e) => {
                           debounce(setTitle(e.detail.value), 100);
@@ -2565,6 +2461,7 @@ const CameraPage = () => {
                         className="input"
                         value={fangdaoShuiyin}
                         maxlength={6}
+                        adjustPosition={true}
                         clear={true}
                         onInput={(e) => {
                           debounce(setFangDaoShuiyin(e.detail.value), 100);
@@ -2581,6 +2478,7 @@ const CameraPage = () => {
                         className="input"
                         value={weather}
                         maxlength={8}
+                        adjustPosition={true}
                         clear={true}
                         onInput={(e) => {
                           setWeather(e.detail.value);
@@ -2599,6 +2497,7 @@ const CameraPage = () => {
                           value={longitude + ""}
                           maxlength={14}
                           clear={true}
+                          adjustPosition={true}
                           onInput={(e) => {
                             setLongitude(e.detail.value + "");
                           }}
@@ -2612,6 +2511,7 @@ const CameraPage = () => {
                           className="input"
                           value={latitude + ""}
                           maxlength={14}
+                          adjustPosition={true}
                           clear={true}
                           onInput={(e) => {
                             setLatitude(e.detail.value + "");
@@ -2628,6 +2528,7 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={remark}
+                        adjustPosition={true}
                         maxlength={20}
                         clear={true}
                         onInput={(e) => {
@@ -2654,7 +2555,6 @@ const CameraPage = () => {
               </View>
             )}
           </Popup>
-          {/* <AtToast isOpened={showToast} text="请输入详细地点"></AtToast> */}
         </View>
       )}
     </ScrollView>

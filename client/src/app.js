@@ -53,10 +53,10 @@ class App extends Component {
     this.globalData = {
       config: {},
       // false 显示 true 隐藏
-      fuckShenHe:false,
-      // fuckShenHe:
-      //   wx.getAccountInfoSync().miniProgram.envVersion !== "release" &&
-      //   systemInfo.platform !== "devtools",
+      // fuckShenHe:false,
+      fuckShenHe:
+        wx.getAccountInfoSync().miniProgram.envVersion !== "release" &&
+        systemInfo.platform !== "devtools",
     };
   }
 
