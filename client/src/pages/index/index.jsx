@@ -1157,6 +1157,7 @@ const CameraPage = () => {
           style={{
             position: "relative",
             height,
+            background: selected === "视频水印" ? "rgba(0,0,0,.6)" : "auto",
           }}
           onClick={(e) => {
             if (!showFloatLayout) {
@@ -1192,36 +1193,38 @@ const CameraPage = () => {
                 src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.jpg?111"
               ></Image>
             )} */}
-            <Image
-              src={tempPath}
-              onLoad={() => {
-                console.log("图片已经onload");
-                onLoadHandler();
-              }}
-              className={
-                isCamera ? "cameraSelectedImage" : "xiangceSelectedImage"
-              }
-              style={{
-                width: "100%",
-                position: "absolute",
-                zIndex: 2,
-                top: "0",
-                left: "0",
-                height,
-              }}
-            ></Image>
+            {tempPath && (
+              <Image
+                src={tempPath}
+                onLoad={() => {
+                  console.log("图片已经onload");
+                  onLoadHandler();
+                }}
+                className={
+                  isCamera ? "cameraSelectedImage" : "xiangceSelectedImage"
+                }
+                style={{
+                  width: "100%",
+                  position: "absolute",
+                  zIndex: 2,
+                  top: "0",
+                  left: "0",
+                  height,
+                }}
+              ></Image>
+            )}
           </View>
           {!fuckShenHe && userInfo.type === "default" && (
             <View
               style={{
-                color: "rgba(255, 255, 255, .7)",
-                fontSize: "14px",
+                color: "rgba(0, 0, 0)",
+                fontSize: "16px",
                 position: "absolute",
                 fontFamily: "黑体",
                 textAlign: "center",
+                fontWeight: "bold",
                 bottom: "110px",
                 right: "20px",
-                textShadow: "-0.5px -0.5px -0.5px rgba(0, 0, 0, .2)",
               }}
             >
               可修改水印相机 <br />
@@ -2341,59 +2344,68 @@ const CameraPage = () => {
             }}
           >
             {!edit ? (
-              <View
-                className="shuiyin-list"
+              <ScrollView
+                scroll-y
                 style={{
-                  paddingLeft: "10px",
-                  paddingRight: "10px",
+                  height: "100%",
                 }}
               >
-                {ShuiyinDoms.map((item, index) => {
-                  return (
-                    <View key={index}>
-                      <View className="shuiyin-item">
-                        <View
-                          className="shuiyin-item-img"
-                          style={{
-                            width: "100%",
-                            padding: 0,
-                          }}
-                          onTouchStart={(e) => {
-                            setCurrentShuiyinIndex(index);
-                          }}
-                        >
+                <View
+                  className="shuiyin-list"
+                  style={{
+                    paddingLeft: "10px",
+                    paddingRight: "10px",
+                    height: "100%",
+                    overflow: "auto",
+                  }}
+                >
+                  {ShuiyinDoms.map((item, index) => {
+                    return (
+                      <View key={index}>
+                        <View className="shuiyin-item">
                           <View
                             className="shuiyin-item-img"
                             style={{
                               width: "100%",
                               padding: 0,
                             }}
-                          >
-                            {item.options.vip && (
-                              <View className="vip-arrow">永久会员专属</View>
-                            )}
-                            <Image
-                              mode="aspectFit"
-                              src={item.options.cover}
-                            ></Image>
-                          </View>
-                        </View>
-                        {currentShuiyinIndex === index && (
-                          <View
-                            className="shuiyin-item-cover"
-                            onTouchStart={(e) => {
-                              setEdit(true);
-                              updateShuiyinIndex(index);
+                            onClick={(e) => {
+                              setCurrentShuiyinIndex(index);
                             }}
                           >
-                            <Button>编辑</Button>
+                            <View
+                              className="shuiyin-item-img"
+                              style={{
+                                width: "100%",
+                                padding: 0,
+                              }}
+                            >
+                              {item.options.vip && (
+                                <View className="vip-arrow">永久会员专属</View>
+                              )}
+                              <Image
+                                mode="aspectFit"
+                                src={item.options.cover}
+                              ></Image>
+                            </View>
                           </View>
-                        )}
+                          {currentShuiyinIndex === index && (
+                            <View
+                              className="shuiyin-item-cover"
+                              onTouchStart={(e) => {
+                                setEdit(true);
+                                updateShuiyinIndex(index);
+                              }}
+                            >
+                              <Button>编辑</Button>
+                            </View>
+                          )}
+                        </View>
                       </View>
-                    </View>
-                  );
-                })}
-              </View>
+                    );
+                  })}
+                </View>
+              </ScrollView>
             ) : (
               // 编辑页
               <ScrollView scroll-y className="edit-box">
@@ -2426,36 +2438,15 @@ const CameraPage = () => {
                 </View>
                 <View className="edit-item">
                   <Picker
-                    style={{
-                      color:
-                        userInfo.type === "default" ? "#a5a5a5" : "#050505",
-                    }}
                     mode="time"
                     value={`${hours}:${minutes}`}
                     onChange={handleTimeChange}
-                    disabled={userInfo.type === "default"}
                   >
                     <View>选择时间： {`${hours}:${minutes}`}</View>
                   </Picker>
-                  {userInfo.type === "default" && (
-                    <View
-                      className="input-tips"
-                      style={{
-                        color: "#f22c3d",
-                      }}
-                    >
-                      开通会员可修改时间
-                    </View>
-                  )}
                 </View>
                 <View className="edit-item">
-                  <View
-                    className="picker"
-                    style={{
-                      color:
-                        userInfo.type === "default" ? "#a5a5a5" : "#050505",
-                    }}
-                  >
+                  <View className="picker">
                     <Text>详细地点： </Text>
                     <Input
                       className="input"
@@ -2463,27 +2454,13 @@ const CameraPage = () => {
                       maxlength={50}
                       clear={true}
                       clearable
-                      cursorSpacing={10}
-                      disabled={userInfo.type == "default"}
                       onInput={(e) => {
                         debounce(setLocationName(e.detail.value), 100);
                       }}
                     ></Input>
                   </View>
-                  {userInfo.type === "default" ? (
-                    <View
-                      className="input-tips"
-                      style={{
-                        color: "#f22c3d",
-                      }}
-                    >
-                      开通会员可修改地点
-                    </View>
-                  ) : (
-                    <View className="input-tips">最多45个字</View>
-                  )}
                 </View>
-                {ShuiyinDoms[currentShuiyinIndex].options?.hasDakaLabel && (
+                {/* {ShuiyinDoms[currentShuiyinIndex].options?.hasDakaLabel && (
                   <View className="edit-item flex-row">
                     <View className="picker">
                       <Text>打卡标签：</Text>
@@ -2506,7 +2483,7 @@ const CameraPage = () => {
                       最多2个字，如打卡、考勤、上班等
                     </View>
                   </View>
-                )}
+                )} */}
                 {ShuiyinDoms[currentShuiyinIndex].options
                   ?.showRightCopyright && (
                   <>
@@ -2539,7 +2516,6 @@ const CameraPage = () => {
                             <Input
                               className="input"
                               value={shuiyinxiangjiName}
-                              cursorSpacing={10}
                               maxlength={4}
                               clear={true}
                               placeholder="点击填写"
@@ -2555,8 +2531,8 @@ const CameraPage = () => {
                           </View>
                           <View className="input-tips">
                             {userInfo.type !== "default"
-                              ? "最多4个字，可填写 衿日水印"
-                              : "最多4个字"}
+                              ? "可填写 衿日水印、马克水印"
+                              : "可填写衿日水印、马克水印。开通会员可获得专属图标"}
                           </View>
                         </View>
                       )}
@@ -2587,7 +2563,7 @@ const CameraPage = () => {
                         className="input"
                         value={title}
                         maxlength={12}
-                        cursorSpacing={10}
+                        cursorSpacing={100}
                         clear={true}
                         onInput={(e) => {
                           debounce(setTitle(e.detail.value), 100);
@@ -2603,8 +2579,8 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={fangdaoShuiyin}
-                        cursorSpacing={10}
                         maxlength={6}
+                        cursorSpacing={100}
                         clear={true}
                         onInput={(e) => {
                           debounce(setFangDaoShuiyin(e.detail.value), 100);
@@ -2620,7 +2596,7 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={weather}
-                        cursorSpacing={10}
+                        cursorSpacing={100}
                         maxlength={8}
                         clear={true}
                         onInput={(e) => {
@@ -2639,7 +2615,7 @@ const CameraPage = () => {
                           className="input"
                           value={longitude + ""}
                           maxlength={14}
-                          cursorSpacing={10}
+                          cursorSpacing={100}
                           clear={true}
                           onInput={(e) => {
                             setLongitude(e.detail.value + "");
@@ -2653,10 +2629,9 @@ const CameraPage = () => {
                         <Input
                           className="input"
                           value={latitude + ""}
-                          cursorSpacing={10}
+                          cursorSpacing={100}
                           maxlength={14}
                           clear={true}
-                          always-embed
                           onInput={(e) => {
                             setLatitude(e.detail.value + "");
                           }}
@@ -2673,7 +2648,7 @@ const CameraPage = () => {
                         className="input"
                         value={remark}
                         maxlength={20}
-                        cursorSpacing={10}
+                        cursorSpacing={100}
                         clear={true}
                         onInput={(e) => {
                           debounce(setRemark(e.detail.value), 100);

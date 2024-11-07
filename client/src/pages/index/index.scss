@@ -1,12 +1,12 @@
 page {
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .container {
   position: relative;
   width: 100%;
-  min-height: 100vh;
-
+  height: 100%;
+  overflow-y: scroll;
   &.open {
     .at-float-layout--active .at-float-layout__container {
       top: 50% !important;
@@ -388,6 +388,7 @@ page {
   flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
+  flex-shrink: 0;
   > view {
     width: calc((100% - 35px) / 3); /* (总宽度 - 两个间距) / 3 */
     margin-right: 15px;
@@ -822,7 +823,7 @@ picker,
 .edit-box {
   height: 100%;
   // overflow-y: scroll;
-  padding-bottom: 50px;
+  padding-bottom: 20px;
   padding-left: 20px;
   padding-right: 20px;
   .at-card__content-info {
