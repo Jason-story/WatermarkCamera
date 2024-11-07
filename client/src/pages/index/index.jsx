@@ -146,10 +146,11 @@ const CameraPage = () => {
   const [fangdaoShuiyin, setFangDaoShuiyin] = useState("盗图必究");
   const [cameraTempPath, setCameraTempPath] = useState("");
   const [xiangceTempPath, setXiangceTempPath] = useState("");
-  const [xiangceImgHeight, setXiangceImgHeight] = useState(0);
+  // const [xiangceImgHeight, setXiangceImgHeight] = useState(0);
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
   const [remark, setRemark] = useState("");
   const [videoMaskImg, setVideoMaskImg] = useState("");
+  const [snapshotHeight, setSnapshotHeight] = useState("");
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
@@ -250,6 +251,12 @@ const CameraPage = () => {
     wx.getSystemInfo({
       success: function (res) {
         setScreenWidth(res.screenWidth); // 输出屏幕宽度
+        console.log(4444);
+        setSnapshotHeight(
+          ShuiyinDoms[currentShuiyinIndex].options?.proportion
+            ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
+            : (screenWidth / 3) * 4
+        );
       },
     });
   }, []);
@@ -765,17 +772,6 @@ const CameraPage = () => {
     });
 
   const takePhoto = async (camera = true) => {
-    // console.log("canvasImg: ", canvasImg);
-    // Taro.saveImageToPhotosAlbum({
-    //   filePath: canvasImg,
-    //   success: async () => {
-    //     Taro.showToast({
-    //       title: "已保存到相册",
-    //       icon: "success",
-    //       duration: 2000,
-    //     });
-    //   },
-    // });
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -836,6 +832,14 @@ const CameraPage = () => {
         zoom: zoomLevel,
         quality: userInfo.type === "default" ? "low" : "original",
         success: async (path) => {
+          // 获取图片信息
+          // 拍照时宽高比例固定 默认4:3 特殊情况按照比例设置
+          await setSnapshotHeight(
+            ShuiyinDoms[currentShuiyinIndex].options?.proportion
+              ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
+                  screenWidth
+              : (screenWidth / 3) * 4
+          );
           await setCameraTempPath(path.tempImagePath);
         },
       });
@@ -846,7 +850,7 @@ const CameraPage = () => {
     const isCamera = type === "camera";
     const tempPath = isCamera ? cameraTempPath : xiangceTempPath;
     const onLoadHandler = isCamera ? cameraPathOnload : xiangcePathOnload;
-    const height = isCamera ? "100%" : xiangceImgHeight;
+
     const option = ShuiyinDoms[currentShuiyinIndex].options;
 
     const renderLeftCopyright = () => {
@@ -1125,6 +1129,11 @@ const CameraPage = () => {
         );
       }
     };
+    const height = isCamera
+      ? ShuiyinDoms[currentShuiyinIndex].options?.proportion
+        ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
+        : (screenWidth / 3) * 4
+      : snapshotHeight;
     return (
       <Snapshot
         className={isCamera ? "snapshot" : "snapshot-outside"}
@@ -1135,11 +1144,7 @@ const CameraPage = () => {
                 left: "-999999px",
                 width: "100%",
                 pointerEvents: "none",
-                height:
-                  (ShuiyinDoms[currentShuiyinIndex].options?.proportion
-                    ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
-                      screenWidth
-                    : (screenWidth / 3) * 4) + "px",
+                height,
               }
             : undefined
         }
@@ -1147,11 +1152,7 @@ const CameraPage = () => {
         <View
           style={{
             position: "relative",
-            height:
-              (ShuiyinDoms[currentShuiyinIndex].options?.proportion
-                ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
-                  screenWidth
-                : (screenWidth / 3) * 4) + "px",
+            height,
           }}
           onClick={(e) => {
             if (!showFloatLayout) {
@@ -1164,11 +1165,7 @@ const CameraPage = () => {
             style={{
               widh: "100%",
               position: "relative",
-              height:
-                (ShuiyinDoms[currentShuiyinIndex].options?.proportion
-                  ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
-                    screenWidth
-                  : (screenWidth / 3) * 4) + "px",
+              height,
             }}
           >
             {selected === "图片水印" && isCamera && (
@@ -1203,11 +1200,7 @@ const CameraPage = () => {
                 zIndex: 2,
                 top: "0",
                 left: "0",
-                height:
-                  (ShuiyinDoms[currentShuiyinIndex].options?.proportion
-                    ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
-                      screenWidth
-                    : (screenWidth / 3) * 4) + "px",
+                height,
               }}
             ></Image>
           </View>
@@ -1306,18 +1299,7 @@ const CameraPage = () => {
       }
     }
   }, [locationName]);
-  useEffect(() => {
-    let count = 0;
-    const interval = setInterval(() => {
-      setUpdate((prev) => !prev); // 这里是为了每次赋不同的值
-      count++;
-      if (count === 4) {
-        clearInterval(interval); // 执行两次后清除定时器
-      }
-    }, 2000);
 
-    return () => clearInterval(interval); // 清除副作用
-  }, []);
   const selectImgFromXiangce = () => {
     if (!allAuth) {
       Taro.showToast({
@@ -1364,7 +1346,7 @@ const CameraPage = () => {
             src: filePath,
             success: async function (info) {
               // 设置完相册选图的path后需要设置离屏截图的尺寸 根据所选图片计算高度
-              await setXiangceImgHeight(
+              await setSnapshotHeight(
                 info.orientation == "right"
                   ? (info.width / info.height) * screenWidth
                   : (info.height / info.width) * screenWidth
@@ -1416,6 +1398,20 @@ const CameraPage = () => {
     });
     return res.fileID;
   };
+  useEffect(() => {
+    // 监听键盘高度变化
+    wx.onKeyboardHeightChange((res) => {
+      const { height } = res;
+      // 根据键盘高度调整页面
+      if (height > 0) {
+        // 键盘弹出
+        wx.pageScrollTo({
+          scrollTop: 50,
+          duration: 300,
+        });
+      }
+    });
+  }, []);
   useEffect(() => {
     if (!videoMaskPath) {
       return;
@@ -1502,80 +1498,80 @@ const CameraPage = () => {
     setCurrentShuiyinIndex(current);
   };
 
-  const uploadLogo = () => {
-    Taro.chooseMedia({
-      count: 1,
-      mediaType: ["image"],
-      sourceType: ["album"],
-      success: function (res) {
-        const data = res.tempFiles[0];
-        const filePath = data.tempFilePath;
+  // const uploadLogo = () => {
+  //   Taro.chooseMedia({
+  //     count: 1,
+  //     mediaType: ["image"],
+  //     sourceType: ["album"],
+  //     success: function (res) {
+  //       const data = res.tempFiles[0];
+  //       const filePath = data.tempFilePath;
 
-        Taro.getImageInfo({
-          src: filePath,
-          success: async function (info) {
-            const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
+  //       Taro.getImageInfo({
+  //         src: filePath,
+  //         success: async function (info) {
+  //           const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
 
-            if (fileSizeInMB > 2) {
-              Taro.showModal({
-                title: "提示",
-                content: "Logo体积过大，请重新选择",
-                showCancel: false,
-              });
-              return;
-            }
-            Taro.getImageInfo({
-              src: filePath,
-              success: async function (info) {
-                let height, width;
-                height = 100;
-                width = (info.width / info.height) * 100;
-                if (
-                  info.height / info.width > 2.5 ||
-                  info.height / info.width < 0.4
-                ) {
-                  width = 150;
-                  height = (info.height / info.width) * 150;
-                }
-                setLogoWidth(width);
-                setLogoHeight(height);
-                setLogoPath(filePath);
-                app.$app.globalData.config.logoConfig = {
-                  width,
-                  height,
-                  path: filePath,
-                  x: 20,
-                  y:
-                    typeof canvasConfigState[currentShuiyinIndex]?.[0]
-                      .height === "function"
-                      ? canvasConfigState[currentShuiyinIndex]?.[0].height()
-                      : canvasConfigState[currentShuiyinIndex]?.[0].height,
-                };
-              },
-            });
-          },
-        });
-      },
-    });
-  };
+  //           if (fileSizeInMB > 2) {
+  //             Taro.showModal({
+  //               title: "提示",
+  //               content: "Logo体积过大，请重新选择",
+  //               showCancel: false,
+  //             });
+  //             return;
+  //           }
+  //           Taro.getImageInfo({
+  //             src: filePath,
+  //             success: async function (info) {
+  //               let height, width;
+  //               height = 100;
+  //               width = (info.width / info.height) * 100;
+  //               if (
+  //                 info.height / info.width > 2.5 ||
+  //                 info.height / info.width < 0.4
+  //               ) {
+  //                 width = 150;
+  //                 height = (info.height / info.width) * 150;
+  //               }
+  //               setLogoWidth(width);
+  //               setLogoHeight(height);
+  //               setLogoPath(filePath);
+  //               app.$app.globalData.config.logoConfig = {
+  //                 width,
+  //                 height,
+  //                 path: filePath,
+  //                 x: 20,
+  //                 y:
+  //                   typeof canvasConfigState[currentShuiyinIndex]?.[0]
+  //                     .height === "function"
+  //                     ? canvasConfigState[currentShuiyinIndex]?.[0].height()
+  //                     : canvasConfigState[currentShuiyinIndex]?.[0].height,
+  //               };
+  //             },
+  //           });
+  //         },
+  //       });
+  //     },
+  //   });
+  // };
 
-  useEffect(() => {
-    if (app.$app.globalData.config.logoConfig) {
-      app.$app.globalData.config.logoConfig.y =
-        typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
-          ? canvasConfigState[currentShuiyinIndex]?.[0].height()
-          : canvasConfigState[currentShuiyinIndex]?.[0].height;
-    }
-  }, [currentShuiyinIndex]);
+  // useEffect(() => {
+  //   if (app.$app.globalData.config.logoConfig) {
+  //     app.$app.globalData.config.logoConfig.y =
+  //       typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
+  //         ? canvasConfigState[currentShuiyinIndex]?.[0].height()
+  //         : canvasConfigState[currentShuiyinIndex]?.[0].height;
+  //   }
+  // }, [currentShuiyinIndex]);
 
-  let canvasRealHeight;
-  if (
-    typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
-  ) {
-    canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height();
-  } else {
-    canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height;
-  }
+  // let canvasRealHeight;
+  // if (
+  //   typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
+  // ) {
+  //   canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height();
+  // } else {
+  //   canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height;
+  // }
 
   const systemInfo = wx.getSystemInfoSync();
   // 判断是否是真机
@@ -1593,7 +1589,15 @@ const CameraPage = () => {
       target: "target1",
     },
   ];
+  // let snapshotHeight = "";
 
+  // if (selected === "图片水印") {
+  //   snapshotHeight =
+  //     (ShuiyinDoms[currentShuiyinIndex].options?.proportion
+  //       ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
+  //       : (screenWidth / 3) * 4) + "px";
+  // } else {
+  // }
   return (
     <ScrollView
       scroll-y={true}
@@ -1618,11 +1622,10 @@ const CameraPage = () => {
           <View
             className="camera-box"
             style={{
-              height:
-                (ShuiyinDoms[currentShuiyinIndex].options?.proportion
-                  ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
-                    screenWidth
-                  : (screenWidth / 3) * 4) + "px",
+              height: ShuiyinDoms[currentShuiyinIndex].options?.proportion
+                ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
+                  screenWidth
+                : (screenWidth / 3) * 4,
             }}
           >
             <Marquee />
@@ -1658,7 +1661,7 @@ const CameraPage = () => {
               </View>
             )}
 
-            {allAuth && canvasConfigState[currentShuiyinIndex]?.[0].logoY && (
+            {/* {allAuth && canvasConfigState[currentShuiyinIndex]?.[0].logoY && (
               <View
                 className="logo-wrap"
                 style={{
@@ -1710,7 +1713,7 @@ const CameraPage = () => {
                   </View>
                 )}
               </View>
-            )}
+            )} */}
 
             {allAuth && (
               <View
