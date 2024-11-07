@@ -6,11 +6,11 @@ import {
   Text,
   Image,
   Snapshot,
-  Input,
   Picker,
   Switch,
   ScrollView,
 } from "@tarojs/components";
+import { Input } from "@nutui/nutui-react";
 import Marquee from "../../components/Marquee";
 import CustomModal from "../../components/modal";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
@@ -565,9 +565,11 @@ const CameraPage = () => {
     imageSelector = ".cameraSelectedImage",
     setTempPath = setCameraTempPath,
   }) => {
+    console.log(99);
     fangweimaText = generateRandomString(4);
     makefangweimaText = generateRandomString(3);
     requestAnimationFrame(async () => {
+      console.log("123321");
       try {
         // 免费体验次数检查
         if (
@@ -763,13 +765,15 @@ const CameraPage = () => {
     });
 
   // 相册选图 onload 离屏
-  const xiangcePathOnload = () =>
+  const xiangcePathOnload = () => {
+    console.log(4444232334);
     handleSnapshot({
       type: "xiangce",
       containerSelector: ".snapshot-outside",
       imageSelector: ".xiangceSelectedImage",
       setTempPath: setXiangceTempPath,
     });
+  };
 
   const takePhoto = async (camera = true) => {
     if (!allAuth) {
@@ -1190,7 +1194,10 @@ const CameraPage = () => {
             )} */}
             <Image
               src={tempPath}
-              onLoad={onLoadHandler}
+              onLoad={() => {
+                console.log("图片已经onload");
+                onLoadHandler();
+              }}
               className={
                 isCamera ? "cameraSelectedImage" : "xiangceSelectedImage"
               }
@@ -1300,82 +1307,227 @@ const CameraPage = () => {
     }
   }, [locationName]);
 
-  const selectImgFromXiangce = () => {
-    if (!allAuth) {
-      Taro.showToast({
-        title: "请先授权相机、相册、位置权限",
-        icon: "none",
-      });
-      return;
-    }
+  const selectImgFromXiangce = async () => {
+    try {
+      // 1. 权限检查
+      if (!allAuth) {
+        // 检查具体是哪个权限没有获取
+        try {
+          const cameraAuth = await Taro.getSetting({
+            scope: "scope.camera",
+          });
+          const albumAuth = await Taro.getSetting({
+            scope: "scope.album",
+          });
+          const locationAuth = await Taro.getSetting({
+            scope: "scope.userLocation",
+          });
 
-    if (
-      selected === "视频水印" &&
-      userInfo.type !== "halfYearMonth" &&
-      userInfo.type !== "year" &&
-      userInfo.type !== "never"
-    ) {
-      Taro.showToast({
-        title: "此功能只对半年及以上会员开放,最大支持50M视频",
-        icon: "none",
-        duration: 3000,
-      });
-      return;
-    }
-    // 显示填写水印弹出提示
-    if (
-      userInfo.type !== "default" &&
-      !shuiyinxiangjiName &&
-      showTrueCode &&
-      ShuiyinDoms[currentShuiyinIndex].options.showRightCopyright
-    ) {
-      setShuiyinNameModal(true);
-      return;
-    }
-    if (selected === "图片水印") {
-      Taro.chooseMedia({
-        count: 1,
-        mediaType: ["image"],
-        sourceType: ["album"],
+          let missingPermissions = [];
+          !cameraAuth && missingPermissions.push("相机");
+          !albumAuth && missingPermissions.push("相册");
+          !locationAuth && missingPermissions.push("位置");
 
-        success: async function (res) {
+          Taro.showToast({
+            title: `请授权以下权限：${missingPermissions.join("、")}`,
+            icon: "none",
+            duration: 3000,
+          });
+        } catch (error) {
+          console.error("权限检查失败:", error);
+          Taro.showToast({
+            title: "权限检查失败，请重试",
+            icon: "none",
+          });
+        }
+        return;
+      }
+
+      // 2. 会员权限检查
+      if (selected === "视频水印") {
+        const validMemberTypes = ["halfYearMonth", "year", "never"];
+        if (!validMemberTypes.includes(userInfo.type)) {
+          Taro.showToast({
+            title: "此功能只对半年及以上会员开放,最大支持50M视频",
+            icon: "none",
+            duration: 3000,
+          });
+          return;
+        }
+      }
+
+      // 3. 水印名称检查
+      if (
+        userInfo.type !== "default" &&
+        !shuiyinxiangjiName &&
+        showTrueCode &&
+        ShuiyinDoms[currentShuiyinIndex]?.options?.showRightCopyright
+      ) {
+        setShuiyinNameModal(true);
+        return;
+      }
+
+      // 4. 选择媒体处理
+      if (selected === "图片水印") {
+        try {
+          const res = await Taro.chooseMedia({
+            count: 1,
+            mediaType: ["image"],
+            sourceType: ["album"],
+          });
+
+          if (!res.tempFiles || !res.tempFiles.length) {
+            throw new Error("未获取到图片文件");
+          }
+
           const data = res.tempFiles[0];
           const filePath = data.tempFilePath;
 
-          Taro.getImageInfo({
-            src: filePath,
-            success: async function (info) {
-              // 设置完相册选图的path后需要设置离屏截图的尺寸 根据所选图片计算高度
-              await setSnapshotHeight(
-                info.orientation == "right"
-                  ? (info.width / info.height) * screenWidth
-                  : (info.height / info.width) * screenWidth
-              );
-              await setXiangceTempPath(filePath);
-            },
-          });
-        },
-      });
-    } else {
-      // 视频水印
-      Taro.chooseMedia({
-        count: 1,
-        mediaType: ["video"],
-        sourceType: ["album"],
-        success: async function (res) {
-          const data = res.tempFiles[0];
-          const path = data.tempFilePath;
-          const fileSizeInMB = data.size / (1024 * 1024); // 将文件大小转换为 MB
-          if (fileSizeInMB > 50) {
+          // 检查文件大小
+          const fileSizeInMB = data.size / (1024 * 1024);
+          if (fileSizeInMB > 20) {
+            // 假设限制20MB
             Taro.showModal({
               title: "提示",
-              content: "视频过大(大于50M)，请重新选择",
+              content: "图片过大，请选择小于20M的图片",
               showCancel: false,
             });
             return;
           }
-          setVideoPath(path);
-        },
+
+          // 获取图片信息
+          try {
+            const info = await new Promise((resolve, reject) => {
+              Taro.getImageInfo({
+                src: filePath,
+                success: resolve,
+                fail: reject,
+              });
+            });
+
+            // 验证图片尺寸
+            if (info.width < 100 || info.height < 100) {
+              Taro.showModal({
+                title: "提示",
+                content: "图片尺寸过小，请选择更大的图片",
+                showCancel: false,
+              });
+              return;
+            }
+
+            // 计算并设置截图高度
+            const calculatedHeight =
+              info.orientation === "right"
+                ? (info.width / info.height) * screenWidth
+                : (info.height / info.width) * screenWidth;
+
+            await setSnapshotHeight(calculatedHeight);
+            await setXiangceTempPath(filePath);
+
+            console.log("图片处理成功:", {
+              width: info.width,
+              height: info.height,
+              orientation: info.orientation,
+              calculatedHeight,
+            });
+          } catch (error) {
+            console.error("获取图片信息失败:", error);
+            Taro.showModal({
+              title: "错误",
+              content: "获取图片信息失败，请重试",
+              showCancel: false,
+            });
+          }
+        } catch (error) {
+          console.error("选择图片失败:", error);
+          Taro.showModal({
+            title: "错误",
+            content: "选择图片失败，请重试",
+            showCancel: false,
+          });
+        }
+      } else {
+        // 视频水印处理
+        try {
+          const res = await Taro.chooseMedia({
+            count: 1,
+            mediaType: ["video"],
+            sourceType: ["album"],
+          });
+
+          if (!res.tempFiles || !res.tempFiles.length) {
+            throw new Error("未获取到视频文件");
+          }
+
+          const data = res.tempFiles[0];
+          const path = data.tempFilePath;
+          const fileSizeInMB = data.size / (1024 * 1024);
+
+          // 视频大小检查
+          if (fileSizeInMB > 50) {
+            Taro.showModal({
+              title: "提示",
+              content: `视频大小为${fileSizeInMB.toFixed(
+                2
+              )}MB，超过50MB限制，请重新选择`,
+              showCancel: false,
+            });
+            return;
+          }
+
+          // 获取视频信息
+          try {
+            const videoInfo = await new Promise((resolve, reject) => {
+              Taro.getVideoInfo({
+                src: path,
+                success: resolve,
+                fail: reject,
+              });
+            });
+
+            // 检查视频时长
+            if (videoInfo.duration > 300) {
+              // 假设限制5分钟
+              Taro.showModal({
+                title: "提示",
+                content: "视频时长超过5分钟，请选择更短的视频",
+                showCancel: false,
+              });
+              return;
+            }
+
+            // 设置视频路径
+            await setVideoPath(path);
+
+            console.log("视频处理成功:", {
+              size: fileSizeInMB.toFixed(2) + "MB",
+              duration: videoInfo.duration + "秒",
+              width: videoInfo.width,
+              height: videoInfo.height,
+            });
+          } catch (error) {
+            console.error("获取视频信息失败:", error);
+            Taro.showModal({
+              title: "错误",
+              content: "获取视频信息失败，请重试",
+              showCancel: false,
+            });
+          }
+        } catch (error) {
+          console.error("选择视频失败:", error);
+          Taro.showModal({
+            title: "错误",
+            content: "选择视频失败，请重试",
+            showCancel: false,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("selectImgFromXiangce 执行失败:", error);
+      Taro.showModal({
+        title: "错误",
+        content: "操作失败，请重试",
+        showCancel: false,
       });
     }
   };
@@ -1398,20 +1550,7 @@ const CameraPage = () => {
     });
     return res.fileID;
   };
-  useEffect(() => {
-    // 监听键盘高度变化
-    wx.onKeyboardHeightChange((res) => {
-      const { height } = res;
-      // 根据键盘高度调整页面
-      if (height > 0) {
-        // 键盘弹出
-        wx.pageScrollTo({
-          scrollTop: 50,
-          duration: 300,
-        });
-      }
-    });
-  }, []);
+
   useEffect(() => {
     if (!videoMaskPath) {
       return;
@@ -1729,7 +1868,7 @@ const CameraPage = () => {
                 {/* 渲染相机模式的水印 */}
                 {renderWatermark("camera")}
                 {/* 渲染相册模式的水印 */}
-                {renderWatermark("xiangce")}
+                {xiangceTempPath && renderWatermark("xiangce")}
 
                 <View className="camera-btns">
                   <View className="zoom-box">
@@ -2322,8 +2461,9 @@ const CameraPage = () => {
                       className="input"
                       value={locationName}
                       maxlength={50}
-                      adjustPosition={true}
                       clear={true}
+                      clearable
+                      cursorSpacing={10}
                       disabled={userInfo.type == "default"}
                       onInput={(e) => {
                         debounce(setLocationName(e.detail.value), 100);
@@ -2350,7 +2490,7 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={dakaName}
-                        adjustPosition={true}
+                        cursorSpacing={10}
                         maxlength={2}
                         placeholder="点击添加"
                         clear={true}
@@ -2399,8 +2539,8 @@ const CameraPage = () => {
                             <Input
                               className="input"
                               value={shuiyinxiangjiName}
+                              cursorSpacing={10}
                               maxlength={4}
-                              adjustPosition={true}
                               clear={true}
                               placeholder="点击填写"
                               onInput={(e) => {
@@ -2447,7 +2587,7 @@ const CameraPage = () => {
                         className="input"
                         value={title}
                         maxlength={12}
-                        adjustPosition={true}
+                        cursorSpacing={10}
                         clear={true}
                         onInput={(e) => {
                           debounce(setTitle(e.detail.value), 100);
@@ -2463,8 +2603,8 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={fangdaoShuiyin}
+                        cursorSpacing={10}
                         maxlength={6}
-                        adjustPosition={true}
                         clear={true}
                         onInput={(e) => {
                           debounce(setFangDaoShuiyin(e.detail.value), 100);
@@ -2480,8 +2620,8 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={weather}
+                        cursorSpacing={10}
                         maxlength={8}
-                        adjustPosition={true}
                         clear={true}
                         onInput={(e) => {
                           setWeather(e.detail.value);
@@ -2495,31 +2635,32 @@ const CameraPage = () => {
                     <View className="edit-item">
                       <View className="picker">
                         <Text>经度： </Text>
-                        <input
+                        <Input
                           className="input"
                           value={longitude + ""}
                           maxlength={14}
+                          cursorSpacing={10}
                           clear={true}
-                          adjustPosition={true}
                           onInput={(e) => {
                             setLongitude(e.detail.value + "");
                           }}
-                        ></input>
+                        ></Input>
                       </View>
                     </View>
                     <View className="edit-item">
                       <View className="picker">
                         <Text>纬度： </Text>
-                        <input
+                        <Input
                           className="input"
                           value={latitude + ""}
+                          cursorSpacing={10}
                           maxlength={14}
-                          adjustPosition={true}
                           clear={true}
+                          always-embed
                           onInput={(e) => {
                             setLatitude(e.detail.value + "");
                           }}
-                        ></input>
+                        ></Input>
                       </View>
                     </View>
                   </>
@@ -2531,8 +2672,8 @@ const CameraPage = () => {
                       <Input
                         className="input"
                         value={remark}
-                        adjustPosition={true}
                         maxlength={20}
+                        cursorSpacing={10}
                         clear={true}
                         onInput={(e) => {
                           debounce(setRemark(e.detail.value), 100);
