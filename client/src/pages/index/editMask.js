@@ -100,7 +100,7 @@ const WatermarkPopup = ({
       isOpened={showFloatLayout}
       overlay={false}
       closeable={true}
-      style={{ height: "100%", flexShrink: "0" }}
+      style={{ height: "1000vh", flexShrink: "0" }}
       title="水印选择、修改"
       onClose={() => {
         setEdit(false);

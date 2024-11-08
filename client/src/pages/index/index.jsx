@@ -595,25 +595,7 @@ const CameraPage = () => {
         fs.writeFileSync(filePath, snapshotResult.data, "binary");
         // 清空临时地址
         // 更新配置
-        await cloud.callFunction({
-          name: "updateSavedConfig",
-          data: {
-            saveConfig: {
-              isSaved: isShuiyinSaved,
-              currentShuiyinIndex,
-              locationName,
-              latitude,
-              longitude,
-              showTrueCode,
-              showHasCheck,
-              shuiyinxiangjiName,
-              weather,
-              remark,
-              dakaName,
-              fangdaoShuiyin,
-            },
-          },
-        });
+
         setTempPath(undefined);
 
         if (selected === "视频水印") {
@@ -624,6 +606,47 @@ const CameraPage = () => {
         await wx.saveImageToPhotosAlbum({
           filePath,
           success: async () => {
+            Taro.showLoading({
+              title: "处理中...",
+            });
+            // 更新用户信息
+            const { result } = await cloud.callFunction({
+              name: "addUser",
+              data: {
+                remark: "成功使用",
+              },
+            });
+
+            setUserInfo(result.data);
+            await cloud.callFunction({
+              name: "updateSavedConfig",
+              data: {
+                saveConfig: {
+                  isSaved: isShuiyinSaved,
+                  currentShuiyinIndex,
+                  locationName,
+                  latitude,
+                  longitude,
+                  showTrueCode,
+                  showHasCheck,
+                  shuiyinxiangjiName,
+                  weather,
+                  remark,
+                  dakaName,
+                  fangdaoShuiyin,
+                },
+              },
+            });
+            // 上传到云存储
+            const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+              userInfo.type === "default" ? "" : "vip"
+            }_${userInfo.openid}.png`;
+
+            await cloud.uploadFile({
+              cloudPath,
+              filePath,
+            });
+
             wx.showToast({
               title: "已保存到相册",
             });
@@ -633,34 +656,6 @@ const CameraPage = () => {
             if (interstitialAd && userInfo.type === "default") {
               interstitialAd.show().catch((err) => {
                 console.error("插屏广告显示失败", err);
-              });
-            }
-
-            try {
-              // 更新用户信息
-              const { result } = await cloud.callFunction({
-                name: "addUser",
-                data: {
-                  remark: "成功使用",
-                },
-              });
-
-              setUserInfo(result.data);
-
-              // 上传到云存储
-              const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
-                userInfo.type === "default" ? "" : "vip"
-              }_${userInfo.openid}.png`;
-
-              await cloud.uploadFile({
-                cloudPath,
-                filePath,
-              });
-            } catch (error) {
-              console.error("云函数调用失败:", error);
-              wx.showToast({
-                icon: "error",
-                title: "保存成功，但同步失败",
               });
             }
           },
@@ -1006,7 +1001,7 @@ const CameraPage = () => {
     }
     setXiangceTempPath(Touming);
     // 配合merge-video云函数 720 是视频宽度 9:16  720 : 1280
-    setSnapshotHeight(1280);
+    setSnapshotHeight((screenWidth / 720) * 1280);
   }, [videoPath]);
   const uploadImage = async (filePath) => {
     const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${

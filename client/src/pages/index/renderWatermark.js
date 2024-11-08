@@ -333,12 +333,9 @@ const RenderWatermark = ({
       ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
       : (screenWidth / 3) * 4
     : snapshotHeight;
-
-  let width = "";
   if (selected === "视频水印") {
-    width = 720;
-  } else {
-    width = screenWidth;
+    console.log("height: ", height);
+    console.log("width: ", screenWidth);
   }
   return (
     <Snapshot
@@ -348,7 +345,7 @@ const RenderWatermark = ({
           ? {
               position: "absolute",
               left: "-999999px",
-              width,
+              width: "100%",
               pointerEvents: "none",
               height,
             }
@@ -359,8 +356,6 @@ const RenderWatermark = ({
         style={{
           position: "relative",
           height,
-          width,
-
           background:
             selected === "视频水印" && isCamera ? "rgba(0,0,0,.6)" : "auto",
         }}
@@ -373,8 +368,7 @@ const RenderWatermark = ({
       >
         <View
           style={{
-            width,
-
+            widh: "100%",
             position: "relative",
             height,
           }}
@@ -410,8 +404,7 @@ const RenderWatermark = ({
                 isCamera ? "cameraSelectedImage" : "xiangceSelectedImage"
               }
               style={{
-                width,
-
+                width: "100%",
                 position: "absolute",
                 zIndex: 2,
                 top: "0",
