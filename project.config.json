@@ -24,7 +24,7 @@
     },
     "packNpmRelationList": [],
     "condition": false,
-    "uglifyFileName": true,
+    "uglifyFileName": false,
     "compileWorklet": false,
     "coverView": false,
     "showShadowRootInWxmlPanel": false,
