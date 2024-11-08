@@ -352,7 +352,7 @@ const RenderWatermark = ({
         style={{
           position: "relative",
           height,
-          background: selected === "视频水印" ? "rgba(0,0,0,.6)" : "auto",
+          background: selected === "视频水印" && isCamera ? "rgba(0,0,0,.6)" : "auto",
         }}
         onClick={(e) => {
           if (!showFloatLayout) {
