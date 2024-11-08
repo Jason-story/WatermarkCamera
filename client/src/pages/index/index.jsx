@@ -992,55 +992,10 @@ const CameraPage = () => {
             });
             return;
           }
-
-          // 获取视频信息
-          try {
-            const videoInfo = await new Promise((resolve, reject) => {
-              Taro.getVideoInfo({
-                src: path,
-                success: resolve,
-                fail: reject,
-              });
-            });
-            console.log('videoInfo: ', videoInfo);
-
-            // 检查视频时长
-            if (videoInfo.duration > 300) {
-              // 假设限制5分钟
-              Taro.showModal({
-                title: "提示",
-                content: "视频时长超过5分钟，请选择更短的视频",
-                showCancel: false,
-              });
-              return;
-            }
-
-            // 设置视频路径
-            await setVideoPath(path);
-
-            console.log("视频处理成功:", {
-              size: fileSizeInMB.toFixed(2) + "MB",
-              duration: videoInfo.duration + "秒",
-              width: videoInfo.width,
-              height: videoInfo.height,
-            });
-          } catch (error) {
-            console.error("获取视频信息失败:", error);
-            Taro.showModal({
-              title: "错误",
-              content: "获取视频信息失败，请重试",
-              showCancel: false,
-            });
-          }
+          await setVideoPath(path);
         } catch (error) {}
       }
-    } catch (error) {
-      Taro.showModal({
-        title: "错误",
-        content: "操作失败，请重试",
-        showCancel: false,
-      });
-    }
+    } catch (error) {}
   };
   const [videoPath, setVideoPath] = useState("");
   const [videoMaskPath, setVideoMaskPath] = useState("");
@@ -1050,6 +1005,7 @@ const CameraPage = () => {
       return;
     }
     setXiangceTempPath(Touming);
+    setSnapshotHeight((16 / 9) * screenWidth);
   }, [videoPath]);
   const uploadImage = async (filePath) => {
     const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${

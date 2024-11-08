@@ -327,6 +327,7 @@ const RenderWatermark = ({
       );
     }
   };
+  // 相机时 第一个snap 高度3：4 或者按照比例设置
   const height = isCamera
     ? ShuiyinDoms[currentShuiyinIndex].options?.proportion
       ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
