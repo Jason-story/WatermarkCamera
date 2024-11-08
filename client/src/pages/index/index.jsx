@@ -1002,6 +1002,7 @@ const CameraPage = () => {
                 fail: reject,
               });
             });
+            console.log('videoInfo: ', videoInfo);
 
             // 检查视频时长
             if (videoInfo.duration > 300) {
@@ -1232,7 +1233,7 @@ const CameraPage = () => {
                 style={{
                   bottom: showFloatLayout
                     ? ShuiyinDoms[currentShuiyinIndex].options.proportion
-                      ? "35%"
+                      ? "40%"
                       : "30%"
                     : "0",
                 }}

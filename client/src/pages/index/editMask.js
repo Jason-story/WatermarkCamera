@@ -1,17 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Button,
   Text,
   Image,
   Picker,
+  Input,
   Switch,
   ScrollView,
 } from "@tarojs/components";
-import { Input } from "@nutui/nutui-react";
-import { Popup } from "@nutui/nutui-react-taro";
+import { AtFloatLayout } from "taro-ui";
 import ShuiyinDoms from "../../components/shuiyin";
-
 /**
  * 水印编辑弹窗组件
  * @param {Object} props
@@ -88,27 +87,24 @@ const WatermarkPopup = ({
       }, delay);
     };
   }
-
+  const [keyboardHeight, setKeyBoardHeight] = useState(0);
   useEffect(() => {
     wx.onKeyboardHeightChange((res) => {
-      if (res.height > 0) {
-      } else {
-        wx.hideKeyboard();
-        console.log(res.height);
-      }
+      console.log(res.height);
+      setKeyBoardHeight(keyboardHeight);
     });
   }, []);
+
   return (
-    <Popup
-      visible={showFloatLayout}
+    <AtFloatLayout
+      isOpened={showFloatLayout}
       overlay={false}
       closeable={true}
-      style={{ height: "100%" }}
-      position="bottom"
+      style={{ height: "100%", flexShrink: "0" }}
       title="水印选择、修改"
-      destroyOnClose={true}
       onClose={() => {
         setEdit(false);
+        wx.hideKeyboard();
         setShowFloatLayout(!showFloatLayout);
       }}
     >
@@ -116,9 +112,7 @@ const WatermarkPopup = ({
         // 水印选择界面
         <ScrollView
           scroll-y
-          style={{
-            height: "100%",
-          }}
+          style={{ height: "50vh", flexShrink: "0", flex: 1 }}
         >
           <View
             className="shuiyin-list"
@@ -127,6 +121,7 @@ const WatermarkPopup = ({
               paddingRight: "10px",
               height: "100%",
               overflow: "auto",
+              flex: 1,
             }}
           >
             {ShuiyinDoms.map((item, index) => (
@@ -173,7 +168,14 @@ const WatermarkPopup = ({
         </ScrollView>
       ) : (
         // 编辑界面
-        <ScrollView scroll-y className="edit-box">
+        <ScrollView
+          scroll-y
+          className="edit-box"
+          style={{
+            height: keyboardHeight ? "1000vh" : "50vh",
+          }}
+          scrollTop={keyboardHeight + 20}
+        >
           {/* 保存设置区域 */}
           <View className="shantui-btns">
             <View
@@ -225,6 +227,7 @@ const WatermarkPopup = ({
                 value={locationName}
                 maxlength={50}
                 clear={true}
+                adjustPosition={false}
                 clearable
                 onInput={(e) => {
                   debounce(setLocationName(e.detail.value), 100);
@@ -260,6 +263,7 @@ const WatermarkPopup = ({
                       maxlength={4}
                       clear={true}
                       placeholder="点击填写"
+                      adjustPosition={false}
                       onInput={(e) => {
                         debounce(
                           setShuiyinxiangjiName(
@@ -308,6 +312,7 @@ const WatermarkPopup = ({
                   value={title}
                   maxlength={12}
                   cursorSpacing={100}
+                  adjustPosition={false}
                   clear={true}
                   onInput={(e) => {
                     debounce(setTitle(e.detail.value), 100);
@@ -327,6 +332,7 @@ const WatermarkPopup = ({
                   value={fangdaoShuiyin}
                   maxlength={6}
                   cursorSpacing={100}
+                  adjustPosition={false}
                   clear={true}
                   onInput={(e) => {
                     debounce(setFangDaoShuiyin(e.detail.value), 100);
@@ -345,6 +351,7 @@ const WatermarkPopup = ({
                   className="input"
                   value={weather}
                   cursorSpacing={100}
+                  adjustPosition={false}
                   maxlength={8}
                   clear={true}
                   onInput={(e) => {
@@ -365,6 +372,7 @@ const WatermarkPopup = ({
                     className="input"
                     value={longitude + ""}
                     maxlength={14}
+                    adjustPosition={false}
                     cursorSpacing={100}
                     clear={true}
                     onInput={(e) => {
@@ -380,6 +388,7 @@ const WatermarkPopup = ({
                     className="input"
                     value={latitude + ""}
                     cursorSpacing={100}
+                    adjustPosition={false}
                     maxlength={14}
                     clear={true}
                     onInput={(e) => {
@@ -402,6 +411,7 @@ const WatermarkPopup = ({
                   maxlength={20}
                   cursorSpacing={100}
                   clear={true}
+                  adjustPosition={false}
                   onInput={(e) => {
                     debounce(setRemark(e.detail.value), 100);
                   }}
@@ -412,7 +422,7 @@ const WatermarkPopup = ({
           )}
         </ScrollView>
       )}
-      {!edit && (
+      {/* {!edit && (
         <View>
           <Text
             style={{
@@ -424,8 +434,8 @@ const WatermarkPopup = ({
             更多水印样式开发中...
           </Text>
         </View>
-      )}
-    </Popup>
+      )} */}
+    </AtFloatLayout>
   );
 };
 
