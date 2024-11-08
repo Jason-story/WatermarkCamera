@@ -42,7 +42,6 @@ const RenderWatermark = ({
   makefangweimaText,
   cameraError,
   snapshotHeight,
-  snapshotWidth,
   setEdit,
   setShowFloatLayout,
 }) => {
@@ -334,12 +333,6 @@ const RenderWatermark = ({
       ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
       : (screenWidth / 3) * 4
     : snapshotHeight;
-  let width = "";
-  if (selected === "视频水印") {
-    width = snapshotWidth;
-  } else {
-    width = screenWidth;
-  }
   return (
     <Snapshot
       className={isCamera ? "snapshot" : "snapshot-outside"}
@@ -348,7 +341,7 @@ const RenderWatermark = ({
           ? {
               position: "absolute",
               left: "-999999px",
-              width,
+              width: "100%",
               pointerEvents: "none",
               height,
             }
@@ -370,7 +363,7 @@ const RenderWatermark = ({
       >
         <View
           style={{
-            width,
+            widh: "100%",
             position: "relative",
             height,
           }}
@@ -406,7 +399,7 @@ const RenderWatermark = ({
                 isCamera ? "cameraSelectedImage" : "xiangceSelectedImage"
               }
               style={{
-                width,
+                width: "100%",
                 position: "absolute",
                 zIndex: 2,
                 top: "0",

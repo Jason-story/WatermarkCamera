@@ -172,8 +172,7 @@ const WatermarkPopup = ({
           scroll-y
           className="edit-box"
           style={{
-            // height: keyboardHeight ? "1000vh" : "50vh",
-            height: "1000vh",
+            height: keyboardHeight ? "1000vh" : "50vh",
           }}
           scrollTop={keyboardHeight + 20}
         >

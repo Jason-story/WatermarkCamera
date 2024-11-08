@@ -114,8 +114,6 @@ const CameraPage = () => {
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
   const [remark, setRemark] = useState("");
   const [snapshotHeight, setSnapshotHeight] = useState("");
-  const [snapshotWidth, setSnapshotWidth] = useState("");
-
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
@@ -994,9 +992,6 @@ const CameraPage = () => {
             });
             return;
           }
-          setSnapshotHeight(data.height);
-          setSnapshotWidth(data.width);
-
           await setVideoPath(path);
         } catch (error) {}
       }
@@ -1010,6 +1005,7 @@ const CameraPage = () => {
       return;
     }
     setXiangceTempPath(Touming);
+    setSnapshotHeight((16 / 9) * screenWidth);
   }, [videoPath]);
   const uploadImage = async (filePath) => {
     const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
@@ -1237,7 +1233,6 @@ const CameraPage = () => {
                 <RenderWatermark
                   type={"xiangce"}
                   tempPath={xiangceTempPath}
-                  snapshotWidth={snapshotWidth}
                   onLoadHandler={xiangcePathOnload}
                   currentShuiyinIndex={currentShuiyinIndex}
                   devicePosition={devicePosition}
