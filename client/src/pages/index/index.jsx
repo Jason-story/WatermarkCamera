@@ -1005,8 +1005,8 @@ const CameraPage = () => {
       return;
     }
     setXiangceTempPath(Touming);
-    // 配合merge-video云函数 720 是视频宽度
-    setSnapshotHeight((16 / 9) * 720);
+    // 配合merge-video云函数 720 是视频宽度 9:16  720 : 1280
+    setSnapshotHeight(1280);
   }, [videoPath]);
   const uploadImage = async (filePath) => {
     const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
