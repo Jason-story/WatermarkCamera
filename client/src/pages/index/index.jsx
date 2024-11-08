@@ -22,7 +22,7 @@ import AddMyApp from "../../images/add-my-app.png";
 import VideoImg from "../../images/video.png";
 import Icon8 from "../../images/icon-8.jpg";
 import Mianze from "../../images/mianze.png";
-import EditMark from "./editMatk.js";
+import EditMark from "./editMask.js";
 import "./index.scss";
 let interstitialAd = null;
 const app = getApp();
@@ -1147,81 +1147,6 @@ const CameraPage = () => {
     setCurrentShuiyinIndex(current);
   };
 
-  // const uploadLogo = () => {
-  //   Taro.chooseMedia({
-  //     count: 1,
-  //     mediaType: ["image"],
-  //     sourceType: ["album"],
-  //     success: function (res) {
-  //       const data = res.tempFiles[0];
-  //       const filePath = data.tempFilePath;
-
-  //       Taro.getImageInfo({
-  //         src: filePath,
-  //         success: async function (info) {
-  //           const fileSizeInMB = info.size / (1024 * 1024); // 将文件大小转换为 MB
-
-  //           if (fileSizeInMB > 2) {
-  //             Taro.showModal({
-  //               title: "提示",
-  //               content: "Logo体积过大，请重新选择",
-  //               showCancel: false,
-  //             });
-  //             return;
-  //           }
-  //           Taro.getImageInfo({
-  //             src: filePath,
-  //             success: async function (info) {
-  //               let height, width;
-  //               height = 100;
-  //               width = (info.width / info.height) * 100;
-  //               if (
-  //                 info.height / info.width > 2.5 ||
-  //                 info.height / info.width < 0.4
-  //               ) {
-  //                 width = 150;
-  //                 height = (info.height / info.width) * 150;
-  //               }
-  //               setLogoWidth(width);
-  //               setLogoHeight(height);
-  //               setLogoPath(filePath);
-  //               app.$app.globalData.config.logoConfig = {
-  //                 width,
-  //                 height,
-  //                 path: filePath,
-  //                 x: 20,
-  //                 y:
-  //                   typeof canvasConfigState[currentShuiyinIndex]?.[0]
-  //                     .height === "function"
-  //                     ? canvasConfigState[currentShuiyinIndex]?.[0].height()
-  //                     : canvasConfigState[currentShuiyinIndex]?.[0].height,
-  //               };
-  //             },
-  //           });
-  //         },
-  //       });
-  //     },
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   if (app.$app.globalData.config.logoConfig) {
-  //     app.$app.globalData.config.logoConfig.y =
-  //       typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
-  //         ? canvasConfigState[currentShuiyinIndex]?.[0].height()
-  //         : canvasConfigState[currentShuiyinIndex]?.[0].height;
-  //   }
-  // }, [currentShuiyinIndex]);
-
-  // let canvasRealHeight;
-  // if (
-  //   typeof canvasConfigState[currentShuiyinIndex]?.[0].height === "function"
-  // ) {
-  //   canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height();
-  // } else {
-  //   canvasRealHeight = canvasConfigState[currentShuiyinIndex]?.[0].height;
-  // }
-
   const systemInfo = wx.getSystemInfoSync();
   // 判断是否是真机
   const isRealDevice = systemInfo.platform !== "devtools";
@@ -1238,15 +1163,6 @@ const CameraPage = () => {
       target: "target1",
     },
   ];
-  // let snapshotHeight = "";
-
-  // if (selected === "图片水印") {
-  //   snapshotHeight =
-  //     (ShuiyinDoms[currentShuiyinIndex].options?.proportion
-  //       ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
-  //       : (screenWidth / 3) * 4) + "px";
-  // } else {
-  // }
   return (
     <ScrollView
       scroll-y={true}
@@ -1309,60 +1225,6 @@ const CameraPage = () => {
                 </Button>
               </View>
             )}
-
-            {/* {allAuth && canvasConfigState[currentShuiyinIndex]?.[0].logoY && (
-              <View
-                className="logo-wrap"
-                style={{
-                  bottom: showFloatLayout
-                    ? (screenWidth / 3) * 4 * 0.5 +
-                      (canvasRealHeight + 10) +
-                      "px"
-                    : canvasRealHeight + 10 + "px",
-                }}
-                onClick={() => {
-                  uploadLogo();
-                }}
-              >
-                {logoPath && (
-                  <Image
-                    src={Jianhao}
-                    onClick={(e) => {
-                      setLogoPath("");
-                      app.$app.globalData.config.logoConfig = null;
-                      e.stopPropagation();
-                      e.preventDefault();
-                    }}
-                    style={{
-                      position: "absolute",
-                      right: "-13px",
-                      top: "-13px",
-                      width: "26px",
-                      height: "26px",
-                    }}
-                  ></Image>
-                )}
-                {logoPath ? (
-                  <Image
-                    className="logo"
-                    src={logoPath}
-                    style={{
-                      height: logoHeight + "px",
-                      width: logoWidth + "px",
-                    }}
-                  ></Image>
-                ) : (
-                  <View className="add-pic-wrap">
-                    <Image
-                      className="add-pic"
-                      src={AddPic}
-                      style={{ width: "50px", height: "50px" }}
-                    ></Image>
-                    <Text>上传logo</Text>
-                  </View>
-                )}
-              </View>
-            )} */}
 
             {allAuth && (
               <View
@@ -1523,16 +1385,6 @@ const CameraPage = () => {
                   ></Image>
                   <Text id="target1">修改</Text>
                 </View>
-                {/* <Tour
-                  className="nut-custom-tour"
-                  visible={showTour}
-                  onClose={closeTour}
-                  list={steps}
-                  location="top-start"
-                  offset={[0, 0]}
-                  maskWidth={60}
-                  maskHeight={50}
-                /> */}
               </View>
 
               <View className="take-photo" onClick={takePhoto}>
@@ -1646,10 +1498,6 @@ const CameraPage = () => {
                     "xiangce " +
                     (vipAnimate || addAnimate ? "button-animate " : "")
                   }
-                  // className={
-                  //   "kefu vip xiangce " +
-                  //   (vipAnimate || addAnimate ? "button-animate " : "")
-                  // }
                 >
                   <Image
                     src={VideoImg}
@@ -1662,63 +1510,7 @@ const CameraPage = () => {
                   ></Image>
                   <Text>视频</Text>
                 </View>
-
-                {/* <View
-                className={
-                  "xiangce " +
-                  (vipAnimate || addAnimate ? "button-animate " : "")
-                }
-              >
-                <Image
-                  src={Setting}
-                  className="xiangceIcon"
-                  onClick={() => {
-                    setShowSetting(!showSetting);
-                    setShowSettingFloatLayout(!showSettingFloatLayout);
-                  }}
-                ></Image>
-                <Text>设置</Text>
-              </View> */}
               </View>
-              {/* <View
-              className="shantui-btns"
-              style={{ marginLeft: "-50px", width: "230px" }}
-            >
-              <View style={{ fontSize: "15px" }}>
-                微信闪退、图片长时间没有生成，请打开此开关
-              </View>
-              <Switch
-                style={{ transform: "scale(0.7)" }}
-                checked={shantuiSwitch}
-                onChange={(e) => {
-                  setShantuiSwitch(e.detail.value);
-                }}
-              />
-            </View> */}
-              {/* <View
-              className="tools-bar-inner"
-              style={{
-                position: "absolute",
-                left: "48%",
-                transform: "translateX(-50%)",
-                width: "auto !important",
-                padding: 0,
-              }}
-            >
-              <View>
-                <Image
-                  src={Arrow}
-                  className="leftArrow"
-                  style={{ width: "25px", height: "25px" }}
-                ></Image>
-              </View>
-              <View style={{ fontSize: "12px", marginLeft: "5px" }}>
-                <View>微信闪退？</View>
-                <View>保存数据？</View>
-                <View>请点击设置</View>
-              </View>
-
-            </View> */}
             </View>
             {fuckShenHe === false && (
               <View

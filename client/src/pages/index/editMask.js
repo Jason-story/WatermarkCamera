@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Button,
@@ -89,6 +89,15 @@ const WatermarkPopup = ({
     };
   }
 
+  useEffect(() => {
+    wx.onKeyboardHeightChange((res) => {
+      if (res.height > 0) {
+      } else {
+        wx.hideKeyboard();
+        console.log(res.height);
+      }
+    });
+  }, []);
   return (
     <Popup
       visible={showFloatLayout}
