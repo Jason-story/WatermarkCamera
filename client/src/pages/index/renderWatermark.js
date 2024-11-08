@@ -425,6 +425,7 @@ const RenderWatermark = ({
               fontWeight: "bold",
               bottom: "110px",
               right: "20px",
+              textShadow: "0.5px 0.5px 0.5px #fff",
             }}
           >
             可修改水印相机 <br />

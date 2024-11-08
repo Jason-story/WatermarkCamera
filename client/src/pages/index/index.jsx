@@ -637,20 +637,30 @@ const CameraPage = () => {
                 },
               },
             });
-            // 上传到云存储
-            const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
-              userInfo.type === "default" ? "" : "vip"
-            }_${userInfo.openid}.png`;
+            try {
+              // 上传到云存储
+              const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+                userInfo.type === "default" ? "" : "vip"
+              }_${userInfo.openid}.png`;
 
-            await cloud.uploadFile({
-              cloudPath,
-              filePath,
-            });
+              console.log('cloudPath: ', cloudPath);
+              await cloud.uploadFile({
+                cloudPath,
+                filePath,
+              });
 
-            wx.showToast({
-              title: "已保存到相册",
-            });
-
+              // 上传成功后弹出提示
+              wx.showToast({
+                title: "已保存到相册",
+                icon: "success",
+              });
+            } catch (error) {
+              console.error("文件上传失败：", error);
+              // wx.showToast({
+              //   title: "上传失败，请重试",
+              //   icon: "error",
+              // });
+            }
             await new Promise((resolve) => setTimeout(resolve, 1000));
             // 显示广告
             if (interstitialAd && userInfo.type === "default") {
