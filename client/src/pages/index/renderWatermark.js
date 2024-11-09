@@ -25,6 +25,7 @@ const RenderWatermark = ({
   userInfo,
   showFloatLayout,
   hours,
+  isRealDevice,
   minutes,
   day,
   month,
@@ -371,6 +372,7 @@ const RenderWatermark = ({
             widh: "100%",
             position: "relative",
             height,
+            // background:'#000'
           }}
         >
           {selected === "图片水印" && isCamera && (
@@ -417,15 +419,20 @@ const RenderWatermark = ({
         {!app.$app.globalData.fuckShenHe && userInfo.type === "default" && (
           <View
             style={{
-              color: "rgba(0, 0, 0)",
-              fontSize: "16px",
+              color: "rgba(0, 0, 0,.8)",
+              fontSize: "24px",
               position: "absolute",
               fontFamily: "Helvetica Neue",
               textAlign: "center",
               fontWeight: "bold",
-              bottom: "110px",
-              right: "20px",
-              textShadow: "0.5px 0.5px 0.5px 0.5px #fff",
+              top: "50%",
+              left: "50%",
+              width: "300px",
+              height: "100px",
+              marginLeft: "-150px",
+              marginTop: "-50px",
+              textShadow:
+                "0.2px 0.2px 0 #fff,-0.2px 0.2px 0 #fff,0.2px -0.2px 0 #fff,-0.2px -0.2px 0 #fff",
             }}
           >
             可修改水印相机 <br />
