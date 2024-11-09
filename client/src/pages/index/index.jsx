@@ -104,7 +104,6 @@ const CameraPage = () => {
   const [videoModal, setVideoModal] = useState(false);
   const [screenWidth, setScreenWidth] = useState("");
   const [addAnimate, setAddAnimate] = useState(false);
-  const [vipAnimate, setVipAnimate] = useState(false);
   const [showHasCheck, setShowHasCheck] = useState(undefined);
   const [showTrueCode, setShowTrueCode] = useState(undefined);
   const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
@@ -337,9 +336,7 @@ const CameraPage = () => {
     checkPermissions();
     requestPermission();
   }, []);
-  useEffect(() => {
-    setVipAnimate(true);
-  }, [userInfo.type]);
+
   useDidShow(() => {
     checkPermissions();
     getAuth();
@@ -1313,12 +1310,7 @@ const CameraPage = () => {
           >
             <View className="tools-bar">
               <View className="tools-bar-inner">
-                <View
-                  className={
-                    "xiangce " +
-                    (vipAnimate || addAnimate ? "button-animate " : "")
-                  }
-                >
+                <View className={"xiangce "}>
                   <Image
                     src={XiangceIcon}
                     className="xiangceIcon"
@@ -1326,12 +1318,7 @@ const CameraPage = () => {
                   ></Image>
                   <Text>相册</Text>
                 </View>
-                <View
-                  className={
-                    "shuiyin " +
-                    (vipAnimate || addAnimate ? "button-animate " : "")
-                  }
-                >
+                <View className={"shuiyin "}>
                   <Image
                     src={ShuiyinIcon}
                     className="shuiyinIcon"
@@ -1369,12 +1356,7 @@ const CameraPage = () => {
               </View>
               <View className="tools-bar-inner">
                 {
-                  <View
-                    className={
-                      "xiangce kefu vip " +
-                      (vipAnimate || addAnimate ? "button-animate " : "")
-                    }
-                  >
+                  <View className={"xiangce kefu vip "}>
                     <Button
                       onClick={() => {
                         Taro.navigateTo({
@@ -1405,10 +1387,7 @@ const CameraPage = () => {
                   style={{
                     marginRight: "auto",
                   }}
-                  className={
-                    "xiangce kefu " +
-                    (vipAnimate || addAnimate ? "button-animate " : "")
-                  }
+                  className={"xiangce kefu "}
                 >
                   <Button
                     onClick={() => {
@@ -1439,12 +1418,7 @@ const CameraPage = () => {
 
             </View> */}
               <View className="tools-bar-inner">
-                <View
-                  className={
-                    "xiangce " +
-                    (vipAnimate || addAnimate ? "button-animate " : "")
-                  }
-                >
+                <View className={"xiangce "}>
                   <Image
                     src={Mianze}
                     className="xiangceIcon"
@@ -1456,12 +1430,7 @@ const CameraPage = () => {
                   ></Image>
                   <Text>声明</Text>
                 </View>
-                <View
-                  className={
-                    "xiangce " +
-                    (vipAnimate || addAnimate ? "button-animate " : "")
-                  }
-                >
+                <View className={"xiangce "}>
                   <Image
                     src={VideoImg}
                     className="xiangceIcon"

@@ -420,12 +420,12 @@ const RenderWatermark = ({
               color: "rgba(0, 0, 0)",
               fontSize: "16px",
               position: "absolute",
-              fontFamily: "黑体",
+              fontFamily: "Helvetica Neue",
               textAlign: "center",
               fontWeight: "bold",
               bottom: "110px",
               right: "20px",
-              textShadow: "0.5px 0.5px 0.5px #fff",
+              textShadow: "0.5px 0.5px 0.5px 0.5px #fff",
             }}
           >
             可修改水印相机 <br />
