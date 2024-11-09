@@ -105,14 +105,6 @@ picker {
   max-height: 56% !important;
   overflow-y: scroll;
 }
-.at-float-layout .layout-body__content {
-  max-height: auto !important;
-  height: 1000vh !important;
-  overflow-y: scroll;
-}
-.layout-body {
-  height: 1000vh !important;
-}
 .nut-popup-title {
   flex-direction: row !important;
   padding: 16px !important;
@@ -133,7 +125,7 @@ picker {
   border: none !important;
 }
 .nut-popup-title-title {
-  font-size: 30px !important;
+  font-size: 30px!important;
   font-weight: 400 !important;
 }
 .nut-popup-title {
