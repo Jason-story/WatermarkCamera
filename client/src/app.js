@@ -2,7 +2,6 @@ import { Component } from "react";
 import Taro from "@tarojs/taro";
 import "./app.scss";
 import "taro-ui/dist/style/index.scss";
-import '@nutui/nutui-react-taro/dist/style.css'
 
 const systemInfo = Taro.getSystemInfoSync();
 
