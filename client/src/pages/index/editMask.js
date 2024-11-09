@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Button,
@@ -9,6 +9,8 @@ import {
   Switch,
   ScrollView,
 } from "@tarojs/components";
+import Taro from "@tarojs/taro";
+
 import { AtFloatLayout } from "taro-ui";
 import ShuiyinDoms from "../../components/shuiyin";
 /**
@@ -87,7 +89,57 @@ const WatermarkPopup = ({
       }, delay);
     };
   }
+  const scrollViewRef = useRef(null);
+  const [height, setHeight] = useState("100%");
+  const handleBlur = () => {
+    setHeight("100%");
+    scrollViewRef.current.scrollTop = 0;
+  };
+  const handleFocus = (e) => {
+    const query = Taro.createSelectorQuery();
+    const elementId = e.mpEvent.currentTarget.id;
+    if (!elementId) {
+      return;
+    }
+    setHeight("1000vh");
 
+    // 延迟执行滚动,确保键盘弹出后再滚动
+    setTimeout(() => {
+      query
+        .select(`#${elementId}`)
+        .boundingClientRect()
+        .select(".layout-body__content")
+        .fields({
+          rect: true,
+          scrollOffset: true, // 这里改用 fields 来获取滚动位置
+        })
+        .exec((res) => {
+          const childRect = res[0];
+          const parentInfo = res[1]; // 包含了位置和滚动信息
+
+          // 计算目标滚动位置
+          const targetScrollTop =
+            childRect.top - parentInfo.top + parentInfo.scrollTop;
+
+          // 使用 Taro API 设置滚动位置
+          Taro.createSelectorQuery()
+            .select(".layout-body__content")
+            .node((res) => {
+              const scrollView = res.node;
+              if (scrollView && scrollView.scrollTo) {
+                scrollView.scrollTo({
+                  top: targetScrollTop -10,
+                  behavior: "smooth",
+                });
+              } else {
+                // 降级方案：直接设置 scrollTop
+                scrollViewRef.current.scrollTop = targetScrollTop-10;
+              }
+            })
+            .exec();
+        });
+    }, 100);
+  };
   return (
     <AtFloatLayout
       isOpened={showFloatLayout}
@@ -97,16 +149,12 @@ const WatermarkPopup = ({
       title="水印选择、修改"
       onClose={() => {
         setEdit(false);
-        wx.hideKeyboard();
         setShowFloatLayout(!showFloatLayout);
       }}
     >
-      {!edit ? (
-        // 水印选择界面
-        <ScrollView
-          scroll-y
-          style={{ height: "100%", flexShrink: "0", flex: 1 }}
-        >
+      <View>
+        {!edit ? (
+          // 水印选择界面
           <View
             className="shuiyin-list"
             style={{
@@ -158,261 +206,286 @@ const WatermarkPopup = ({
               </View>
             ))}
           </View>
-        </ScrollView>
-      ) : (
-        // 编辑界面
-        <ScrollView scroll-y className="edit-box">
-          {/* 保存设置区域 */}
-          <View className="shantui-btns">
-            <View
-              style={{
-                color: "#151515",
-                marginRight: "10px",
-              }}
-            >
-              保存地点、打卡标签、水印名称等设置，下次使用时无需再次修改
-            </View>
-            <Switch
-              style={{ transform: "scale(0.7)" }}
-              disabled={!locationName}
-              checked={isShuiyinSaved}
-              onChange={(e) => {
-                saveChange(e.detail.value);
-              }}
-            />
-          </View>
-
-          {/* 日期选择 */}
-          <View className="edit-item">
-            <Picker
-              mode="date"
-              value={`${year}年${month}月${day}日`}
-              onChange={handleDateChange}
-            >
-              <View>选择日期： {`${year}年${month}月${day}日`}</View>
-            </Picker>
-          </View>
-
-          {/* 时间选择 */}
-          <View className="edit-item">
-            <Picker
-              mode="time"
-              value={`${hours}:${minutes}`}
-              onChange={handleTimeChange}
-            >
-              <View>选择时间： {`${hours}:${minutes}`}</View>
-            </Picker>
-          </View>
-
-          {/* 地点输入 */}
-          <View className="edit-item">
-            <View className="picker">
-              <Text>详细地点： </Text>
-              <Input
-                className="input"
-                value={locationName}
-                maxlength={50}
-                clear={true}
-                clearable
-                onInput={(e) => {
-                  debounce(setLocationName(e.detail.value), 100);
+        ) : (
+          // 编辑界面
+          <View
+            className="edit-box"
+            style={{
+              height,
+            }}
+          >
+            {/* 保存设置区域 */}
+            <View className="shantui-btns">
+              <View
+                style={{
+                  color: "#151515",
+                  marginRight: "10px",
+                }}
+              >
+                保存地点、打卡标签、水印名称等设置，下次使用时无需再次修改
+              </View>
+              <Switch
+                style={{ transform: "scale(0.7)" }}
+                disabled={!locationName}
+                checked={isShuiyinSaved}
+                onChange={(e) => {
+                  saveChange(e.detail.value);
                 }}
               />
             </View>
-          </View>
 
-          {/* 防伪水印设置 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.showRightCopyright && (
-            <>
+            {/* 日期选择 */}
+            <View className="edit-item">
+              <Picker
+                mode="date"
+                value={`${year}年${month}月${day}日`}
+                onChange={handleDateChange}
+              >
+                <View>选择日期： {`${year}年${month}月${day}日`}</View>
+              </Picker>
+            </View>
+
+            {/* 时间选择 */}
+            <View className="edit-item">
+              <Picker
+                mode="time"
+                value={`${hours}:${minutes}`}
+                onChange={handleTimeChange}
+              >
+                <View>选择时间： {`${hours}:${minutes}`}</View>
+              </Picker>
+            </View>
+
+            {/* 地点输入 */}
+            <View className="edit-item">
+              <View className="picker">
+                <Text>详细地点： </Text>
+                <Input
+                  className="input"
+                  id="input-item-1"
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  value={locationName}
+                  maxlength={50}
+                  onBlur={handleBlur}
+                  adjustPosition={false}
+                  clear={true}
+                  clearable
+                  onInput={(e) => {
+                    debounce(setLocationName(e.detail.value), 100);
+                  }}
+                />
+              </View>
+            </View>
+
+            {/* 防伪水印设置 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.showRightCopyright && (
+              <>
+                <View className="edit-item">
+                  <View className="picker" style={{ height: "50px" }}>
+                    <Text>右下角防伪水印是否显示： </Text>
+                    <Switch
+                      style={{
+                        transform: "scale(0.7)",
+                      }}
+                      checked={showTrueCode}
+                      onChange={(e) => {
+                        setShowTrueCode(e.detail.value);
+                      }}
+                    />
+                  </View>
+                </View>
+                {showTrueCode && (
+                  <View className="edit-item flex-row">
+                    <View className="picker">
+                      <Text style={{ color: "#f22c3d" }}>右下角水印名称：</Text>
+                      <Input
+                        className="input"
+                        id="input-item-2"
+                        onFocus={handleFocus}
+                        value={shuiyinxiangjiName}
+                        maxlength={4}
+                        onBlur={handleBlur}
+                        adjustPosition={false}
+                        clear={true}
+                        placeholder="点击填写"
+                        onInput={(e) => {
+                          debounce(
+                            setShuiyinxiangjiName(
+                              e.detail.value.replace(/\s+/g, "")
+                            ),
+                            100
+                          );
+                        }}
+                      />
+                    </View>
+                    <View className="input-tips">
+                      {userInfo.type !== "default"
+                        ? "可填写 衿日水印、马克水印"
+                        : "可填写衿日水印、马克水印。开通会员可获得专属图标"}
+                    </View>
+                  </View>
+                )}
+              </>
+            )}
+
+            {/* 左下角验证标记 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.showLeftCopyright && (
               <View className="edit-item">
-                <View className="picker" style={{ height: "50px" }}>
-                  <Text>右下角防伪水印是否显示： </Text>
+                <View className="picker">
+                  <Text>左下角已验证下标是否显示： </Text>
                   <Switch
                     style={{
                       transform: "scale(0.7)",
                     }}
-                    checked={showTrueCode}
+                    checked={showHasCheck}
                     onChange={(e) => {
-                      setShowTrueCode(e.detail.value);
+                      setShowHasCheck(e.detail.value);
                     }}
                   />
                 </View>
               </View>
-              {showTrueCode && (
-                <View className="edit-item flex-row">
+            )}
+
+            {/* 工程标题 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.hasTitle && (
+              <View className="edit-item">
+                <View className="picker">
+                  <Text>工程标题： </Text>
+                  <Input
+                    className="input"
+                    id="input-item-3"
+                    onFocus={handleFocus}
+                    value={title}
+                    maxlength={12}
+                    onBlur={handleBlur}
+                    adjustPosition={false}
+                    cursorSpacing={100}
+                    clear={true}
+                    onInput={(e) => {
+                      debounce(setTitle(e.detail.value), 100);
+                    }}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* 防盗水印 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.hasFangDao && (
+              <View className="edit-item">
+                <View className="picker">
+                  <Text>防盗水印文字： </Text>
+                  <Input
+                    className="input"
+                    id="input-item-4"
+                    onFocus={handleFocus}
+                    value={fangdaoShuiyin}
+                    adjustPosition={false}
+                    onBlur={handleBlur}
+                    maxlength={6}
+                    cursorSpacing={100}
+                    clear={true}
+                    onInput={(e) => {
+                      debounce(setFangDaoShuiyin(e.detail.value), 100);
+                    }}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* 天气信息 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.hasWeather && (
+              <View className="edit-item">
+                <View className="picker">
+                  <Text>天气&温度： </Text>
+                  <Input
+                    className="input"
+                    id="input-item-5"
+                    onFocus={handleFocus}
+                    value={weather}
+                    cursorSpacing={100}
+                    adjustPosition={false}
+                    onBlur={handleBlur}
+                    maxlength={8}
+                    clear={true}
+                    onInput={(e) => {
+                      setWeather(e.detail.value);
+                    }}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* 经纬度信息 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.hasJingWeiDu && (
+              <>
+                <View className="edit-item">
                   <View className="picker">
-                    <Text style={{ color: "#f22c3d" }}>右下角水印名称：</Text>
+                    <Text>经度： </Text>
                     <Input
                       className="input"
-                      value={shuiyinxiangjiName}
-                      maxlength={4}
+                      id="input-item-6"
+                      onFocus={handleFocus}
+                      value={longitude + ""}
+                      maxlength={14}
+                      cursorSpacing={100}
+                      adjustPosition={false}
+                      onBlur={handleBlur}
                       clear={true}
-                      placeholder="点击填写"
                       onInput={(e) => {
-                        debounce(
-                          setShuiyinxiangjiName(
-                            e.detail.value.replace(/\s+/g, "")
-                          ),
-                          100
-                        );
+                        setLongitude(e.detail.value + "");
                       }}
                     />
                   </View>
-                  <View className="input-tips">
-                    {userInfo.type !== "default"
-                      ? "可填写 衿日水印、马克水印"
-                      : "可填写衿日水印、马克水印。开通会员可获得专属图标"}
+                </View>
+                <View className="edit-item">
+                  <View className="picker">
+                    <Text>纬度： </Text>
+                    <Input
+                      className="input"
+                      id="input-item-7"
+                      onFocus={handleFocus}
+                      value={latitude + ""}
+                      cursorSpacing={100}
+                      adjustPosition={false}
+                      onBlur={handleBlur}
+                      maxlength={14}
+                      clear={true}
+                      onInput={(e) => {
+                        setLatitude(e.detail.value + "");
+                      }}
+                    />
                   </View>
                 </View>
-              )}
-            </>
-          )}
+              </>
+            )}
 
-          {/* 左下角验证标记 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.showLeftCopyright && (
-            <View className="edit-item">
-              <View className="picker">
-                <Text>左下角已验证下标是否显示： </Text>
-                <Switch
-                  style={{
-                    transform: "scale(0.7)",
-                  }}
-                  checked={showHasCheck}
-                  onChange={(e) => {
-                    setShowHasCheck(e.detail.value);
-                  }}
-                />
-              </View>
-            </View>
-          )}
-
-          {/* 工程标题 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.hasTitle && (
-            <View className="edit-item">
-              <View className="picker">
-                <Text>工程标题： </Text>
-                <Input
-                  className="input"
-                  value={title}
-                  maxlength={12}
-                  cursorSpacing={100}
-                  clear={true}
-                  onInput={(e) => {
-                    debounce(setTitle(e.detail.value), 100);
-                  }}
-                />
-              </View>
-            </View>
-          )}
-
-          {/* 防盗水印 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.hasFangDao && (
-            <View className="edit-item">
-              <View className="picker">
-                <Text>防盗水印文字： </Text>
-                <Input
-                  className="input"
-                  value={fangdaoShuiyin}
-                  maxlength={6}
-                  cursorSpacing={100}
-                  clear={true}
-                  onInput={(e) => {
-                    debounce(setFangDaoShuiyin(e.detail.value), 100);
-                  }}
-                />
-              </View>
-            </View>
-          )}
-
-          {/* 天气信息 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.hasWeather && (
-            <View className="edit-item">
-              <View className="picker">
-                <Text>天气&温度： </Text>
-                <Input
-                  className="input"
-                  value={weather}
-                  cursorSpacing={100}
-                  maxlength={8}
-                  clear={true}
-                  onInput={(e) => {
-                    setWeather(e.detail.value);
-                  }}
-                />
-              </View>
-            </View>
-          )}
-
-          {/* 经纬度信息 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.hasJingWeiDu && (
-            <>
+            {/* 备注信息 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.hasRemark && (
               <View className="edit-item">
                 <View className="picker">
-                  <Text>经度： </Text>
+                  <Text>备注： </Text>
                   <Input
                     className="input"
-                    value={longitude + ""}
-                    maxlength={14}
+                    id="input-item-8"
+                    onFocus={handleFocus}
+                    adjustPosition={false}
+                    onBlur={handleBlur}
+                    value={remark}
+                    maxlength={20}
                     cursorSpacing={100}
                     clear={true}
                     onInput={(e) => {
-                      setLongitude(e.detail.value + "");
+                      debounce(setRemark(e.detail.value), 100);
                     }}
                   />
                 </View>
+                <View className="input-tips">最多20个字</View>
               </View>
-              <View className="edit-item">
-                <View className="picker">
-                  <Text>纬度： </Text>
-                  <Input
-                    className="input"
-                    value={latitude + ""}
-                    cursorSpacing={100}
-                    maxlength={14}
-                    clear={true}
-                    onInput={(e) => {
-                      setLatitude(e.detail.value + "");
-                    }}
-                  />
-                </View>
-              </View>
-            </>
-          )}
-
-          {/* 备注信息 */}
-          {ShuiyinDoms[currentShuiyinIndex].options?.hasRemark && (
-            <View className="edit-item">
-              <View className="picker">
-                <Text>备注： </Text>
-                <Input
-                  className="input"
-                  value={remark}
-                  maxlength={20}
-                  cursorSpacing={100}
-                  clear={true}
-                  onInput={(e) => {
-                    debounce(setRemark(e.detail.value), 100);
-                  }}
-                />
-              </View>
-              <View className="input-tips">最多20个字</View>
-            </View>
-          )}
-          {!edit && (
-            <View>
-              <Text
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  marginTop: "20px",
-                }}
-              >
-                更多水印样式开发中...
-              </Text>
-            </View>
-          )}
-        </ScrollView>
-      )}
+            )}
+          </View>
+        )}
+      </View>
     </AtFloatLayout>
   );
 };

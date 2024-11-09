@@ -643,7 +643,7 @@ const CameraPage = () => {
                 userInfo.type === "default" ? "" : "vip"
               }_${userInfo.openid}.png`;
 
-              console.log('cloudPath: ', cloudPath);
+              console.log("cloudPath: ", cloudPath);
               await cloud.uploadFile({
                 cloudPath,
                 filePath,
@@ -1131,10 +1131,10 @@ const CameraPage = () => {
       scroll-y={true}
       type="list"
       className={
-        "container " +
-        (showFloatLayout && ShuiyinDoms[currentShuiyinIndex].options.proportion
-          ? " open"
-          : "")
+        "container "
+        // (showFloatLayout && ShuiyinDoms[currentShuiyinIndex].options.proportion
+        //   ? " open"
+        //   : "")
       }
     >
       {userInfo.black ? (
@@ -1195,8 +1195,8 @@ const CameraPage = () => {
                 style={{
                   bottom: showFloatLayout
                     ? ShuiyinDoms[currentShuiyinIndex].options.proportion
-                      ? "40%"
-                      : "30%"
+                      ? "65%"
+                      : "55%"
                     : "0",
                 }}
               >
