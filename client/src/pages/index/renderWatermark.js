@@ -419,20 +419,18 @@ const RenderWatermark = ({
         {!app.$app.globalData.fuckShenHe && userInfo.type === "default" && (
           <View
             style={{
-              color: "rgba(0, 0, 0,.8)",
-              fontSize: "24px",
+              color: "#1a1a1a",
+              fontSize: "30px",
               position: "absolute",
               fontFamily: "Helvetica Neue",
+              fontWeight:'bold',
               textAlign: "center",
-              fontWeight: "bold",
               top: "50%",
               left: "50%",
-              width: "300px",
-              height: "100px",
-              marginLeft: "-150px",
-              marginTop: "-50px",
+              width: "100%",
+              transform: "translate(-50%, -50%)",
               textShadow:
-                "0.2px 0.2px 0 #fff,-0.2px 0.2px 0 #fff,0.2px -0.2px 0 #fff,-0.2px -0.2px 0 #fff",
+                "1px 0 0 #fff,0 1px 0 #fff,-1px 0 0 #fff,0 -1px 0 #fff,1px 1px 0 #fff,-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff",
             }}
           >
             可修改水印相机 <br />

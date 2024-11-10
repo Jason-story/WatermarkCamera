@@ -5,6 +5,53 @@ import "taro-ui/dist/style/index.scss";
 
 const systemInfo = Taro.getSystemInfoSync();
 
+const getNewSystems = () => {
+  if (wx.canIUse("getUpdateManager")) {
+    const updateManager = wx.getUpdateManager(); //管理小程序更新
+
+    updateManager.onCheckForUpdate(function (res) {
+      console.log(res);
+
+      if (res.hasUpdate) {
+        //res.hasUpdate返回boolean类型
+
+        updateManager.onUpdateReady(function () {
+          wx.showModal({
+            title: "更新提示",
+
+            content: "新版本已经准备好，是否重启当前应用？",
+
+            success(res) {
+              if (res.confirm) {
+                // 新的版本已经下载好，调用applyUpdate应用新版本并重启
+
+                updateManager.applyUpdate();
+              }
+            },
+          });
+        });
+
+        // 新版本下载失败时执行
+
+        updateManager.onUpdateFailed(function () {
+          wx.showModal({
+            title: "发现新版本",
+
+            content: "请删除当前小程序，重新搜索打开...",
+          });
+        });
+      }
+    });
+  } else {
+    //如果小程序需要在最新的微信版本体验，如下提示
+
+    wx.showModal({
+      title: "更新提示",
+
+      content: "当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。",
+    });
+  }
+};
 // 字体配置
 const FONT_CONFIG = [
   {
@@ -77,61 +124,9 @@ class App extends Component {
     });
   }
 
-  // 加载MiSans字体
-  // loadMiSansFont() {
-  //   return new Promise((resolve, reject) => {
-  //     wx.loadFontFace({
-  //       family: "MiSans",
-  //       global: true,
-  //       scopes: ["webview", "native", "skyline"],
-  //       source:
-  //         'url("https://gitee.com/jasonstory/fonts/raw/master/MiSans-Bold.ttf")',
-  //       success: () => {
-  //         console.log("MiSans 字体加载成功");
-  //         this.setState(
-  //           {
-  //             miSansLoaded: true,
-  //             shouldRerender: true,
-  //           },
-  //           () => {
-  //             resolve(true);
-  //           }
-  //         );
-  //       },
-  //       fail: (err) => {
-  //         console.error("MiSans 字体加载失败:", err);
-  //         reject(err);
-  //       },
-  //     });
-  //   });
-  // }
-
   async componentDidMount() {
     this.loadNormalFonts();
-    // try {
-    //   // 检查缓存中是否已经加载过MiSans
-    //   const fontCache = wx.getStorageSync("miSansFontCache");
-    //   const now = new Date().getTime();
-
-    //   if (fontCache && now - fontCache.timestamp < 24 * 60 * 60 * 1000) {
-    //     // 如果缓存存在且未过期，直接标记为已加载
-    //     this.setState({
-    //       miSansLoaded: true,
-    //       shouldRerender: true,
-    //     });
-    //     console.log("使用缓存的 MiSans 字体");
-    //   } else {
-    //     // 否则先加载MiSans字体
-    //     await this.loadMiSansFont();
-    //     // 设置缓存
-    //     wx.setStorageSync("miSansFontCache", {
-    //       timestamp: now,
-    //       family: "MiSans",
-    //     });
-    //   }
-    // } catch (error) {
-    //   console.error("字体加载错误:", error);
-    // }
+    getNewSystems();
   }
 
   componentDidUpdate(prevProps, prevState) {

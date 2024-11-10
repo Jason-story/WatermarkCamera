@@ -6,6 +6,7 @@ import {
   Image,
   Picker,
   Input,
+  InputNumber,
   Switch,
   ScrollView,
 } from "@tarojs/components";
@@ -128,12 +129,12 @@ const WatermarkPopup = ({
               const scrollView = res.node;
               if (scrollView && scrollView.scrollTo) {
                 scrollView.scrollTo({
-                  top: targetScrollTop -10,
+                  top: targetScrollTop - 10,
                   behavior: "smooth",
                 });
               } else {
                 // 降级方案：直接设置 scrollTop
-                scrollViewRef.current.scrollTop = targetScrollTop-10;
+                scrollViewRef.current.scrollTop = targetScrollTop - 10;
               }
             })
             .exec();
@@ -322,7 +323,7 @@ const WatermarkPopup = ({
                     <View className="input-tips">
                       {userInfo.type !== "default"
                         ? "可填写 衿日水印、马克水印"
-                        : "可填写衿日水印、马克水印。开通会员可获得专属图标"}
+                        : "填写水印名称。开通会员可获得专属图标 😈"}
                     </View>
                   </View>
                 )}
@@ -428,6 +429,7 @@ const WatermarkPopup = ({
                       onFocus={handleFocus}
                       value={longitude + ""}
                       maxlength={14}
+                      type="number"
                       cursorSpacing={100}
                       adjustPosition={false}
                       onBlur={handleBlur}
@@ -447,6 +449,7 @@ const WatermarkPopup = ({
                       onFocus={handleFocus}
                       value={latitude + ""}
                       cursorSpacing={100}
+                      type="number"
                       adjustPosition={false}
                       onBlur={handleBlur}
                       maxlength={14}

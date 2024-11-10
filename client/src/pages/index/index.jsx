@@ -271,8 +271,8 @@ const CameraPage = () => {
       type: "gcj02",
       isHighAccuracy: true,
       success: (res) => {
-        setLatitude(res.latitude);
-        setLongitude(res.longitude);
+        setLatitude((res.latitude * 1).toFixed(6));
+        setLongitude((res.longitude * 1).toFixed(6));
         reverseGeocode(res.latitude, res.longitude);
         fetchWeather(res.longitude, res.latitude);
       },
