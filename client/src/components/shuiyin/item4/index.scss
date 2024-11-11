@@ -5,6 +5,9 @@
   bottom: 83px;
   font-size: 24px;
   font-family: "HYQiHei 65J";
+  transition: transform 0.3s ease;
+  transform-origin: left bottom;
+
 }
 .item4-badage {
   position: relative;

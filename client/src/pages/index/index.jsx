@@ -20,6 +20,7 @@ import { appConfigs } from "../../appConfig.js";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import AddMyApp from "../../images/add-my-app.png";
 import VideoImg from "../../images/video.png";
+import Fankui from "../../images/fankui.png";
 import Icon8 from "../../images/icon-8.jpg";
 import Mianze from "../../images/mianze.png";
 import EditMark from "./editMask.js";
@@ -113,6 +114,7 @@ const CameraPage = () => {
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
   const [remark, setRemark] = useState("");
   const [snapshotHeight, setSnapshotHeight] = useState("");
+  const [maskScale, setMaskScale] = useState(1);
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
@@ -1232,7 +1234,8 @@ const CameraPage = () => {
                   snapshotHeight={snapshotHeight}
                   setEdit={setEdit}
                   setShowFloatLayout={setShowFloatLayout}
-                />{" "}
+                  maskScale={maskScale}
+                />
                 <RenderWatermark
                   type={"xiangce"}
                   tempPath={xiangceTempPath}
@@ -1267,10 +1270,9 @@ const CameraPage = () => {
                   snapshotHeight={snapshotHeight}
                   setEdit={setEdit}
                   setShowFloatLayout={setShowFloatLayout}
+                  maskScale={maskScale}
                 />
-                {/* {renderWatermark("camera")} */}
                 {/* 渲染相册模式的水印 */}
-                {/* {xiangceTempPath && renderWatermark("xiangce")} */}
                 <View className="camera-btns">
                   <View className="zoom-box">
                     <View className="zoom-text" onClick={zoomClick}>
@@ -1443,7 +1445,34 @@ const CameraPage = () => {
                   <Text>视频</Text>
                 </View>
               </View>
+              <View className="tools-bar-inner">
+                <Button
+                  className={"xiangce kefu vip"}
+                  openType="contact"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                  }}
+                >
+                  <Image className="xiangceIcon" src={Fankui}></Image>
+                  <Text>客服</Text>
+                </Button>
+                <View className={"xiangce "}>
+                  {/* <Image
+                    src={VideoImg}
+                    className="xiangceIcon"
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: "/pages/video/index",
+                      });
+                    }}
+                  ></Image>
+                  <Text>视频</Text> */}
+                </View>
+              </View>
             </View>
+
             {fuckShenHe === false && (
               <View
                 className="button-group"
@@ -1677,6 +1706,8 @@ const CameraPage = () => {
             setRemark={setRemark}
             dakaName={dakaName}
             setDakaName={setDakaName}
+            maskScale={1}
+            setMaskScale={setMaskScale}
           />
         </View>
       )}

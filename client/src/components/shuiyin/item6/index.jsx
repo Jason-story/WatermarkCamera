@@ -12,6 +12,8 @@ const Index = ({
   weather,
   weekly,
   day,
+  maskScale,
+
   month,
   year,
   remark,
@@ -19,7 +21,10 @@ const Index = ({
   longitude,
 }) => {
   return (
-    <View className="item6-wrapper" key={"item-6"}>
+    <View className="item6-wrapper" key={"item-6"}
+    style={{
+      transform: `scale(${maskScale})`,
+    }}>
       <View className="item6-time-box item6-flex">
         <View className="item6-time">{`${hours}:${minutes}`}</View>
         <View className="item6-line"></View>

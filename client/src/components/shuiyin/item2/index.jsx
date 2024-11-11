@@ -11,12 +11,16 @@ const Index = ({
   dakaName,
   locationName,
   weekly,
+  maskScale,
   day,
   month,
   year,
 }) => {
   return (
-    <View className="item2-wrapper"  key={"item-2"}>
+    <View className="item2-wrapper"  key={"item-2"}
+    style={{
+      transform: `scale(${maskScale})`,
+    }}>
       <View className="item2-badage">
         <Image src={Icon1}></Image>
         <View className="item2-time-box">{`${hours}:${minutes}`}</View>

@@ -5,9 +5,14 @@ import Icon1 from "./icon-1.png";
 import { formatTextWithLineLimit } from "../../utils";
 import "./index.scss";
 
-const Index = ({ hours, minutes, locationName, weekly, day, month, year }) => {
+const Index = ({ hours, minutes,
+  maskScale,
+  locationName, weekly, day, month, year }) => {
   return (
-    <View className="item3-wrapper"  key={"item-3"}>
+    <View className="item3-wrapper"  key={"item-3"}
+    style={{
+      transform: `scale(${maskScale})`,
+    }}>
       <View className="item3-time">
         <Text>
           {hours}:{minutes}

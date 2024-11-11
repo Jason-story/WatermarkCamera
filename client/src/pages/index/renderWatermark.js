@@ -44,11 +44,12 @@ const RenderWatermark = ({
   cameraError,
   snapshotHeight,
   setEdit,
+  maskScale,
   setShowFloatLayout,
 }) => {
   const isCamera = type === "camera";
 
-  const renderLeftCopyright = () => {
+  const renderLeftCopyright = ({ maskScale }) => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
 
     if (
@@ -60,7 +61,15 @@ const RenderWatermark = ({
       // 左下角今日水印风格下标
 
       return (
-        <View style={{ position: "absolute", left: 0, bottom: 0 }}>
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            transform: `scale(${maskScale})`,
+            transformOrigin: "left bottom",
+          }}
+        >
           <View className="make-left-copyright">
             <Image src={P1}></Image>
             <Text>马克相机已验证照片真实性</Text>
@@ -75,7 +84,15 @@ const RenderWatermark = ({
     ) {
       // 左下角马克水印风格下标
       return (
-        <View style={{ position: "absolute", left: 0, bottom: 0 }}>
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            transform: `scale(${maskScale})`,
+            transformOrigin: "left bottom",
+          }}
+        >
           <View className="jinri-left-copyright">
             <Image src={P1}></Image>
             <View
@@ -95,7 +112,7 @@ const RenderWatermark = ({
     } else {
     }
   };
-  const renderRightCopyright = () => {
+  const renderRightCopyright = ({ maskScale }) => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
 
     if (option?.showRightCopyright && showTrueCode) {
@@ -103,7 +120,15 @@ const RenderWatermark = ({
         if (userInfo.type === "default") {
           // 马克相机 如果是普通用户则显示今日水印风格右下角
           return shuiyinxiangjiName.includes("马克") ? (
-            <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+            <View
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                transform: `scale(${maskScale})`,
+                transformOrigin: "right bottom",
+              }}
+            >
               <View className="make-right-copyright">
                 {/* 马克 右下角背景图 */}
                 <Image src={P4}></Image>
@@ -132,7 +157,15 @@ const RenderWatermark = ({
               </View>
             </View>
           ) : (
-            <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+            <View
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                transform: `scale(${maskScale})`,
+                transformOrigin: "right bottom",
+              }}
+            >
               <View className="jinri-right-copyright">
                 {/* 今日水印 右下角背景图 */}
                 {/* {shuiyinxiangjiName.includes("今日水印") ? ( */}
@@ -168,7 +201,15 @@ const RenderWatermark = ({
           );
         } else {
           return shuiyinxiangjiName ? (
-            <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+            <View
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                transform: `scale(${maskScale})`,
+                transformOrigin: "right bottom",
+              }}
+            >
               <View className="make-right-copyright">
                 {/* 马克 右下角背景图 */}
                 <Image src={P4}></Image>
@@ -202,6 +243,8 @@ const RenderWatermark = ({
                 position: "absolute",
                 right: "10px",
                 bottom: "10px",
+                transform: `scale(${maskScale})`,
+                transformOrigin: "right bottom",
               }}
             >
               <Image
@@ -218,7 +261,15 @@ const RenderWatermark = ({
         if (userInfo.type === "default") {
           // 今日水印相机 如果是普通用户则显示体验相机右下角
           return (
-            <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+            <View
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                transform: `scale(${maskScale})`,
+                transformOrigin: "right bottom",
+              }}
+            >
               <View className="jinri-right-copyright">
                 {/* 今日水印 右下角背景图 */}
                 {/* {shuiyinxiangjiName.includes("今日水印") ? (
@@ -257,7 +308,15 @@ const RenderWatermark = ({
         } else {
           // 如果是付费用户 则显示今日水印相机的logo
           return shuiyinxiangjiName ? (
-            <View style={{ position: "absolute", right: 0, bottom: 0 }}>
+            <View
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                transform: `scale(${maskScale})`,
+                transformOrigin: "right bottom",
+              }}
+            >
               <View className="jinri-right-copyright">
                 {/* 今日水印 右下角背景图 */}
                 {shuiyinxiangjiName.includes("今日水印") ? (
@@ -299,6 +358,8 @@ const RenderWatermark = ({
                 position: "absolute",
                 right: "10px",
                 bottom: "10px",
+                transform: `scale(${maskScale})`,
+                transformOrigin: "right bottom",
               }}
             >
               <Image
@@ -419,11 +480,11 @@ const RenderWatermark = ({
         {!app.$app.globalData.fuckShenHe && userInfo.type === "default" && (
           <View
             style={{
-              color: "#1a1a1a",
+              color: "rgba(0,0,0,.7)",
               fontSize: "30px",
               position: "absolute",
               fontFamily: "Helvetica Neue",
-              fontWeight:'bold',
+              fontWeight: "bold",
               textAlign: "center",
               top: "50%",
               left: "50%",
@@ -453,10 +514,11 @@ const RenderWatermark = ({
             latitude,
             longitude,
             fangdaoShuiyin,
+            maskScale,
           })}
         </View>
-        {renderLeftCopyright()}
-        {renderRightCopyright()}
+        {renderLeftCopyright({ maskScale })}
+        {renderRightCopyright({ maskScale })}
       </View>
     </Snapshot>
   );

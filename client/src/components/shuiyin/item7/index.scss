@@ -11,6 +11,8 @@
   width: 100%;
   height: 100%;
   padding: 0 0 20px 20px;
+  transform-origin: left bottom;
+  transition: transform 0.3s ease;
   .item7-box {
     position: absolute;
     left: 10px;

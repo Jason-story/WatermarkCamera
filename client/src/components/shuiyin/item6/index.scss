@@ -6,6 +6,9 @@
   font-weight: 500;
   font-family: "Helvetica Neue";
   color: #fff;
+  transform-origin: left bottom;
+  transition: transform 0.3s ease
+
 }
 .item6-flex {
   display: flex;

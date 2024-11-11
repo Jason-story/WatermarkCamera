@@ -15,12 +15,17 @@ const Index = ({
   day,
   month,
   year,
+  maskScale,
+
   remark,
   latitude,
   longitude,
 }) => {
   return (
-    <View className="item7-wrapper" key={"item-7"}>
+    <View className="item7-wrapper" key={"item-7"}
+    style={{
+      transform: `scale(${maskScale})`,
+    }}>
       <View className="item7-box">
         {longitude && (
           <View className="item7-label-item">

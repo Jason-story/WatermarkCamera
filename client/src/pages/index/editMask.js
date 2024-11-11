@@ -11,8 +11,8 @@ import {
   ScrollView,
 } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-
-import { AtFloatLayout } from "taro-ui";
+import CustomSlider from "../../components/CustomSlider";
+import { AtFloatLayout, AtSlider } from "taro-ui";
 import ShuiyinDoms from "../../components/shuiyin";
 /**
  * 水印编辑弹窗组件
@@ -73,8 +73,8 @@ const WatermarkPopup = ({
   remark,
   setRemark,
   // 打卡标签
-  dakaName,
-  setDakaName,
+  setMaskScale,
+  maskScale,
 }) => {
   /**
    * 防抖函数
@@ -323,7 +323,7 @@ const WatermarkPopup = ({
                     <View className="input-tips">
                       {userInfo.type !== "default"
                         ? "可填写 衿日水印、马克水印"
-                        : "填写水印名称。开通会员可获得专属图标 😈"}
+                        : "填写水印名称。开通会员可获得专属图标 😎"}
                     </View>
                   </View>
                 )}
@@ -347,7 +347,22 @@ const WatermarkPopup = ({
                 </View>
               </View>
             )}
-
+            {/* 工程标题 */}
+            {ShuiyinDoms[currentShuiyinIndex].options?.maskScale && (
+              <View className="edit-item">
+                <View className="picker">
+                  <Text>水印大小： </Text>
+                  <CustomSlider
+                    min={0.75}
+                    max={1.25}
+                    step={0.01}
+                    onChange={(value) => {
+                      setMaskScale(value)
+                    }}
+                  />
+                </View>
+              </View>
+            )}
             {/* 工程标题 */}
             {ShuiyinDoms[currentShuiyinIndex].options?.hasTitle && (
               <View className="edit-item">

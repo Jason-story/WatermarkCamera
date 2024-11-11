@@ -68,13 +68,13 @@ exports.main = async (event, context) => {
         await sendCustomerServiceMessage(userOpenId, 'text', {
             content:
                 // '您好，欢迎使用水印相机。如果您要开通会员请复制下面链接到浏览器中打开。如有问题请留言，我会第一时间回复您。'
-                '你好，每个微信号有一次免费体验次数，觉得好用就开个会员吧，承诺永不失联，请放心使用'
+                '感谢使用，会员可以去掉水印，同时也可以解锁专属图标，承诺永不失联，请放心使用'
         });
         // 发送微信号
         // await sendCustomerServiceMessage(userOpenId, 'text', {
         //     content: '开通会员请到 小程序-我的-点击id 复制文字发送给我。并选择会员类型。'
         // });
-         // 会员价格
+        // 会员价格
         // const imageBuffer = await downloadImage('cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/kefu/WechatIMG366.jpg');
         // const uploadResult = await uploadToWechat(imageBuffer);
         // await sendCustomerServiceMessage(userOpenId, 'image', {

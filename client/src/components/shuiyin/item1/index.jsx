@@ -14,10 +14,17 @@ const Index = ({
   day,
   month,
   year,
+  maskScale,
   remark,
 }) => {
   return (
-    <View className="item1-wrapper" key={"item-1"}>
+    <View
+      className="item1-wrapper"
+      key={"item-1"}
+      style={{
+        transform: `scale(${maskScale})`,
+      }}
+    >
       <View className="item1-badage">
         <Image src={Icon1}></Image>
         {/* <Text className="item1-dakaText">{dakaName}</Text> */}

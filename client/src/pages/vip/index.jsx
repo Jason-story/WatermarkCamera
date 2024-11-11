@@ -365,7 +365,7 @@ const Index = () => {
               type="default"
               className="guide-btn"
               onClick={(e) => {
-                console.log("e: ", e);
+                // console.log("e: ", e);
                 setIsShowModal(true);
               }}
             >

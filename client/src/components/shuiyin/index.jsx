@@ -33,6 +33,7 @@ const config = [
       hasJingWeiDu: false,
       hasRemark: true,
       copyright: "jrsy",
+      maskScale:true
     },
   },
   {
@@ -50,6 +51,8 @@ const config = [
       hasWeather: false,
       hasJingWeiDu: false,
       copyright: "mk",
+      maskScale:true
+
     },
   },
   {
@@ -67,6 +70,8 @@ const config = [
       hasWeather: false,
       hasJingWeiDu: false,
       copyright: "syxj",
+      maskScale:true
+
     },
   },
   {
@@ -84,6 +89,8 @@ const config = [
       hasWeather: false,
       hasJingWeiDu: false,
       copyright: "syxj",
+      maskScale:true
+
     },
   },
   {
@@ -102,6 +109,8 @@ const config = [
       hasJingWeiDu: false,
       hasRemark: true,
       copyright: "jrsy",
+      maskScale:true
+
     },
   },
   {
@@ -120,6 +129,8 @@ const config = [
       hasJingWeiDu: true,
       hasRemark: true,
       copyright: "jrsy",
+      maskScale:true
+
     },
   },
   {
@@ -138,6 +149,8 @@ const config = [
       hasJingWeiDu: true,
       hasRemark: true,
       copyright: "jrsy",
+      maskScale:true
+
     },
   },
   {

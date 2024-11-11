@@ -12,12 +12,17 @@ const Index = ({
   weather,
   weekly,
   day,
+  maskScale,
+
   month,
   year,
   remark,
 }) => {
   return (
-    <View className="item5-wrapper" key={"item-5"}>
+    <View className="item5-wrapper" key={"item-5"}
+    style={{
+      transform: `scale(${maskScale})`,
+    }}>
       <View
         className="item5-title"
         dangerouslySetInnerHTML={{

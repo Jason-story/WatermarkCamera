@@ -4,6 +4,9 @@
   position: absolute;
   left: 0px;
   bottom: 39px;
+  transform-origin: center bottom;
+  transition: transform 0.3s ease
+
 }
 .item3-time {
   font-size: 100px;
