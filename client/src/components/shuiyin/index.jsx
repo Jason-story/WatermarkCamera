@@ -98,6 +98,7 @@ const config = [
     component: Shuiyin5,
     options: {
       title: "工程记录",
+      id:'gongcheng1',
       vip: false,
       cover: Shuiyin5Cover,
       hasDakaLabel: false,

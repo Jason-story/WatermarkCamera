@@ -5,53 +5,78 @@ import "taro-ui/dist/style/index.scss";
 
 const systemInfo = Taro.getSystemInfoSync();
 
-const getNewSystems = () => {
-  if (wx.canIUse("getUpdateManager")) {
-    const updateManager = wx.getUpdateManager(); //管理小程序更新
+const checkForUpdate = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      if (!wx.canIUse("getUpdateManager")) {
+        wx.showModal({
+          title: "提示",
+          content:
+            "当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。",
+          showCancel: false,
+        });
+        resolve(false);
+        return;
+      }
 
-    updateManager.onCheckForUpdate(function (res) {
-      console.log(res);
+      const updateManager = wx.getUpdateManager();
 
-      if (res.hasUpdate) {
-        //res.hasUpdate返回boolean类型
+      // 检查更新
+      updateManager.onCheckForUpdate((res) => {
+        console.log("检查更新结果：", res);
 
-        updateManager.onUpdateReady(function () {
+        if (!res.hasUpdate) {
+          resolve(false);
+          return;
+        }
+
+        // 监听下载完成
+        updateManager.onUpdateReady(() => {
           wx.showModal({
             title: "更新提示",
-
-            content: "新版本已经准备好，是否重启当前应用？",
-
-            success(res) {
-              if (res.confirm) {
-                // 新的版本已经下载好，调用applyUpdate应用新版本并重启
-
-                updateManager.applyUpdate();
+            content: "新版本已经准备好，重启应用后生效。是否立即重启？",
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                try {
+                  updateManager.applyUpdate();
+                } catch (error) {
+                  console.error("应用更新失败：", error);
+                  reject(error);
+                }
               }
+              resolve(true);
+            },
+            fail: (error) => {
+              console.error("显示更新弹窗失败：", error);
+              reject(error);
+            },
+            confirmText: "重启应用",
+            cancelText: "稍后重启",
+          });
+        });
+
+        // 监听下载失败
+        updateManager.onUpdateFailed((error) => {
+          console.error("版本下载失败：", error);
+          wx.showModal({
+            title: "更新提示",
+            content:
+              "新版本下载失败，请检查网络后重试。如果问题依然存在，请删除小程序后重新搜索打开。",
+            showCancel: false,
+            confirmText: "我知道了",
+            complete: () => {
+              reject(new Error("版本下载失败"));
             },
           });
         });
-
-        // 新版本下载失败时执行
-
-        updateManager.onUpdateFailed(function () {
-          wx.showModal({
-            title: "发现新版本",
-
-            content: "请删除当前小程序，重新搜索打开...",
-          });
-        });
-      }
-    });
-  } else {
-    //如果小程序需要在最新的微信版本体验，如下提示
-
-    wx.showModal({
-      title: "更新提示",
-
-      content: "当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。",
-    });
-  }
+      });
+    } catch (error) {
+      console.error("检查更新失败：", error);
+      reject(error);
+    }
+  });
 };
+
 // 字体配置
 const FONT_CONFIG = [
   {
@@ -126,7 +151,16 @@ class App extends Component {
 
   async componentDidMount() {
     this.loadNormalFonts();
-    getNewSystems();
+    // 使用示例
+    async function initApp() {
+      try {
+        const hasUpdate = await checkForUpdate();
+        console.log("更新检查完成，是否有更新：", hasUpdate);
+      } catch (error) {
+        console.error("更新检查发生错误：", error);
+      }
+    }
+    initApp()
   }
 
   componentDidUpdate(prevProps, prevState) {

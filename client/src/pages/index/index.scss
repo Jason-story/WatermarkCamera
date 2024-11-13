@@ -917,7 +917,7 @@ text {
   }
   .fw-box {
     position: absolute;
-    bottom: -14px;
+    bottom: -15px;
     left: -28px;
     display: flex;
     align-items: center;
@@ -925,6 +925,7 @@ text {
     .fwm {
       width: 22px;
       height: 16px;
+      margin-top: 1px;
     }
     .fangweima {
       margin-left: 5px;
@@ -946,4 +947,8 @@ text {
 .fangweima {
   text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
   font-weight: 500;
+}
+.syxj-icon {
+  background: url("../../images/icon-2.png") no-repeat center;
+  background-size: cover;
 }

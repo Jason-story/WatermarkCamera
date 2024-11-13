@@ -1322,20 +1322,15 @@ const CameraPage = () => {
                 </View>
                 <View className={"shuiyin "}>
                   <Image
-                    src={ShuiyinIcon}
-                    className="shuiyinIcon"
+                    src={VideoImg}
+                    className="xiangceIcon"
                     onClick={() => {
-                      if (!allAuth) {
-                        Taro.showToast({
-                          title: "请先授权相机、相册、位置权限",
-                          icon: "none",
-                        });
-                        return;
-                      }
-                      setShowFloatLayout(!showFloatLayout);
+                      Taro.navigateTo({
+                        url: "/pages/video/index",
+                      });
                     }}
                   ></Image>
-                  <Text id="target1">修改</Text>
+                  <Text>视频</Text>
                 </View>
               </View>
 
@@ -1433,20 +1428,47 @@ const CameraPage = () => {
                   <Text>声明</Text>
                 </View>
                 <View className={"xiangce "}>
-                  <Image
-                    src={VideoImg}
-                    className="xiangceIcon"
-                    onClick={() => {
-                      Taro.navigateTo({
-                        url: "/pages/video/index",
-                      });
+                  <Button
+                    className={"xiangce kefu vip"}
+                    openType="contact"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: 0,
                     }}
-                  ></Image>
-                  <Text>视频</Text>
+                  >
+                    <Image className="xiangceIcon" src={Fankui}></Image>
+                    <Text>客服</Text>
+                  </Button>
                 </View>
               </View>
+              <View
+                className="xiangce"
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translateX(-50%) scale(1.05)",
+                  bottom: "0",
+                }}
+              >
+                <Image
+                  src={ShuiyinIcon}
+                  className="shuiyinIcon"
+                  onClick={() => {
+                    if (!allAuth) {
+                      Taro.showToast({
+                        title: "请先授权相机、相册、位置权限",
+                        icon: "none",
+                      });
+                      return;
+                    }
+                    setShowFloatLayout(!showFloatLayout);
+                  }}
+                ></Image>
+                <Text>修改</Text>
+              </View>
               <View className="tools-bar-inner">
-                <Button
+                {/* <Button
                   className={"xiangce kefu vip"}
                   openType="contact"
                   style={{
@@ -1457,7 +1479,7 @@ const CameraPage = () => {
                 >
                   <Image className="xiangceIcon" src={Fankui}></Image>
                   <Text>客服</Text>
-                </Button>
+                </Button> */}
                 <View className={"xiangce "}>
                   {/* <Image
                     src={VideoImg}

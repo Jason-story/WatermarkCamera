@@ -59,7 +59,6 @@ const RenderWatermark = ({
       showHasCheck
     ) {
       // 左下角今日水印风格下标
-
       return (
         <View
           style={{
@@ -114,223 +113,82 @@ const RenderWatermark = ({
   };
   const renderRightCopyright = ({ maskScale }) => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
-
-    if (option?.showRightCopyright && showTrueCode) {
-      if (option?.copyright === "mk") {
-        if (userInfo.type === "default") {
-          // 马克相机 如果是普通用户则显示今日水印风格右下角
-          return shuiyinxiangjiName.includes("马克") ? (
-            <View
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                transform: `scale(${maskScale})`,
-                transformOrigin: "right bottom",
-              }}
-            >
-              <View className="make-right-copyright">
-                {/* 马克 右下角背景图 */}
-                <Image src={P4}></Image>
-                {/* 马克 防伪码 */}
-                <Text
-                  style={{
-                    fontSize: "10px",
-                    position: "absolute",
-                    color: "rgba(255,255,255,.85)",
-                    right: "1px",
-                    bottom: "-1px",
-                    fontFamily: "HYQiHei 65J",
-                  }}
-                  className="fangweima"
-                >
-                  防伪
-                  <Text
-                    style={{
-                      fontSize: "9px",
-                      fontFamily: "Monaco",
-                    }}
-                  >
-                    {" " + makefangweimaText}
-                  </Text>
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <View
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                transform: `scale(${maskScale})`,
-                transformOrigin: "right bottom",
-              }}
-            >
-              <View className="jinri-right-copyright">
-                {/* 今日水印 右下角背景图 */}
-                {/* {shuiyinxiangjiName.includes("今日水印") ? ( */}
-                {/* <Image src={P2_1}></Image> */}
-                <Image src={P2}></Image>
-                {/* )} */}
-                <View className="fw-box">
-                  <Image src={Fw} className="fwm"></Image>
-                  <Text className="fangweima">{fangweimaText}</Text>
-                </View>
-                {/* 输入什么就显示什么 */}
-                {/* {!shuiyinxiangjiName.includes("今日水印") ? ( */}
-                <Text
-                  style={{
-                    position: "absolute",
-                    color: "#fbfbfb",
-                    right: "3px",
-                    top: "2px",
-                    fontSize: "12px",
-                    textAlign: "center",
-                    fontWeight: 700,
-                    width: "100rpx",
-                    textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
-                    fontFamily: "黑体",
-                    opacity: ".85",
-                  }}
-                >
-                  {shuiyinxiangjiName}
-                </Text>
-                {/* ) : null} */}
-              </View>
-            </View>
-          );
-        } else {
-          return shuiyinxiangjiName ? (
-            <View
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                transform: `scale(${maskScale})`,
-                transformOrigin: "right bottom",
-              }}
-            >
-              <View className="make-right-copyright">
-                {/* 马克 右下角背景图 */}
-                <Image src={P4}></Image>
-                {/* 马克 防伪码 */}
-                <Text
-                  style={{
-                    fontSize: "10px",
-                    position: "absolute",
-                    color: "rgba(255,255,255,.85)",
-                    right: "1px",
-                    bottom: "-1px",
-                    fontFamily: "HYQiHei 65J",
-                  }}
-                  className="fangweima"
-                >
-                  防伪
-                  <Text
-                    style={{
-                      fontSize: "9px",
-                      fontFamily: "Monaco",
-                    }}
-                  >
-                    {" " + makefangweimaText}
-                  </Text>
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <View
-              style={{
-                position: "absolute",
-                right: "10px",
-                bottom: "10px",
-                transform: `scale(${maskScale})`,
-                transformOrigin: "right bottom",
-              }}
-            >
-              <Image
-                src={P5}
+    if (option?.copyright === "syxj") {
+      return (
+        <View className="copySYXJ" key={"syxj"}>
+          <View
+            className="syxj-icon"
+            style={{
+              width: "147rpx",
+              height: "46rpx",
+            }}
+          ></View>
+        </View>
+      );
+    } else {
+      if (option.showRightCopyright && showTrueCode) {
+        if (option?.copyright === "mk") {
+          if (userInfo.type === "default") {
+            // 马克相机 如果是普通用户则显示今日水印风格右下角
+            return shuiyinxiangjiName.includes("马克") ? (
+              <View
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  position: "absolute",
+                  right: 0,
+                  bottom: 0,
+                  transform: `scale(${maskScale})`,
+                  transformOrigin: "right bottom",
                 }}
-              ></Image>
-            </View>
-          );
-        }
-      } else if (option?.copyright === "jrsy") {
-        if (userInfo.type === "default") {
-          // 今日水印相机 如果是普通用户则显示体验相机右下角
-          return (
-            <View
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                transform: `scale(${maskScale})`,
-                transformOrigin: "right bottom",
-              }}
-            >
-              <View className="jinri-right-copyright">
-                {/* 今日水印 右下角背景图 */}
-                {/* {shuiyinxiangjiName.includes("今日水印") ? (
-                  <Image src={P2_1}></Image>
-                ) : ( */}
-                <Image src={P2}></Image>
-                {/* )} */}
-                <View className="fw-box">
-                  <Image src={Fw} className="fwm"></Image>
-                  <Text className="fangweima">{fangweimaText}</Text>
+              >
+                <View className="make-right-copyright">
+                  {/* 马克 右下角背景图 */}
+                  <Image src={P4}></Image>
+                  {/* 马克 防伪码 */}
+                  <Text
+                    style={{
+                      fontSize: "10px",
+                      position: "absolute",
+                      color: "rgba(255,255,255,.85)",
+                      right: "1px",
+                      bottom: "-1px",
+                      fontFamily: "HYQiHei 65J",
+                    }}
+                    className="fangweima"
+                  >
+                    防伪
+                    <Text
+                      style={{
+                        fontSize: "9px",
+                        fontFamily: "Monaco",
+                      }}
+                    >
+                      {" " + makefangweimaText}
+                    </Text>
+                  </Text>
                 </View>
-
-                {/* 输入什么就显示什么 */}
-                {/* {!shuiyinxiangjiName.includes("今日水印") ? ( */}
-                <Text
-                  style={{
-                    position: "absolute",
-                    color: "#fbfbfb",
-                    right: "3px",
-                    top: "2px",
-                    fontSize: "12px",
-                    textAlign: "center",
-                    fontWeight: 700,
-                    width: "100rpx",
-                    textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
-                    fontFamily: "黑体",
-                    opacity: ".85",
-                  }}
-                >
-                  {shuiyinxiangjiName}
-                </Text>
-                {/* ) : null} */}
               </View>
-            </View>
-          );
-        } else {
-          // 如果是付费用户 则显示今日水印相机的logo
-          return shuiyinxiangjiName ? (
-            <View
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                transform: `scale(${maskScale})`,
-                transformOrigin: "right bottom",
-              }}
-            >
-              <View className="jinri-right-copyright">
-                {/* 今日水印 右下角背景图 */}
-                {shuiyinxiangjiName.includes("今日水印") ? (
-                  <Image src={P2_1}></Image>
-                ) : (
+            ) : (
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  bottom: 0,
+                  transform: `scale(${maskScale})`,
+                  transformOrigin: "right bottom",
+                }}
+              >
+                <View className="jinri-right-copyright">
+                  {/* 今日水印 右下角背景图 */}
+                  {/* {shuiyinxiangjiName.includes("今日水印") ? ( */}
+                  {/* <Image src={P2_1}></Image> */}
                   <Image src={P2}></Image>
-                )}
-                <View className="fw-box">
-                  <Image src={Fw} className="fwm"></Image>
-                  <Text className="fangweima">{fangweimaText}</Text>
-                </View>
-
-                {/* 输入什么就显示什么 */}
-                {!shuiyinxiangjiName.includes("今日水印") ? (
+                  {/* )} */}
+                  <View className="fw-box">
+                    <Image src={Fw} className="fwm"></Image>
+                    <Text className="fangweima">{fangweimaText}</Text>
+                  </View>
+                  {/* 输入什么就显示什么 */}
+                  {/* {!shuiyinxiangjiName.includes("今日水印") ? ( */}
                   <Text
                     style={{
                       position: "absolute",
@@ -348,45 +206,187 @@ const RenderWatermark = ({
                   >
                     {shuiyinxiangjiName}
                   </Text>
-                ) : /* 右下角今日水印四个字图片 */
-                null}
+                  {/* ) : null} */}
+                </View>
               </View>
-            </View>
-          ) : (
-            <View
-              style={{
-                position: "absolute",
-                right: "10px",
-                bottom: "10px",
-                transform: `scale(${maskScale})`,
-                transformOrigin: "right bottom",
-              }}
-            >
-              <Image
-                src={P5}
+            );
+          } else {
+            return shuiyinxiangjiName ? (
+              <View
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  position: "absolute",
+                  right: 0,
+                  bottom: 0,
+                  transform: `scale(${maskScale})`,
+                  transformOrigin: "right bottom",
                 }}
-              ></Image>
-            </View>
-          );
+              >
+                <View className="make-right-copyright">
+                  {/* 马克 右下角背景图 */}
+                  <Image src={P4}></Image>
+                  {/* 马克 防伪码 */}
+                  <Text
+                    style={{
+                      fontSize: "10px",
+                      position: "absolute",
+                      color: "rgba(255,255,255,.85)",
+                      right: "1px",
+                      bottom: "-1px",
+                      fontFamily: "HYQiHei 65J",
+                    }}
+                    className="fangweima"
+                  >
+                    防伪
+                    <Text
+                      style={{
+                        fontSize: "9px",
+                        fontFamily: "Monaco",
+                      }}
+                    >
+                      {" " + makefangweimaText}
+                    </Text>
+                  </Text>
+                </View>
+              </View>
+            ) : (
+              <View
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  bottom: "10px",
+                  transform: `scale(${maskScale})`,
+                  transformOrigin: "right bottom",
+                }}
+              >
+                <Image
+                  src={P5}
+                  key={"p5"}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                  }}
+                ></Image>
+              </View>
+            );
+          }
+        } else if (option?.copyright === "jrsy") {
+          if (userInfo.type === "default") {
+            // 今日水印相机 如果是普通用户则显示体验相机右下角
+            return (
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  bottom: 0,
+                  transform: `scale(${maskScale})`,
+                  transformOrigin: "right bottom",
+                }}
+              >
+                <View className="jinri-right-copyright">
+                  {/* 今日水印 右下角背景图 */}
+                  {/* {shuiyinxiangjiName.includes("今日水印") ? (
+                    <Image src={P2_1}></Image>
+                  ) : ( */}
+                  <Image src={P2}></Image>
+                  {/* )} */}
+                  <View className="fw-box">
+                    <Image src={Fw} className="fwm"></Image>
+                    <Text className="fangweima">{fangweimaText}</Text>
+                  </View>
+
+                  {/* 输入什么就显示什么 */}
+                  {/* {!shuiyinxiangjiName.includes("今日水印") ? ( */}
+                  <Text
+                    style={{
+                      position: "absolute",
+                      color: "#fbfbfb",
+                      right: "3px",
+                      top: "2px",
+                      fontSize: "12px",
+                      textAlign: "center",
+                      fontWeight: 700,
+                      width: "100rpx",
+                      textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
+                      fontFamily: "黑体",
+                      opacity: ".85",
+                    }}
+                  >
+                    {shuiyinxiangjiName}
+                  </Text>
+                  {/* ) : null} */}
+                </View>
+              </View>
+            );
+          } else {
+            // 如果是付费用户 则显示今日水印相机的logo
+            return shuiyinxiangjiName ? (
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  bottom: 0,
+                  transform: `scale(${maskScale})`,
+                  transformOrigin: "right bottom",
+                }}
+              >
+                <View className="jinri-right-copyright">
+                  {/* 今日水印 右下角背景图 */}
+                  {shuiyinxiangjiName.includes("今日水印") ? (
+                    <Image src={P2_1}></Image>
+                  ) : (
+                    <Image src={P2}></Image>
+                  )}
+                  <View className="fw-box">
+                    <Image src={Fw} className="fwm"></Image>
+                    <Text className="fangweima">{fangweimaText}</Text>
+                  </View>
+
+                  {/* 输入什么就显示什么 */}
+                  {!shuiyinxiangjiName.includes("今日水印") ? (
+                    <Text
+                      style={{
+                        position: "absolute",
+                        color: "#fbfbfb",
+                        right: "3px",
+                        top: "2px",
+                        fontSize: "12px",
+                        textAlign: "center",
+                        fontWeight: 700,
+                        width: "100rpx",
+                        textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
+                        fontFamily: "黑体",
+                        opacity: ".85",
+                      }}
+                    >
+                      {shuiyinxiangjiName}
+                    </Text>
+                  ) : /* 右下角今日水印四个字图片 */
+                  null}
+                </View>
+              </View>
+            ) : (
+              <View
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  bottom: "10px",
+                  transform: `scale(${maskScale})`,
+                  transformOrigin: "right bottom",
+                }}
+              >
+                <Image
+                  src={P5}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                  }}
+                ></Image>
+              </View>
+            );
+          }
         }
+      } else {
       }
-    } else {
-    }
-    if (option?.copyright === "syxj") {
-      return (
-        <View className="copySYXJ">
-          <Image
-            src={Icon2}
-            style={{
-              width: "147rpx",
-              height: "46rpx",
-            }}
-          ></Image>
-        </View>
-      );
     }
   };
   // 相机时 第一个snap 高度3：4 或者按照比例设置
@@ -446,7 +446,6 @@ const RenderWatermark = ({
               onError={cameraError}
             />
           )}
-
           {/* {isCamera && !isRealDevice && (
             <Image
               style={{
