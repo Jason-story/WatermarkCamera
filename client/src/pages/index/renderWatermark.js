@@ -41,6 +41,7 @@ const RenderWatermark = ({
   fangdaoShuiyin,
   fangweimaText,
   makefangweimaText,
+  gongchengjilu1,
   cameraError,
   snapshotHeight,
   setEdit,
@@ -436,7 +437,7 @@ const RenderWatermark = ({
             // background:'#000'
           }}
         >
-          {selected === "图片水印" && isCamera && (
+          {/* {selected === "图片水印" && isCamera && (
             <Camera
               className="camera"
               resolution="high"
@@ -445,16 +446,14 @@ const RenderWatermark = ({
               frameSize="medium"
               onError={cameraError}
             />
-          )}
-          {/* {isCamera && !isRealDevice && (
+          )} */}
             <Image
               style={{
                 width: "100%",
                 height: "100%",
               }}
-              src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.jpg?111"
+              src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.JPG"
             ></Image>
-          )} */}
           {tempPath && (
             <Image
               src={tempPath}
@@ -514,6 +513,7 @@ const RenderWatermark = ({
             longitude,
             fangdaoShuiyin,
             maskScale,
+            gongchengjilu1
           })}
         </View>
         {renderLeftCopyright({ maskScale })}

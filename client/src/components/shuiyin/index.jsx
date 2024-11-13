@@ -17,82 +17,82 @@ import Shuiyin7Cover from "./item7/cover.png";
 import Shuiyin8Cover from "./item8/cover.png";
 import Shuiyin9Cover from "./item9/cover.png";
 const config = [
-  {
-    // 1
-    component: Shuiyin1,
-    options: {
-      title: "今日水印相机-打卡",
-      vip: false,
-      cover: Shuiyin1Cover,
-      hasDakaLabel: false,
-      showRightCopyright: true,
-      showLeftCopyright: true,
-      hasTitle: false,
-      hasFangDao: false,
-      hasWeather: false,
-      hasJingWeiDu: false,
-      hasRemark: true,
-      copyright: "jrsy",
-      maskScale:true
-    },
-  },
-  {
-    // 2
-    component: Shuiyin2,
-    options: {
-      title: "马克水印相机",
-      vip: false,
-      cover: Shuiyin2Cover,
-      hasDakaLabel: false,
-      showRightCopyright: true,
-      showLeftCopyright: true,
-      hasTitle: false,
-      hasFangDao: false,
-      hasWeather: false,
-      hasJingWeiDu: false,
-      copyright: "mk",
-      maskScale:true
+  // {
+  //   // 1
+  //   component: Shuiyin1,
+  //   options: {
+  //     title: "今日水印相机-打卡",
+  //     vip: false,
+  //     cover: Shuiyin1Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: true,
+  //     showLeftCopyright: true,
+  //     hasTitle: false,
+  //     hasFangDao: false,
+  //     hasWeather: false,
+  //     hasJingWeiDu: false,
+  //     hasRemark: true,
+  //     copyright: "jrsy",
+  //     maskScale:true
+  //   },
+  // },
+  // {
+  //   // 2
+  //   component: Shuiyin2,
+  //   options: {
+  //     title: "马克水印相机",
+  //     vip: false,
+  //     cover: Shuiyin2Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: true,
+  //     showLeftCopyright: true,
+  //     hasTitle: false,
+  //     hasFangDao: false,
+  //     hasWeather: false,
+  //     hasJingWeiDu: false,
+  //     copyright: "mk",
+  //     maskScale:true
 
-    },
-  },
-  {
-    // 3
-    component: Shuiyin3,
-    options: {
-      title: "水印相机",
-      vip: false,
-      cover: Shuiyin3Cover,
-      hasDakaLabel: false,
-      showRightCopyright: false,
-      showLeftCopyright: false,
-      hasTitle: false,
-      hasFangDao: false,
-      hasWeather: false,
-      hasJingWeiDu: false,
-      copyright: "syxj",
-      maskScale:true
+  //   },
+  // },
+  // {
+  //   // 3
+  //   component: Shuiyin3,
+  //   options: {
+  //     title: "水印相机",
+  //     vip: false,
+  //     cover: Shuiyin3Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: false,
+  //     showLeftCopyright: false,
+  //     hasTitle: false,
+  //     hasFangDao: false,
+  //     hasWeather: false,
+  //     hasJingWeiDu: false,
+  //     copyright: "syxj",
+  //     maskScale:true
 
-    },
-  },
-  {
-    // 4
-    component: Shuiyin4,
-    options: {
-      title: "水印相机",
-      vip: false,
-      cover: Shuiyin4Cover,
-      hasDakaLabel: false,
-      showRightCopyright: false,
-      showLeftCopyright: false,
-      hasTitle: false,
-      hasFangDao: false,
-      hasWeather: false,
-      hasJingWeiDu: false,
-      copyright: "syxj",
-      maskScale:true
+  //   },
+  // },
+  // {
+  //   // 4
+  //   component: Shuiyin4,
+  //   options: {
+  //     title: "水印相机",
+  //     vip: false,
+  //     cover: Shuiyin4Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: false,
+  //     showLeftCopyright: false,
+  //     hasTitle: false,
+  //     hasFangDao: false,
+  //     hasWeather: false,
+  //     hasJingWeiDu: false,
+  //     copyright: "syxj",
+  //     maskScale:true
 
-    },
-  },
+  //   },
+  // },
   {
     // 5
     component: Shuiyin5,
@@ -114,83 +114,83 @@ const config = [
 
     },
   },
-  {
-    // 6
-    component: Shuiyin6,
-    options: {
-      title: "短黄线 温度",
-      vip: false,
-      cover: Shuiyin6Cover,
-      hasDakaLabel: false,
-      showRightCopyright: true,
-      showLeftCopyright: true,
-      hasTitle: false,
-      hasFangDao: false,
-      hasWeather: true,
-      hasJingWeiDu: true,
-      hasRemark: true,
-      copyright: "jrsy",
-      maskScale:true
+  // {
+  //   // 6
+  //   component: Shuiyin6,
+  //   options: {
+  //     title: "短黄线 温度",
+  //     vip: false,
+  //     cover: Shuiyin6Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: true,
+  //     showLeftCopyright: true,
+  //     hasTitle: false,
+  //     hasFangDao: false,
+  //     hasWeather: true,
+  //     hasJingWeiDu: true,
+  //     hasRemark: true,
+  //     copyright: "jrsy",
+  //     maskScale:true
 
-    },
-  },
-  {
-    // 7
-    component: Shuiyin7,
-    options: {
-      title: "现场拍照 经纬度",
-      vip: false,
-      cover: Shuiyin7Cover,
-      hasDakaLabel: false,
-      showRightCopyright: true,
-      showLeftCopyright: false,
-      hasTitle: false,
-      hasFangDao: false,
-      hasWeather: true,
-      hasJingWeiDu: true,
-      hasRemark: true,
-      copyright: "jrsy",
-      maskScale:true
+  //   },
+  // },
+  // {
+  //   // 7
+  //   component: Shuiyin7,
+  //   options: {
+  //     title: "现场拍照 经纬度",
+  //     vip: false,
+  //     cover: Shuiyin7Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: true,
+  //     showLeftCopyright: false,
+  //     hasTitle: false,
+  //     hasFangDao: false,
+  //     hasWeather: true,
+  //     hasJingWeiDu: true,
+  //     hasRemark: true,
+  //     copyright: "jrsy",
+  //     maskScale:true
 
-    },
-  },
-  {
-    // 8
-    component: Shuiyin8,
-    options: {
-      title: "防盗",
-      vip: false,
-      cover: Shuiyin8Cover,
-      hasDakaLabel: false,
-      showRightCopyright: false,
-      showLeftCopyright: false,
-      hasTitle: false,
-      hasFangDao: true,
-      hasWeather: false,
-      hasJingWeiDu: false,
-      hasRemark: false,
-      copyright: false,
-    },
-  },{
-    // 9
-    component: Shuiyin9,
-    options: {
-      title: "定制",
-      vip: true,
-      cover: Shuiyin9Cover,
-      hasDakaLabel: false,
-      showRightCopyright: false,
-      showLeftCopyright: false,
-      hasTitle: false,
-      hasFangDao: false,
-      hasWeather: true,
-      hasJingWeiDu: false,
-      hasRemark: false,
-      copyright: false,
-      finalWidth: 1290,
-      finalHeight: 2160,
-      proportion: 1.674418,
-    },
-  },
+  //   },
+  // },
+  // {
+  //   // 8
+  //   component: Shuiyin8,
+  //   options: {
+  //     title: "防盗",
+  //     vip: false,
+  //     cover: Shuiyin8Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: false,
+  //     showLeftCopyright: false,
+  //     hasTitle: false,
+  //     hasFangDao: true,
+  //     hasWeather: false,
+  //     hasJingWeiDu: false,
+  //     hasRemark: false,
+  //     copyright: false,
+  //   },
+  // },{
+  //   // 9
+  //   component: Shuiyin9,
+  //   options: {
+  //     title: "定制",
+  //     vip: true,
+  //     cover: Shuiyin9Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: false,
+  //     showLeftCopyright: false,
+  //     hasTitle: false,
+  //     hasFangDao: false,
+  //     hasWeather: true,
+  //     hasJingWeiDu: false,
+  //     hasRemark: false,
+  //     copyright: false,
+  //     finalWidth: 1290,
+  //     finalHeight: 2160,
+  //     proportion: 1.674418,
+  //   },
+  // },
 ];
 export default config;

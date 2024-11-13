@@ -4,6 +4,7 @@ import Marquee from "../../components/Marquee";
 import CustomModal from "../../components/modal";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import RenderWatermark from "./renderWatermark.js";
+import { gongchengjilu1Config } from "./labelConfig.js";
 import Touming from "../../images/touming.png";
 import ShuiyinDoms from "../../components/shuiyin";
 import { generateRandomString } from "../../components/utils.js";
@@ -115,7 +116,8 @@ const CameraPage = () => {
   const [remark, setRemark] = useState("");
   const [snapshotHeight, setSnapshotHeight] = useState("");
   const [maskScale, setMaskScale] = useState(1);
-
+  const [gongchengjilu1, setGongchengjilu1] = useState(gongchengjilu1Config);
+  console.log("gongchengjilu1: ", gongchengjilu1);
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -1235,6 +1237,7 @@ const CameraPage = () => {
                   setEdit={setEdit}
                   setShowFloatLayout={setShowFloatLayout}
                   maskScale={maskScale}
+                  gongchengjilu1={gongchengjilu1}
                 />
                 <RenderWatermark
                   type={"xiangce"}
@@ -1271,6 +1274,7 @@ const CameraPage = () => {
                   setEdit={setEdit}
                   setShowFloatLayout={setShowFloatLayout}
                   maskScale={maskScale}
+                  gongchengjilu1={gongchengjilu1}
                 />
                 {/* 渲染相册模式的水印 */}
                 <View className="camera-btns">
@@ -1730,6 +1734,8 @@ const CameraPage = () => {
             setDakaName={setDakaName}
             maskScale={1}
             setMaskScale={setMaskScale}
+            gongchengjilu1={gongchengjilu1}
+
           />
         </View>
       )}

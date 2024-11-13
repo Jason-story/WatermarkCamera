@@ -13,26 +13,49 @@ const Index = ({
   weekly,
   day,
   maskScale,
-
   month,
   year,
   remark,
+  gongchengjilu1,
+  // shigongquyu,
+  // shigongneirong,
+  // shigongzerenren,
+  // jianlizerenren,
 }) => {
   return (
-    <View className="item5-wrapper" key={"item-5"}
-    style={{
-      transform: `scale(${maskScale})`,
-    }}>
+    <View
+      className="item5-wrapper"
+      key={"item-5"}
+      style={{
+        transform: `scale(${maskScale})`,
+      }}
+    >
       <View
         className="item5-title"
         dangerouslySetInnerHTML={{
           __html: formatTextWithLineLimit(title, 12, 1),
         }}
       ></View>
-      <View className="item5-label-item">
-        <View className="item5-label-title">时间:</View>
+      {gongchengjilu1.map((item, index) => (
+        <View className="item5-label-item">
+          <View className="item5-label-title" key={index}>
+            {item.value.split("").map((value1, index1) => (
+              <Text key={index1}>
+                {value1}
+                {/* 如果是最后一个字符，添加冒号 */}
+                {index1 === item.value.length - 1 ? ":" : ""}
+              </Text>
+            ))}
+          </View>
+          <View>{item.text}</View>
+        </View>
+      ))}
+
+      {/* <View className="item5-label-item">
+        <View className="item5-label-title">拍摄时间:</View>
         <View>{`${year}-${month}-${day} ${hours}:${minutes}`}</View>
       </View>
+       */}
       <View className="item5-label-item">
         <View className="item5-label-title">天气:</View>
         <Text>{`${weather}`}℃</Text>
