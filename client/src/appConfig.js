@@ -9,6 +9,7 @@ const appConfigs = {
     containerId: "prod-9g5wnloybe56625b",
     containerName: "express-loc1",
   },
+
   // 可修改定位水印相机 被共享
   wxb5e2af22e727269d: {
     type: "shared",
@@ -33,6 +34,21 @@ const appConfigs = {
     notify_url: "https://1330414900-iztv1ielys.ap-shanghai.tencentscf.com",
     containerId: "prod-5gzgeq4v5542b918",
     containerName: "express-ptcb",
+  },
+
+  wx6f34e2a245c3a2d1: {
+    // 自定义水印照片 ly 主小程序
+    type: "shared",
+    resourceAppid: "wx8d21222bcb51c801",
+    resourceEnv: "ly-9gjnymq6d9d7ca23",
+    priceShow: "isSecondShow",
+    priceMap: "jiage2",
+    notify_url: "https://1330414900-iztv1ielys.ap-shanghai.tencentscf.com",
+    containerId: "prod-5gzgeq4v5542b918",
+    containerResourceAppid: "wx8d21222bcb51c801",
+    containerResourceEnv: "prod-5gzgeq4v5542b918",
+    containerName: "express-ptcb",
+    userToApp: "子小程序",
   },
   wx66918b8c0abc4288: {
     // 自定义水印照片 ly 主小程序

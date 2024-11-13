@@ -1052,7 +1052,9 @@ const CameraPage = () => {
   }, [app.$app.globalData.config.disableTrueCode]);
 
   useEffect(() => {
-    drawMask();
+    setTimeout(() => {
+      drawMask();
+    }, 300);
   }, [
     title,
     weather,
