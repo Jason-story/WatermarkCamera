@@ -788,13 +788,7 @@ const CameraPage = () => {
     return () => clearInterval(interval); // 清除副作用
   }, []);
   const selectImg = () => {
-    if (!allAuth) {
-      Taro.showToast({
-        title: "请先授权相机、相册、位置权限",
-        icon: "none",
-      });
-      return;
-    }
+
 
     if (
       selected === "视频水印" &&

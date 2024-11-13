@@ -25,7 +25,7 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 汉仪旗黑x165
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/hyqhx165.ttf")',
+        'url("https://gitee.com/jasonstory/fonts/raw/master/hyqhx165.ttf")',
     });
     wx.loadFontFace({
       family: "number",
@@ -33,7 +33,7 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 数字
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Bebas-regular.ttf")',
+        'url("https://gitee.com/jasonstory/fonts/raw/master/Bebas-regular.ttf")',
     });
     // 马克相机数字
     wx.loadFontFace({
@@ -42,7 +42,7 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 数字
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/makeNumber.ttf")',
+        'url("https://gitee.com/jasonstory/fonts/raw/master/makeNumber.ttf")',
     });
     wx.loadFontFace({
       family: "Monaco",
@@ -50,7 +50,7 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 数字
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/Hack-Regular.ttf")',
+        'url("https://gitee.com/jasonstory/fonts/raw/master/Hack-Regular.ttf")',
     });
     wx.loadFontFace({
       family: "MiSans",
@@ -58,21 +58,21 @@ class App extends Component {
       scopes: ["webview", "native"],
       source:
         // 数字
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/MiSans-Bold.ttf")',
+        'url("https://gitee.com/jasonstory/fonts/raw/master/MiSans-Bold.ttf")',
     });
     wx.loadFontFace({
       family: "huakangjingangheiRegular",
       global: true,
       scopes: ["webview", "native"],
       source:
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/huakangjingangheiRegular.ttf")',
+        'url("https://gitee.com/jasonstory/fonts/raw/master/huakangjingangheiRegular.ttf")',
     });
     wx.loadFontFace({
       family: "InsideOutCow3",
       global: true,
       scopes: ["webview", "native"],
       source:
-        'url("https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/InsideOutCow3.ttf")',
+        'url("https://gitee.com/jasonstory/fonts/raw/master/InsideOutCow3.ttf")',
     });
   }
 

@@ -28,7 +28,8 @@
     "compileWorklet": false,
     "coverView": false,
     "showShadowRootInWxmlPanel": false,
-    "ignoreUploadUnusedFiles": true
+    "ignoreUploadUnusedFiles": true,
+    "skylineRenderEnable": false
   },
   "compileType": "miniprogram",
   "srcMiniprogramRoot": "client/dist/",
