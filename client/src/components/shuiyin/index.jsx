@@ -7,6 +7,7 @@ import Shuiyin6 from "./item6";
 import Shuiyin7 from "./item7";
 import Shuiyin8 from "./item8";
 import Shuiyin9 from "./item9";
+import Shuiyin10 from "./item10";
 import Shuiyin1Cover from "./item1/cover.png";
 import Shuiyin2Cover from "./item2/cover.png";
 import Shuiyin3Cover from "./item3/cover.png";
@@ -16,6 +17,7 @@ import Shuiyin6Cover from "./item6/cover.png";
 import Shuiyin7Cover from "./item7/cover.png";
 import Shuiyin8Cover from "./item8/cover.png";
 import Shuiyin9Cover from "./item9/cover.png";
+import editLabel from "./label";
 const config = [
   // {
   //   // 1
@@ -33,7 +35,7 @@ const config = [
   //     hasJingWeiDu: false,
   //     hasRemark: true,
   //     copyright: "jrsy",
-  //     maskScale:true
+  //     maskScale: true,
   //   },
   // },
   // {
@@ -51,8 +53,7 @@ const config = [
   //     hasWeather: false,
   //     hasJingWeiDu: false,
   //     copyright: "mk",
-  //     maskScale:true
-
+  //     maskScale: true,
   //   },
   // },
   // {
@@ -70,8 +71,7 @@ const config = [
   //     hasWeather: false,
   //     hasJingWeiDu: false,
   //     copyright: "syxj",
-  //     maskScale:true
-
+  //     maskScale: true,
   //   },
   // },
   // {
@@ -89,31 +89,29 @@ const config = [
   //     hasWeather: false,
   //     hasJingWeiDu: false,
   //     copyright: "syxj",
-  //     maskScale:true
-
+  //     maskScale: true,
   //   },
   // },
-  {
-    // 5
-    component: Shuiyin5,
-    options: {
-      title: "工程记录",
-      id:'gongcheng1',
-      vip: false,
-      cover: Shuiyin5Cover,
-      hasDakaLabel: false,
-      showRightCopyright: true,
-      showLeftCopyright: false,
-      hasTitle: true,
-      hasFangDao: false,
-      hasWeather: true,
-      hasJingWeiDu: false,
-      hasRemark: true,
-      copyright: "jrsy",
-      maskScale:true
-
-    },
-  },
+  // {
+  //   // 5
+  //   component: Shuiyin5,
+  //   options: {
+  //     title: "工程记录",
+  //     id: "gongcheng1",
+  //     vip: false,
+  //     cover: Shuiyin5Cover,
+  //     hasDakaLabel: false,
+  //     showRightCopyright: true,
+  //     showLeftCopyright: false,
+  //     hasTitle: true,
+  //     hasFangDao: false,
+  //     hasWeather: true,
+  //     hasJingWeiDu: false,
+  //     hasRemark: true,
+  //     copyright: "jrsy",
+  //     maskScale: true,
+  //   },
+  // },
   // {
   //   // 6
   //   component: Shuiyin6,
@@ -130,8 +128,7 @@ const config = [
   //     hasJingWeiDu: true,
   //     hasRemark: true,
   //     copyright: "jrsy",
-  //     maskScale:true
-
+  //     maskScale: true,
   //   },
   // },
   // {
@@ -150,8 +147,7 @@ const config = [
   //     hasJingWeiDu: true,
   //     hasRemark: true,
   //     copyright: "jrsy",
-  //     maskScale:true
-
+  //     maskScale: true,
   //   },
   // },
   // {
@@ -171,7 +167,8 @@ const config = [
   //     hasRemark: false,
   //     copyright: false,
   //   },
-  // },{
+  // },
+  // {
   //   // 9
   //   component: Shuiyin9,
   //   options: {
@@ -192,5 +189,26 @@ const config = [
   //     proportion: 1.674418,
   //   },
   // },
+  {
+    // 10
+    component: Shuiyin10,
+    label: editLabel[9],
+    options: {
+      title: "工程记录10",
+      id: "gongcheng2",
+      vip: false,
+      cover: Shuiyin5Cover,
+      hasDakaLabel: false,
+      showRightCopyright: true,
+      showLeftCopyright: false,
+      hasTitle: true,
+      hasFangDao: false,
+      hasWeather: true,
+      hasJingWeiDu: false,
+      hasRemark: true,
+      copyright: "jrsy",
+      maskScale: true,
+    },
+  },
 ];
 export default config;

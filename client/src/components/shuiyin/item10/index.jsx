@@ -1,0 +1,106 @@
+import React, { useEffect } from "react";
+import Taro from "@tarojs/taro";
+import { View, Text, Image } from "@tarojs/components";
+import { formatTextWithLineLimit } from "../../utils";
+import "./index.scss";
+
+const Index = ({
+  hours,
+  minutes,
+  title,
+  locationName,
+  weather,
+  weekly,
+  day,
+  maskScale,
+  month,
+  year,
+  remark,
+  editLabel,
+  setEditLabel,
+}) => {
+  const bgItems = editLabel.filter((item) => item.bg);
+  const normalItems = editLabel.filter((item) => !item.bg);
+
+  return (
+    <View
+      className="item10-wrapper"
+      key={"item10"}
+      style={{
+        transform: `scale(${maskScale})`,
+      }}
+    >
+      <View className="item10-title">
+        <View className="item10-dot"></View>
+        <Text
+          dangerouslySetInnerHTML={{
+            __html: formatTextWithLineLimit(title, 12, 1),
+          }}
+        ></Text>
+      </View>
+
+      {normalItems.map((item, index) => (
+        <View className={"item10-label-item"}>
+          <View className="item10-label-title" key={index}>
+            {item.title.split("").map((value1, index1) => (
+              <Text key={index1}>
+                {value1}
+                {/* 如果是最后一个字符，添加冒号 */}
+                {index1 === item.title.length - 1 ? ":" : ""}
+              </Text>
+            ))}
+          </View>
+          <View>{item.text}</View>
+        </View>
+      ))}
+
+      <View className="item10-bg-container">
+        {bgItems.map((item, index) => (
+          <View className="item10-label-item item10-label-item-bg" key={index}>
+            <View className="item10-label-title">
+              {item.title.split("").map((value1, index1) => (
+                <Text key={index1}>
+                  {value1}
+                  {index1 === item.title.length - 1 ? ":" : ""}
+                </Text>
+              ))}
+            </View>
+            <View>{item.text}</View>
+          </View>
+        ))}
+      </View>
+
+      {/* <View className="item10-label-item">
+        <View className="item10-label-title">拍摄时间:</View>
+        <View>{`${year}-${month}-${day} ${hours}:${minutes}`}</View>
+      </View>
+       */}
+      {/* <View className="item10-label-item">
+        <View className="item10-label-title">天气:</View>
+        <Text>{`${weather}`}℃</Text>
+      </View>
+      <View className="item10-label-item">
+        <View className="item10-label-title">地点:</View>
+        <View
+          className="item10-location"
+          dangerouslySetInnerHTML={{
+            __html: formatTextWithLineLimit(locationName, 10, 5),
+          }}
+        ></View>
+      </View> */}
+      {remark.length > 0 && (
+        <View className="item10-label-item">
+          <View className="item10-label-title">备注:</View>
+          <View
+            className="item10-location"
+            dangerouslySetInnerHTML={{
+              __html: formatTextWithLineLimit(remark, 10, 2),
+            }}
+          ></View>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default Index;

@@ -17,10 +17,6 @@ const Index = ({
   year,
   remark,
   gongchengjilu1,
-  // shigongquyu,
-  // shigongneirong,
-  // shigongzerenren,
-  // jianlizerenren,
 }) => {
   return (
     <View
@@ -30,12 +26,14 @@ const Index = ({
         transform: `scale(${maskScale})`,
       }}
     >
-      <View
-        className="item5-title"
-        dangerouslySetInnerHTML={{
-          __html: formatTextWithLineLimit(title, 12, 1),
-        }}
-      ></View>
+      <View className="item5-title">
+        <View className="item-5-dot"></View>
+        <Text
+          dangerouslySetInnerHTML={{
+            __html: formatTextWithLineLimit(title, 12, 1),
+          }}
+        ></Text>
+      </View>
       {gongchengjilu1.map((item, index) => (
         <View className="item5-label-item">
           <View className="item5-label-title" key={index}>
@@ -56,7 +54,7 @@ const Index = ({
         <View>{`${year}-${month}-${day} ${hours}:${minutes}`}</View>
       </View>
        */}
-      <View className="item5-label-item">
+      {/* <View className="item5-label-item">
         <View className="item5-label-title">天气:</View>
         <Text>{`${weather}`}℃</Text>
       </View>
@@ -68,7 +66,7 @@ const Index = ({
             __html: formatTextWithLineLimit(locationName, 10, 5),
           }}
         ></View>
-      </View>
+      </View> */}
       {remark.length > 0 && (
         <View className="item5-label-item">
           <View className="item5-label-title">备注:</View>

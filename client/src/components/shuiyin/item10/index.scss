@@ -1,4 +1,4 @@
-.item5-wrapper {
+.item10-wrapper {
   color: #000;
   position: absolute;
   left: 38px;
@@ -7,16 +7,15 @@
   font-family: "HYQiHei 65J";
   border-radius: 7px;
   width: 356px;
-  background-color: rgba(224,224,224, 0.6);
+  background-color: #c9cbcc;
   overflow: hidden;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
-  padding-bottom: 10px;
-  font-weight: 500;
+  // padding-bottom: 10px;
   transform-origin: left bottom;
   transition: transform 0.3s ease;
 }
-.item5-title {
-  background-color: rgb(53, 116, 219, 0.75);
+.item10-title {
+  background-color: #5982cd;
   padding: 14px 20px;
   text-align: center;
   margin-bottom: 10px;
@@ -25,24 +24,23 @@
   font-weight: bold;
   position: relative;
 }
-.item-5-dot {
-  width: 16px;
-  height: 16px;
+.item10-dot {
+  width: 12px;
+  height: 12px;
   background-color: #f2c343;
   border-radius: 50%;
   position: absolute;
   left: 20px;
   top: 20px;
 }
-.item5-label-title {
+.item10-label-title {
   width: 115px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 10px;
 }
-.item5-location {
+.item10-location {
   position: relative;
   margin-bottom: 8px;
   margin-top: -12px;
@@ -52,14 +50,28 @@
     line-height: 1.3;
   }
 }
-.item5-label-item {
-  padding: 0px 15px;
+.item10-label-item {
+  padding: 0px 10px;
   white-space: wrap;
   display: flex;
   flex-direction: row;
-  align-items: baseline;
-  .item5-label-title {
+  margin-bottom: 10px;
+
+  &-bg {
+    padding: 0 0 0 0;
+    color:#fff;
+  }
+  .item10-label-title {
     flex-shrink: 0;
     margin-right: 5px;
   }
+}
+.item10-label-item.item10-label-item-bg:last-child {
+  margin: 0;
+}
+.item10-bg-container{
+  margin-top: 6px;
+  padding: 15px 10px;
+  background-color: #5982cd;
+
 }
