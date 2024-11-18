@@ -71,7 +71,6 @@ const WatermarkPopup = ({
   setLatitude,
   // 备注信息
   remark,
-  setRemark,
   // 打卡标签
   setMaskScale,
   editLabel,
@@ -141,6 +140,44 @@ const WatermarkPopup = ({
             .exec();
         });
     }, 100);
+  };
+  const changeEditLabelItem = (index, value, type, valueType) => {
+    const newEditLabel = [...editLabel];
+
+    if (type === "title") {
+      newEditLabel[index] = { ...newEditLabel[index], title: value };
+    } else if (type === "value") {
+      if (valueType === "riqi" || valueType === "shijian") {
+        // 获取当前值以保留日期或时间部分
+        const currentValue = newEditLabel[index].value || "";
+        let [datePart, timePart] = currentValue.split(" ");
+
+        // 根据 valueType 更新日期或时间部分
+        if (valueType === "riqi") {
+          datePart = value;
+        } else if (valueType === "shijian") {
+          timePart = value;
+        }
+
+        // 将日期和时间组合在一起
+        const combinedValue =
+          datePart && timePart
+            ? `${datePart} ${timePart}`
+            : datePart || timePart;
+
+        newEditLabel[index] = {
+          ...newEditLabel[index],
+          value: combinedValue,
+        };
+      } else {
+        newEditLabel[index] = { ...newEditLabel[index], value: value };
+      }
+    } else {
+      newEditLabel[index] = { ...newEditLabel[index], [type]: value };
+    }
+
+    console.log("newEditLabel: ", newEditLabel);
+    setEditLabel(newEditLabel);
   };
   return (
     <AtFloatLayout
@@ -228,7 +265,6 @@ const WatermarkPopup = ({
               </View>
               <Switch
                 style={{ transform: "scale(0.7)" }}
-                disabled={!locationName}
                 checked={isShuiyinSaved}
                 onChange={(e) => {
                   saveChange(e.detail.value);
@@ -323,7 +359,7 @@ const WatermarkPopup = ({
                 </View>
               )}
 
-              <View className="edit-item">
+              {/* <View className="edit-item">
                 <Picker
                   mode="date"
                   value={`${year}年${month}月${day}日`}
@@ -331,10 +367,10 @@ const WatermarkPopup = ({
                 >
                   <View>选择日期： {`${year}年${month}月${day}日`}</View>
                 </Picker>
-              </View>
+              </View> */}
 
               {/* 时间选择 */}
-              <View className="edit-item">
+              {/* <View className="edit-item">
                 <Picker
                   mode="time"
                   value={`${hours}:${minutes}`}
@@ -342,10 +378,10 @@ const WatermarkPopup = ({
                 >
                   <View>选择时间： {`${hours}:${minutes}`}</View>
                 </Picker>
-              </View>
+              </View> */}
 
               {/* 地点输入 */}
-              <View className="edit-item">
+              {/* <View className="edit-item">
                 <View className="picker">
                   <Text>详细地点： </Text>
                   <Input
@@ -359,14 +395,14 @@ const WatermarkPopup = ({
                     clear={true}
                     clearable
                     onInput={(e) => {
-                      debounce(setLocationName(e.detail.value), 100);
+                      setLocationName(e.detail.value);
                     }}
                   />
                 </View>
-              </View>
+              </View> */}
 
               {/* 工程标题 */}
-              {editLabel.hasTitle && (
+              {/* {editLabel.hasTitle && (
                 <View className="edit-item">
                   <View className="picker">
                     <Text>工程标题： </Text>
@@ -381,15 +417,15 @@ const WatermarkPopup = ({
                       cursorSpacing={100}
                       clear={true}
                       onInput={(e) => {
-                        debounce(setTitle(e.detail.value), 100);
+                        setTitle(e.detail.value);
                       }}
                     />
                   </View>
                 </View>
-              )}
+              )} */}
 
               {/* 防盗水印 */}
-              {editLabel.hasFangDao && (
+              {/* {editLabel.hasFangDao && (
                 <View className="edit-item">
                   <View className="picker">
                     <Text>防盗水印文字： </Text>
@@ -409,10 +445,10 @@ const WatermarkPopup = ({
                     />
                   </View>
                 </View>
-              )}
+              )} */}
 
               {/* 天气信息 */}
-              {editLabel.hasWeather && (
+              {/* {editLabel.hasWeather && (
                 <View className="edit-item">
                   <View className="picker">
                     <Text>天气&温度： </Text>
@@ -432,10 +468,10 @@ const WatermarkPopup = ({
                     />
                   </View>
                 </View>
-              )}
+              )} */}
 
               {/* 经纬度信息 */}
-              {editLabel.hasJingWeiDu && (
+              {/* {editLabel.hasJingWeiDu && (
                 <>
                   <View className="edit-item">
                     <View className="picker">
@@ -476,10 +512,10 @@ const WatermarkPopup = ({
                     </View>
                   </View>
                 </>
-              )}
+              )} */}
 
               {/* 备注信息 */}
-              {editLabel.hasRemark && (
+              {/* {editLabel.hasRemark && (
                 <View className="edit-item">
                   <View className="picker">
                     <Text>备注： </Text>
@@ -500,16 +536,20 @@ const WatermarkPopup = ({
                   </View>
                   <View className="input-tips">最多20个字</View>
                 </View>
-              )}
+              )} */}
               {editLabel.map((item, index) => {
                 return (
                   <View className="edit-item" key={index}>
                     <View className="show-switch">
                       <Switch
-                        style={{ transform: "scale(0.7)" }}
+                        style={{
+                          transform: "scale(0.7)",
+                          opacity: item.switchVisible === false ? "0.4" : "1",
+                        }}
                         checked={item.visible}
+                        disabled={item.switchVisible === false}
                         onChange={(e) => {
-                          saveChange(e.detail.value);
+                          changeEditLabelItem(index, e.detail.value, "visible");
                         }}
                       />
                     </View>
@@ -517,6 +557,7 @@ const WatermarkPopup = ({
                       <Input
                         style={{
                           color: item.visible ? "#000" : "#ddd",
+                          // opacity: item.editTitle === false ? "0.4" : "1",
                         }}
                         className="input"
                         id={"input-item-title" + (index + 1)}
@@ -524,11 +565,12 @@ const WatermarkPopup = ({
                         adjustPosition={false}
                         onBlur={handleBlur}
                         value={item.title ? item.title : ""}
+                        disabled={item.editTitle !== true}
                         maxlength={5}
                         cursorSpacing={100}
                         clear={true}
                         onInput={(e) => {
-                          setRemark(e.detail.value);
+                          changeEditLabelItem(index, e.detail.value, "title");
                         }}
                       />
                     </View>
@@ -540,23 +582,56 @@ const WatermarkPopup = ({
                       ：
                     </Text>
                     <View className="edit-item-text">
-                      <Input
-                        style={{
-                          color: item.visible ? "#000" : "#ddd",
-                        }}
-                        className="input"
-                        id={"input-item-" + (index + 1)}
-                        onFocus={handleFocus}
-                        adjustPosition={false}
-                        onBlur={handleBlur}
-                        value={item.value ? item.value : ""}
-                        maxlength={20}
-                        cursorSpacing={100}
-                        clear={true}
-                        onInput={(e) => {
-                          setRemark(e.detail.value);
-                        }}
-                      />
+                      {item.key === "shijian" ? (
+                        <View className="shijian-picker">
+                          <Picker
+                            mode="date"
+                            value={`${year}年${month}月${day}日`}
+                            onChange={(e) => {
+                              changeEditLabelItem(
+                                index,
+                                e.detail.value,
+                                "value",
+                                "riqi"
+                              );
+                            }}
+                          >
+                            <View>{`${year}年${month}月${day}日`}</View>
+                          </Picker>
+                          <Picker
+                            mode="time"
+                            value={`${hours}:${minutes}`}
+                            onChange={(e) => {
+                              changeEditLabelItem(
+                                index,
+                                e.detail.value,
+                                "value",
+                                "shijian"
+                              );
+                            }}
+                          >
+                            <View>{`${hours}:${minutes}`}</View>
+                          </Picker>
+                        </View>
+                      ) : (
+                        <Input
+                          style={{
+                            color: item.visible ? "#000" : "#ddd",
+                          }}
+                          className="input"
+                          id={"input-item-" + (index + 1)}
+                          onFocus={handleFocus}
+                          adjustPosition={false}
+                          onBlur={handleBlur}
+                          value={item.value ? item.value : ""}
+                          maxlength={50}
+                          cursorSpacing={100}
+                          clear={true}
+                          onInput={(e) => {
+                            changeEditLabelItem(index, e.detail.value, "value");
+                          }}
+                        />
+                      )}
                     </View>
                   </View>
                 );

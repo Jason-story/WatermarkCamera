@@ -821,7 +821,7 @@ picker,
   }
 }
 .edit-box {
-  height: 100%;
+  height: 150vh !important;
   padding-bottom: 20px;
   .at-card__content-info {
     font-size: 26px;
@@ -981,4 +981,17 @@ text {
   flex-shrink: 1;
   width: 100%;
   margin-left: 0;
+}
+.shijian-picker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  picker {
+    width: 65% !important;
+    flex-shrink: 0;
+    view {
+      padding-left: 10px;
+    }
+  }
 }

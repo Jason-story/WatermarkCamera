@@ -6,7 +6,10 @@ import { createCameraContext, useDidShow } from "@tarojs/taro";
 import RenderWatermark from "./renderWatermark.js";
 import Touming from "../../images/touming.png";
 import ShuiyinDoms from "../../components/shuiyin";
-import { generateRandomString } from "../../components/utils.js";
+import {
+  generateRandomString,
+  formatDateTime,
+} from "../../components/utils.js";
 import Taro from "@tarojs/taro";
 import QQMapWX from "qqmap-wx-jssdk";
 import ShareImg from "../../images/logo.jpg";
@@ -111,14 +114,12 @@ const CameraPage = () => {
   const [cameraTempPath, setCameraTempPath] = useState("");
   const [xiangceTempPath, setXiangceTempPath] = useState("");
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
-  const [remark, setRemark] = useState("");
   const [snapshotHeight, setSnapshotHeight] = useState("");
   const [maskScale, setMaskScale] = useState(1);
   const [editLabel, setEditLabel] = useState(
     ShuiyinDoms[currentShuiyinIndex].label
   );
-  console.log('ShuiyinDoms[currentShuiyinIndex]: ', ShuiyinDoms[currentShuiyinIndex]);
-  console.log('currentShuiyinIndex: ', currentShuiyinIndex);
+
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -135,6 +136,9 @@ const CameraPage = () => {
     const weekday = date.getDay(); // 获取星期几的数字表示，0代表星期日，1代表星期一，依此类推
     return weekDays[weekday];
   }
+  // useEffect(() => {
+  //   // console.log("editLabel2233: ", editLabel);
+  // }, [editLabel]);
   useEffect(() => {
     // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
@@ -250,11 +254,18 @@ const CameraPage = () => {
       method: "GET",
       success: (res) => {
         if (res.statusCode === 200) {
-          setWeather(
+          mergeEditLabel(
+            "tianqi",
             res.data.results[0]?.now.text +
               " " +
               res.data.results[0]?.now.temperature
           );
+
+          // setWeather(
+          //   res.data.results[0]?.now.text +
+          //     " " +
+          //     res.data.results[0]?.now.temperature
+          // );
         } else {
           setError(`Error: ${res.statusCode}`);
         }
@@ -276,8 +287,11 @@ const CameraPage = () => {
       type: "gcj02",
       isHighAccuracy: true,
       success: (res) => {
-        setLatitude((res.latitude * 1).toFixed(6));
-        setLongitude((res.longitude * 1).toFixed(6));
+        mergeEditLabel("weidu", (res.latitude * 1).toFixed(6));
+        mergeEditLabel("jingdu", (res.longitude * 1).toFixed(6));
+
+        // setLatitude((res.latitude * 1).toFixed(6));
+        // setLongitude((res.longitude * 1).toFixed(6));
         reverseGeocode(res.latitude, res.longitude);
         fetchWeather(res.longitude, res.latitude);
       },
@@ -330,14 +344,73 @@ const CameraPage = () => {
         // 拼接市以下的地址信息，不包括门牌号
         const detailedAddress = `${addr}`;
         setLocationName(detailedAddress);
-        // setLocationName("东园宾馆(教育路店)");
+
+        mergeEditLabel("didian", detailedAddress);
       },
       fail: (err) => {
         console.error("Failed to reverse geocode:", err);
       },
     });
   };
+  // 更新editlabel 主要是请求之后合并更新
+  const mergeEditLabel = (key, value, type) => {
+    // 找到要更新的项的索引
+    const index = editLabel.findIndex((item) => item.key === key);
+    if (index === -1) return;
+
+    // 处理时间类型
+    if (key === "shijian") {
+      const currentValue = editLabel[index].value || "";
+      let [datePart = "", timePart = ""] = currentValue.split(" ");
+
+      // 根据 type 判断更新日期还是时间
+      if (type === "riqi") {
+        datePart = value;
+        // 如果时间为空，保持原来的时间部分
+        if (!timePart && currentValue) {
+          timePart = currentValue.split(" ")[1] || "";
+        }
+        // 如果还是空，才设置默认时间
+        if (!timePart) {
+          const now = new Date();
+          const hours = String(now.getHours()).padStart(2, "0");
+          const minutes = String(now.getMinutes()).padStart(2, "0");
+          timePart = `${hours}:${minutes}`;
+        }
+      } else if (type === "shijian") {
+        timePart = value;
+        // 如果日期为空，保持原来的日期部分
+        if (!datePart && currentValue) {
+          datePart = currentValue.split(" ")[0] || "";
+        }
+        // 如果还是空，才设置默认日期
+        if (!datePart) {
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, "0");
+          const day = String(today.getDate()).padStart(2, "0");
+          datePart = `${year}年${month}月${day}日`;
+        }
+      }
+
+      // 组合日期和时间
+      const combinedValue = `${datePart} ${timePart}`;
+
+      // 只更新当前项的 value
+      setEditLabel(prev => prev.map((item, idx) =>
+        idx === index ? { ...item, value: combinedValue } : item
+      ));
+    } else {
+      // 非时间类型的处理，只更新当前项的 value
+      setEditLabel(prev => prev.map((item, idx) =>
+        idx === index ? { ...item, value: value || item.value } : item
+      ));
+    }
+  };
+  // 统一设置默认值
   useEffect(() => {
+    mergeEditLabel("shijian", formatDateTime.formatDate(), "riqi");
+    mergeEditLabel("shijian", formatDateTime.formatTime(), "shijian");
     checkPermissions();
     requestPermission();
   }, []);
@@ -633,7 +706,6 @@ const CameraPage = () => {
                   showHasCheck,
                   shuiyinxiangjiName,
                   weather,
-                  remark,
                   dakaName,
                   fangdaoShuiyin,
                 },
@@ -806,7 +878,6 @@ const CameraPage = () => {
         shuiyinxiangjiName,
         fangdaoShuiyin,
         dakaName,
-        remark,
       } = userInfo.saveConfig;
       setTimeout(() => {
         setCurrentShuiyinIndex(
@@ -814,7 +885,6 @@ const CameraPage = () => {
           currentShuiyinIndex >= 9 ? 0 : currentShuiyinIndex
         );
         setWeather(weather);
-        setRemark(remark);
         setLocationName(locationName);
         setLatitude(latitude);
         setLongitude(longitude);
@@ -1227,7 +1297,6 @@ const CameraPage = () => {
                   dakaName={dakaName}
                   title={title}
                   weather={weather}
-                  remark={remark}
                   latitude={latitude}
                   longitude={longitude}
                   fangdaoShuiyin={fangdaoShuiyin}
@@ -1265,7 +1334,6 @@ const CameraPage = () => {
                   dakaName={dakaName}
                   title={title}
                   weather={weather}
-                  remark={remark}
                   latitude={latitude}
                   longitude={longitude}
                   fangdaoShuiyin={fangdaoShuiyin}
@@ -1731,8 +1799,6 @@ const CameraPage = () => {
             latitude={latitude}
             setLongitude={setLongitude}
             setLatitude={setLatitude}
-            remark={remark}
-            setRemark={setRemark}
             dakaName={dakaName}
             setDakaName={setDakaName}
             maskScale={1}

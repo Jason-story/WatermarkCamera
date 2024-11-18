@@ -16,7 +16,7 @@
 }
 .item10-title {
   background-color: #5982cd;
-  padding: 14px 20px;
+  padding: 14px 30px 14px 45px;
   text-align: center;
   margin-bottom: 10px;
   font-size: 25px;
@@ -56,6 +56,7 @@
   display: flex;
   flex-direction: row;
   margin-bottom: 10px;
+  align-items: baseline;
 
   &-bg {
     padding: 0 0 0 0;
@@ -63,7 +64,7 @@
   }
   .item10-label-title {
     flex-shrink: 0;
-    margin-right: 5px;
+    margin-right: 10px;
   }
 }
 .item10-label-item.item10-label-item-bg:last-child {

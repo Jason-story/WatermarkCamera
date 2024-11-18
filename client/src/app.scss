@@ -119,9 +119,13 @@ picker {
   border: none !important;
 }
 .nut-popup-title-title {
-  font-size: 30px!important;
+  font-size: 30px !important;
   font-weight: 400 !important;
 }
 .nut-popup-title {
   flex-shrink: 0;
+}
+.picker,
+picker {
+  width: 100% !important;
 }
