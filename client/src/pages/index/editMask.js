@@ -191,6 +191,7 @@ const WatermarkPopup = ({
         setShowFloatLayout(!showFloatLayout);
       }}
     >
+
       <View>
         {!edit ? (
           // 水印选择界面
@@ -225,7 +226,7 @@ const WatermarkPopup = ({
                       }}
                     >
                       {item.options.vip && (
-                        <View className="vip-arrow">永久会员专属</View>
+                        <View className="vip-arrow">半年及以上会员专属</View>
                       )}
                       <Image mode="aspectFit" src={item.options.cover}></Image>
                     </View>

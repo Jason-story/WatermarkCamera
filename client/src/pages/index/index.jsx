@@ -397,14 +397,18 @@ const CameraPage = () => {
       const combinedValue = `${datePart} ${timePart}`;
 
       // 只更新当前项的 value
-      setEditLabel(prev => prev.map((item, idx) =>
-        idx === index ? { ...item, value: combinedValue } : item
-      ));
+      setEditLabel((prev) =>
+        prev.map((item, idx) =>
+          idx === index ? { ...item, value: combinedValue } : item
+        )
+      );
     } else {
       // 非时间类型的处理，只更新当前项的 value
-      setEditLabel(prev => prev.map((item, idx) =>
-        idx === index ? { ...item, value: value || item.value } : item
-      ));
+      setEditLabel((prev) =>
+        prev.map((item, idx) =>
+          idx === index ? { ...item, value: value || item.value } : item
+        )
+      );
     }
   };
   // 统一设置默认值
@@ -819,12 +823,14 @@ const CameraPage = () => {
       return;
     }
     if (
+      userInfo.type !== "halfYearMonth" &&
+      userInfo.type !== "year" &&
       userInfo.type !== "never" &&
       ShuiyinDoms[currentShuiyinIndex].options.vip
     ) {
       Taro.showModal({
         title: "提示",
-        content: "此款水印为永久会员专属，请开通会员后使用",
+        content: "此款水印为半年及以上会员专属，请开通会员后使用",
         showCancel: false,
         success(res) {
           if (res.confirm) {
