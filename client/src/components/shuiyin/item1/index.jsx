@@ -2,7 +2,13 @@ import React, { useEffect } from "react";
 import Taro from "@tarojs/taro";
 import { View, Text, Image } from "@tarojs/components";
 import Icon1 from "./icon-1.png";
-import { formatTextWithLineLimit } from "../../utils";
+import {
+  formatTextWithLineLimit,
+  getWeekdayCN,
+  parseDateString,
+  getEditItem,
+} from "../../utils";
+
 import "./index.scss";
 
 const Index = ({
@@ -16,7 +22,10 @@ const Index = ({
   year,
   maskScale,
   remark,
+  editLabel,
 }) => {
+  const time = parseDateString(getEditItem(editLabel, "shijian").value);
+  console.log(2222, getEditItem(editLabel, "beizhu"));
   return (
     <View
       className="item1-wrapper"
@@ -29,8 +38,8 @@ const Index = ({
         <Image src={Icon1}></Image>
         {/* <Text className="item1-dakaText">{dakaName}</Text> */}
         <View className="item1-time-box">
-          <Text className="item1-time item1-time-base">{`${hours}:${minutes}`}</Text>
-          <Text className="item1-time item1-time-cover">{`${hours}:${minutes}`}</Text>
+          <Text className="item1-time item1-time-base">{`${time.hours}:${time.minutes}`}</Text>
+          <Text className="item1-time item1-time-cover">{`${time.hours}:${time.minutes}`}</Text>
         </View>
       </View>
       <View className="item1-text-box flex">
@@ -41,23 +50,32 @@ const Index = ({
           <View className="item1-location">
             <View
               dangerouslySetInnerHTML={{
-                __html: formatTextWithLineLimit(locationName, 20, 3),
+                __html: formatTextWithLineLimit(
+                  getEditItem(editLabel, "didian").value || "",
+                  20,
+                  3
+                ),
               }}
             ></View>
           </View>
           <View className="item1-date">
-            <Text>{`${year}.${month}.${day}`}</Text>
-            {`${weekly}`}
+            <Text>{`${time.year}.${time.month}.${time.day}`}</Text>
+            {getWeekdayCN(`${time.year}${time.month}${time.day}`)}
           </View>
         </View>
       </View>
       {/* 备注 */}
-      {remark.length > 0 && (
+      {getEditItem(editLabel, "beizhu").visible && (
         <View className="item1-text-box item1-remark-box flex">
           <View className="item1-location">
             <View
               dangerouslySetInnerHTML={{
-                __html: formatTextWithLineLimit(remark, 20, 1),
+                __html: formatTextWithLineLimit(
+                  getEditItem(editLabel, "beizhu").value ||
+                    getEditItem(editLabel, "beizhu").title,
+                  20,
+                  1
+                ),
               }}
             ></View>
           </View>

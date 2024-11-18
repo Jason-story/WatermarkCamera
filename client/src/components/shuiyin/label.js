@@ -1,4 +1,47 @@
 const label = {
+  0: [
+    {
+      key: "shuiyinmingcheng",
+      title: "右下角水印",
+      // 是否隐藏
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+    },
+    {
+      key: "yanzhengmingcheng",
+      title: "左下角验证",
+      // 是否隐藏
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+      defaultValue: "无法修改，只能显示或隐藏",
+    },
+
+    {
+      key: "shijian",
+      title: "时间",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
+    },
+
+    {
+      key: "didian",
+      title: "地点",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
+    },
+
+    {
+      key: "beizhu",
+      title: "备注",
+      visible: false,
+      editTitle: false,
+      switchVisible: true,
+    },
+  ],
   9: [
     {
       key: "shuiyinmingcheng",
@@ -15,7 +58,7 @@ const label = {
       visible: true,
       editTitle: false,
       switchVisible: true,
-      defaultValue: '无法修改，只能显示或隐藏',
+      defaultValue: "无法修改，只能显示或隐藏",
     },
     {
       key: "gongchengmingcheng",

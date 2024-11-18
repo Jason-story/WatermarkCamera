@@ -66,3 +66,31 @@ export const formatDateTime = {
     return `${hours}:${minutes}`;
   },
 };
+
+export const getEditItem = (editLabel, key) => {
+  const index = editLabel.findIndex((item) => item.key === key);
+  return editLabel[index]
+};
+
+export const getWeekdayCN = (date) => {
+  const days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  const d = new Date(date);
+  return days[d.getDay()];
+};
+
+export const parseDateString = (dateStr) => {
+  const regex = /(\d{4})年(\d{1,2})月(\d{1,2})日\s*(\d{1,2}):(\d{1,2})/;
+  const matches = dateStr.match(regex);
+
+  if (!matches) {
+    throw new Error("Invalid date format");
+  }
+
+  return {
+    year: parseInt(matches[1]),
+    month: parseInt(matches[2]),
+    day: parseInt(matches[3]),
+    hours: parseInt(matches[4]),
+    minutes: parseInt(matches[5]),
+  };
+};

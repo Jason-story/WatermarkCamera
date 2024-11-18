@@ -434,7 +434,7 @@ const RenderWatermark = ({
             widh: "100%",
             position: "relative",
             height,
-            // background:'#000'
+            background:'#000'
           }}
         >
           {selected === "图片水印" && isCamera && (
