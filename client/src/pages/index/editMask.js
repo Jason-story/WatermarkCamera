@@ -191,7 +191,6 @@ const WatermarkPopup = ({
         setShowFloatLayout(!showFloatLayout);
       }}
     >
-
       <View>
         {!edit ? (
           // 水印选择界面
@@ -615,23 +614,46 @@ const WatermarkPopup = ({
                           </Picker>
                         </View>
                       ) : (
-                        <Input
-                          style={{
-                            color: item.visible ? "#000" : "#ddd",
-                          }}
-                          className="input"
-                          id={"input-item-" + (index + 1)}
-                          onFocus={handleFocus}
-                          adjustPosition={false}
-                          onBlur={handleBlur}
-                          value={item.value ? item.value : ""}
-                          maxlength={50}
-                          cursorSpacing={100}
-                          clear={true}
-                          onInput={(e) => {
-                            changeEditLabelItem(index, e.detail.value, "value");
-                          }}
-                        />
+                        <View>
+                          <Input
+                            style={{
+                              color:
+                                item.visible || !item.defaultValue
+                                  ? "#000"
+                                  : "#ddd",
+                            }}
+                            className="input"
+                            id={"input-item-" + (index + 1)}
+                            onFocus={handleFocus}
+                            adjustPosition={false}
+                            onBlur={handleBlur}
+                            disabled={item.defaultValue}
+                            value={
+                              item.defaultValue
+                                ? item.defaultValue
+                                : item.value
+                                ? item.value
+                                : ""
+                            }
+                            maxlength={50}
+                            cursorSpacing={100}
+                            clear={true}
+                            onInput={(e) => {
+                              changeEditLabelItem(
+                                index,
+                                e.detail.value,
+                                "value"
+                              );
+                            }}
+                          />
+                          {item.key === "shuiyinmingcheng" && (
+                            <View className="input-tips">
+                              {userInfo.type !== "default"
+                                ? "可填写 衿日水印、马克水印"
+                                : "填写水印名称。开通会员可获得专属图标 😎"}
+                            </View>
+                          )}
+                        </View>
                       )}
                     </View>
                   </View>

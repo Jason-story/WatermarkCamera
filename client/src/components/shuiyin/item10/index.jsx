@@ -21,7 +21,11 @@ const Index = ({
 }) => {
   const bgItems = editLabel.filter((item) => item.bg);
   const normalItems = editLabel.filter(
-    (item) => !item.bg && item.key !== "gongchengmingcheng"
+    (item) =>
+      !item.bg &&
+      item.key !== "gongchengmingcheng" &&
+      item.key !== "shuiyinmingcheng" &&
+      item.key !== "yanzhengmingcheng"
   );
   const gongchengmingcheng = editLabel.filter(
     (item) => item.key == "gongchengmingcheng"
