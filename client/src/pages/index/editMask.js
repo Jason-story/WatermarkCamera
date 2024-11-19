@@ -50,7 +50,7 @@ const WatermarkPopup = ({
   setLocationName,
   // 水印保存配置
   isShuiyinSaved,
-  saveChange,
+  saveIsShuiyinSaved,
   // 用户信息
   userInfo,
   // 水印右下角防伪信息
@@ -279,7 +279,7 @@ const WatermarkPopup = ({
                 style={{ transform: "scale(0.7)" }}
                 checked={isShuiyinSaved}
                 onChange={(e) => {
-                  saveChange(e.detail.value);
+                  saveIsShuiyinSaved(e.detail.value);
                 }}
               />
             </View>

@@ -9,6 +9,7 @@ import ShuiyinDoms from "../../components/shuiyin";
 import {
   generateRandomString,
   formatDateTime,
+  getEditItem,
   mergeArrays,
 } from "../../components/utils.js";
 import Taro from "@tarojs/taro";
@@ -100,7 +101,7 @@ const CameraPage = () => {
   const [edit, setEdit] = useState(false);
   const [weekly, setWeekly] = useState(getWeekday(year, month, day));
   const [showAddMyApp, setAddMyAppShow] = useState(true);
-  const [isShuiyinSaved, saveChange] = useState(true);
+  const [isShuiyinSaved, saveIsShuiyinSaved] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
@@ -599,7 +600,7 @@ const CameraPage = () => {
   }) => {
     fangweimaText = generateRandomString(4);
     makefangweimaText = generateRandomString(4);
-    console.log('makefangweimaText: ', makefangweimaText);
+    console.log("makefangweimaText: ", makefangweimaText);
     requestAnimationFrame(async () => {
       try {
         // 免费体验次数检查
@@ -712,14 +713,16 @@ const CameraPage = () => {
             });
 
             setUserInfo(result.data);
+            const newEditLabel = editLabel.filter(
+              (item) => item.key !== "shijian"
+            );
             await cloud.callFunction({
               name: "updateSavedConfig",
               data: {
                 saveConfig: {
                   isSaved: isShuiyinSaved,
-                  label: {
-                    ...editLabel,
-                  },
+                  currentShuiyinIndex,
+                  label: [...newEditLabel],
                 },
               },
             });
@@ -823,7 +826,7 @@ const CameraPage = () => {
     // 弹出水印名字提示弹窗
     if (
       userInfo.type !== "default" &&
-      !shuiyinxiangjiName &&
+      !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
       showTrueCode &&
       ShuiyinDoms[currentShuiyinIndex].options.showRightCopyright
     ) {
@@ -881,7 +884,11 @@ const CameraPage = () => {
   // 判断是否使用服务端保存的数据生成图片
   useEffect(() => {
     if (userInfo?.saveConfig?.isSaved) {
-      mergeArrays(editLabel, userInfo.saveConfig.label);
+      saveIsShuiyinSaved(true);
+      setCurrentShuiyinIndex(userInfo.saveConfig.currentShuiyinIndex);
+      setTimeout(() => {
+        setEditLabel(mergeArrays(editLabel, userInfo.saveConfig.label));
+      }, 2000);
       // const {
       //   currentShuiyinIndex,
       //   weather,
@@ -1772,7 +1779,7 @@ const CameraPage = () => {
             setLocationName={setLocationName}
             // 水印保存设置
             isShuiyinSaved={isShuiyinSaved}
-            saveChange={saveChange}
+            saveIsShuiyinSaved={saveIsShuiyinSaved}
             // 用户信息
             userInfo={userInfo}
             // 水印防伪

@@ -51,7 +51,7 @@ const RenderWatermark = ({
 }) => {
   const isCamera = type === "camera";
   const shuiyinxiangjiName =
-    getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
+  getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
   const renderLeftCopyright = ({ maskScale }) => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
 
@@ -434,7 +434,7 @@ const RenderWatermark = ({
             widh: "100%",
             position: "relative",
             height,
-            background: "#000",
+            // background: "#000",
           }}
         >
           {selected === "图片水印" && isCamera && (

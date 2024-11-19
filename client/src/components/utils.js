@@ -69,13 +69,20 @@ export const formatDateTime = {
 
 export const getEditItem = (editLabel, key) => {
   const index = editLabel.findIndex((item) => item.key === key);
-  return editLabel[index];
+  return editLabel[index] || "";
 };
 
 export const getWeekdayCN = (date) => {
-  const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+  const days = [
+    "星期日",
+    "星期一",
+    "星期二",
+    "星期三",
+    "星期四",
+    "星期五",
+    "星期六",
+  ];
   const d = new Date(date);
-  console.log('days[d.getDay()]: ', days[d.getDay()]);
   return days[d.getDay()];
 };
 
@@ -85,10 +92,10 @@ export const parseDateString = (dateStr = null) => {
     const now = new Date();
     return {
       year: now.getFullYear(),
-      month: now.getMonth() + 1, // getMonth() returns 0-11
-      day: now.getDate(),
-      hours: now.getHours(),
-      minutes: now.getMinutes(),
+      month: (now.getMonth() + 1).toString().padStart(2, "0"), // Ensure two digits for month
+      day: now.getDate().toString().padStart(2, "0"), // Ensure two digits for day
+      hours: now.getHours().toString().padStart(2, "0"), // Ensure two digits for hours
+      minutes: now.getMinutes().toString().padStart(2, "0"), // Ensure two digits for minutes
     };
   }
 
@@ -100,11 +107,11 @@ export const parseDateString = (dateStr = null) => {
   }
 
   return {
-    year: parseInt(matches[1]),
-    month: parseInt(matches[2]),
-    day: parseInt(matches[3]),
-    hours: parseInt(matches[4]),
-    minutes: parseInt(matches[5]),
+    year: matches[1], // Year doesn't need padding
+    month: matches[2].padStart(2, "0"), // Ensure two digits for month
+    day: matches[3].padStart(2, "0"), // Ensure two digits for day
+    hours: matches[4].padStart(2, "0"), // Ensure two digits for hours
+    minutes: matches[5].padStart(2, "0"), // Ensure two digits for minutes
   };
 };
 export const mergeArrays = (newArr, oldArr, defaultArr) => {
@@ -119,12 +126,14 @@ export const mergeArrays = (newArr, oldArr, defaultArr) => {
     return oldItem ? { ...oldItem } : { ...newItem };
   });
 
-  defaultArr.forEach((item) => {
-    const arrItem = arr.find((arrItem) => arrItem.key === item.key);
-    if (arrItem && arrItem.value === undefined) {
-      arrItem.value = item.value;
-    }
-  });
+  if (defaultArr) {
+    defaultArr.forEach((item) => {
+      const arrItem = arr.find((arrItem) => arrItem.key === item.key);
+      if (arrItem && arrItem.value === undefined) {
+        arrItem.value = item.value;
+      }
+    });
+  }
 
   return arr;
 };
