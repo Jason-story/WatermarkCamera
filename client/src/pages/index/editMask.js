@@ -189,10 +189,10 @@ const WatermarkPopup = ({
                         padding: 0,
                       }}
                     >
+                      <Image mode="aspectFit" src={item.options.cover}></Image>
                       {item.options.vip && (
                         <View className="vip-arrow">半年及以上会员专属</View>
                       )}
-                      <Image mode="aspectFit" src={item.options.cover}></Image>
                     </View>
                   </View>
                   {currentShuiyinIndex == index && (
