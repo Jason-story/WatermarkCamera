@@ -26,7 +26,6 @@ const RenderWatermark = ({
   userInfo,
   showFloatLayout,
   hours,
-  isRealDevice,
   minutes,
   day,
   month,
@@ -51,7 +50,7 @@ const RenderWatermark = ({
 }) => {
   const isCamera = type === "camera";
   const shuiyinxiangjiName =
-  getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
+    getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
   const renderLeftCopyright = ({ maskScale }) => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
 

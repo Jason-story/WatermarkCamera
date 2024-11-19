@@ -44,7 +44,7 @@ const Index = ({
         <Text
           dangerouslySetInnerHTML={{
             __html: formatTextWithLineLimit(
-              gongchengmingcheng[0].value || gongchengmingcheng[0].title,
+              gongchengmingcheng[0]?.value || gongchengmingcheng[0]?.title,
               10,
               3
             ),
@@ -66,7 +66,7 @@ const Index = ({
                 ))}
               </View>
               <View>
-                {item.key === "tianqi" ? item.value + "℃" : item.value}
+                {item.key === "tianqi" ? item?.value + "℃" : item?.value}
               </View>
             </View>
           )
@@ -88,7 +88,7 @@ const Index = ({
                     </Text>
                   ))}
                 </View>
-                <View>{item.value}</View>
+                <View>{item?.value}</View>
               </View>
             )
           );

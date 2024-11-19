@@ -344,15 +344,6 @@ const label = {
       switchVisible: true,
     },
     {
-      key: "yanzhengmingcheng",
-      title: "左下角验证",
-      // 是否隐藏
-      visible: true,
-      editTitle: false,
-      switchVisible: true,
-      defaultValue: "无法修改，只能显示或隐藏",
-    },
-    {
       key: "gongchengmingcheng",
       title: "工程名称",
       // 是否隐藏

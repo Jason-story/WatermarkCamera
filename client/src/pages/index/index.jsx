@@ -8,7 +8,6 @@ import Touming from "../../images/touming.png";
 import ShuiyinDoms from "../../components/shuiyin";
 import {
   generateRandomString,
-  formatDateTime,
   getEditItem,
   mergeArrays,
 } from "../../components/utils.js";
@@ -85,25 +84,14 @@ const CameraPage = () => {
   const [devicePosition, setDevicePosition] = useState("back");
   const [shanguangflag, setShanguangFlag] = useState("off");
   const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [weather, setWeather] = useState({ text: "", temperature: "" });
-  const [year, setYear] = useState(yearD);
-  const [month, setMonth] = useState(monthD);
-  const [day, setDay] = useState(dayD);
-  const [hours, setHours] = useState(hoursD);
-  const [minutes, setMinutes] = useState(minutesD);
-  const [locationName, setLocationName] = useState("");
   app.$app.globalData.zphsId = zphsId;
   const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
-  const [dakaName, setDakaName] = useState("打卡");
   // 向上弹出修改
   const [showFloatLayout, setShowFloatLayout] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [weekly, setWeekly] = useState(getWeekday(year, month, day));
   const [showAddMyApp, setAddMyAppShow] = useState(true);
   const [isShuiyinSaved, saveIsShuiyinSaved] = useState(false);
   const [userInfo, setUserInfo] = useState({});
-  const [title, setTitle] = useState("工程记录");
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [addPhoneNumber, setAddPhoneNumber] = useState(false);
   const [phone, setPhone] = useState("");
@@ -112,11 +100,11 @@ const CameraPage = () => {
   const [showHasCheck, setShowHasCheck] = useState(undefined);
   const [showTrueCode, setShowTrueCode] = useState(undefined);
   const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
-  const [fangdaoShuiyin, setFangDaoShuiyin] = useState("盗图必究");
   const [cameraTempPath, setCameraTempPath] = useState("");
   const [xiangceTempPath, setXiangceTempPath] = useState("");
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
   const [snapshotHeight, setSnapshotHeight] = useState("");
+  const [locationName, setLocationName] = useState("");
   const [maskScale, setMaskScale] = useState(1);
   const [editLabel, setEditLabel] = useState(
     ShuiyinDoms[currentShuiyinIndex].label
@@ -138,9 +126,6 @@ const CameraPage = () => {
     const weekday = date.getDay(); // 获取星期几的数字表示，0代表星期日，1代表星期一，依此类推
     return weekDays[weekday];
   }
-  // useEffect(() => {
-  //   // console.log("editLabel2233: ", editLabel);
-  // }, [editLabel]);
   useEffect(() => {
     // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
@@ -224,20 +209,6 @@ const CameraPage = () => {
     });
   }, []);
 
-  const handleDateChange = (e) => {
-    const [year, month, day] = e.detail.value.split("-");
-
-    setWeekly(getWeekday(year, month, day));
-    setYear(year);
-    setMonth(month);
-    setDay(day);
-  };
-  const handleTimeChange = (e) => {
-    const [hours, minutes] = e.detail.value.split(":");
-    setHours(hours);
-    setMinutes(minutes);
-  };
-
   const [permissions, setPermissions] = useState({
     camera: false,
     writePhotosAlbum: false,
@@ -262,18 +233,11 @@ const CameraPage = () => {
               " " +
               res.data.results[0]?.now.temperature
           );
-
-          // setWeather(
-          //   res.data.results[0]?.now.text +
-          //     " " +
-          //     res.data.results[0]?.now.temperature
-          // );
         } else {
           setError(`Error: ${res.statusCode}`);
         }
       },
       fail: (err) => {
-        console.error("Failed to fetch weather:", err);
         setError("Failed to fetch weather");
       },
     });
@@ -291,9 +255,6 @@ const CameraPage = () => {
       success: (res) => {
         mergeEditLabel("weidu", (res.latitude * 1).toFixed(6));
         mergeEditLabel("jingdu", (res.longitude * 1).toFixed(6));
-
-        // setLatitude((res.latitude * 1).toFixed(6));
-        // setLongitude((res.longitude * 1).toFixed(6));
         reverseGeocode(res.latitude, res.longitude);
         fetchWeather(res.longitude, res.latitude);
       },
@@ -584,14 +545,6 @@ const CameraPage = () => {
       }
     });
   };
-  /**
-   * 统一的截图处理函数
-   * @param {Object} options 配置选项
-   * @param {string} options.type 截图类型：'camera' 或 'xiangce'
-   * @param {string} options.containerSelector 截图容器选择器
-   * @param {string} options.imageSelector 图片节点选择器
-   * @param {Function} options.setTempPath 设置临时路径的函数
-   */
   const handleSnapshot = ({
     type = "camera",
     containerSelector = ".snapshot",
@@ -600,7 +553,6 @@ const CameraPage = () => {
   }) => {
     fangweimaText = generateRandomString(4);
     makefangweimaText = generateRandomString(4);
-    console.log("makefangweimaText: ", makefangweimaText);
     requestAnimationFrame(async () => {
       try {
         // 免费体验次数检查
@@ -654,7 +606,6 @@ const CameraPage = () => {
           setTimeout(resolve, type === "camera" ? 100 : 200)
         );
         await new Promise((resolve) => setTimeout(resolve, 50));
-        console.log(3333);
 
         // 等待图片加载完成
         await ensureImageLoaded();
@@ -886,52 +837,14 @@ const CameraPage = () => {
     if (userInfo?.saveConfig?.isSaved) {
       saveIsShuiyinSaved(true);
       setCurrentShuiyinIndex(userInfo.saveConfig.currentShuiyinIndex);
+      const newEditLabel = [
+        ...ShuiyinDoms[userInfo.saveConfig.currentShuiyinIndex].label,
+      ];
       setTimeout(() => {
-        setEditLabel(mergeArrays(editLabel, userInfo.saveConfig.label));
+        setEditLabel(mergeArrays(newEditLabel, userInfo.saveConfig.label));
       }, 2000);
-      // const {
-      //   currentShuiyinIndex,
-      //   weather,
-      //   locationName,
-      //   latitude,
-      //   longitude,
-      //   showTrueCode,
-      //   showHasCheck,
-      //   shuiyinxiangjiName,
-      //   fangdaoShuiyin,
-      //   dakaName,
-      // } = userInfo.saveConfig.label;
-      // setTimeout(() => {
-      //   setCurrentShuiyinIndex(
-      //     // 去掉
-      //     currentShuiyinIndex >= 9 ? 0 : currentShuiyinIndex
-      //   );
-      //   setWeather(weather);
-      //   setLocationName(locationName);
-      //   setLatitude(latitude);
-      //   setLongitude(longitude);
-      //   setShowHasCheck(showHasCheck);
-      //   setShowTrueCode(showTrueCode);
-      //   setShuiyinxiangjiName(shuiyinxiangjiName);
-      //   setDakaName(dakaName);
-      //   setFangDaoShuiyin(fangdaoShuiyin || "盗图必究");
-      // }, 1000);
     }
-    // saveChange(userInfo?.saveConfig?.isSaved);
   }, [userInfo.type]);
-  // let isUseServerData = "";
-  // // 检测本地和服务端数据是否一致 不一致则用服务端数据
-  // useEffect(() => {
-  //   if (userInfo?.saveConfig?.isSaved && !edit) {
-  //     if (locationName !== userInfo.saveConfig.locationName) {
-  //       setTimeout(() => {
-  //         setLocationName(userInfo.saveConfig.locationName);
-  //         isUseServerData = true;
-  //       }, 1000);
-  //     }
-  //   }
-  // }, [locationName]);
-
   const selectImgFromXiangce = async () => {
     try {
       // 1. 权限检查
@@ -1286,22 +1199,8 @@ const CameraPage = () => {
                   selected={selected}
                   showTrueCode={showTrueCode}
                   showHasCheck={showHasCheck}
-                  shuiyinxiangjiName={shuiyinxiangjiName}
                   userInfo={userInfo}
                   showFloatLayout={showFloatLayout}
-                  hours={hours}
-                  minutes={minutes}
-                  day={day}
-                  month={month}
-                  year={year}
-                  weekly={weekly}
-                  locationName={locationName}
-                  dakaName={dakaName}
-                  title={title}
-                  weather={weather}
-                  latitude={latitude}
-                  longitude={longitude}
-                  fangdaoShuiyin={fangdaoShuiyin}
                   fangweimaText={fangweimaText}
                   makefangweimaText={makefangweimaText}
                   cameraError={cameraError}
@@ -1310,7 +1209,6 @@ const CameraPage = () => {
                   setShowFloatLayout={setShowFloatLayout}
                   maskScale={maskScale}
                   editLabel={editLabel}
-                  setEditLabel={setEditLabel}
                 />
                 <RenderWatermark
                   type={"xiangce"}
@@ -1323,22 +1221,8 @@ const CameraPage = () => {
                   selected={selected}
                   showTrueCode={showTrueCode}
                   showHasCheck={showHasCheck}
-                  shuiyinxiangjiName={shuiyinxiangjiName}
                   userInfo={userInfo}
                   showFloatLayout={showFloatLayout}
-                  hours={hours}
-                  minutes={minutes}
-                  day={day}
-                  month={month}
-                  year={year}
-                  weekly={weekly}
-                  locationName={locationName}
-                  dakaName={dakaName}
-                  title={title}
-                  weather={weather}
-                  latitude={latitude}
-                  longitude={longitude}
-                  fangdaoShuiyin={fangdaoShuiyin}
                   fangweimaText={fangweimaText}
                   makefangweimaText={makefangweimaText}
                   cameraError={cameraError}
@@ -1347,7 +1231,6 @@ const CameraPage = () => {
                   setShowFloatLayout={setShowFloatLayout}
                   maskScale={maskScale}
                   editLabel={editLabel}
-                  setEditLabel={setEditLabel}
                 />
                 {/* 渲染相册模式的水印 */}
                 <View className="camera-btns">
@@ -1758,7 +1641,6 @@ const CameraPage = () => {
             onLeftButtonClick={() => console.log("取消")}
             showLeftButton={false}
           />
-          {/* 替换原来的 Popup 部分为: */}
           <EditMark
             showFloatLayout={showFloatLayout}
             edit={edit}
@@ -1766,18 +1648,6 @@ const CameraPage = () => {
             setShowFloatLayout={setShowFloatLayout}
             setEdit={setEdit}
             updateShuiyinIndex={updateShuiyinIndex}
-            // 日期时间
-            year={year}
-            month={month}
-            day={day}
-            hours={hours}
-            minutes={minutes}
-            handleDateChange={handleDateChange}
-            handleTimeChange={handleTimeChange}
-            // 位置信息
-            locationName={locationName}
-            setLocationName={setLocationName}
-            // 水印保存设置
             isShuiyinSaved={isShuiyinSaved}
             saveIsShuiyinSaved={saveIsShuiyinSaved}
             // 用户信息
@@ -1785,24 +1655,11 @@ const CameraPage = () => {
             // 水印防伪
             showTrueCode={showTrueCode}
             setShowTrueCode={setShowTrueCode}
-            shuiyinxiangjiName={shuiyinxiangjiName}
             setShuiyinxiangjiName={setShuiyinxiangjiName}
             // 验证标记
             showHasCheck={showHasCheck}
             setShowHasCheck={setShowHasCheck}
             // 其他信息
-            title={title}
-            setTitle={setTitle}
-            fangdaoShuiyin={fangdaoShuiyin}
-            setFangDaoShuiyin={setFangDaoShuiyin}
-            weather={weather}
-            setWeather={setWeather}
-            longitude={longitude}
-            latitude={latitude}
-            setLongitude={setLongitude}
-            setLatitude={setLatitude}
-            dakaName={dakaName}
-            setDakaName={setDakaName}
             maskScale={1}
             setMaskScale={setMaskScale}
             editLabel={editLabel}

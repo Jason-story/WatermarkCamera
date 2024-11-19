@@ -6,9 +6,7 @@ import {
   Image,
   Picker,
   Input,
-  InputNumber,
   Switch,
-  ScrollView,
 } from "@tarojs/components";
 import {
   formatTextWithLineLimit,
@@ -18,18 +16,9 @@ import {
 } from "../../components/utils";
 import Taro from "@tarojs/taro";
 import CustomSlider from "../../components/CustomSlider";
-import { AtFloatLayout, AtSlider } from "taro-ui";
+import { AtFloatLayout } from "taro-ui";
 import ShuiyinDoms from "../../components/shuiyin";
-/**
- * 水印编辑弹窗组件
- * @param {Object} props
- * @param {boolean} props.showFloatLayout - 控制弹窗显示隐藏
- * @param {boolean} props.edit - 是否处于编辑模式
- * @param {number} props.currentShuiyinIndex - 当前选中的水印索引
- * @param {function} props.setShowFloatLayout - 设置弹窗显示状态
- * @param {function} props.setEdit - 设置编辑状态
- * @param {function} props.updateShuiyinIndex - 更新水印索引
- */
+
 const WatermarkPopup = ({
   showFloatLayout,
   edit,
@@ -37,17 +26,7 @@ const WatermarkPopup = ({
   setShowFloatLayout,
   setEdit,
   updateShuiyinIndex,
-  // 日期时间相关
-  year,
-  month,
-  day,
-  hours,
-  minutes,
-  handleDateChange,
-  handleTimeChange,
-  // 位置信息相关
-  locationName,
-  setLocationName,
+
   // 水印保存配置
   isShuiyinSaved,
   saveIsShuiyinSaved,
@@ -61,32 +40,10 @@ const WatermarkPopup = ({
   // 左下角验证标记
   showHasCheck,
   setShowHasCheck,
-  // 标题相关
-  title,
-  setTitle,
-  // 防盗水印
-  fangdaoShuiyin,
-  setFangDaoShuiyin,
-  // 天气信息
-  weather,
-  setWeather,
-  // 经纬度信息
-  longitude,
-  latitude,
-  setLongitude,
-  setLatitude,
-  // 备注信息
-  remark,
-  // 打卡标签
   setMaskScale,
   editLabel,
   setEditLabel,
 }) => {
-  /**
-   * 防抖函数
-   * @param {Function} func - 需要防抖的函数
-   * @param {number} delay - 延迟时间(ms)
-   */
   function debounce(func, delay) {
     let timer;
     return function () {
@@ -151,8 +108,6 @@ const WatermarkPopup = ({
   };
   const changeEditLabelItem = (index, value, type, valueType) => {
     const newEditLabel = [...editLabel];
-    console.log("newEditLabel: ", newEditLabel);
-    console.log("index: ", index);
 
     if (type === "title") {
       newEditLabel[index] = { ...newEditLabel[index], title: value };
@@ -160,8 +115,6 @@ const WatermarkPopup = ({
       if (valueType === "riqi" || valueType === "shijian") {
         // 获取当前值以保留日期或时间部分
         const currentValue = newEditLabel[index].value || "";
-        console.log("newEditLabel[index]: ", newEditLabel[index]);
-        console.log("currentValue: ", currentValue);
         let [datePart, timePart] = currentValue.split(" ");
 
         // 根据 valueType 更新日期或时间部分
@@ -355,7 +308,7 @@ const WatermarkPopup = ({
                   </View>
                 </View>
               )}
-              {editLabel.maskScale && (
+              {ShuiyinDoms[currentShuiyinIndex].options?.maskScale && (
                 <View className="edit-item">
                   <View className="picker">
                     <Text>水印大小： </Text>
@@ -370,185 +323,6 @@ const WatermarkPopup = ({
                   </View>
                 </View>
               )}
-
-              {/* <View className="edit-item">
-                <Picker
-                  mode="date"
-                  value={`${year}年${month}月${day}日`}
-                  onChange={handleDateChange}
-                >
-                  <View>选择日期： {`${year}年${month}月${day}日`}</View>
-                </Picker>
-              </View> */}
-
-              {/* 时间选择 */}
-              {/* <View className="edit-item">
-                <Picker
-                  mode="time"
-                  value={`${hours}:${minutes}`}
-                  onChange={handleTimeChange}
-                >
-                  <View>选择时间： {`${hours}:${minutes}`}</View>
-                </Picker>
-              </View> */}
-
-              {/* 地点输入 */}
-              {/* <View className="edit-item">
-                <View className="picker">
-                  <Text>详细地点： </Text>
-                  <Input
-                    className="input"
-                    id="input-item-1"
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    value={locationName}
-                    maxlength={50}
-                    adjustPosition={false}
-                    clear={true}
-                    clearable
-                    onInput={(e) => {
-                      setLocationName(e.detail.value);
-                    }}
-                  />
-                </View>
-              </View> */}
-
-              {/* 工程标题 */}
-              {/* {editLabel.hasTitle && (
-                <View className="edit-item">
-                  <View className="picker">
-                    <Text>工程标题： </Text>
-                    <Input
-                      className="input"
-                      id="input-item-3"
-                      onFocus={handleFocus}
-                      value={title}
-                      maxlength={12}
-                      onBlur={handleBlur}
-                      adjustPosition={false}
-                      cursorSpacing={100}
-                      clear={true}
-                      onInput={(e) => {
-                        setTitle(e.detail.value);
-                      }}
-                    />
-                  </View>
-                </View>
-              )} */}
-
-              {/* 防盗水印 */}
-              {/* {editLabel.hasFangDao && (
-                <View className="edit-item">
-                  <View className="picker">
-                    <Text>防盗水印文字： </Text>
-                    <Input
-                      className="input"
-                      id="input-item-4"
-                      onFocus={handleFocus}
-                      value={fangdaoShuiyin}
-                      adjustPosition={false}
-                      onBlur={handleBlur}
-                      maxlength={6}
-                      cursorSpacing={100}
-                      clear={true}
-                      onInput={(e) => {
-                        debounce(setFangDaoShuiyin(e.detail.value), 100);
-                      }}
-                    />
-                  </View>
-                </View>
-              )} */}
-
-              {/* 天气信息 */}
-              {/* {editLabel.hasWeather && (
-                <View className="edit-item">
-                  <View className="picker">
-                    <Text>天气&温度： </Text>
-                    <Input
-                      className="input"
-                      id="input-item-5"
-                      onFocus={handleFocus}
-                      value={weather}
-                      cursorSpacing={100}
-                      adjustPosition={false}
-                      onBlur={handleBlur}
-                      maxlength={8}
-                      clear={true}
-                      onInput={(e) => {
-                        setWeather(e.detail.value);
-                      }}
-                    />
-                  </View>
-                </View>
-              )} */}
-
-              {/* 经纬度信息 */}
-              {/* {editLabel.hasJingWeiDu && (
-                <>
-                  <View className="edit-item">
-                    <View className="picker">
-                      <Text>经度： </Text>
-                      <Input
-                        className="input"
-                        id="input-item-6"
-                        onFocus={handleFocus}
-                        value={longitude + ""}
-                        maxlength={14}
-                        cursorSpacing={100}
-                        adjustPosition={false}
-                        onBlur={handleBlur}
-                        clear={true}
-                        onInput={(e) => {
-                          setLongitude(e.detail.value + "");
-                        }}
-                      />
-                    </View>
-                  </View>
-                  <View className="edit-item">
-                    <View className="picker">
-                      <Text>纬度： </Text>
-                      <Input
-                        className="input"
-                        id="input-item-7"
-                        onFocus={handleFocus}
-                        value={latitude + ""}
-                        cursorSpacing={100}
-                        adjustPosition={false}
-                        onBlur={handleBlur}
-                        maxlength={14}
-                        clear={true}
-                        onInput={(e) => {
-                          setLatitude(e.detail.value + "");
-                        }}
-                      />
-                    </View>
-                  </View>
-                </>
-              )} */}
-
-              {/* 备注信息 */}
-              {/* {editLabel.hasRemark && (
-                <View className="edit-item">
-                  <View className="picker">
-                    <Text>备注： </Text>
-                    <Input
-                      className="input"
-                      id="input-item-8"
-                      onFocus={handleFocus}
-                      adjustPosition={false}
-                      onBlur={handleBlur}
-                      value={remark}
-                      maxlength={20}
-                      cursorSpacing={100}
-                      clear={true}
-                      onInput={(e) => {
-                        debounce(setRemark(e.detail.value), 100);
-                      }}
-                    />
-                  </View>
-                  <View className="input-tips">最多20个字</View>
-                </View>
-              )} */}
               {editLabel.map((item, index) => {
                 return (
                   <View className="edit-item" key={index}>

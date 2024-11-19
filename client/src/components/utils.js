@@ -1,6 +1,7 @@
 export const formatTextWithLineLimit = (text, maxCharsPerLine, maxLines) => {
   // 初始化一个数组存储每一行的内容
   const lines = [];
+  if(!text){return ''}
 
   // 使用正则表达式，按照每行最大字符数进行切割
   for (let i = 0; i < maxLines; i++) {

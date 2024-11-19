@@ -17,6 +17,7 @@ import Shuiyin6Cover from "./item6/cover.png";
 import Shuiyin7Cover from "./item7/cover.png";
 import Shuiyin8Cover from "./item8/cover.png";
 import Shuiyin9Cover from "./item9/cover.png";
+import Shuiyin10Cover from "./item10/cover.png";
 import editLabel from "./label";
 const config = [
   {
@@ -182,7 +183,6 @@ const config = [
     // 9
     component: Shuiyin9,
     label: editLabel[8],
-
     options: {
       title: "定制",
       vip: true,
@@ -201,26 +201,25 @@ const config = [
       proportion: 1.674418,
     },
   },
-  // {
-  //   // 10
-  //   component: Shuiyin10,
-  //   label: editLabel[9],
-  //   options: {
-  //     title: "工程记录10",
-  //     id: "gongcheng2",
-  //     vip: false,
-  //     cover: Shuiyin5Cover,
-  //     hasDakaLabel: false,
-  //     showRightCopyright: true,
-  //     showLeftCopyright: false,
-  //     hasTitle: true,
-  //     hasFangDao: false,
-  //     hasWeather: true,
-  //     hasJingWeiDu: false,
-  //     hasRemark: true,
-  //     copyright: "jrsy",
-  //     maskScale: true,
-  //   },
-  // },
+  {
+    // 10
+    component: Shuiyin10,
+    label: editLabel[9],
+    options: {
+      title: "工程记录10",
+      vip: true,
+      cover: Shuiyin10Cover,
+      hasDakaLabel: false,
+      showRightCopyright: true,
+      showLeftCopyright: false,
+      hasTitle: true,
+      hasFangDao: false,
+      hasWeather: true,
+      hasJingWeiDu: false,
+      hasRemark: true,
+      copyright: "jrsy",
+      maskScale: true,
+    },
+  },
 ];
 export default config;
