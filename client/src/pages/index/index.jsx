@@ -414,20 +414,10 @@ const CameraPage = () => {
   };
 
   const updateShuiyinIndex = async (current) => {
-    console.log("123: ", current);
     const newEditLabel = [...ShuiyinDoms[current].label];
-    console.log("555: ", newEditLabel);
     setEditLabel(mergeArrays(newEditLabel, editLabel));
     setCurrentShuiyinIndex(current);
   };
-  // mergeArrays
-
-  // useEffect(() => {
-  //   console.log('currentShuiyinIndex: ', currentShuiyinIndex);
-  //   const newEditLabel = [...ShuiyinDoms[currentShuiyinIndex].label];
-  //   console.log('newEditLabel: ', newEditLabel);
-  //   setEditLabel(mergeArrays(newEditLabel, editLabel));
-  // }, [currentShuiyinIndex]);
 
   // 统一设置默认值
   useEffect(() => {

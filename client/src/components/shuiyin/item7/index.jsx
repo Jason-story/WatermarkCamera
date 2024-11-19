@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import Taro from "@tarojs/taro";
 import { View, Text, Image } from "@tarojs/components";
-import { formatTextWithLineLimit } from "../../utils";
+import {
+  formatTextWithLineLimit,
+  getWeekdayCN,
+  parseDateString,
+  getEditItem,
+} from "../../utils";
 import "./index.scss";
 import Cover from "./cover.png";
 
@@ -20,49 +25,63 @@ const Index = ({
   remark,
   latitude,
   longitude,
+  editLabel,
 }) => {
+  const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
+
   return (
-    <View className="item7-wrapper" key={"item-7"}
-    style={{
-      transform: `scale(${maskScale})`,
-    }}>
+    <View
+      className="item7-wrapper"
+      key={"item-7"}
+      style={{
+        transform: `scale(${maskScale})`,
+      }}
+    >
       <View className="item7-box">
-        {longitude && (
+        {getEditItem(editLabel, "jingdu").value && (
           <View className="item7-label-item">
             <View className="item7-label-title">经度:</View>
-            <View>{`${longitude}`}</View>
+            <View>{`${getEditItem(editLabel, "jingdu").value}`}</View>
           </View>
         )}
-        {latitude && (
+        {getEditItem(editLabel, "weidu").value && (
           <View className="item7-label-item">
             <View className="item7-label-title">纬度:</View>
-            <View>{`${latitude}`}</View>
+            <View>{`${getEditItem(editLabel, "jingdu").value}`}</View>
           </View>
         )}
         <View className="item7-label-item">
           <View className="item7-label-title">时间:</View>
-          <View>{`${year}-${month}-${day} ${hours}:${minutes}`}</View>
+          <View>{`${time.year}-${time.month}-${time.day} ${time.hours}:${time.minutes}`}</View>
         </View>
         <View className="item7-label-item">
           <View className="item7-label-title">天气:</View>
-          <Text>{`${weather}`}℃</Text>
+          <Text>{`${getEditItem(editLabel, "tianqi").value}`}℃</Text>
         </View>
         <View className="item7-label-item">
           <View className="item7-label-title">地点:</View>
           <View
             className="item7-location"
             dangerouslySetInnerHTML={{
-              __html: formatTextWithLineLimit(locationName, 20, 3),
+              __html: formatTextWithLineLimit(
+                getEditItem(editLabel, "didian").value || "",
+                20,
+                3
+              ),
             }}
           ></View>
         </View>
-        {remark.length > 0 && (
+        {getEditItem(editLabel, "beizhu").value?.length > 0 && (
           <View className="item7-label-item">
             <View className="item7-label-title">备注:</View>
             <View
               className="item7-location"
               dangerouslySetInnerHTML={{
-                __html: formatTextWithLineLimit(remark, 10, 2),
+                __html: formatTextWithLineLimit(
+                  getEditItem(editLabel, "beizhu").value,
+                  10,
+                  2
+                ),
               }}
             ></View>
           </View>

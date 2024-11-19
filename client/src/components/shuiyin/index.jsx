@@ -61,6 +61,7 @@ const config = [
   {
     // 3
     component: Shuiyin3,
+    label: editLabel[2],
     options: {
       title: "水印相机",
       vip: false,
@@ -79,6 +80,7 @@ const config = [
   {
     // 4
     component: Shuiyin4,
+    label: editLabel[3],
     options: {
       title: "水印相机",
       vip: false,
@@ -97,6 +99,7 @@ const config = [
   {
     // 5
     component: Shuiyin5,
+    label: editLabel[4],
     options: {
       title: "工程记录",
       id: "gongcheng1",
@@ -117,6 +120,7 @@ const config = [
   {
     // 6
     component: Shuiyin6,
+    label: editLabel[5],
     options: {
       title: "短黄线 温度",
       vip: false,
@@ -136,6 +140,8 @@ const config = [
   {
     // 7
     component: Shuiyin7,
+    label: editLabel[6],
+
     options: {
       title: "现场拍照 经纬度",
       vip: false,
@@ -155,6 +161,8 @@ const config = [
   {
     // 8
     component: Shuiyin8,
+    label: editLabel[7],
+
     options: {
       title: "防盗",
       vip: false,
@@ -173,6 +181,8 @@ const config = [
   {
     // 9
     component: Shuiyin9,
+    label: editLabel[8],
+
     options: {
       title: "定制",
       vip: true,

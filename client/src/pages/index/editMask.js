@@ -97,7 +97,8 @@ const WatermarkPopup = ({
     };
   }
 
-  const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
+  const time = parseDateString(getEditItem(editLabel, "shijian")?.value || "");
+  console.log('time: ', time);
   const scrollViewRef = useRef(null);
   const [height, setHeight] = useState("100%");
   const handleBlur = () => {
@@ -246,8 +247,6 @@ const WatermarkPopup = ({
                     <View
                       className="shuiyin-item-cover"
                       onTouchStart={async () => {
-
-                        console.log('index: ', index);
                         await updateShuiyinIndex(index);
                         setEdit(true);
                       }}

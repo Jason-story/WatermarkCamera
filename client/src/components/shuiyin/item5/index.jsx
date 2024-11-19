@@ -16,68 +16,84 @@ const Index = ({
   month,
   year,
   remark,
-  gongchengjilu1,
+  editLabel,
+  setEditLabel,
 }) => {
+  const bgItems = editLabel.filter((item) => item.bg);
+  const normalItems = editLabel.filter(
+    (item) =>
+      !item.bg &&
+      item.key !== "gongchengmingcheng" &&
+      item.key !== "shuiyinmingcheng" &&
+      item.key !== "yanzhengmingcheng"
+  );
+  const gongchengmingcheng = editLabel.filter(
+    (item) => item.key == "gongchengmingcheng"
+  );
+
   return (
     <View
       className="item5-wrapper"
-      key={"item-5"}
+      key={"item5"}
       style={{
         transform: `scale(${maskScale})`,
       }}
     >
       <View className="item5-title">
-        <View className="item-5-dot"></View>
+        <View className="item5-dot"></View>
         <Text
           dangerouslySetInnerHTML={{
-            __html: formatTextWithLineLimit(title, 12, 1),
+            __html: formatTextWithLineLimit(
+              gongchengmingcheng[0].value || gongchengmingcheng[0].title,
+              10,
+              3
+            ),
           }}
         ></Text>
       </View>
-      {gongchengjilu1.map((item, index) => (
-        <View className="item5-label-item">
-          <View className="item5-label-title" key={index}>
-            {item.value.split("").map((value1, index1) => (
-              <Text key={index1}>
-                {value1}
-                {/* 如果是最后一个字符，添加冒号 */}
-                {index1 === item.value.length - 1 ? ":" : ""}
-              </Text>
-            ))}
-          </View>
-          <View>{item.text}</View>
-        </View>
-      ))}
 
-      {/* <View className="item5-label-item">
-        <View className="item5-label-title">拍摄时间:</View>
-        <View>{`${year}-${month}-${day} ${hours}:${minutes}`}</View>
-      </View>
-       */}
-      {/* <View className="item5-label-item">
-        <View className="item5-label-title">天气:</View>
-        <Text>{`${weather}`}℃</Text>
-      </View>
-      <View className="item5-label-item">
-        <View className="item5-label-title">地点:</View>
-        <View
-          className="item5-location"
-          dangerouslySetInnerHTML={{
-            __html: formatTextWithLineLimit(locationName, 10, 5),
-          }}
-        ></View>
-      </View> */}
-      {remark.length > 0 && (
-        <View className="item5-label-item">
-          <View className="item5-label-title">备注:</View>
-          <View
-            className="item5-location"
-            dangerouslySetInnerHTML={{
-              __html: formatTextWithLineLimit(remark, 10, 2),
-            }}
-          ></View>
-        </View>
+      {normalItems.map(
+        (item, index) =>
+          item.visible && (
+            <View className={"item5-label-item"} key={index}>
+              <View className="item5-label-title">
+                {item.title.split("").map((value1, index1) => (
+                  <Text key={index1}>
+                    {value1}
+                    {/* 如果是最后一个字符，添加冒号 */}
+                    {index1 === item.title.length - 1 ? ":" : ""}
+                  </Text>
+                ))}
+              </View>
+              <View>
+                {item.key === "tianqi" ? item.value + "℃" : item.value}
+              </View>
+            </View>
+          )
       )}
+
+      {/* <View className="item5-bg-container">
+        {bgItems.map((item, index) => {
+          return (
+            item.visible && (
+              <View
+                className="item5-label-item item5-label-item-bg"
+                key={index}
+              >
+                <View className="item5-label-title">
+                  {item.title.split("").map((value1, index1) => (
+                    <Text key={index1}>
+                      {value1}
+                      {index1 === item.title.length - 1 ? ":" : ""}
+                    </Text>
+                  ))}
+                </View>
+                <View>{item.value}</View>
+              </View>
+            )
+          );
+        })}
+      </View> */}
     </View>
   );
 };
