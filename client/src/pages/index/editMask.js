@@ -141,7 +141,6 @@ const WatermarkPopup = ({
       newEditLabel[index] = { ...newEditLabel[index], [type]: value };
     }
 
-    console.log("newEditLabel: ", newEditLabel);
     setEditLabel(newEditLabel);
   };
   return (

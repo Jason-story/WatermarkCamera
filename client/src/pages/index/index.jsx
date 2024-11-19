@@ -9,6 +9,7 @@ import ShuiyinDoms from "../../components/shuiyin";
 import {
   generateRandomString,
   getEditItem,
+  parseDateString,
   mergeArrays,
 } from "../../components/utils.js";
 import Taro from "@tarojs/taro";
@@ -840,6 +841,13 @@ const CameraPage = () => {
       const newEditLabel = [
         ...ShuiyinDoms[userInfo.saveConfig.currentShuiyinIndex].label,
       ];
+      const index = newEditLabel.findIndex((item) => item.key === "shijian");
+      newEditLabel[index].value = `${parseDateString().year}-${
+        parseDateString().month
+      }-${parseDateString().day} ${parseDateString().hours}:${
+        parseDateString().minutes
+      }`;
+
       setTimeout(() => {
         setEditLabel(mergeArrays(newEditLabel, userInfo.saveConfig.label));
       }, 2000);
