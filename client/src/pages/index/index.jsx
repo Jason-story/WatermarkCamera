@@ -779,8 +779,8 @@ const CameraPage = () => {
     if (
       userInfo.type !== "default" &&
       !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
-      showTrueCode &&
-      ShuiyinDoms[currentShuiyinIndex].options.showRightCopyright
+      getEditItem(editLabel, "shuiyinmingcheng")?.visible &&
+      showTrueCode
     ) {
       setShuiyinNameModal(true);
       return;
@@ -904,9 +904,9 @@ const CameraPage = () => {
       // 3. 水印名称检查
       if (
         userInfo.type !== "default" &&
-        !shuiyinxiangjiName &&
         showTrueCode &&
-        ShuiyinDoms[currentShuiyinIndex]?.options?.showRightCopyright
+        !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
+        getEditItem(editLabel, "shuiyinmingcheng")?.visible
       ) {
         setShuiyinNameModal(true);
         return;
