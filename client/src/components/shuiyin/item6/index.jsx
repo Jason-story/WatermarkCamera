@@ -44,10 +44,9 @@ const Index = ({
           </View>
           <View className="item6-weather">
             <Text>
-              {`${getWeekdayCN(`${time.year}${time.month}${time.day}`)} ${
-                getEditItem(editLabel, "tianqi").value
-              }`}
-              ℃
+              {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}{' '}
+
+              {getEditItem(editLabel, "tianqi").value} ℃
             </Text>
           </View>
         </View>
@@ -62,13 +61,13 @@ const Index = ({
           ),
         }}
       ></View>
-      {getEditItem(editLabel, "jingdu").value == 0 ||
-      getEditItem(editLabel, "weidu").value == 0 ? null : (
+      {getEditItem(editLabel, "jingdu").visible &&
+      getEditItem(editLabel, "weidu").visible ? (
         <View className="ite6-jingweidu">{`经纬度：${
           getEditItem(editLabel, "jingdu").value
         }，${getEditItem(editLabel, "weidu").value}`}</View>
-      )}
-      {getEditItem(editLabel, "beizhu").value?.length > 0 && (
+      ) : null}
+      {getEditItem(editLabel, "beizhu").visible  && (
         <View className="item6-remark item6-flex">
           <View
             className="item6-remark-text"

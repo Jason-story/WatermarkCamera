@@ -98,7 +98,6 @@ const WatermarkPopup = ({
   }
 
   const time = parseDateString(getEditItem(editLabel, "shijian")?.value || "");
-  console.log('time: ', time);
   const scrollViewRef = useRef(null);
   const [height, setHeight] = useState("100%");
   const handleBlur = () => {

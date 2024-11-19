@@ -40,7 +40,7 @@ const Index = ({
         <View className="item3-date flex">
           <Text>{`${time.year}.${time.month}.${time.day}`}</Text>
           <Text className="item3-week">
-            {getWeekdayCN(`${time.year}${time.month}${time.day}`)}
+            {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}
           </Text>
         </View>
         <Image src={Icon1}></Image>

@@ -204,8 +204,8 @@ const label = {
       key: "tianqi",
       title: "天气",
       visible: true,
-      editTitle: true,
-      switchVisible: true,
+      editTitle: false,
+      switchVisible: false,
     },
     {
       key: "didian",
@@ -263,31 +263,32 @@ const label = {
       switchVisible: true,
     },
     {
+      key: "didian",
+      title: "地点",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
+    },
+    {
       key: "tianqi",
       title: "天气",
       visible: true,
       editTitle: true,
       switchVisible: true,
     },
-    {
-      key: "didian",
-      title: "地点",
-      visible: true,
-      editTitle: true,
-      switchVisible: true,
-    },
+
     {
       key: "jingdu",
       title: "经度",
       visible: true,
-      editTitle: true,
+      editTitle: false,
       switchVisible: true,
     },
     {
       key: "weidu",
       title: "纬度",
       visible: true,
-      editTitle: true,
+      editTitle: false,
       switchVisible: true,
     },
     {
@@ -329,8 +330,8 @@ const label = {
       key: "tianqi",
       title: "天气",
       visible: true,
-      editTitle: true,
-      switchVisible: true,
+      editTitle: false,
+      switchVisible: false,
     },
   ],
   9: [

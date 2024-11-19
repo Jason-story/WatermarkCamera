@@ -73,8 +73,9 @@ export const getEditItem = (editLabel, key) => {
 };
 
 export const getWeekdayCN = (date) => {
-  const days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
   const d = new Date(date);
+  console.log('days[d.getDay()]: ', days[d.getDay()]);
   return days[d.getDay()];
 };
 

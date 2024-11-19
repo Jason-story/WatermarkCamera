@@ -598,7 +598,8 @@ const CameraPage = () => {
     setTempPath = setCameraTempPath,
   }) => {
     fangweimaText = generateRandomString(4);
-    makefangweimaText = generateRandomString(3);
+    makefangweimaText = generateRandomString(4);
+    console.log('makefangweimaText: ', makefangweimaText);
     requestAnimationFrame(async () => {
       try {
         // 免费体验次数检查

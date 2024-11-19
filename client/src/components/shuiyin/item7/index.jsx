@@ -38,13 +38,13 @@ const Index = ({
       }}
     >
       <View className="item7-box">
-        {getEditItem(editLabel, "jingdu").value && (
+        {getEditItem(editLabel, "jingdu").visible && (
           <View className="item7-label-item">
             <View className="item7-label-title">经度:</View>
             <View>{`${getEditItem(editLabel, "jingdu").value}`}</View>
           </View>
         )}
-        {getEditItem(editLabel, "weidu").value && (
+        {getEditItem(editLabel, "weidu").visible && (
           <View className="item7-label-item">
             <View className="item7-label-title">纬度:</View>
             <View>{`${getEditItem(editLabel, "jingdu").value}`}</View>
@@ -54,10 +54,12 @@ const Index = ({
           <View className="item7-label-title">时间:</View>
           <View>{`${time.year}-${time.month}-${time.day} ${time.hours}:${time.minutes}`}</View>
         </View>
-        <View className="item7-label-item">
-          <View className="item7-label-title">天气:</View>
-          <Text>{`${getEditItem(editLabel, "tianqi").value}`}℃</Text>
-        </View>
+        {getEditItem(editLabel, "tianqi").visible && (
+          <View className="item7-label-item">
+            <View className="item7-label-title">天气:</View>
+            <Text>{`${getEditItem(editLabel, "tianqi").value}`}℃</Text>
+          </View>
+        )}
         <View className="item7-label-item">
           <View className="item7-label-title">地点:</View>
           <View
@@ -71,14 +73,15 @@ const Index = ({
             }}
           ></View>
         </View>
-        {getEditItem(editLabel, "beizhu").value?.length > 0 && (
+        {getEditItem(editLabel, "beizhu").visible && (
           <View className="item7-label-item">
             <View className="item7-label-title">备注:</View>
             <View
               className="item7-location"
               dangerouslySetInnerHTML={{
                 __html: formatTextWithLineLimit(
-                  getEditItem(editLabel, "beizhu").value,
+                  getEditItem(editLabel, "beizhu").value ||
+                  getEditItem(editLabel, "beizhu").title,
                   10,
                   2
                 ),

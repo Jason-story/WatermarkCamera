@@ -37,7 +37,7 @@ const Index = ({
       </View>
       <View className="item2-date">
         <Text>{`${time.year}/${time.month}/${time.day}`}</Text>
-        {getWeekdayCN(`${time.year}${time.month}${time.day}`)}
+        {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}
       </View>
       <View className="item2-text-box flex">
         {/* 日期地址 */}
