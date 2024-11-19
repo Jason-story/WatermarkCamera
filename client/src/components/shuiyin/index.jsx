@@ -42,6 +42,7 @@ const config = [
   {
     // 2
     component: Shuiyin2,
+    label: editLabel[1],
     options: {
       title: "马克水印相机",
       vip: false,

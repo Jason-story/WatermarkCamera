@@ -24,8 +24,7 @@ const Index = ({
   remark,
   editLabel,
 }) => {
-  const time = parseDateString(getEditItem(editLabel, "shijian").value);
-  console.log(2222, getEditItem(editLabel, "beizhu"));
+  const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
   return (
     <View
       className="item1-wrapper"
@@ -36,7 +35,9 @@ const Index = ({
     >
       <View className="item1-badage">
         <Image src={Icon1}></Image>
-        {/* <Text className="item1-dakaText">{dakaName}</Text> */}
+        <Text className="item1-dakaText">
+          {getEditItem(editLabel, "daka").value}
+        </Text>
         <View className="item1-time-box">
           <Text className="item1-time item1-time-base">{`${time.hours}:${time.minutes}`}</Text>
           <Text className="item1-time item1-time-cover">{`${time.hours}:${time.minutes}`}</Text>

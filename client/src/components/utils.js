@@ -57,7 +57,7 @@ export const formatDateTime = {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    return `${year}年${month}月${day}日`;
+    return `${year}-${month}-${day}`;
   },
 
   formatTime: (date = new Date()) => {
@@ -69,7 +69,7 @@ export const formatDateTime = {
 
 export const getEditItem = (editLabel, key) => {
   const index = editLabel.findIndex((item) => item.key === key);
-  return editLabel[index]
+  return editLabel[index];
 };
 
 export const getWeekdayCN = (date) => {
@@ -78,8 +78,20 @@ export const getWeekdayCN = (date) => {
   return days[d.getDay()];
 };
 
-export const parseDateString = (dateStr) => {
-  const regex = /(\d{4})年(\d{1,2})月(\d{1,2})日\s*(\d{1,2}):(\d{1,2})/;
+export const parseDateString = (dateStr = null) => {
+  // If no dateStr is provided, use current time
+  if (!dateStr) {
+    const now = new Date();
+    return {
+      year: now.getFullYear(),
+      month: now.getMonth() + 1, // getMonth() returns 0-11
+      day: now.getDate(),
+      hours: now.getHours(),
+      minutes: now.getMinutes(),
+    };
+  }
+
+  const regex = /(\d{4})-(\d{1,2})-(\d{1,2})\s*(\d{1,2}):(\d{1,2})/;
   const matches = dateStr.match(regex);
 
   if (!matches) {
@@ -93,4 +105,19 @@ export const parseDateString = (dateStr) => {
     hours: parseInt(matches[4]),
     minutes: parseInt(matches[5]),
   };
+};
+export const mergeArrays = (newArr, oldArr) => {
+  console.log('newArr: ', newArr);
+  if (!oldArr) {
+    return newArr;
+  }
+  return newArr.map((newItem) => {
+    // 在 old 中找到与 newItem.key 相同的对象
+    const oldItem = oldArr.find((oldItem) => oldItem.key === newItem.key);
+    console.log('oldArr: ', oldArr);
+    console.log('oldItem: ', oldItem);
+
+    // 如果找到对应的 oldItem，就合并 oldItem 的属性，否则仅保留 newItem 的属性
+    return oldItem ? { ...oldItem } : { ...newItem };
+  });
 };

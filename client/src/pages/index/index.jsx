@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, Button, Text, Image, ScrollView } from "@tarojs/components";
 import Marquee from "../../components/Marquee";
 import CustomModal from "../../components/modal";
@@ -9,6 +9,7 @@ import ShuiyinDoms from "../../components/shuiyin";
 import {
   generateRandomString,
   formatDateTime,
+  mergeArrays,
 } from "../../components/utils.js";
 import Taro from "@tarojs/taro";
 import QQMapWX from "qqmap-wx-jssdk";
@@ -389,7 +390,7 @@ const CameraPage = () => {
           const year = today.getFullYear();
           const month = String(today.getMonth() + 1).padStart(2, "0");
           const day = String(today.getDate()).padStart(2, "0");
-          datePart = `${year}年${month}月${day}日`;
+          datePart = `${year}-${month}-${day}`;
         }
       }
 
@@ -411,10 +412,25 @@ const CameraPage = () => {
       );
     }
   };
+
+  const updateShuiyinIndex = async (current) => {
+    console.log("123: ", current);
+    const newEditLabel = [...ShuiyinDoms[current].label];
+    console.log("555: ", newEditLabel);
+    setEditLabel(mergeArrays(newEditLabel, editLabel));
+    setCurrentShuiyinIndex(current);
+  };
+  // mergeArrays
+
+  // useEffect(() => {
+  //   console.log('currentShuiyinIndex: ', currentShuiyinIndex);
+  //   const newEditLabel = [...ShuiyinDoms[currentShuiyinIndex].label];
+  //   console.log('newEditLabel: ', newEditLabel);
+  //   setEditLabel(mergeArrays(newEditLabel, editLabel));
+  // }, [currentShuiyinIndex]);
+
   // 统一设置默认值
   useEffect(() => {
-    mergeEditLabel("shijian", formatDateTime.formatDate(), "riqi");
-    mergeEditLabel("shijian", formatDateTime.formatTime(), "shijian");
     checkPermissions();
     requestPermission();
   }, []);
@@ -702,16 +718,9 @@ const CameraPage = () => {
               data: {
                 saveConfig: {
                   isSaved: isShuiyinSaved,
-                  currentShuiyinIndex,
-                  locationName,
-                  latitude,
-                  longitude,
-                  showTrueCode,
-                  showHasCheck,
-                  shuiyinxiangjiName,
-                  weather,
-                  dakaName,
-                  fangdaoShuiyin,
+                  label: {
+                    ...editLabel,
+                  },
                 },
               },
             });
@@ -873,48 +882,49 @@ const CameraPage = () => {
   // 判断是否使用服务端保存的数据生成图片
   useEffect(() => {
     if (userInfo?.saveConfig?.isSaved) {
-      const {
-        currentShuiyinIndex,
-        weather,
-        locationName,
-        latitude,
-        longitude,
-        showTrueCode,
-        showHasCheck,
-        shuiyinxiangjiName,
-        fangdaoShuiyin,
-        dakaName,
-      } = userInfo.saveConfig;
-      setTimeout(() => {
-        setCurrentShuiyinIndex(
-          // 去掉
-          currentShuiyinIndex >= 9 ? 0 : currentShuiyinIndex
-        );
-        setWeather(weather);
-        setLocationName(locationName);
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setShowHasCheck(showHasCheck);
-        setShowTrueCode(showTrueCode);
-        setShuiyinxiangjiName(shuiyinxiangjiName);
-        setDakaName(dakaName);
-        setFangDaoShuiyin(fangdaoShuiyin || "盗图必究");
-      }, 1000);
+      mergeArrays(editLabel, userInfo.saveConfig.label);
+      // const {
+      //   currentShuiyinIndex,
+      //   weather,
+      //   locationName,
+      //   latitude,
+      //   longitude,
+      //   showTrueCode,
+      //   showHasCheck,
+      //   shuiyinxiangjiName,
+      //   fangdaoShuiyin,
+      //   dakaName,
+      // } = userInfo.saveConfig.label;
+      // setTimeout(() => {
+      //   setCurrentShuiyinIndex(
+      //     // 去掉
+      //     currentShuiyinIndex >= 9 ? 0 : currentShuiyinIndex
+      //   );
+      //   setWeather(weather);
+      //   setLocationName(locationName);
+      //   setLatitude(latitude);
+      //   setLongitude(longitude);
+      //   setShowHasCheck(showHasCheck);
+      //   setShowTrueCode(showTrueCode);
+      //   setShuiyinxiangjiName(shuiyinxiangjiName);
+      //   setDakaName(dakaName);
+      //   setFangDaoShuiyin(fangdaoShuiyin || "盗图必究");
+      // }, 1000);
     }
-    saveChange(userInfo?.saveConfig?.isSaved);
-  }, [userInfo.type, isUseServerData]);
-  let isUseServerData = "";
-  // 检测本地和服务端数据是否一致 不一致则用服务端数据
-  useEffect(() => {
-    if (userInfo?.saveConfig?.isSaved && !edit) {
-      if (locationName !== userInfo.saveConfig.locationName) {
-        setTimeout(() => {
-          setLocationName(userInfo.saveConfig.locationName);
-          isUseServerData = true;
-        }, 1000);
-      }
-    }
-  }, [locationName]);
+    // saveChange(userInfo?.saveConfig?.isSaved);
+  }, [userInfo.type]);
+  // let isUseServerData = "";
+  // // 检测本地和服务端数据是否一致 不一致则用服务端数据
+  // useEffect(() => {
+  //   if (userInfo?.saveConfig?.isSaved && !edit) {
+  //     if (locationName !== userInfo.saveConfig.locationName) {
+  //       setTimeout(() => {
+  //         setLocationName(userInfo.saveConfig.locationName);
+  //         isUseServerData = true;
+  //       }, 1000);
+  //     }
+  //   }
+  // }, [locationName]);
 
   const selectImgFromXiangce = async () => {
     try {
@@ -1184,26 +1194,6 @@ const CameraPage = () => {
     }
   }, [app.$app.globalData.config.showTrueCode]);
 
-  const updateShuiyinIndex = (current) => {
-    setCurrentShuiyinIndex(current);
-  };
-
-  const systemInfo = wx.getSystemInfoSync();
-  // 判断是否是真机
-  const isRealDevice = systemInfo.platform !== "devtools";
-
-  const [showTour, setShowTour] = useState(false);
-
-  const closeTour = () => {
-    setShowTour(false);
-  };
-
-  const steps = [
-    {
-      content: "70+ 高质量组件，覆盖移动端主流场景",
-      target: "target1",
-    },
-  ];
   return (
     <ScrollView
       scroll-y={true}

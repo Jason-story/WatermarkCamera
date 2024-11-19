@@ -10,6 +10,12 @@ import {
   Switch,
   ScrollView,
 } from "@tarojs/components";
+import {
+  formatTextWithLineLimit,
+  getWeekdayCN,
+  parseDateString,
+  getEditItem,
+} from "../../components/utils";
 import Taro from "@tarojs/taro";
 import CustomSlider from "../../components/CustomSlider";
 import { AtFloatLayout, AtSlider } from "taro-ui";
@@ -90,6 +96,8 @@ const WatermarkPopup = ({
       }, delay);
     };
   }
+
+  const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
   const scrollViewRef = useRef(null);
   const [height, setHeight] = useState("100%");
   const handleBlur = () => {
@@ -143,6 +151,8 @@ const WatermarkPopup = ({
   };
   const changeEditLabelItem = (index, value, type, valueType) => {
     const newEditLabel = [...editLabel];
+    console.log("newEditLabel: ", newEditLabel);
+    console.log("index: ", index);
 
     if (type === "title") {
       newEditLabel[index] = { ...newEditLabel[index], title: value };
@@ -150,6 +160,8 @@ const WatermarkPopup = ({
       if (valueType === "riqi" || valueType === "shijian") {
         // 获取当前值以保留日期或时间部分
         const currentValue = newEditLabel[index].value || "";
+        console.log("newEditLabel[index]: ", newEditLabel[index]);
+        console.log("currentValue: ", currentValue);
         let [datePart, timePart] = currentValue.split(" ");
 
         // 根据 valueType 更新日期或时间部分
@@ -230,12 +242,14 @@ const WatermarkPopup = ({
                       <Image mode="aspectFit" src={item.options.cover}></Image>
                     </View>
                   </View>
-                  {currentShuiyinIndex === index && (
+                  {currentShuiyinIndex == index && (
                     <View
                       className="shuiyin-item-cover"
-                      onTouchStart={() => {
+                      onTouchStart={async () => {
+
+                        console.log('index: ', index);
+                        await updateShuiyinIndex(index);
                         setEdit(true);
-                        updateShuiyinIndex(index);
                       }}
                     >
                       <Button>编辑</Button>
@@ -586,7 +600,7 @@ const WatermarkPopup = ({
                         <View className="shijian-picker">
                           <Picker
                             mode="date"
-                            value={`${year}年${month}月${day}日`}
+                            value={`${time.year}-${time.month}-${time.day}`}
                             onChange={(e) => {
                               changeEditLabelItem(
                                 index,
@@ -596,11 +610,11 @@ const WatermarkPopup = ({
                               );
                             }}
                           >
-                            <View>{`${year}年${month}月${day}日`}</View>
+                            <View>{`${time.year}年${time.month}月${time.day}日`}</View>
                           </Picker>
                           <Picker
                             mode="time"
-                            value={`${hours}:${minutes}`}
+                            value={`${time.hours}:${time.minutes}`}
                             onChange={(e) => {
                               changeEditLabelItem(
                                 index,
@@ -610,7 +624,7 @@ const WatermarkPopup = ({
                               );
                             }}
                           >
-                            <View>{`${hours}:${minutes}`}</View>
+                            <View>{`${time.hours}:${time.minutes}`}</View>
                           </Picker>
                         </View>
                       ) : (
@@ -635,7 +649,7 @@ const WatermarkPopup = ({
                                 ? item.value
                                 : ""
                             }
-                            maxlength={50}
+                            maxlength={item.length || 50}
                             cursorSpacing={100}
                             clear={true}
                             onInput={(e) => {

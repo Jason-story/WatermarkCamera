@@ -49,9 +49,11 @@ const RenderWatermark = ({
   setShowFloatLayout,
 }) => {
   const isCamera = type === "camera";
+  console.log('editLabel111: ', editLabel);
 
   const renderLeftCopyright = ({ maskScale }) => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
+
 
     if (
       option?.copyright === "mk" &&

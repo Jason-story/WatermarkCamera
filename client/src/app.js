@@ -80,6 +80,10 @@ const checkForUpdate = () => {
 // 字体配置
 const FONT_CONFIG = [
   {
+    family: "MiSans",
+    url: "https://gitee.com/jasonstory/fonts/raw/master/subset-MiSans-Bold.ttf",
+  },
+  {
     family: "Bebas",
     url: "https://gitee.com/jasonstory/fonts/raw/master/Bebas-regular.ttf",
   },

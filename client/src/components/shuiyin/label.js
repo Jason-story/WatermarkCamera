@@ -1,3 +1,4 @@
+import { formatDateTime } from "../utils";
 const label = {
   0: [
     {
@@ -19,11 +20,21 @@ const label = {
     },
 
     {
+      key: "daka",
+      title: "打卡标签名",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
+      value: "随便",
+      length: 2,
+    },
+    {
       key: "shijian",
       title: "时间",
       visible: true,
       editTitle: false,
       switchVisible: false,
+      value: formatDateTime.formatDate() + " " + formatDateTime.formatTime(),
     },
 
     {
@@ -40,6 +51,40 @@ const label = {
       visible: false,
       editTitle: false,
       switchVisible: true,
+    },
+  ],
+  1: [
+    {
+      key: "shuiyinmingcheng",
+      title: "右下角水印",
+      // 是否隐藏
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+    },
+    {
+      key: "yanzhengmingcheng",
+      title: "左下角验证",
+      // 是否隐藏
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+      defaultValue: "无法修改，只能显示或隐藏",
+    },
+    {
+      key: "shijian",
+      title: "时间",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
+      value: formatDateTime.formatDate() + " " + formatDateTime.formatTime(),
+    },
+    {
+      key: "didian",
+      title: "地点",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
     },
   ],
   9: [
