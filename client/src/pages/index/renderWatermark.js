@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Image, Text, Camera, Snapshot } from "@tarojs/components";
+import { getEditItem } from "../../components/utils";
 import P1 from "../../images/p-1.png";
 import P2 from "../../images/p-2.png";
 import P2_1 from "../../images/p-2-1.png";
@@ -21,7 +22,7 @@ const RenderWatermark = ({
   selected,
   showTrueCode,
   showHasCheck,
-  shuiyinxiangjiName,
+  // shuiyinxiangjiName,
   userInfo,
   showFloatLayout,
   hours,
@@ -49,17 +50,15 @@ const RenderWatermark = ({
   setShowFloatLayout,
 }) => {
   const isCamera = type === "camera";
-  console.log('editLabel111: ', editLabel);
-
+  const shuiyinxiangjiName =
+    getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
   const renderLeftCopyright = ({ maskScale }) => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
-
 
     if (
       option?.copyright === "mk" &&
       showHasCheck &&
-      option?.showLeftCopyright &&
-      showHasCheck
+      getEditItem(editLabel, "yanzhengmingcheng")?.visible
     ) {
       // 左下角今日水印风格下标
       return (
@@ -81,8 +80,7 @@ const RenderWatermark = ({
     } else if (
       option?.copyright === "jrsy" &&
       showHasCheck &&
-      option?.showLeftCopyright &&
-      showHasCheck
+      getEditItem(editLabel, "yanzhengmingcheng")?.visible
     ) {
       // 左下角马克水印风格下标
       return (
@@ -129,7 +127,7 @@ const RenderWatermark = ({
         </View>
       );
     } else {
-      if (option.showRightCopyright && showTrueCode) {
+      if (getEditItem(editLabel, "shuiyinmingcheng")?.visible && showTrueCode) {
         if (option?.copyright === "mk") {
           if (userInfo.type === "default") {
             // 马克相机 如果是普通用户则显示今日水印风格右下角
@@ -436,7 +434,7 @@ const RenderWatermark = ({
             widh: "100%",
             position: "relative",
             height,
-            background:'#000'
+            background: "#000",
           }}
         >
           {selected === "图片水印" && isCamera && (
@@ -449,7 +447,7 @@ const RenderWatermark = ({
               onError={cameraError}
             />
           )}
-            {/* <Image
+          {/* <Image
               style={{
                 width: "100%",
                 height: "100%",

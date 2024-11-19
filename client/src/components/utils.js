@@ -106,18 +106,24 @@ export const parseDateString = (dateStr = null) => {
     minutes: parseInt(matches[5]),
   };
 };
-export const mergeArrays = (newArr, oldArr) => {
-  console.log('newArr: ', newArr);
+export const mergeArrays = (newArr, oldArr, defaultArr) => {
   if (!oldArr) {
     return newArr;
   }
-  return newArr.map((newItem) => {
+  const arr = newArr.map((newItem) => {
     // 在 old 中找到与 newItem.key 相同的对象
     const oldItem = oldArr.find((oldItem) => oldItem.key === newItem.key);
-    console.log('oldArr: ', oldArr);
-    console.log('oldItem: ', oldItem);
 
     // 如果找到对应的 oldItem，就合并 oldItem 的属性，否则仅保留 newItem 的属性
     return oldItem ? { ...oldItem } : { ...newItem };
   });
+
+  defaultArr.forEach((item) => {
+    const arrItem = arr.find((arrItem) => arrItem.key === item.key);
+    if (arrItem && arrItem.value === undefined) {
+      arrItem.value = item.value;
+    }
+  });
+
+  return arr;
 };

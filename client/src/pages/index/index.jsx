@@ -120,7 +120,7 @@ const CameraPage = () => {
   const [editLabel, setEditLabel] = useState(
     ShuiyinDoms[currentShuiyinIndex].label
   );
-
+  const [commonEditLabel, setCommonEditLabel] = useState([]);
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
   function getWeekday(year, month, day) {
@@ -355,6 +355,13 @@ const CameraPage = () => {
   };
   // 更新editlabel 主要是请求之后合并更新
   const mergeEditLabel = (key, value, type) => {
+    setCommonEditLabel((prev) => {
+      const had = prev.find((value1) => value1.key === key);
+      if (!had) {
+        return [...prev, { key, value }];
+      }
+      return prev;
+    });
     // 找到要更新的项的索引
     const index = editLabel.findIndex((item) => item.key === key);
     if (index === -1) return;
@@ -405,6 +412,7 @@ const CameraPage = () => {
       );
     } else {
       // 非时间类型的处理，只更新当前项的 value
+
       setEditLabel((prev) =>
         prev.map((item, idx) =>
           idx === index ? { ...item, value: value || item.value } : item
@@ -415,7 +423,7 @@ const CameraPage = () => {
 
   const updateShuiyinIndex = async (current) => {
     const newEditLabel = [...ShuiyinDoms[current].label];
-    setEditLabel(mergeArrays(newEditLabel, editLabel));
+    setEditLabel(mergeArrays(newEditLabel, editLabel, commonEditLabel));
     setCurrentShuiyinIndex(current);
   };
 
