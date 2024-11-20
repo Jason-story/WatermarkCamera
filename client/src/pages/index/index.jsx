@@ -27,6 +27,7 @@ import AddMyApp from "../../images/add-my-app.png";
 import VideoImg from "../../images/video.png";
 import Fankui from "../../images/fankui.png";
 import Icon8 from "../../images/icon-8.jpg";
+import DakaIcon from "../../images/dakaIcon.png";
 import Mianze from "../../images/mianze.png";
 import EditMark from "./editMask.js";
 import "./index.scss";
@@ -104,6 +105,8 @@ const CameraPage = () => {
   const [xiangceTempPath, setXiangceTempPath] = useState("");
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
   const [snapshotHeight, setSnapshotHeight] = useState("");
+  const [dakaModal, setDakeModal] = useState(false);
+
   const [maskScale, setMaskScale] = useState(1);
   const [editLabel, setEditLabel] = useState(
     ShuiyinDoms[currentShuiyinIndex].label
@@ -760,6 +763,13 @@ const CameraPage = () => {
     }
     // 弹出水印名字提示弹窗
     if (
+      getEditItem(editLabel, "daka")?.value === "修改" &&
+      getEditItem(editLabel, "daka")?.visible
+    ) {
+      setDakeModal(true);
+      return;
+    }
+    if (
       userInfo.type !== "default" &&
       !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
       getEditItem(editLabel, "shuiyinmingcheng")?.visible &&
@@ -883,7 +893,13 @@ const CameraPage = () => {
           return;
         }
       }
-
+      if (
+        getEditItem(editLabel, "daka")?.value === "修改" &&
+        getEditItem(editLabel, "daka")?.visible
+      ) {
+        setDakeModal(true);
+        return;
+      }
       // 3. 水印名称检查
       if (
         userInfo.type !== "default" &&
@@ -1484,7 +1500,6 @@ const CameraPage = () => {
               </Button>
             </View>
           </View>
-
           <CustomModal
             visible={tiyanModalShow}
             title="提示"
@@ -1506,7 +1521,46 @@ const CameraPage = () => {
               setTiYanModalShow(false);
             }}
           />
-
+          <CustomModal
+            visible={dakaModal}
+            title="提示"
+            phoneValidation={false}
+            customInput={
+              <View
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                >
+                  是否修改打卡标签名？
+                </View>
+                <Image
+                  src={DakaIcon}
+                  style={{
+                    marginTop: "10px",
+                    width: "250px",
+                    height: "130px",
+                  }}
+                ></Image>
+              </View>
+            }
+            rightButtonText="去修改"
+            onRightButtonClick={() => {
+              setShowFloatLayout(!showFloatLayout);
+              setDakeModal(false);
+              setEdit(true);
+            }}
+            onLeftButtonClick={() => {
+              setDakeModal(false);
+            }}
+          />{" "}
           <CustomModal
             visible={shuiyinNameModal}
             title="提示"
@@ -1566,7 +1620,6 @@ const CameraPage = () => {
             }}
             showLeftButton={false}
           />
-
           {/* 到期提示 开始 */}
           <CustomModal
             visible={vipClosedModal}

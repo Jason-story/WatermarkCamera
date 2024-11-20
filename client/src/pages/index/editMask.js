@@ -368,6 +368,11 @@ const WatermarkPopup = ({
                                 : "填写水印名称。开通会员可获得专属图标 😎"}
                             </View>
                           )}
+                          {item.key === "daka" && (
+                            <View className="input-tips">
+                              可填写 打卡、开会、上班、考勤、会议、工作，需要其他文字可联系客服
+                            </View>
+                          )}
                         </View>
                       )}
                     </View>

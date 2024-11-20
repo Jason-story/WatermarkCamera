@@ -25,7 +25,7 @@ const label = {
       visible: true,
       editTitle: false,
       switchVisible: false,
-      value: "随便",
+      value: "修改",
       length: 2,
     },
     {
