@@ -100,12 +100,10 @@ const CameraPage = () => {
   const [screenWidth, setScreenWidth] = useState("");
   const [showHasCheck, setShowHasCheck] = useState(undefined);
   const [showTrueCode, setShowTrueCode] = useState(undefined);
-  const [shuiyinxiangjiName, setShuiyinxiangjiName] = useState("");
   const [cameraTempPath, setCameraTempPath] = useState("");
   const [xiangceTempPath, setXiangceTempPath] = useState("");
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
   const [snapshotHeight, setSnapshotHeight] = useState("");
-  const [locationName, setLocationName] = useState("");
   const [maskScale, setMaskScale] = useState(1);
   const [editLabel, setEditLabel] = useState(
     ShuiyinDoms[currentShuiyinIndex].label
@@ -113,20 +111,6 @@ const CameraPage = () => {
   const [commonEditLabel, setCommonEditLabel] = useState([]);
   let fuckShenHe = app.$app.globalData.fuckShenHe;
   // 根据年月日计算星期几的函数
-  function getWeekday(year, month, day) {
-    const weekDays = [
-      "星期日",
-      "星期一",
-      "星期二",
-      "星期三",
-      "星期四",
-      "星期五",
-      "星期六",
-    ];
-    const date = new Date(year, month - 1, day); // 月份从0开始，所以需要减去1
-    const weekday = date.getDay(); // 获取星期几的数字表示，0代表星期日，1代表星期一，依此类推
-    return weekDays[weekday];
-  }
   useEffect(() => {
     // 小程序启动时调用此函数
     clearCacheIfNeeded(wx.env.USER_DATA_PATH);
@@ -307,7 +291,6 @@ const CameraPage = () => {
 
         // 拼接市以下的地址信息，不包括门牌号
         const detailedAddress = `${addr}`;
-        setLocationName(detailedAddress);
 
         mergeEditLabel("didian", detailedAddress);
       },
@@ -680,7 +663,7 @@ const CameraPage = () => {
             });
             try {
               // 上传到云存储
-              const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+              const cloudPath = `files/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
                 userInfo.type === "default" ? "" : "vip"
               }_${userInfo.openid}.png`;
 
@@ -1029,7 +1012,7 @@ const CameraPage = () => {
     setSnapshotHeight((screenWidth / 720) * 1280);
   }, [videoPath]);
   const uploadImage = async (filePath) => {
-    const cloudPath = `files/client/${hoursD}.${minutesD}.${secondsD}_${
+    const cloudPath = `files/client/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
       userInfo.type === "default" ? "" : "vip"
     }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
     const res = await cloud.uploadFile({
@@ -1436,30 +1419,7 @@ const CameraPage = () => {
                 <Text>修改</Text>
               </View>
               <View className="tools-bar-inner">
-                {/* <Button
-                  className={"xiangce kefu vip"}
-                  openType="contact"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: 0,
-                  }}
-                >
-                  <Image className="xiangceIcon" src={Fankui}></Image>
-                  <Text>客服</Text>
-                </Button> */}
-                <View className={"xiangce "}>
-                  {/* <Image
-                    src={VideoImg}
-                    className="xiangceIcon"
-                    onClick={() => {
-                      Taro.navigateTo({
-                        url: "/pages/video/index",
-                      });
-                    }}
-                  ></Image>
-                  <Text>视频</Text> */}
-                </View>
+                <View className={"xiangce "}></View>
               </View>
             </View>
 
@@ -1544,9 +1504,6 @@ const CameraPage = () => {
             showLeftButton={false}
             onRightButtonClick={() => {
               setTiYanModalShow(false);
-              // Taro.navigateTo({
-              //   url: "/pages/vip/index",
-              // });
             }}
           />
 
@@ -1663,7 +1620,6 @@ const CameraPage = () => {
             // 水印防伪
             showTrueCode={showTrueCode}
             setShowTrueCode={setShowTrueCode}
-            setShuiyinxiangjiName={setShuiyinxiangjiName}
             // 验证标记
             showHasCheck={showHasCheck}
             setShowHasCheck={setShowHasCheck}

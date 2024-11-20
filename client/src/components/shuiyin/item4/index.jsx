@@ -19,7 +19,7 @@ const Index = ({
   day,
   month,
   year,
-  editLabel
+  editLabel,
 }) => {
   const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
 
@@ -34,9 +34,9 @@ const Index = ({
       <View className="item4-badage">
         <View className="item4-daka-text">打卡记录</View>
         <View className="item4-time">
-          {hours}
+          {time.hours}
           <Text>：</Text>
-          {minutes}
+          {time.minutes}
         </View>
       </View>
       <View className="item4-date">
