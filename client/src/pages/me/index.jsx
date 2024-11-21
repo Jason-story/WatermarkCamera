@@ -100,7 +100,7 @@ const UserInfo = ({ totalQuota, userId, endTime, userType }) => {
             <Text className="value">{inviteCount || 0}</Text>
           </View> */}
           <View className="user-item">
-            <Text className="label">免费体验次数</Text>
+            <Text className="label">使用次数</Text>
             <Text className="value">
               {userType !== "default"
                 ? "不限量"

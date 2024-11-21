@@ -153,6 +153,12 @@ const WatermarkPopup = ({
       onClose={() => {
         setEdit(false);
         setShowFloatLayout(!showFloatLayout);
+        if (getEditItem(editLabel, "daka")?.visible) {
+          const index = editLabel.findIndex(
+            (item) => item.key === "daka"
+          );
+          changeEditLabelItem(index, "打卡", "value");
+        }
       }}
     >
       <View>
@@ -370,7 +376,8 @@ const WatermarkPopup = ({
                           )}
                           {item.key === "daka" && (
                             <View className="input-tips">
-                              可填写 打卡、开会、上班、考勤、会议、工作，需要其他文字可联系客服
+                              可填写
+                              打卡、开会、上班、考勤、会议、工作，需要其他文字可联系客服
                             </View>
                           )}
                         </View>
