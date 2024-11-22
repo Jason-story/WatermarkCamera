@@ -1,7 +1,9 @@
 export const formatTextWithLineLimit = (text, maxCharsPerLine, maxLines) => {
   // 初始化一个数组存储每一行的内容
   const lines = [];
-  if(!text){return ''}
+  if (!text) {
+    return "";
+  }
 
   // 使用正则表达式，按照每行最大字符数进行切割
   for (let i = 0; i < maxLines; i++) {
@@ -137,4 +139,35 @@ export const mergeArrays = (newArr, oldArr, defaultArr) => {
   }
 
   return arr;
+};
+const fs = wx.getFileSystemManager();
+const CACHE_LIMIT = 30 * 1024; // 30MB缓存限制
+
+export const getCacheSize = (path) => {
+  let totalSize = 0;
+  try {
+    const stats = fs.statSync(path);
+    if (stats.isDirectory()) {
+      const files = fs.readdirSync(path);
+      files.forEach((file) => {
+        totalSize += getCacheSize(`${path}/${file}`);
+      });
+    } else {
+      totalSize += stats.size / 1024;
+    }
+  } catch (error) {
+    console.error("获取缓存大小失败:", error);
+  }
+  return totalSize;
+};
+
+export const clearCacheIfNeeded = (path) => {
+  const totalSize = getCacheSize(path);
+  if (totalSize > CACHE_LIMIT) {
+    try {
+      fs.rmdirSync(path, true);
+    } catch (error) {
+      console.error("清理缓存失败:", error);
+    }
+  }
 };

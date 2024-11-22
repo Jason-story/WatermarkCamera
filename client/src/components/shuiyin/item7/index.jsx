@@ -38,13 +38,13 @@ const Index = ({
       }}
     >
       <View className="item7-box">
-        {getEditItem(editLabel, "jingdu").visible && (
+        {getEditItem(editLabel, "weidu").visible && (
           <View className="item7-label-item">
             <View className="item7-label-title">经度:</View>
-            <View>{`${getEditItem(editLabel, "jingdu").value}`}</View>
+            <View>{`${getEditItem(editLabel, "weidu").value}`}</View>
           </View>
         )}
-        {getEditItem(editLabel, "weidu").visible && (
+        {getEditItem(editLabel, "jingdu").visible && (
           <View className="item7-label-item">
             <View className="item7-label-title">纬度:</View>
             <View>{`${getEditItem(editLabel, "jingdu").value}`}</View>

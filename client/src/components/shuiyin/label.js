@@ -446,6 +446,46 @@ const label = {
       bg: true,
     },
   ],
+  10: [
+    {
+      key: "shuiyinmingcheng",
+      title: "右下角水印",
+      // 是否隐藏
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+    },
+
+    {
+      key: "shijian",
+      title: "时间",
+      visible: true,
+      editTitle: true,
+      switchVisible: false,
+    },
+
+    {
+      key: "didian",
+      title: "地点",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+    {
+      key: "jingdu",
+      title: "经度",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+    {
+      key: "weidu",
+      title: "纬度",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+  ],
 };
 
 export default label;

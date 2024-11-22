@@ -395,10 +395,7 @@ const RenderWatermark = ({
       ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
       : (screenWidth / 3) * 4
     : snapshotHeight;
-  if (selected === "视频水印") {
-    console.log("height: ", height);
-    console.log("width: ", screenWidth);
-  }
+
   return (
     <Snapshot
       className={isCamera ? "snapshot" : "snapshot-outside"}
@@ -447,12 +444,13 @@ const RenderWatermark = ({
             />
           )}
           {/* <Image
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-              src="https://imgs-1326662896.cos.ap-guangzhou.myqcloud.com/placeholder.JPG"
-            ></Image> */}
+            style={{
+              width: "100%",
+              height: "100%",
+              // opacity:.05
+            }}
+            src="https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/p.jpg"
+          ></Image> */}
           {tempPath && (
             <Image
               src={tempPath}

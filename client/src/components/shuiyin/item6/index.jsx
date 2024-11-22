@@ -64,8 +64,8 @@ const Index = ({
       {getEditItem(editLabel, "jingdu").visible &&
       getEditItem(editLabel, "weidu").visible ? (
         <View className="ite6-jingweidu">{`经纬度：${
-          getEditItem(editLabel, "jingdu").value
-        }，${getEditItem(editLabel, "weidu").value}`}</View>
+          getEditItem(editLabel, "weidu").value
+        }，${getEditItem(editLabel, "jingdu").value}`}</View>
       ) : null}
       {getEditItem(editLabel, "beizhu").visible  && (
         <View className="item6-remark item6-flex">

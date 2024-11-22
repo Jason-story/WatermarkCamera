@@ -19,7 +19,7 @@ const Index = ({
   editLabel,
   setEditLabel,
 }) => {
-  const bgItems = editLabel.filter((item) => item.bg);
+  const bgItems = editLabel.filter((item) => item.bg && item.visible);
   const normalItems = editLabel.filter(
     (item) =>
       !item.bg &&
@@ -72,28 +72,30 @@ const Index = ({
           )
       )}
 
-      <View className="item10-bg-container">
-        {bgItems.map((item, index) => {
-          return (
-            item.visible && (
-              <View
-                className="item10-label-item item10-label-item-bg"
-                key={index}
-              >
-                <View className="item10-label-title">
-                  {item.title.split("").map((value1, index1) => (
-                    <Text key={index1}>
-                      {value1}
-                      {index1 === item.title.length - 1 ? ":" : ""}
-                    </Text>
-                  ))}
+      {bgItems.length > 0 && (
+        <View className="item10-bg-container">
+          {bgItems.map((item, index) => {
+            return (
+              item.visible && (
+                <View
+                  className="item10-label-item item10-label-item-bg"
+                  key={index}
+                >
+                  <View className="item10-label-title">
+                    {item.title.split("").map((value1, index1) => (
+                      <Text key={index1}>
+                        {value1}
+                        {index1 === item.title.length - 1 ? ":" : ""}
+                      </Text>
+                    ))}
+                  </View>
+                  <View>{item?.value}</View>
                 </View>
-                <View>{item?.value}</View>
-              </View>
-            )
-          );
-        })}
-      </View>
+              )
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 };

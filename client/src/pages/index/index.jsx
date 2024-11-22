@@ -1,19 +1,30 @@
-import React, { useEffect, useState, useRef } from "react";
+// index.jsx
+import React, { useEffect, useState } from "react";
 import { View, Button, Text, Image, ScrollView } from "@tarojs/components";
+import { createCameraContext, useDidShow } from "@tarojs/taro";
+import Taro from "@tarojs/taro";
+
+// 自定义组件导入
 import Marquee from "../../components/Marquee";
 import CustomModal from "../../components/modal";
-import { createCameraContext, useDidShow } from "@tarojs/taro";
 import RenderWatermark from "./renderWatermark.js";
-import Touming from "../../images/touming.png";
 import ShuiyinDoms from "../../components/shuiyin";
+import EditMark from "./editMask.js";
+
+// 工具函数导入
 import {
   generateRandomString,
   getEditItem,
   parseDateString,
   mergeArrays,
+  clearCacheIfNeeded,
 } from "../../components/utils.js";
-import Taro from "@tarojs/taro";
+
+// 第三方库导入
 import QQMapWX from "qqmap-wx-jssdk";
+
+// 图片资源导入
+import Touming from "../../images/touming.png";
 import ShareImg from "../../images/logo.jpg";
 import VipImg from "../../images/vip.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
@@ -21,7 +32,6 @@ import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import XiangceIcon from "../../images/xiangce.png";
 import KefuIcon from "../../images/kefu.png";
-import { appConfigs } from "../../appConfig.js";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import AddMyApp from "../../images/add-my-app.png";
 import VideoImg from "../../images/video.png";
@@ -29,214 +39,144 @@ import Fankui from "../../images/fankui.png";
 import Icon8 from "../../images/icon-8.jpg";
 import DakaIcon from "../../images/dakaIcon.png";
 import Mianze from "../../images/mianze.png";
-import EditMark from "./editMask.js";
+
+// 配置文件和样式导入
+import { appConfigs } from "../../appConfig.js";
 import "./index.scss";
+
+// 全局变量初始化
 let interstitialAd = null;
 const app = getApp();
 let cloud = "";
+
+// 当前时间相关常量
 const now = new Date();
 const yearD = now.getFullYear();
-const monthD = String(now.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
+const monthD = String(now.getMonth() + 1).padStart(2, "0");
 const dayD = String(now.getDate()).padStart(2, "0");
 const hoursD = String(now.getHours()).padStart(2, "0");
 const minutesD = String(now.getMinutes()).padStart(2, "0");
 const secondsD = String(now.getSeconds()).padStart(2, "0");
+const fs = wx.getFileSystemManager();
+
+// 路由参数获取
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
 const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
-const fs = wx.getFileSystemManager();
-const CACHE_LIMIT = 30 * 1024; // 设置缓存限制为 50MB（以 KB 为单位）
+
+// 文件系统配置
+
+// 防伪码生成
 let fangweimaText = generateRandomString(4);
 let makefangweimaText = generateRandomString(3);
-function getCacheSize(path) {
-  let totalSize = 0;
-  try {
-    const stats = fs.statSync(path);
-    if (stats.isDirectory()) {
-      const files = fs.readdirSync(path);
-      files.forEach((file) => {
-        totalSize += getCacheSize(`${path}/${file}`);
-      });
-    } else {
-      totalSize += stats.size / 1024; // 将字节转换为 KB
-    }
-  } catch (error) {
-    console.error("获取缓存大小失败:", error);
-  }
-  return totalSize;
-}
 
-function clearCacheIfNeeded(path) {
-  const totalSize = getCacheSize(path);
-  if (totalSize > CACHE_LIMIT) {
-    // 如果缓存超过限制，删除缓存
-    try {
-      fs.rmdirSync(path, true); // 递归删除整个目录
-    } catch (error) {
-      console.error("清理缓存失败:", error);
-    }
-  }
-}
+// 小程序配置
 const appid = Taro.getAccountInfoSync().miniProgram.appId;
 const config = appConfigs[appid];
+
+// 缓存处理工具函数
+
+//===== Part 2: 组件定义和状态管理 =====
 const CameraPage = () => {
+  // ===== 状态声明 =====
+  // 模态框状态
   const [shuiyinNameModal, setShuiyinNameModal] = useState(false);
-  const [cameraContext, setCameraContext] = useState(null);
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [allAuth, setAllAuth] = useState(false);
-  const [devicePosition, setDevicePosition] = useState("back");
-  const [shanguangflag, setShanguangFlag] = useState("off");
-  const [latitude, setLatitude] = useState(0);
-  app.$app.globalData.zphsId = zphsId;
-  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
-  // 向上弹出修改
-  const [showFloatLayout, setShowFloatLayout] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [showAddMyApp, setAddMyAppShow] = useState(true);
-  const [isShuiyinSaved, saveIsShuiyinSaved] = useState(false);
-  const [userInfo, setUserInfo] = useState({});
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [addPhoneNumber, setAddPhoneNumber] = useState(false);
-  const [phone, setPhone] = useState("");
   const [videoModal, setVideoModal] = useState(false);
-  const [screenWidth, setScreenWidth] = useState("");
-  const [showHasCheck, setShowHasCheck] = useState(undefined);
-  const [showTrueCode, setShowTrueCode] = useState(undefined);
-  const [cameraTempPath, setCameraTempPath] = useState("");
-  const [xiangceTempPath, setXiangceTempPath] = useState("");
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
-  const [snapshotHeight, setSnapshotHeight] = useState("");
   const [dakaModal, setDakeModal] = useState(false);
 
-  const [maskScale, setMaskScale] = useState(1);
-  const [editLabel, setEditLabel] = useState(
-    ShuiyinDoms[currentShuiyinIndex].label
-  );
-  const [commonEditLabel, setCommonEditLabel] = useState([]);
-  let fuckShenHe = app.$app.globalData.fuckShenHe;
-  // 根据年月日计算星期几的函数
-  useEffect(() => {
-    // 小程序启动时调用此函数
-    clearCacheIfNeeded(wx.env.USER_DATA_PATH);
-    // 在页面中定义插屏广告
-    const init = async () => {
-      if (wx.createInterstitialAd) {
-        interstitialAd = wx.createInterstitialAd({
-          adUnitId: config.ad,
-        });
+  // 相机相关状态
+  const [cameraContext, setCameraContext] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [devicePosition, setDevicePosition] = useState("back");
+  const [shanguangflag, setShanguangFlag] = useState("off");
+  const [cameraTempPath, setCameraTempPath] = useState("");
+  const [xiangceTempPath, setXiangceTempPath] = useState("");
 
-        interstitialAd.onLoad(() => {});
-        interstitialAd.onError((err) => {
-          console.error("插屏广告加载失败", err);
-        });
-        interstitialAd.onClose(() => {});
-      }
-      // 在页面onLoad回调事件中创建插屏广告实例
-      if (config.type === "shared") {
-        cloud = await new Taro.cloud.Cloud({
-          resourceAppid: config.resourceAppid,
-          resourceEnv: config.resourceEnv,
-        });
-        await cloud.init();
-      } else {
-        await Taro.cloud.init({
-          env: config.env,
-        });
-        cloud = Taro.cloud;
-      }
-
-      cloud.callFunction({
-        name: "addUser",
-        data: {
-          userToApp: config.userToApp,
-        },
-        success: function (res) {
-          setUserInfo(res.result.data);
-          // 会员填写手机号
-          if (
-            !res.result.data.phone &&
-            res.result.data.pay_time &&
-            res.result.data.end_time
-          ) {
-            setAddPhoneNumber(true);
-          }
-          // 有付费时间 没有到期时间 则到期
-          if (res.result.data.pay_time && !res.result.data.end_time) {
-            Taro.getStorage({ key: "hasVipClosedModalShow" })
-              .then(() => {})
-              .catch(() => {
-                if (Date.now() > res.result.data.end_time) {
-                  setVipClosedModal(true);
-                  Taro.setStorage({ key: "hasVipClosedModalShow", data: true });
-                }
-              });
-          }
-        },
-      });
-      cloud.callFunction({
-        name: "getConfig",
-        success: function (res) {
-          app.$app.globalData.config = res.result.data;
-          setCurrentShuiyinIndex(res.result.data.shuiyinindex);
-        },
-      });
-    };
-    init();
-    // 邀请存档
-    if (inviteId) {
-      Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
-    }
-    wx.getSystemInfo({
-      success: function (res) {
-        setScreenWidth(res.screenWidth); // 输出屏幕宽度
-        setSnapshotHeight(
-          ShuiyinDoms[currentShuiyinIndex].options?.proportion
-            ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
-            : (screenWidth / 3) * 4
-        );
-      },
-    });
-  }, []);
-
+  // 权限相关状态
+  const [allAuth, setAllAuth] = useState(false);
   const [permissions, setPermissions] = useState({
     camera: false,
     writePhotosAlbum: false,
     userLocation: false,
   });
 
+  // 基础状态
+  const [latitude, setLatitude] = useState(0);
+  const [screenWidth, setScreenWidth] = useState("");
+  const [snapshotHeight, setSnapshotHeight] = useState("");
+  const [showHasCheck, setShowHasCheck] = useState(undefined);
+  const [showTrueCode, setShowTrueCode] = useState(undefined);
+  const [selected, setSelected] = useState("图片水印");
+  const [userInfo, setUserInfo] = useState({});
+  const [phone, setPhone] = useState("");
+
+  // 水印相关状态
+  const [currentShuiyinIndex, setCurrentShuiyinIndex] = useState(0);
+  const [showFloatLayout, setShowFloatLayout] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [showAddMyApp, setAddMyAppShow] = useState(true);
+  const [isShuiyinSaved, saveIsShuiyinSaved] = useState(false);
+  const [maskScale, setMaskScale] = useState(1);
+  const [editLabel, setEditLabel] = useState(
+    ShuiyinDoms[currentShuiyinIndex].label
+  );
+  const [commonEditLabel, setCommonEditLabel] = useState([]);
+
+  // 视频相关状态
+  const [videoPath, setVideoPath] = useState("");
+  const [videoMaskPath, setVideoMaskPath] = useState("");
+
+  // 全局状态
+  app.$app.globalData.zphsId = zphsId;
+  let fuckShenHe = app.$app.globalData.fuckShenHe;
+
+  // ===== 核心功能函数 =====
+  // 天气获取
   const fetchWeather = (longitude, latitude) => {
-    // https://www.seniverse.com/
-    const url =
-      "https://api.seniverse.com/v3/weather/now.json?key=S7OyUofVVMeBcrLsC&location=" +
-      `${latitude}:${longitude}` +
-      "&language=zh-Hans&unit=c";
+    const url = `https://api.seniverse.com/v3/weather/now.json?key=S7OyUofVVMeBcrLsC&location=${latitude}:${longitude}&language=zh-Hans&unit=c`;
 
     Taro.request({
       url,
       method: "GET",
       success: (res) => {
         if (res.statusCode === 200) {
+          const weatherData = res.data.results[0]?.now;
           mergeEditLabel(
             "tianqi",
-            res.data.results[0]?.now.text +
-              " " +
-              res.data.results[0]?.now.temperature
+            `${weatherData.text} ${weatherData.temperature}`
           );
-        } else {
-          setError(`Error: ${res.statusCode}`);
         }
       },
       fail: (err) => {
-        setError("Failed to fetch weather");
+        console.error("获取天气失败:", err);
       },
     });
   };
-  useEffect(() => {
-    allAuth && permissions.userLocation && getLocation();
-  }, [allAuth, permissions.userLocation]);
 
+  // 地理位置编码
+  const reverseGeocode = (lat, lng) => {
+    const qqmapsdk = new QQMapWX({
+      key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
+    });
+
+    qqmapsdk.reverseGeocoder({
+      location: { latitude: lat, longitude: lng },
+      success: (res) => {
+        const addr = res.result.formatted_addresses.recommend;
+        mergeEditLabel("didian", addr);
+      },
+      fail: (err) => {
+        console.error("地理编码失败:", err);
+      },
+    });
+  };
+
+  // 获取位置信息
   const getLocation = () => {
-    if (latitude) return;
-    if (!permissions.userLocation) return;
+    if (latitude || !permissions.userLocation) return;
+
     Taro.getLocation({
       type: "gcj02",
       isHighAccuracy: true,
@@ -246,7 +186,7 @@ const CameraPage = () => {
         reverseGeocode(res.latitude, res.longitude);
         fetchWeather(res.longitude, res.latitude);
       },
-      fail: (err) => {
+      fail: () => {
         Taro.showToast({
           title: "无法获取位置信息，请检查权限设置",
           icon: "none",
@@ -254,8 +194,8 @@ const CameraPage = () => {
       },
     });
   };
-  const [selected, setSelected] = useState("图片水印");
 
+  // 水印选择处理
   const handleSelect = (option) => {
     if (option === "图片水印") {
       app.$app.globalData.config.isVideo = false;
@@ -275,93 +215,53 @@ const CameraPage = () => {
       });
     }
   };
-  const reverseGeocode = (lat, lng) => {
-    const qqmapsdk = new QQMapWX({
-      key: "JDRBZ-63BCV-YGNPG-5KPDI-PEAH5-ADBOB",
-    });
-    qqmapsdk.reverseGeocoder({
-      location: {
-        latitude: lat,
-        longitude: lng,
-      },
-      success: (res) => {
-        const addressComponent = res.result.formatted_addresses;
-        const addr = addressComponent.recommend;
-        const city = res.result.address_component.city;
-        const district = res.result.address_component.district;
 
-        const province = res.result.address_component.province;
-
-        // 拼接市以下的地址信息，不包括门牌号
-        const detailedAddress = `${addr}`;
-
-        mergeEditLabel("didian", detailedAddress);
-      },
-      fail: (err) => {
-        console.error("Failed to reverse geocode:", err);
-      },
-    });
-  };
-  // 更新editlabel 主要是请求之后合并更新
+  // 合并编辑标签
   const mergeEditLabel = (key, value, type) => {
     setCommonEditLabel((prev) => {
       const had = prev.find((value1) => value1.key === key);
-      if (!had) {
-        return [...prev, { key, value }];
-      }
+      if (!had) return [...prev, { key, value }];
       return prev;
     });
-    // 找到要更新的项的索引
+
     const index = editLabel.findIndex((item) => item.key === key);
     if (index === -1) return;
 
-    // 处理时间类型
     if (key === "shijian") {
       const currentValue = editLabel[index].value || "";
       let [datePart = "", timePart = ""] = currentValue.split(" ");
 
-      // 根据 type 判断更新日期还是时间
       if (type === "riqi") {
         datePart = value;
-        // 如果时间为空，保持原来的时间部分
         if (!timePart && currentValue) {
           timePart = currentValue.split(" ")[1] || "";
         }
-        // 如果还是空，才设置默认时间
         if (!timePart) {
           const now = new Date();
-          const hours = String(now.getHours()).padStart(2, "0");
-          const minutes = String(now.getMinutes()).padStart(2, "0");
-          timePart = `${hours}:${minutes}`;
+          timePart = `${String(now.getHours()).padStart(2, "0")}:${String(
+            now.getMinutes()
+          ).padStart(2, "0")}`;
         }
       } else if (type === "shijian") {
         timePart = value;
-        // 如果日期为空，保持原来的日期部分
         if (!datePart && currentValue) {
           datePart = currentValue.split(" ")[0] || "";
         }
-        // 如果还是空，才设置默认日期
         if (!datePart) {
           const today = new Date();
-          const year = today.getFullYear();
-          const month = String(today.getMonth() + 1).padStart(2, "0");
-          const day = String(today.getDate()).padStart(2, "0");
-          datePart = `${year}-${month}-${day}`;
+          datePart = `${today.getFullYear()}-${String(
+            today.getMonth() + 1
+          ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
         }
       }
 
-      // 组合日期和时间
       const combinedValue = `${datePart} ${timePart}`;
-
-      // 只更新当前项的 value
       setEditLabel((prev) =>
         prev.map((item, idx) =>
           idx === index ? { ...item, value: combinedValue } : item
         )
       );
     } else {
-      // 非时间类型的处理，只更新当前项的 value
-
       setEditLabel((prev) =>
         prev.map((item, idx) =>
           idx === index ? { ...item, value: value || item.value } : item
@@ -370,23 +270,14 @@ const CameraPage = () => {
     }
   };
 
+  // 更新水印索引
   const updateShuiyinIndex = async (current) => {
     const newEditLabel = [...ShuiyinDoms[current].label];
     setEditLabel(mergeArrays(newEditLabel, editLabel, commonEditLabel));
     setCurrentShuiyinIndex(current);
   };
-
-  // 统一设置默认值
-  useEffect(() => {
-    checkPermissions();
-    requestPermission();
-  }, []);
-
-  useDidShow(() => {
-    checkPermissions();
-    getAuth();
-  });
-
+  // ===== 权限处理函数 =====
+  // 检查权限状态
   const checkPermissions = async () => {
     const res = await Taro.getSetting();
     setPermissions({
@@ -395,6 +286,8 @@ const CameraPage = () => {
       userLocation: !!res.authSetting["scope.userLocation"],
     });
   };
+
+  // 请求权限
   const requestPermission = async () => {
     const scopes = [
       "scope.userLocation",
@@ -408,59 +301,23 @@ const CameraPage = () => {
         if (!res.authSetting[scope]) {
           try {
             await Taro.authorize({ scope });
-            setPermissions({
-              [scope.split(".")[1]]: true,
-            });
+            setPermissions({ [scope.split(".")[1]]: true });
           } catch (error) {
             console.error(`${scope} 权限被拒绝`, error);
-            setPermissions({
-              [scope.split(".")[1]]: false,
-            });
+            setPermissions({ [scope.split(".")[1]]: false });
           }
         }
       } catch (error) {
         console.error(`获取 ${scope} 权限设置时出错`, error);
       }
     }
-
-    // 执行权限检查后的后续操作
     getAuth();
   };
 
-  useEffect(() => {
-    const context = createCameraContext();
-    checkPermissions();
-    setCameraContext(context);
-    getAuth();
-  }, [
-    allAuth,
-    permissions.camera,
-    permissions.userLocation,
-    permissions.writePhotosAlbum,
-  ]);
-
-  const refreshCurrentPage = () => {
-    const currentPages = Taro.getCurrentPages();
-    const currentPage = currentPages[currentPages.length - 1];
-    const { route, options } = currentPage;
-
-    // 构建带参数的路径
-    const params = Object.keys(options)
-      .map((key) => `${key}=${options[key]}`)
-      .join("&");
-    const url = params ? `/${route}?${params}` : `/${route}`;
-    Taro.setStorageSync("noReload", "true");
-    const result = Taro.getStorageSync("noReload");
-    // 重定向到当前页面，保留参数
-    Taro.redirectTo({
-      url: url,
-    });
-  };
+  // 获取授权状态
   const getAuth = () => {
     Taro.getSetting().then((res) => {
       const authSetting = res.authSetting;
-
-      // 是否完全授权
       if (
         authSetting["scope.camera"] &&
         authSetting["scope.writePhotosAlbum"] &&
@@ -469,7 +326,6 @@ const CameraPage = () => {
         setAllAuth(true);
         const result = Taro.getStorageSync("noReload");
         if (!result) {
-          // 在需要刷新的地方调用这个函数
           refreshCurrentPage();
         }
       } else {
@@ -478,265 +334,25 @@ const CameraPage = () => {
     });
   };
 
-  useEffect(() => {
-    if (allAuth) {
-      Taro.showToast({
-        title: "点击水印可编辑时间地点",
-        icon: "none",
-        duration: 3000,
-      });
-    }
-  }, [allAuth]);
+  // 页面刷新
+  const refreshCurrentPage = () => {
+    const currentPages = Taro.getCurrentPages();
+    const currentPage = currentPages[currentPages.length - 1];
+    const { route, options } = currentPage;
 
-  useEffect(() => {
-    cameraContext?.setZoom({
-      zoom: zoomLevel,
-      success: () => {
-        console.log(`设置缩放级别成功: ${zoomLevel}`);
-      },
-      fail: (error) => {
-        console.error(`设置缩放级别失败: ${error}`);
-      },
-    });
-  }, [zoomLevel]);
+    const params = Object.keys(options)
+      .map((key) => `${key}=${options[key]}`)
+      .join("&");
+    const url = params ? `/${route}?${params}` : `/${route}`;
 
-  const cameraError = (e) => {
-    console.error("Camera error:", e.detail);
-  };
-  const zoomClick = () => {
-    setZoomLevel((prevValue) => {
-      if (prevValue === 1) {
-        return 3;
-      } else if (prevValue === 3) {
-        return 5;
-      } else {
-        return 1;
-      }
-    });
-  };
-  const fanzhuanClick = (event) => {
-    setDevicePosition((prevvalue) => {
-      if (prevvalue === "back") {
-        return "front";
-      } else {
-        return "back";
-      }
-    });
-  };
-  const shanguangClick = (event) => {
-    setShanguangFlag((prevvalue) => {
-      if (prevvalue === "off") {
-        return "on";
-      } else {
-        return "off";
-      }
-    });
-  };
-  const handleSnapshot = ({
-    type = "camera",
-    containerSelector = ".snapshot",
-    imageSelector = ".cameraSelectedImage",
-    setTempPath = setCameraTempPath,
-  }) => {
-    fangweimaText = generateRandomString(4);
-    makefangweimaText = generateRandomString(4);
-    requestAnimationFrame(async () => {
-      try {
-        // 免费体验次数检查
-        if (
-          userInfo.times >= app.$app.globalData.config.mianfeicishu &&
-          userInfo.type === "default"
-        ) {
-          setTempPath(undefined);
-          setTiYanModalShow(true);
-          setTimeout(() => {
-            setTiYanModalShow(false);
-            Taro.navigateTo({
-              url: "/pages/vip/index",
-            });
-          }, 2500);
-          return;
-        }
-        Taro.showLoading({
-          title: "处理中...",
-        });
-
-        // 确保图片完全加载
-        const ensureImageLoaded = () => {
-          return new Promise((resolve, reject) => {
-            const query = Taro.createSelectorQuery();
-            query
-              .select(`${containerSelector} ${imageSelector}`)
-              .fields({
-                node: true,
-                size: true,
-              })
-              .exec((res) => {
-                const image = res[0];
-                if (!image || !image.width) {
-                  reject(new Error("找不到图片节点1"));
-                  return;
-                }
-
-                if (image.width > 0 && image.height > 0) {
-                  console.log("image: ", image);
-
-                  resolve();
-                } else {
-                  image.onload = resolve;
-                  image.onerror = () => reject(new Error("图片加载失败"));
-                }
-              });
-          });
-        };
-        await new Promise((resolve) =>
-          setTimeout(resolve, type === "camera" ? 100 : 200)
-        );
-        await new Promise((resolve) => setTimeout(resolve, 50));
-
-        // 等待图片加载完成
-        await ensureImageLoaded();
-
-        // 执行截图
-        const [res] = await new Promise((resolve, reject) => {
-          Taro.createSelectorQuery()
-            .select(containerSelector)
-            .node()
-            .exec((res) => {
-              if (!res[0] || !res[0].node) {
-                reject(new Error("找不到截图节点2"));
-                return;
-              }
-              resolve(res);
-            });
-        });
-
-        const node = res.node;
-
-        // 执行截图操作
-        const snapshotResult = await new Promise((resolve, reject) => {
-          node.takeSnapshot({
-            type: "arraybuffer",
-            format: "png",
-            success: resolve,
-            fail: reject,
-          });
-        });
-        // 保存图片到本地文件系统
-        const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
-        const fs = wx.getFileSystemManager();
-        fs.writeFileSync(filePath, snapshotResult.data, "binary");
-        // 清空临时地址
-        // 更新配置
-
-        setTempPath(undefined);
-
-        if (selected === "视频水印") {
-          setVideoMaskPath(filePath);
-          return;
-        }
-        // 保存到相册
-        await wx.saveImageToPhotosAlbum({
-          filePath,
-          success: async () => {
-            Taro.showLoading({
-              title: "处理中...",
-            });
-            // 更新用户信息
-            const { result } = await cloud.callFunction({
-              name: "addUser",
-              data: {
-                remark: "成功使用",
-              },
-            });
-
-            setUserInfo(result.data);
-            const newEditLabel = editLabel.filter(
-              (item) => item.key !== "shijian"
-            );
-            await cloud.callFunction({
-              name: "updateSavedConfig",
-              data: {
-                saveConfig: {
-                  isSaved: isShuiyinSaved,
-                  currentShuiyinIndex,
-                  label: [...newEditLabel],
-                },
-              },
-            });
-            try {
-              // 上传到云存储
-              const cloudPath = `files/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
-                userInfo.type === "default" ? "" : "vip"
-              }_${userInfo.openid}.png`;
-
-              console.log("cloudPath: ", cloudPath);
-              await cloud.uploadFile({
-                cloudPath,
-                filePath,
-              });
-
-              // 上传成功后弹出提示
-              wx.showToast({
-                title: "已保存到相册",
-                icon: "success",
-              });
-            } catch (error) {
-              console.error("文件上传失败：", error);
-              // wx.showToast({
-              //   title: "上传失败，请重试",
-              //   icon: "error",
-              // });
-            }
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            // 显示广告
-            if (interstitialAd && userInfo.type === "default") {
-              interstitialAd.show().catch((err) => {
-                console.error("插屏广告显示失败", err);
-              });
-            }
-          },
-          fail: (error) => {
-            console.error("保存到相册失败:", error);
-            wx.showToast({
-              icon: "error",
-              title: "保存失败，请重试",
-            });
-          },
-        });
-      } catch (error) {
-        console.error("处理失败:", error);
-        wx.showToast({
-          icon: "error",
-          title: "失败，请重试",
-        });
-        setTempPath(undefined);
-      } finally {
-        Taro.hideLoading();
-      }
-    });
+    Taro.setStorageSync("noReload", "true");
+    Taro.redirectTo({ url });
   };
 
-  // 相机拍照 onload 后执行
-  const cameraPathOnload = () =>
-    handleSnapshot({
-      type: "camera",
-      containerSelector: ".snapshot",
-      imageSelector: ".cameraSelectedImage",
-      setTempPath: setCameraTempPath,
-    });
-
-  // 相册选图 onload 离屏
-  const xiangcePathOnload = () => {
-    handleSnapshot({
-      type: "xiangce",
-      containerSelector: ".snapshot-outside",
-      imageSelector: ".xiangceSelectedImage",
-      setTempPath: setXiangceTempPath,
-    });
-  };
-
+  // ===== 相机操作函数 =====
+  // 拍照核心函数
   const takePhoto = async (camera = true) => {
+    // 权限检查
     if (!allAuth) {
       Taro.showToast({
         title: "请先授权相机、相册、位置权限",
@@ -744,6 +360,8 @@ const CameraPage = () => {
       });
       return;
     }
+
+    // 会员权限检查
     if (
       selected === "视频水印" &&
       userInfo.type !== "halfYearMonth" &&
@@ -757,11 +375,14 @@ const CameraPage = () => {
       });
       return;
     }
+
+    // 视频模式处理
     if (selected === "视频水印") {
       setVideoModal(true);
       return;
     }
-    // 弹出水印名字提示弹窗
+
+    // 打卡标签检查
     if (
       getEditItem(editLabel, "daka")?.value === "修改" &&
       getEditItem(editLabel, "daka")?.visible
@@ -769,6 +390,8 @@ const CameraPage = () => {
       setDakeModal(true);
       return;
     }
+
+    // 水印名称检查
     if (
       userInfo.type !== "default" &&
       !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
@@ -778,6 +401,8 @@ const CameraPage = () => {
       setShuiyinNameModal(true);
       return;
     }
+
+    // VIP水印检查
     if (
       userInfo.type !== "halfYearMonth" &&
       userInfo.type !== "year" &&
@@ -798,42 +423,611 @@ const CameraPage = () => {
       });
       return;
     }
-    // 相机
+
+    // 相机拍照
     if (camera) {
-      // 保存位置
+      const proportion = ShuiyinDoms[currentShuiyinIndex].options?.proportion
+        ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
+        : (screenWidth / 3) * 4;
+
+      await setSnapshotHeight(proportion);
 
       cameraContext?.takePhoto({
         zoom: zoomLevel,
         quality: userInfo.type === "default" ? "low" : "original",
         success: async (path) => {
-          // 获取图片信息
-          // 拍照时宽高比例固定 默认4:3 特殊情况按照比例设置
-          await setSnapshotHeight(
-            ShuiyinDoms[currentShuiyinIndex].options?.proportion
-              ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
-                  screenWidth
-              : (screenWidth / 3) * 4
-          );
           await setCameraTempPath(path.tempImagePath);
         },
       });
     }
   };
-  Taro.useShareAppMessage((res) => {
-    return {
-      title: "分享你一款可修改时间、位置的水印相机",
-      path: "/pages/index/index?id=" + userInfo.openid,
-      imageUrl: ShareImg,
+
+  // 图片保存处理
+  const handleSaveToAlbum = async (filePath) => {
+    await wx.saveImageToPhotosAlbum({
+      filePath,
+      success: async () => {
+        Taro.showLoading({ title: "处理中..." });
+
+        // 更新用户信息
+        const { result } = await cloud.callFunction({
+          name: "addUser",
+          data: { remark: "成功使用" },
+        });
+
+        setUserInfo(result.data);
+
+        // 保存配置
+        const newEditLabel = editLabel.filter((item) => item.key !== "shijian");
+        await cloud.callFunction({
+          name: "updateSavedConfig",
+          data: {
+            saveConfig: {
+              isSaved: isShuiyinSaved,
+              currentShuiyinIndex,
+              label: [...newEditLabel],
+            },
+          },
+        });
+
+        // 上传到云存储
+        try {
+          const cloudPath = `files/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
+            userInfo.type === "default" ? "" : "vip"
+          }_${userInfo.openid}.png`;
+
+          await cloud.uploadFile({
+            cloudPath,
+            filePath,
+          });
+
+          wx.showToast({
+            title: "已保存到相册",
+            icon: "success",
+          });
+
+          // 显示广告
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          if (interstitialAd && userInfo.type === "default") {
+            interstitialAd.show().catch((err) => {
+              console.error("插屏广告显示失败", err);
+            });
+          }
+        } catch (error) {
+          console.error("文件上传失败：", error);
+        }
+      },
+      fail: (error) => {
+        console.error("保存到相册失败:", error);
+        wx.showToast({
+          icon: "error",
+          title: "保存失败，请重试",
+        });
+      },
+    });
+  };
+  // ===== 照片处理函数 =====
+  // 处理快照
+  const handleSnapshot = async ({
+    type = "camera",
+    containerSelector = ".snapshot",
+    imageSelector = ".cameraSelectedImage",
+    setTempPath = setCameraTempPath,
+  }) => {
+    // 更新防伪码
+    fangweimaText = generateRandomString(4);
+    makefangweimaText = generateRandomString(3);
+
+    requestAnimationFrame(async () => {
+      try {
+        // 检查免费体验次数
+        if (
+          userInfo.times >= app.$app.globalData.config.mianfeicishu &&
+          userInfo.type === "default"
+        ) {
+          setTempPath(undefined);
+          setTiYanModalShow(true);
+          setTimeout(() => {
+            setTiYanModalShow(false);
+            Taro.navigateTo({ url: "/pages/vip/index" });
+          }, 2500);
+          return;
+        }
+
+        Taro.showLoading({ title: "处理中..." });
+
+        // 确保图片完全加载
+        const ensureImageLoaded = () => {
+          return new Promise((resolve, reject) => {
+            const query = Taro.createSelectorQuery();
+            query
+              .select(`${containerSelector} ${imageSelector}`)
+              .fields({ node: true, size: true })
+              .exec((res) => {
+                const image = res[0];
+                if (!image || !image.width) {
+                  reject(new Error("找不到图片节点"));
+                  return;
+                }
+
+                if (image.width > 0 && image.height > 0) {
+                  resolve();
+                } else {
+                  image.onload = resolve;
+                  image.onerror = () => reject(new Error("图片加载失败"));
+                }
+              });
+          });
+        };
+
+        // 等待图片加载
+        await new Promise((resolve) =>
+          setTimeout(resolve, type === "camera" ? 100 : 200)
+        );
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        await ensureImageLoaded();
+
+        // 执行截图
+        const [res] = await new Promise((resolve, reject) => {
+          Taro.createSelectorQuery()
+            .select(containerSelector)
+            .node()
+            .exec((res) => {
+              if (!res[0] || !res[0].node) {
+                reject(new Error("找不到截图节点"));
+                return;
+              }
+              resolve(res);
+            });
+        });
+
+        const node = res.node;
+        const snapshotResult = await new Promise((resolve, reject) => {
+          node.takeSnapshot({
+            type: "arraybuffer",
+            format: "png",
+            success: resolve,
+            fail: reject,
+          });
+        });
+
+        // 保存图片到本地文件系统
+        const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
+        fs.writeFileSync(filePath, snapshotResult.data, "binary");
+        setTempPath(undefined);
+
+        if (selected === "视频水印") {
+          setVideoMaskPath(filePath);
+          return;
+        }
+
+        // 保存到相册并处理后续操作
+        await handleSaveToAlbum(filePath);
+      } catch (error) {
+        console.error("处理失败:", error);
+        wx.showToast({
+          icon: "error",
+          title: "失败，请重试",
+        });
+        setTempPath(undefined);
+      } finally {
+        Taro.hideLoading();
+      }
+    });
+  };
+
+  // 从相册选择图片
+  const selectImgFromXiangce = async () => {
+    try {
+      // 权限检查
+      if (!allAuth) {
+        const missingPermissions = [];
+        try {
+          const res = await Taro.getSetting();
+          !res.authSetting["scope.camera"] && missingPermissions.push("相机");
+          !res.authSetting["scope.writePhotosAlbum"] &&
+            missingPermissions.push("相册");
+          !res.authSetting["scope.userLocation"] &&
+            missingPermissions.push("位置");
+
+          if (missingPermissions.length > 0) {
+            Taro.showToast({
+              title: `请授权以下权限：${missingPermissions.join("、")}`,
+              icon: "none",
+              duration: 3000,
+            });
+          }
+        } catch (error) {
+          console.error("权限检查失败:", error);
+        }
+        return;
+      }
+
+      // 会员权限检查
+      if (selected === "视频水印") {
+        const validMemberTypes = ["halfYearMonth", "year", "never"];
+        if (!validMemberTypes.includes(userInfo.type)) {
+          Taro.showToast({
+            title: "此功能只对半年及以上会员开放,最大支持50M视频",
+            icon: "none",
+            duration: 3000,
+          });
+          return;
+        }
+      }
+
+      // 打卡检查
+      if (
+        getEditItem(editLabel, "daka")?.value === "修改" &&
+        getEditItem(editLabel, "daka")?.visible
+      ) {
+        setDakeModal(true);
+        return;
+      }
+
+      // 水印名称检查
+      if (
+        userInfo.type !== "default" &&
+        showTrueCode &&
+        !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
+        getEditItem(editLabel, "shuiyinmingcheng")?.visible
+      ) {
+        setShuiyinNameModal(true);
+        return;
+      }
+
+      // 处理图片选择
+      if (selected === "图片水印") {
+        const res = await Taro.chooseMedia({
+          count: 1,
+          mediaType: ["image"],
+          sourceType: ["album"],
+        });
+
+        if (!res.tempFiles?.[0]) {
+          throw new Error("未获取到图片文件");
+        }
+
+        const { tempFilePath: filePath, size } = res.tempFiles[0];
+
+        // 文件大小检查
+        const fileSizeInMB = size / (1024 * 1024);
+        if (fileSizeInMB > 20) {
+          Taro.showModal({
+            title: "提示",
+            content: "图片过大，请选择小于20M的图片",
+            showCancel: false,
+          });
+          return;
+        }
+
+        // 获取图片信息
+        const info = await Taro.getImageInfo({ src: filePath });
+
+        // 尺寸检查
+        if (info.width < 100 || info.height < 100) {
+          Taro.showModal({
+            title: "提示",
+            content: "图片尺寸过小，请选择更大的图片",
+            showCancel: false,
+          });
+          return;
+        }
+        // 设置截图高度
+        const calculatedHeight =
+          info.orientation === "right"
+            ? (info.width / info.height) * screenWidth
+            : (info.height / info.width) * screenWidth;
+
+        if (info.width / info.height > 1) {
+          setMaskScale(info.height / info.width);
+        }
+
+        await setSnapshotHeight(calculatedHeight);
+        await setXiangceTempPath(filePath);
+      } else {
+        // 处理视频选择
+        const res = await Taro.chooseMedia({
+          count: 1,
+          mediaType: ["video"],
+          sourceType: ["album"],
+        });
+
+        if (!res.tempFiles?.[0]) {
+          throw new Error("未获取到视频文件");
+        }
+
+        const { tempFilePath: path, size } = res.tempFiles[0];
+        const fileSizeInMB = size / (1024 * 1024);
+
+        if (fileSizeInMB > 50) {
+          Taro.showModal({
+            title: "提示",
+            content: `视频大小为${fileSizeInMB.toFixed(2)}MB，超过50MB限制`,
+            showCancel: false,
+          });
+          return;
+        }
+
+        await setVideoPath(path);
+      }
+    } catch (error) {
+      console.error("选择媒体失败:", error);
+    }
+  };
+
+  // ===== 事件处理函数 =====
+  // 相机错误处理
+  const cameraError = (e) => {
+    console.error("Camera error:", e.detail);
+  };
+
+  // 缩放控制
+  const zoomClick = () => {
+    setZoomLevel((prev) => (prev === 1 ? 3 : prev === 3 ? 5 : 1));
+  };
+
+  // 相机翻转
+  const fanzhuanClick = () => {
+    setDevicePosition((prev) => (prev === "back" ? "front" : "back"));
+  };
+
+  // 闪光灯控制
+  const shanguangClick = () => {
+    setShanguangFlag((prev) => (prev === "off" ? "on" : "off"));
+  };
+
+  // 照片加载处理
+  const cameraPathOnload = () =>
+    handleSnapshot({
+      type: "camera",
+      containerSelector: ".snapshot",
+      imageSelector: ".cameraSelectedImage",
+      setTempPath: setCameraTempPath,
+    });
+
+  const xiangcePathOnload = () =>
+    handleSnapshot({
+      type: "xiangce",
+      containerSelector: ".snapshot-outside",
+      imageSelector: ".xiangceSelectedImage",
+      setTempPath: setXiangceTempPath,
+    });
+  // ===== 生命周期钩子 =====
+  // 初始化加载
+  useEffect(() => {
+    // 清理缓存
+    clearCacheIfNeeded(wx.env.USER_DATA_PATH);
+
+    // 初始化函数
+    const init = async () => {
+      // 初始化广告
+      if (wx.createInterstitialAd) {
+        interstitialAd = wx.createInterstitialAd({
+          adUnitId: config.ad,
+        });
+        interstitialAd.onLoad(() => {});
+        interstitialAd.onError((err) => console.error("插屏广告加载失败", err));
+        interstitialAd.onClose(() => {});
+      }
+
+      // 初始化云环境
+      if (config.type === "shared") {
+        cloud = await new Taro.cloud.Cloud({
+          resourceAppid: config.resourceAppid,
+          resourceEnv: config.resourceEnv,
+        });
+        await cloud.init();
+      } else {
+        await Taro.cloud.init({ env: config.env });
+        cloud = Taro.cloud;
+      }
+
+      // 添加用户信息
+      cloud.callFunction({
+        name: "addUser",
+        data: { userToApp: config.userToApp },
+        success: function (res) {
+          setUserInfo(res.result.data);
+
+          // 会员手机号处理
+          if (
+            !res.result.data.phone &&
+            res.result.data.pay_time &&
+            res.result.data.end_time
+          ) {
+            setAddPhoneNumber(true);
+          }
+
+          // 会员到期处理
+          if (res.result.data.pay_time && !res.result.data.end_time) {
+            Taro.getStorage({ key: "hasVipClosedModalShow" })
+              .then(() => {})
+              .catch(() => {
+                if (Date.now() > res.result.data.end_time) {
+                  setVipClosedModal(true);
+                  Taro.setStorage({ key: "hasVipClosedModalShow", data: true });
+                }
+              });
+          }
+        },
+      });
+
+      // 获取配置信息
+      cloud.callFunction({
+        name: "getConfig",
+        success: function (res) {
+          app.$app.globalData.config = res.result.data;
+          setCurrentShuiyinIndex(res.result.data.shuiyinindex);
+        },
+      });
     };
+
+    init();
+
+    // 处理邀请存档
+    if (inviteId) {
+      Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
+    }
+
+    // 获取系统信息
+    wx.getSystemInfo({
+      success: function (res) {
+        setScreenWidth(res.screenWidth);
+        setSnapshotHeight(
+          ShuiyinDoms[currentShuiyinIndex].options?.proportion
+            ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
+                res.screenWidth
+            : (res.screenWidth / 3) * 4
+        );
+      },
+    });
+  }, []);
+
+  // 视频路径变化处理
+  useEffect(() => {
+    if (!videoPath) return;
+    setXiangceTempPath(Touming);
+    setSnapshotHeight((screenWidth / 720) * 1280);
+  }, [videoPath]);
+
+  // 视频水印路径变化处理
+  useEffect(() => {
+    if (!videoMaskPath) return;
+    // @@保存cover图片
+    // Taro.saveImageToPhotosAlbum({
+    //   filePath:videoMaskPath,
+    // });
+
+    const processVideo = async () => {
+      Taro.showLoading({ title: "上传中..." });
+
+      try {
+        const [videoFileId, videoMaskFileId, logoImageFileId] =
+          await Promise.all([
+            uploadImage(videoPath),
+            uploadImage(videoMaskPath),
+            config?.logoConfig?.path
+              ? uploadImage(config.logoConfig.path)
+              : null,
+          ]);
+
+        let ytg = null;
+        if (config.type === "shared") {
+          ytg = await new Taro.cloud.Cloud({
+            resourceAppid: config.containerResourceAppid,
+            resourceEnv: config.containerResourceEnv,
+          });
+          await ytg.init();
+        } else {
+          ytg = cloud;
+        }
+
+        ytg.callContainer({
+          config: { env: config["containerId"] },
+          path: "/process",
+          header: {
+            "X-WX-SERVICE": config["containerName"],
+            "content-type": "application/json",
+          },
+          method: "POST",
+          data: {
+            image_file_id: videoMaskFileId,
+            video_file_id: videoFileId,
+            logo_file_id: logoImageFileId,
+            openid: userInfo.openid,
+          },
+          success: (res) => {
+            Taro.hideLoading();
+            if (res.data?.taskId) {
+              Taro.showModal({
+                title: "视频生成中",
+                content:
+                  "视频生成中，请您2~3分钟后到 首页 - 视频 页面中查看下载。",
+                confirmText: "确认",
+              });
+            } else {
+              throw new Error("处理错误");
+            }
+          },
+          fail: () => {
+            Taro.hideLoading();
+            Taro.showToast({
+              title: "系统重启，请刷新后重新上传",
+              icon: "none",
+              duration: 3000,
+            });
+          },
+        });
+      } catch (error) {
+        console.error("视频处理失败:", error);
+        Taro.hideLoading();
+      }
+    };
+
+    processVideo();
+  }, [videoMaskPath]);
+
+  // 权限和位置相关
+  useEffect(() => {
+    allAuth && permissions.userLocation && getLocation();
+  }, [allAuth, permissions.userLocation]);
+
+  // 初始权限检查
+  useEffect(() => {
+    checkPermissions();
+    requestPermission();
+  }, []);
+
+  // 页面显示处理
+  useDidShow(() => {
+    checkPermissions();
+    getAuth();
   });
-  // 判断是否使用服务端保存的数据生成图片
+
+  // 相机上下文初始化
+  useEffect(() => {
+    const context = createCameraContext();
+    checkPermissions();
+    setCameraContext(context);
+    getAuth();
+  }, [
+    allAuth,
+    permissions.camera,
+    permissions.userLocation,
+    permissions.writePhotosAlbum,
+  ]);
+
+  // 权限获取提示
+  useEffect(() => {
+    if (allAuth) {
+      Taro.showToast({
+        title: "点击水印可编辑时间地点",
+        icon: "none",
+        duration: 3000,
+      });
+    }
+  }, [allAuth]);
+
+  // 相机缩放设置
+  useEffect(() => {
+    cameraContext?.setZoom({
+      zoom: zoomLevel,
+      success: () => console.log(`设置缩放级别成功: ${zoomLevel}`),
+      fail: (error) => console.error(`设置缩放级别失败: ${error}`),
+    });
+  }, [zoomLevel]);
+
+  // 配置状态同步
   useEffect(() => {
     if (userInfo?.saveConfig?.isSaved) {
       saveIsShuiyinSaved(true);
       setCurrentShuiyinIndex(userInfo.saveConfig.currentShuiyinIndex);
+
       const newEditLabel = [
         ...ShuiyinDoms[userInfo.saveConfig.currentShuiyinIndex].label,
       ];
+
       const index = newEditLabel.findIndex((item) => item.key === "shijian");
       newEditLabel[index].value = `${parseDateString().year}-${
         parseDateString().month
@@ -846,268 +1040,8 @@ const CameraPage = () => {
       }, 2000);
     }
   }, [userInfo.type]);
-  const selectImgFromXiangce = async () => {
-    try {
-      // 1. 权限检查
-      if (!allAuth) {
-        // 检查具体是哪个权限没有获取
-        try {
-          const cameraAuth = await Taro.getSetting({
-            scope: "scope.camera",
-          });
-          const albumAuth = await Taro.getSetting({
-            scope: "scope.album",
-          });
-          const locationAuth = await Taro.getSetting({
-            scope: "scope.userLocation",
-          });
 
-          let missingPermissions = [];
-          !cameraAuth && missingPermissions.push("相机");
-          !albumAuth && missingPermissions.push("相册");
-          !locationAuth && missingPermissions.push("位置");
-
-          Taro.showToast({
-            title: `请授权以下权限：${missingPermissions.join("、")}`,
-            icon: "none",
-            duration: 3000,
-          });
-        } catch (error) {
-          Taro.showToast({
-            title: "权限检查失败，请重试",
-            icon: "none",
-          });
-        }
-        return;
-      }
-
-      // 2. 会员权限检查
-      if (selected === "视频水印") {
-        const validMemberTypes = ["halfYearMonth", "year", "never"];
-        if (!validMemberTypes.includes(userInfo.type)) {
-          Taro.showToast({
-            title: "此功能只对半年及以上会员开放,最大支持50M视频",
-            icon: "none",
-            duration: 3000,
-          });
-          return;
-        }
-      }
-      if (
-        getEditItem(editLabel, "daka")?.value === "修改" &&
-        getEditItem(editLabel, "daka")?.visible
-      ) {
-        setDakeModal(true);
-        return;
-      }
-      // 3. 水印名称检查
-      if (
-        userInfo.type !== "default" &&
-        showTrueCode &&
-        !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
-        getEditItem(editLabel, "shuiyinmingcheng")?.visible
-      ) {
-        setShuiyinNameModal(true);
-        return;
-      }
-
-      // 4. 选择媒体处理
-      if (selected === "图片水印") {
-        try {
-          const res = await Taro.chooseMedia({
-            count: 1,
-            mediaType: ["image"],
-            sourceType: ["album"],
-          });
-
-          if (!res.tempFiles || !res.tempFiles.length) {
-            throw new Error("未获取到图片文件");
-          }
-
-          const data = res.tempFiles[0];
-          const filePath = data.tempFilePath;
-
-          // 检查文件大小
-          const fileSizeInMB = data.size / (1024 * 1024);
-          if (fileSizeInMB > 20) {
-            // 假设限制20MB
-            Taro.showModal({
-              title: "提示",
-              content: "图片过大，请选择小于20M的图片",
-              showCancel: false,
-            });
-            return;
-          }
-
-          // 获取图片信息
-          try {
-            const info = await new Promise((resolve, reject) => {
-              Taro.getImageInfo({
-                src: filePath,
-                success: resolve,
-                fail: reject,
-              });
-            });
-
-            // 验证图片尺寸
-            if (info.width < 100 || info.height < 100) {
-              Taro.showModal({
-                title: "提示",
-                content: "图片尺寸过小，请选择更大的图片",
-                showCancel: false,
-              });
-              return;
-            }
-
-            // 计算并设置截图高度
-            const calculatedHeight =
-              info.orientation === "right"
-                ? (info.width / info.height) * screenWidth
-                : (info.height / info.width) * screenWidth;
-
-            await setSnapshotHeight(calculatedHeight);
-            await setXiangceTempPath(filePath);
-
-            console.log("图片处理成功:", {
-              width: info.width,
-              height: info.height,
-              orientation: info.orientation,
-              calculatedHeight,
-            });
-          } catch (error) {
-            console.error("获取图片信息失败:", error);
-            Taro.showModal({
-              title: "错误",
-              content: "获取图片信息失败，请重试",
-              showCancel: false,
-            });
-          }
-        } catch (error) {}
-      } else {
-        // 视频水印处理
-        try {
-          const res = await Taro.chooseMedia({
-            count: 1,
-            mediaType: ["video"],
-            sourceType: ["album"],
-          });
-
-          if (!res.tempFiles || !res.tempFiles.length) {
-            throw new Error("未获取到视频文件");
-          }
-
-          const data = res.tempFiles[0];
-          const path = data.tempFilePath;
-          const fileSizeInMB = data.size / (1024 * 1024);
-
-          // 视频大小检查
-          if (fileSizeInMB > 50) {
-            Taro.showModal({
-              title: "提示",
-              content: `视频大小为${fileSizeInMB.toFixed(
-                2
-              )}MB，超过50MB限制，请重新选择`,
-              showCancel: false,
-            });
-            return;
-          }
-          await setVideoPath(path);
-        } catch (error) {}
-      }
-    } catch (error) {}
-  };
-  const [videoPath, setVideoPath] = useState("");
-  const [videoMaskPath, setVideoMaskPath] = useState("");
-
-  useEffect(() => {
-    if (!videoPath) {
-      return;
-    }
-    setXiangceTempPath(Touming);
-    // 配合merge-video云函数 720 是视频宽度 9:16  720 : 1280
-    setSnapshotHeight((screenWidth / 720) * 1280);
-  }, [videoPath]);
-  const uploadImage = async (filePath) => {
-    const cloudPath = `files/client/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
-      userInfo.type === "default" ? "" : "vip"
-    }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
-    const res = await cloud.uploadFile({
-      cloudPath,
-      filePath,
-    });
-    return res.fileID;
-  };
-
-  useEffect(() => {
-    if (!videoMaskPath) {
-      return;
-    }
-
-    const fn = async () => {
-      // 上传图片和视频
-      Taro.showLoading({
-        title: "上传中...",
-      });
-
-      const [videoFileId, videoMaskFileId, logoImageFileId] = await Promise.all(
-        [
-          uploadImage(videoPath),
-          uploadImage(videoMaskPath),
-          config?.logoConfig?.path ? uploadImage(config.logoConfig.path) : null,
-        ]
-      );
-      let ytg = null;
-      if (config.type === "shared") {
-        ytg = await new Taro.cloud.Cloud({
-          resourceAppid: config.containerResourceAppid,
-          resourceEnv: config.containerResourceEnv,
-        });
-        await ytg.init();
-      } else {
-        ytg = cloud;
-      }
-      // 视频合成
-      ytg.callContainer({
-        config: {
-          env: config["containerId"],
-        },
-        path: "/process",
-        header: {
-          "X-WX-SERVICE": config["containerName"],
-          "content-type": "application/json",
-        },
-        method: "POST",
-        data: {
-          image_file_id: videoMaskFileId,
-          video_file_id: videoFileId,
-          logo_file_id: logoImageFileId ? logoImageFileId : null,
-          openid: userInfo.openid,
-        },
-        success: (res) => {
-          Taro.hideLoading();
-          if (res.data && res.data.taskId) {
-            Taro.showModal({
-              title: "视频生成中",
-              content:
-                "视频生成中，请您2~3分钟后到 首页 - 视频 页面中查看下载。",
-              confirmText: "确认",
-            });
-          } else {
-            throw new Error("处理错误");
-          }
-        },
-        fail: (error) => {
-          Taro.hideLoading();
-          Taro.showToast({
-            title: "系统重启，请刷新后重新上传",
-            icon: "none",
-            duration: 3000,
-          });
-        },
-      });
-    };
-    fn();
-  }, [videoMaskPath]);
+  // 全局配置状态同步
   useEffect(() => {
     if (app.$app.globalData.config.showHasCheck !== undefined) {
       setShowHasCheck(app.$app.globalData.config.showHasCheck);
@@ -1120,27 +1054,35 @@ const CameraPage = () => {
     }
   }, [app.$app.globalData.config.showTrueCode]);
 
+  // ===== 分享配置 =====
+  Taro.useShareAppMessage(() => ({
+    title: "分享你一款可修改时间、位置的水印相机",
+    path: "/pages/index/index?id=" + userInfo.openid,
+    imageUrl: ShareImg,
+  }));
+
+  // 上传图片
+  const uploadImage = async (filePath) => {
+    const cloudPath = `files/client/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
+      userInfo.type === "default" ? "" : "vip"
+    }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
+
+    const res = await cloud.uploadFile({
+      cloudPath,
+      filePath,
+    });
+    return res.fileID;
+  };
+  // ===== 组件渲染 =====
   return (
-    <ScrollView
-      scroll-y={true}
-      type="list"
-      className={
-        "container "
-        // (showFloatLayout && ShuiyinDoms[currentShuiyinIndex].options.proportion
-        //   ? " open"
-        //   : "")
-      }
-    >
+    <ScrollView scroll-y={true} type="list" className="container">
       {userInfo.black ? (
         "您存在违规操作，无法使用小程序"
       ) : (
         <View
-          style={{
-            position: "relative",
-            minHeight: "100vh",
-            width: "100%",
-          }}
+          style={{ position: "relative", minHeight: "100vh", width: "100%" }}
         >
+          {/* 相机区域 */}
           <View
             className="camera-box"
             style={{
@@ -1152,19 +1094,18 @@ const CameraPage = () => {
           >
             <Marquee />
 
+            {/* 未授权提示 */}
             {!allAuth && (
               <View className="auth-box">
                 <View style={{ marginBottom: "30px" }}>
                   小程序支持用户自定义水印时间、地点、经纬度等信息。同时也支持给视频添加水印。
                 </View>
                 <View>
-                  需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行。{" "}
+                  需要相机、相册、位置权限(需要开启手机系统定位)才可以正常运行。
                 </View>
                 <Button
                   className="share-btn"
-                  onClick={() => {
-                    Taro.openSetting();
-                  }}
+                  onClick={() => Taro.openSetting()}
                   style={{
                     background: "linear-gradient(45deg,#ff6ec4, #FF5722)",
                     color: "white",
@@ -1183,9 +1124,10 @@ const CameraPage = () => {
               </View>
             )}
 
+            {/* 相机主体区域 */}
             {allAuth && (
               <View
-                className={"mask-box"}
+                className="mask-box"
                 style={{
                   bottom: showFloatLayout
                     ? ShuiyinDoms[currentShuiyinIndex].options.proportion
@@ -1194,9 +1136,9 @@ const CameraPage = () => {
                     : "0",
                 }}
               >
-                {/* 渲染相机模式的水印 */}
+                {/* 相机模式水印 */}
                 <RenderWatermark
-                  type={"camera"}
+                  type="camera"
                   tempPath={cameraTempPath}
                   onLoadHandler={cameraPathOnload}
                   currentShuiyinIndex={currentShuiyinIndex}
@@ -1217,8 +1159,10 @@ const CameraPage = () => {
                   maskScale={maskScale}
                   editLabel={editLabel}
                 />
+
+                {/* 相册模式水印 */}
                 <RenderWatermark
-                  type={"xiangce"}
+                  type="xiangce"
                   tempPath={xiangceTempPath}
                   onLoadHandler={xiangcePathOnload}
                   currentShuiyinIndex={currentShuiyinIndex}
@@ -1239,55 +1183,57 @@ const CameraPage = () => {
                   maskScale={maskScale}
                   editLabel={editLabel}
                 />
-                {/* 渲染相册模式的水印 */}
+
+                {/* 相机控制按钮 */}
                 <View className="camera-btns">
                   <View className="zoom-box">
                     <View className="zoom-text" onClick={zoomClick}>
                       {zoomLevel}
-                      <View className="icon-x"></View>
+                      <View className="icon-x" />
                     </View>
                   </View>
                   <View className="fanzhuan-icon" onClick={fanzhuanClick}>
-                    <Image src={fanzhuanImg}></Image>
+                    <Image src={fanzhuanImg} />
                   </View>
                   <View className="shanguangdeng-icon" onClick={shanguangClick}>
-                    {shanguangflag === "off" ? (
-                      <Image src={shanguangdengOffImg}></Image>
-                    ) : (
-                      <Image src={shanguangdengImg}></Image>
-                    )}
+                    <Image
+                      src={
+                        shanguangflag === "off"
+                          ? shanguangdengOffImg
+                          : shanguangdengImg
+                      }
+                    />
                   </View>
                 </View>
               </View>
             )}
           </View>
+
+          {/* 添加到我的小程序提示 */}
           {showAddMyApp && (
-            <View
-              className="add-my-app"
-              onClick={() => {
-                setAddMyAppShow(false);
-              }}
-            >
-              <Image src={AddMyApp}></Image>
+            <View className="add-my-app" onClick={() => setAddMyAppShow(false)}>
+              <Image src={AddMyApp} />
             </View>
           )}
+          {/* 工具箱区域 */}
           <View
             className="tools-box-wrapper"
             style={{
               minHeight: `calc(100vh-${(screenWidth / 3) * 4})`,
             }}
           >
+            {/* 顶部工具栏 */}
             <View className="tools-bar">
               <View className="tools-bar-inner">
-                <View className={"xiangce "}>
+                <View className="xiangce">
                   <Image
                     src={XiangceIcon}
                     className="xiangceIcon"
                     onClick={selectImgFromXiangce}
-                  ></Image>
+                  />
                   <Text>相册</Text>
                 </View>
-                <View className={"shuiyin "}>
+                <View className="shuiyin">
                   <Image
                     src={VideoImg}
                     className="xiangceIcon"
@@ -1296,11 +1242,12 @@ const CameraPage = () => {
                         url: "/pages/video/index",
                       });
                     }}
-                  ></Image>
+                  />
                   <Text>视频</Text>
                 </View>
               </View>
 
+              {/* 拍照按钮 */}
               <View className="take-photo" onClick={takePhoto}>
                 <View
                   className={
@@ -1315,44 +1262,37 @@ const CameraPage = () => {
                         ? " camera-button-inner-video"
                         : "")
                     }
-                  ></View>
+                  />
                 </View>
               </View>
+
+              {/* 右侧工具栏 */}
               <View className="tools-bar-inner">
-                {
-                  <View className={"xiangce kefu vip "}>
-                    <Button
-                      onClick={() => {
-                        Taro.navigateTo({
-                          url:
-                            "/pages/vip/index?type=" +
-                            userInfo.type +
-                            "&id=" +
-                            inviteId,
-                        });
-                      }}
-                      style={{
-                        background: "none",
-                        color: "inherit",
-                        border: "none",
-                        padding: 0,
-                        font: "inherit",
-                        cursor: "pointer",
-                        outline: "none",
-                        height: "39px",
-                      }}
-                    >
-                      <Image src={VipImg} className="xiangceIcon"></Image>
-                    </Button>
-                    <Text>会员</Text>
-                  </View>
-                }
-                <View
-                  style={{
-                    marginRight: "auto",
-                  }}
-                  className={"xiangce kefu "}
-                >
+                {/* 会员按钮 */}
+                <View className="xiangce kefu vip">
+                  <Button
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: `/pages/vip/index?type=${userInfo.type}&id=${inviteId}`,
+                      });
+                    }}
+                    style={{
+                      background: "none",
+                      color: "inherit",
+                      border: "none",
+                      padding: 0,
+                      font: "inherit",
+                      cursor: "pointer",
+                      outline: "none",
+                      height: "39px",
+                    }}
+                  >
+                    <Image src={VipImg} className="xiangceIcon" />
+                  </Button>
+                  <Text>会员</Text>
+                </View>
+                {/* 我的按钮 */}
+                <View className="xiangce kefu" style={{ marginRight: "auto" }}>
                   <Button
                     onClick={() => {
                       Taro.navigateTo({
@@ -1370,19 +1310,18 @@ const CameraPage = () => {
                       height: "39px",
                     }}
                   >
-                    <Image src={KefuIcon} className="xiangceIcon"></Image>
+                    <Image src={KefuIcon} className="xiangceIcon" />
                   </Button>
                   <Text>我的</Text>
                 </View>
               </View>
             </View>
-            {/* ------- */}
-            <View className="tools-bar">
-              {/* <View className="tools-bar-inner">
 
-            </View> */}
+            {/* 底部工具栏 */}
+            <View className="tools-bar">
               <View className="tools-bar-inner">
-                <View className={"xiangce "}>
+                {/* 声明按钮 */}
+                <View className="xiangce">
                   <Image
                     src={Mianze}
                     className="xiangceIcon"
@@ -1391,12 +1330,13 @@ const CameraPage = () => {
                         url: "/pages/mianze/index",
                       });
                     }}
-                  ></Image>
+                  />
                   <Text>声明</Text>
                 </View>
-                <View className={"xiangce "}>
+                {/* 客服按钮 */}
+                <View className="xiangce">
                   <Button
-                    className={"xiangce kefu vip"}
+                    className="xiangce kefu vip"
                     openType="contact"
                     style={{
                       background: "none",
@@ -1404,11 +1344,13 @@ const CameraPage = () => {
                       padding: 0,
                     }}
                   >
-                    <Image className="xiangceIcon" src={Fankui}></Image>
+                    <Image className="xiangceIcon" src={Fankui} />
                     <Text>客服</Text>
                   </Button>
                 </View>
               </View>
+
+              {/* 中间水印编辑按钮 */}
               <View
                 className="xiangce"
                 style={{
@@ -1431,14 +1373,12 @@ const CameraPage = () => {
                     }
                     setShowFloatLayout(!showFloatLayout);
                   }}
-                ></Image>
+                />
                 <Text>修改</Text>
-              </View>
-              <View className="tools-bar-inner">
-                <View className={"xiangce "}></View>
               </View>
             </View>
 
+            {/* 水印类型选择 */}
             {fuckShenHe === false && (
               <View
                 className="button-group"
@@ -1449,32 +1389,32 @@ const CameraPage = () => {
                   lineHeight: 1,
                 }}
               >
-                {["图片水印", "视频水印"].map((option, index) => {
-                  return (
-                    <Button
-                      key={option}
-                      onClick={() => handleSelect(option)}
-                      style={{
-                        border: "none",
-                        borderRadius: "25px",
-                        padding: "0 20px",
-                        fontSize: "28rpx",
-                        cursor: "pointer",
-                        boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-                        transition: "transform 0.2s, box-shadow 0.2s",
-                      }}
-                      className={`button-group__button ${
-                        selected === option
-                          ? "button-group__button--selected selected_" + index
-                          : ""
-                      }`}
-                    >
-                      {option?.slice(0, 2) + "加" + option?.slice(2)}
-                    </Button>
-                  );
-                })}
+                {["图片水印", "视频水印"].map((option, index) => (
+                  <Button
+                    key={option}
+                    onClick={() => handleSelect(option)}
+                    style={{
+                      border: "none",
+                      borderRadius: "25px",
+                      padding: "0 20px",
+                      fontSize: "28rpx",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                    }}
+                    className={`button-group__button ${
+                      selected === option
+                        ? "button-group__button--selected selected_" + index
+                        : ""
+                    }`}
+                  >
+                    {option?.slice(0, 2) + "加" + option?.slice(2)}
+                  </Button>
+                ))}
               </View>
             )}
+
+            {/* 底部教程按钮 */}
             <View className="bottom-btns">
               <Button
                 className="share-btn"
@@ -1500,6 +1440,8 @@ const CameraPage = () => {
               </Button>
             </View>
           </View>
+
+          {/* 各种模态框 */}
           <CustomModal
             visible={tiyanModalShow}
             title="提示"
@@ -1517,10 +1459,9 @@ const CameraPage = () => {
             }
             rightButtonText="去查看"
             showLeftButton={false}
-            onRightButtonClick={() => {
-              setTiYanModalShow(false);
-            }}
+            onRightButtonClick={() => setTiYanModalShow(false)}
           />
+
           <CustomModal
             visible={dakaModal}
             title="提示"
@@ -1533,12 +1474,7 @@ const CameraPage = () => {
                   alignItems: "center",
                 }}
               >
-                <View
-                  style={{
-                    width: "100%",
-                    textAlign: "center",
-                  }}
-                >
+                <View style={{ width: "100%", textAlign: "center" }}>
                   是否修改打卡标签名？
                 </View>
                 <Image
@@ -1548,7 +1484,7 @@ const CameraPage = () => {
                     width: "250px",
                     height: "130px",
                   }}
-                ></Image>
+                />
               </View>
             }
             rightButtonText="去修改"
@@ -1557,10 +1493,9 @@ const CameraPage = () => {
               setDakeModal(false);
               setEdit(true);
             }}
-            onLeftButtonClick={() => {
-              setDakeModal(false);
-            }}
-          />{" "}
+            onLeftButtonClick={() => setDakeModal(false)}
+          />
+
           <CustomModal
             visible={shuiyinNameModal}
             title="提示"
@@ -1573,11 +1508,7 @@ const CameraPage = () => {
                   alignItems: "center",
                 }}
               >
-                <View
-                  style={{
-                    width: "100%",
-                  }}
-                >
+                <View style={{ width: "100%" }}>
                   请先填写水印名称后再拍照或相册选图，如下图所示
                 </View>
                 <Image
@@ -1587,7 +1518,7 @@ const CameraPage = () => {
                     width: "300px",
                     height: "52px",
                   }}
-                ></Image>
+                />
               </View>
             }
             rightButtonText="去填写"
@@ -1596,62 +1527,47 @@ const CameraPage = () => {
               setShuiyinNameModal(false);
               setEdit(true);
             }}
-            onLeftButtonClick={() => {
-              setShuiyinNameModal(false);
-            }}
+            onLeftButtonClick={() => setShuiyinNameModal(false)}
           />
+
           <CustomModal
             visible={videoModal}
             title="提示"
             phoneValidation={false}
             customInput={
-              <View
-                style={{
-                  width: "100%",
-                }}
-              >
+              <View style={{ width: "100%" }}>
                 请用手机的 原相机
                 拍摄一段视频，然后再从相册选择。最大支持50M以内视频，请控制视频时长。
               </View>
             }
             rightButtonText="确定"
-            onRightButtonClick={() => {
-              setVideoModal(false);
-            }}
+            onRightButtonClick={() => setVideoModal(false)}
             showLeftButton={false}
           />
-          {/* 到期提示 开始 */}
+
           <CustomModal
             visible={vipClosedModal}
             phoneValidation={false}
             title="提示"
             customInput={
-              <View
-                style={{
-                  width: "100%",
-                }}
-              >
+              <View style={{ width: "100%" }}>
                 您的会员已到期,继续使用请重新开通会员
               </View>
             }
             showLeftButton={false}
             rightButtonText="重新开通"
           />
-          {/* 填写手机号弹窗 */}
+
           <CustomModal
             visible={addPhoneNumber}
             title="请输入手机号"
             content="为防止失联，请一定填写正确手机号，如有变动第一时间通知"
             placeholder="请输入手机号码"
-            onInputChange={(e) => {
-              setPhone(e);
-            }}
+            onInputChange={(e) => setPhone(e)}
             onClose={async () => {
               cloud.callFunction({
                 name: "addUser",
-                data: {
-                  phone,
-                },
+                data: { phone },
               });
               setAddPhoneNumber(false);
               Taro.setStorage({ key: "phoneInputed", data: true });
@@ -1659,6 +1575,8 @@ const CameraPage = () => {
             onLeftButtonClick={() => console.log("取消")}
             showLeftButton={false}
           />
+
+          {/* 水印编辑组件 */}
           <EditMark
             showFloatLayout={showFloatLayout}
             edit={edit}
@@ -1668,15 +1586,11 @@ const CameraPage = () => {
             updateShuiyinIndex={updateShuiyinIndex}
             isShuiyinSaved={isShuiyinSaved}
             saveIsShuiyinSaved={saveIsShuiyinSaved}
-            // 用户信息
             userInfo={userInfo}
-            // 水印防伪
             showTrueCode={showTrueCode}
             setShowTrueCode={setShowTrueCode}
-            // 验证标记
             showHasCheck={showHasCheck}
             setShowHasCheck={setShowHasCheck}
-            // 其他信息
             maskScale={1}
             setMaskScale={setMaskScale}
             editLabel={editLabel}
@@ -1687,4 +1601,5 @@ const CameraPage = () => {
     </ScrollView>
   );
 };
+
 export default CameraPage;

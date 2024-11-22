@@ -8,6 +8,7 @@ import Shuiyin7 from "./item7";
 import Shuiyin8 from "./item8";
 import Shuiyin9 from "./item9";
 import Shuiyin10 from "./item10";
+import Shuiyin11 from "./item11";
 import Shuiyin1Cover from "./item1/cover.png";
 import Shuiyin2Cover from "./item2/cover.png";
 import Shuiyin3Cover from "./item3/cover.png";
@@ -18,6 +19,7 @@ import Shuiyin7Cover from "./item7/cover.png";
 import Shuiyin8Cover from "./item8/cover.png";
 import Shuiyin9Cover from "./item9/cover.png";
 import Shuiyin10Cover from "./item10/cover.png";
+import Shuiyin11Cover from "./item11/cover.png";
 import editLabel from "./label";
 const config = [
   {
@@ -217,6 +219,25 @@ const config = [
       hasWeather: true,
       hasJingWeiDu: false,
       hasRemark: true,
+      copyright: "jrsy",
+      maskScale: true,
+    },
+  }, {
+    // 11
+    component: Shuiyin11,
+    label: editLabel[10],
+    options: {
+      title: "短黄线 时间地点经纬度",
+      vip: false,
+      cover: Shuiyin11Cover,
+      hasDakaLabel: false,
+      showRightCopyright: true,
+      showLeftCopyright: false,
+      hasTitle: false,
+      hasFangDao: false,
+      hasWeather: true,
+      hasJingWeiDu: true,
+      hasRemark: false,
       copyright: "jrsy",
       maskScale: true,
     },
