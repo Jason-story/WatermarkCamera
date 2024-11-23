@@ -192,15 +192,14 @@ const RenderWatermark = ({
                   <Text
                     style={{
                       position: "absolute",
-                      color: "#fbfbfb",
+                      color: "#fff",
                       right: "3px",
                       top: "2px",
                       fontSize: "12px",
                       textAlign: "center",
                       fontWeight: 700,
                       width: "100rpx",
-                      textShadow: "0.2rpx 0.2rpx 0.2rpx #d6d5d5",
-                      fontFamily: "黑体",
+                      fontFamily: "Roboto",
                       opacity: ".85",
                     }}
                   >

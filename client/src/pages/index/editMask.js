@@ -154,9 +154,7 @@ const WatermarkPopup = ({
         setEdit(false);
         setShowFloatLayout(!showFloatLayout);
         if (getEditItem(editLabel, "daka")?.visible) {
-          const index = editLabel.findIndex(
-            (item) => item.key === "daka"
-          );
+          const index = editLabel.findIndex((item) => item.key === "daka");
           changeEditLabelItem(index, "打卡", "value");
         }
       }}
@@ -370,7 +368,7 @@ const WatermarkPopup = ({
                           {item.key === "shuiyinmingcheng" && (
                             <View className="input-tips">
                               {userInfo.type !== "default"
-                                ? "可填写 衿日水印、马克水印"
+                                ? "可填写 今日水印、马克水印"
                                 : "填写水印名称。开通会员可获得专属图标 😎"}
                             </View>
                           )}
