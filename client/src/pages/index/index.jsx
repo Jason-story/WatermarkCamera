@@ -472,7 +472,7 @@ const CameraPage = () => {
 
         // 上传到云存储
         try {
-          const cloudPath = `files/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
+          const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
             userInfo.type === "default" ? "" : "vip"
           }_${userInfo.openid}.png`;
 
@@ -1063,7 +1063,7 @@ const CameraPage = () => {
 
   // 上传图片
   const uploadImage = async (filePath) => {
-    const cloudPath = `files/client/client/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
+    const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
       userInfo.type === "default" ? "" : "vip"
     }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
 
