@@ -1,7 +1,6 @@
 export default {
   pages: [
     "pages/index/index",
-    "pages/result/index",
     "pages/vip/index",
     "pages/me/index",
     "pages/jiaocheng/index",

@@ -489,14 +489,16 @@ const CameraPage = () => {
 
         // 上传到云存储
         try {
-          const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
-            userInfo.type === "default" ? "" : "vip"
-          }_${userInfo.openid}.png`;
+          const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${
+            Date.now() % 1000
+          }_${userInfo.type === "default" ? "" : "vip"}_${userInfo.openid}.png`;
 
+          console.log("cloudPath: ", cloudPath);
           await cloud.uploadFile({
             cloudPath,
             filePath,
           });
+          console.log("cloudPath");
           if (type === "camera") {
             wx.showToast({
               title: "已保存到相册",
@@ -1153,9 +1155,11 @@ const CameraPage = () => {
 
   // 上传图片
   const uploadImage = async (filePath) => {
-    const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${secondsD}_${
-      userInfo.type === "default" ? "" : "vip"
-    }_${userInfo.openid}.${filePath.match(/\.(\w+)$/)[1]}`;
+    const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${
+      Date.now() % 1000
+    }_${userInfo.type === "default" ? "" : "vip"}_${userInfo.openid}.${
+      filePath.match(/\.(\w+)$/)[1]
+    }`;
 
     const res = await cloud.uploadFile({
       cloudPath,
