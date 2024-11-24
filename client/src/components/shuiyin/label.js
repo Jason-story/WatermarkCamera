@@ -7,6 +7,7 @@ const label = {
       // 是否隐藏
       visible: true,
       editTitle: false,
+      length: 4,
       switchVisible: true,
     },
     {

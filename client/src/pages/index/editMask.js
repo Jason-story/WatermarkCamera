@@ -354,7 +354,11 @@ const WatermarkPopup = ({
                                 ? item.value
                                 : ""
                             }
-                            maxlength={item.length || 50}
+                            maxlength={
+                              item.key === "shuiyinmingcheng"
+                                ? 4
+                                : item.length || 50
+                            }
                             cursorSpacing={100}
                             clear={true}
                             onInput={(e) => {

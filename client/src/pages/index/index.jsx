@@ -1,6 +1,14 @@
 // index.jsx
 import React, { useEffect, useState } from "react";
-import { View, Button, Text, Image, ScrollView } from "@tarojs/components";
+import {
+  View,
+  Button,
+  Text,
+  Image,
+  Input,
+  ScrollView,
+} from "@tarojs/components";
+import { AtInputNumber } from "taro-ui";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Taro from "@tarojs/taro";
 
@@ -27,6 +35,7 @@ import QQMapWX from "qqmap-wx-jssdk";
 import Touming from "../../images/touming.png";
 import ShareImg from "../../images/logo.jpg";
 import VipImg from "../../images/vip.png";
+import PiliangImg from "../../images/piliang.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
@@ -127,6 +136,8 @@ const CameraPage = () => {
   // 视频相关状态
   const [videoPath, setVideoPath] = useState("");
   const [videoMaskPath, setVideoMaskPath] = useState("");
+  const [piliangVisible, setPiliangVisible] = useState(false);
+  const [piliangeTime, setPiliangeTime] = useState(1);
 
   // 全局状态
   app.$app.globalData.zphsId = zphsId;
@@ -1376,6 +1387,53 @@ const CameraPage = () => {
                 />
                 <Text>修改</Text>
               </View>
+
+              <View className="tools-bar-inner">
+                {/* 会员按钮 */}
+                <View className="xiangce kefu vip">
+                  <Button
+                    onClick={() => {
+                      setPiliangVisible(true);
+                    }}
+                    style={{
+                      background: "none",
+                      color: "inherit",
+                      border: "none",
+                      padding: 0,
+                      font: "inherit",
+                      cursor: "pointer",
+                      outline: "none",
+                      height: "39px",
+                    }}
+                  >
+                    <Image src={PiliangImg} className="xiangceIcon" />
+                  </Button>
+                  <Text>批量</Text>
+                </View>
+                {/* 我的按钮 */}
+                {/* <View className="xiangce kefu" style={{ marginRight: "auto" }}>
+                  <Button
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: "/pages/me/index",
+                      });
+                    }}
+                    style={{
+                      background: "none",
+                      color: "inherit",
+                      border: "none",
+                      padding: 0,
+                      font: "inherit",
+                      cursor: "pointer",
+                      outline: "none",
+                      height: "39px",
+                    }}
+                  >
+                    <Image src={KefuIcon} className="xiangceIcon" />
+                  </Button>
+                  <Text>我的</Text>
+                </View> */}
+              </View>
             </View>
 
             {/* 水印类型选择 */}
@@ -1442,6 +1500,64 @@ const CameraPage = () => {
           </View>
 
           {/* 各种模态框 */}
+          {/* 批量处理 */}
+          <CustomModal
+            visible={piliangVisible}
+            title="请输入时间间隔"
+            phoneValidation={false}
+            customInput={
+              <View>
+                <Text
+                  style={{
+                    color: "#ff4d4f",
+                    margin: "0 auto 10px auto",
+                  }}
+                >
+                  此功能只对半年及以上会员开放
+                </Text>
+                <Text
+                  style={{
+                    margin: "0 auto 20px auto",
+                  }}
+                >
+                  请按分钟填写每张照片时间间隔，默认1分钟
+                </Text>
+
+                <View>
+                  <AtInputNumber
+                    placeholder="最小1，最大10"
+                    min={1}
+                    max={10}
+                    step={1}
+                    width={100}
+                    value={piliangeTime}
+                    onChange={(e) => {
+                      setPiliangeTime(e);
+                    }}
+                  ></AtInputNumber>
+                </View>
+              </View>
+            }
+            rightButtonText="相册选图"
+            onRightButtonClick={() => {
+              if (
+                userInfo.type === "halfYearMonth" ||
+                userInfo.type === "year" ||
+                userInfo.type === "never"
+              ) {
+                setPiliangVisible(false);
+                selectImgFromXiangce();
+              } else {
+                Taro.showToast({
+                  title: "您的会员类型不符合条件",
+                  icon: "none",
+                  duration: 2000,
+                });
+              }
+            }}
+            onLeftButtonClick={() => setPiliangVisible(false)}
+          />
+
           <CustomModal
             visible={tiyanModalShow}
             title="提示"
@@ -1457,9 +1573,13 @@ const CameraPage = () => {
                 体验次数已用尽，请购买会员后使用
               </View>
             }
-            rightButtonText="去查看"
-            showLeftButton={false}
-            onRightButtonClick={() => setTiYanModalShow(false)}
+            rightButtonText="去填写"
+            onRightButtonClick={() => {
+              setShowFloatLayout(!showFloatLayout);
+              setShuiyinNameModal(false);
+              setEdit(true);
+            }}
+            onLeftButtonClick={() => setShuiyinNameModal(false)}
           />
 
           <CustomModal

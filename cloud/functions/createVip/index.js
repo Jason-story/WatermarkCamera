@@ -43,7 +43,7 @@ exports.main = async (event, context) => {
         halfYearMonth: 180,
         year: 365,
         never: 999999,
-        dingzhi: 0
+        dingzhi: 1
     };
 
     try {

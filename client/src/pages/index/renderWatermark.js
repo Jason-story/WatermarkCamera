@@ -200,7 +200,6 @@ const RenderWatermark = ({
                       fontWeight: 700,
                       width: "100rpx",
                       fontFamily: "Roboto",
-                      opacity: ".85",
                     }}
                   >
                     {shuiyinxiangjiName}
