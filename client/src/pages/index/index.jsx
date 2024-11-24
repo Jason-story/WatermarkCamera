@@ -458,7 +458,7 @@ const CameraPage = () => {
   };
 
   // 图片保存处理
-  const handleSaveToAlbum = async (filePath) => {
+  const handleSaveToAlbum = async (filePath, type) => {
     await wx.saveImageToPhotosAlbum({
       filePath,
       success: async () => {
@@ -497,12 +497,17 @@ const CameraPage = () => {
             cloudPath,
             filePath,
           });
-          // if (xiangceTempFiles.length === 1) {
-          //   wx.showToast({
-          //     title: "已保存到相册",
-          //     icon: "success",
-          //   });
-          // }
+          if (type === "camera") {
+            wx.showToast({
+              title: "已保存到相册",
+              icon: "success",
+            });
+          }
+          if (piLiangCurrentIndex === xiangceTempFiles.length - 1) {
+            setPiLiangCurrentIndex(0);
+            setXiangceTempFiles([]);
+            return;
+          }
           setPiLiangCurrentIndex((prev) => {
             return prev + 1;
           });
@@ -555,7 +560,8 @@ const CameraPage = () => {
           return;
         }
 
-        // Taro.showLoading({ title: "处理中..." });
+        type === "camera" &&
+          Taro.showLoading({ title: "处理中...", mask: true });
 
         // 确保图片完全加载
         const ensureImageLoaded = () => {
@@ -623,7 +629,7 @@ const CameraPage = () => {
         }
 
         // 保存到相册并处理后续操作
-        await handleSaveToAlbum(filePath);
+        await handleSaveToAlbum(filePath, type);
       } catch (error) {
         wx.showToast({
           icon: "error",
@@ -741,9 +747,15 @@ const CameraPage = () => {
   useEffect(() => {
     let N = piliangeTime;
     const fn = async () => {
-      if (piLiangCurrentIndex === 0) {
-        Taro.showLoading({ title: "处理中..." });
-      }
+      Taro.showLoading({
+        title:
+          "处理中[" +
+          (piLiangCurrentIndex + 1) +
+          "/" +
+          xiangceTempFiles.length +
+          "]...",
+        mask: true,
+      });
       // 确保当前索引在有效范围内
       if (piLiangCurrentIndex < xiangceTempFiles.length) {
         // 每次只处理当前索引对应的图片
@@ -790,6 +802,8 @@ const CameraPage = () => {
             content: "图片过大，请选择小于20M的图片",
             showCancel: false,
           });
+          Taro.hideLoading();
+
           return reject("图片过大，请选择小于20M的图片");
         }
 
@@ -803,6 +817,7 @@ const CameraPage = () => {
             content: "图片尺寸过小，请选择更大的图片",
             showCancel: false,
           });
+          Taro.hideLoading();
           return reject("图片尺寸过小，请选择更大的图片");
         }
 
@@ -814,6 +829,8 @@ const CameraPage = () => {
 
         if (info.width / info.height > 1) {
           setMaskScale(info.height / info.width);
+        } else {
+          setMaskScale(1);
         }
 
         await setSnapshotHeight(calculatedHeight);
@@ -973,7 +990,7 @@ const CameraPage = () => {
     // });
 
     const processVideo = async () => {
-      Taro.showLoading({ title: "上传中..." });
+      Taro.showLoading({ title: "上传中...", mask: true });
 
       try {
         const [videoFileId, videoMaskFileId, logoImageFileId] =

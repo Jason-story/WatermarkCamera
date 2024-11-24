@@ -133,4 +133,12 @@ picker {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-top: none !important;
+}
+.at-input-number .h5-input {
+  border-left: 0 !important;
+  border-right: 0 !important;
 }
