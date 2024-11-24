@@ -132,6 +132,8 @@ const CameraPage = () => {
     ShuiyinDoms[currentShuiyinIndex].label
   );
   const [commonEditLabel, setCommonEditLabel] = useState([]);
+  const [xiangceTempFiles, setXiangceTempFiles] = useState([]);
+  const [piLiangCurrentIndex, setPiLiangCurrentIndex] = useState(0);
 
   // 视频相关状态
   const [videoPath, setVideoPath] = useState("");
@@ -458,7 +460,9 @@ const CameraPage = () => {
     await wx.saveImageToPhotosAlbum({
       filePath,
       success: async () => {
-        Taro.showLoading({ title: "处理中..." });
+        // if (xiangceTempFiles.length === 1) {
+        //   Taro.showLoading({ title: "处理中..." });
+        // }
 
         // 更新用户信息
         const { result } = await cloud.callFunction({
@@ -491,10 +495,14 @@ const CameraPage = () => {
             cloudPath,
             filePath,
           });
-
-          wx.showToast({
-            title: "已保存到相册",
-            icon: "success",
+          // if (xiangceTempFiles.length === 1) {
+          //   wx.showToast({
+          //     title: "已保存到相册",
+          //     icon: "success",
+          //   });
+          // }
+          setPiLiangCurrentIndex((prev) => {
+            return prev + 1;
           });
 
           // 显示广告
@@ -545,7 +553,7 @@ const CameraPage = () => {
           return;
         }
 
-        Taro.showLoading({ title: "处理中..." });
+        // Taro.showLoading({ title: "处理中..." });
 
         // 确保图片完全加载
         const ensureImageLoaded = () => {
@@ -615,20 +623,20 @@ const CameraPage = () => {
         // 保存到相册并处理后续操作
         await handleSaveToAlbum(filePath);
       } catch (error) {
-        console.error("处理失败:", error);
         wx.showToast({
           icon: "error",
           title: "失败，请重试",
         });
         setTempPath(undefined);
       } finally {
-        Taro.hideLoading();
+        // Taro.hideLoading();
       }
     });
   };
 
   // 从相册选择图片
-  const selectImgFromXiangce = async () => {
+  const selectImgFromXiangce = async (type) => {
+    // type 默认空 批量时 =  piliang
     try {
       // 权限检查
       if (!allAuth) {
@@ -689,53 +697,14 @@ const CameraPage = () => {
 
       // 处理图片选择
       if (selected === "图片水印") {
+        setPiLiangCurrentIndex(0);
+        setXiangceTempFiles([]);
         const res = await Taro.chooseMedia({
-          count: 1,
+          count: type === "piliang" ? 9 : 1,
           mediaType: ["image"],
           sourceType: ["album"],
         });
-
-        if (!res.tempFiles?.[0]) {
-          throw new Error("未获取到图片文件");
-        }
-
-        const { tempFilePath: filePath, size } = res.tempFiles[0];
-
-        // 文件大小检查
-        const fileSizeInMB = size / (1024 * 1024);
-        if (fileSizeInMB > 20) {
-          Taro.showModal({
-            title: "提示",
-            content: "图片过大，请选择小于20M的图片",
-            showCancel: false,
-          });
-          return;
-        }
-
-        // 获取图片信息
-        const info = await Taro.getImageInfo({ src: filePath });
-
-        // 尺寸检查
-        if (info.width < 100 || info.height < 100) {
-          Taro.showModal({
-            title: "提示",
-            content: "图片尺寸过小，请选择更大的图片",
-            showCancel: false,
-          });
-          return;
-        }
-        // 设置截图高度
-        const calculatedHeight =
-          info.orientation === "right"
-            ? (info.width / info.height) * screenWidth
-            : (info.height / info.width) * screenWidth;
-
-        if (info.width / info.height > 1) {
-          setMaskScale(info.height / info.width);
-        }
-
-        await setSnapshotHeight(calculatedHeight);
-        await setXiangceTempPath(filePath);
+        setXiangceTempFiles(res.tempFiles);
       } else {
         // 处理视频选择
         const res = await Taro.chooseMedia({
@@ -765,6 +734,97 @@ const CameraPage = () => {
     } catch (error) {
       console.error("选择媒体失败:", error);
     }
+  };
+
+  useEffect(() => {
+    let N = piliangeTime;
+    const fn = async () => {
+      if (piLiangCurrentIndex === 0) {
+        Taro.showLoading({ title: "处理中..." });
+      }
+      // 确保当前索引在有效范围内
+      if (piLiangCurrentIndex < xiangceTempFiles.length) {
+        // 每次只处理当前索引对应的图片
+        await tupianjiancha(xiangceTempFiles[piLiangCurrentIndex]);
+        const newEditLabel = [...editLabel];
+
+        const index = newEditLabel.findIndex((item) => item.key === "shijian");
+        // 获取当前时间 并格式化
+        const [datePart, timePart] = newEditLabel[index].value.split(" ");
+        const [year, month, day] = datePart.split("-").map(Number);
+        const [hours, minutes] = timePart.split(":").map(Number);
+
+        const date = new Date(year, month - 1, day, hours, minutes + N); // 分钟加 N
+        // 格式化日期和时间
+        newEditLabel[index].value = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ${String(
+          date.getHours()
+        ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+
+        // 更新对应索引的值
+        setEditLabel(newEditLabel);
+        if (piLiangCurrentIndex === xiangceTempFiles.length - 1) {
+          setTimeout(
+            () => {
+              Taro.showToast({ title: "已保存到相册", icon: "success" });
+            },
+            xiangceTempFiles.length === 1 ? 2000 : 1000
+          );
+        }
+        N += piliangeTime;
+      }
+    };
+    xiangceTempFiles.length > 0 && fn();
+  }, [xiangceTempFiles.length, piLiangCurrentIndex]);
+  const tupianjiancha = (tempFile) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // 文件大小检查
+        const fileSizeInMB = tempFile.size / (1024 * 1024);
+        if (fileSizeInMB > 20) {
+          Taro.showModal({
+            title: "提示",
+            content: "图片过大，请选择小于20M的图片",
+            showCancel: false,
+          });
+          return reject("图片过大，请选择小于20M的图片");
+        }
+
+        // 获取图片信息
+        const info = await Taro.getImageInfo({ src: tempFile.tempFilePath });
+
+        // 尺寸检查
+        if (info.width < 100 || info.height < 100) {
+          Taro.showModal({
+            title: "提示",
+            content: "图片尺寸过小，请选择更大的图片",
+            showCancel: false,
+          });
+          return reject("图片尺寸过小，请选择更大的图片");
+        }
+
+        // 设置截图高度
+        const calculatedHeight =
+          info.orientation === "right"
+            ? (info.width / info.height) * screenWidth
+            : (info.height / info.width) * screenWidth;
+
+        if (info.width / info.height > 1) {
+          setMaskScale(info.height / info.width);
+        }
+
+        await setSnapshotHeight(calculatedHeight);
+        await setXiangceTempPath(tempFile.tempFilePath);
+
+        resolve({
+          calculatedHeight,
+          tempFilePath: tempFile.tempFilePath,
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
   };
 
   // ===== 事件处理函数 =====
@@ -1540,13 +1600,21 @@ const CameraPage = () => {
             }
             rightButtonText="相册选图"
             onRightButtonClick={() => {
+              if (selected === "视频水印") {
+                Taro.showToast({
+                  title: "批量处理仅支持图片水印模式",
+                  icon: "none",
+                  duration: 2000,
+                });
+                return;
+              }
               if (
                 userInfo.type === "halfYearMonth" ||
                 userInfo.type === "year" ||
                 userInfo.type === "never"
               ) {
                 setPiliangVisible(false);
-                selectImgFromXiangce();
+                selectImgFromXiangce("piliang");
               } else {
                 Taro.showToast({
                   title: "您的会员类型不符合条件",
