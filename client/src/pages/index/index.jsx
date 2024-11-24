@@ -74,10 +74,6 @@ const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
 
 // 文件系统配置
 
-// 防伪码生成
-let fangweimaText = generateRandomString(4);
-let makefangweimaText = generateRandomString(3);
-
 // 小程序配置
 const appid = Taro.getAccountInfoSync().miniProgram.appId;
 const config = appConfigs[appid];
@@ -140,6 +136,12 @@ const CameraPage = () => {
   const [videoMaskPath, setVideoMaskPath] = useState("");
   const [piliangVisible, setPiliangVisible] = useState(false);
   const [piliangeTime, setPiliangeTime] = useState(1);
+
+  // 防伪码生成
+  const [fangweimaText, setFangweimaText] = useState(generateRandomString(4));
+  const [makefangweimaText, setMakefangweimaText] = useState(
+    generateRandomString(4)
+  );
 
   // 全局状态
   app.$app.globalData.zphsId = zphsId;
@@ -534,8 +536,8 @@ const CameraPage = () => {
     setTempPath = setCameraTempPath,
   }) => {
     // 更新防伪码
-    fangweimaText = generateRandomString(4);
-    makefangweimaText = generateRandomString(3);
+    setFangweimaText(generateRandomString(4));
+    setMakefangweimaText(generateRandomString(4));
 
     requestAnimationFrame(async () => {
       try {
