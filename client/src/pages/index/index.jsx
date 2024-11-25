@@ -59,13 +59,14 @@ const app = getApp();
 let cloud = "";
 
 // 当前时间相关常量
-const now = new Date();
-const yearD = now.getFullYear();
-const monthD = String(now.getMonth() + 1).padStart(2, "0");
-const dayD = String(now.getDate()).padStart(2, "0");
-const hoursD = String(now.getHours()).padStart(2, "0");
-const minutesD = String(now.getMinutes()).padStart(2, "0");
-const secondsD = String(now.getSeconds()).padStart(2, "0");
+let now = new Date();
+// let yearD = now.getFullYear();
+// let monthD = String(now.getMonth() + 1).padStart(2, "0");
+let dayD = ""; //String(now.getDate()).padStart(2, "0");
+let hoursD = ""; //String(now.getHours()).padStart(2, "0");
+let minutesD = ""; //String(now.getMinutes()).padStart(2, "0");
+// let secondsD = String(now.getSeconds()).padStart(2, "0");
+
 const fs = wx.getFileSystemManager();
 
 // 路由参数获取
@@ -498,7 +499,6 @@ const CameraPage = () => {
             cloudPath,
             filePath,
           });
-          console.log("cloudPath");
           if (type === "camera") {
             wx.showToast({
               title: "已保存到相册",
@@ -922,6 +922,18 @@ const CameraPage = () => {
         success: function (res) {
           setUserInfo(res.result.data);
 
+          dayD = String(new Date(res.result.data.times).getDate()).padStart(
+            2,
+            "0"
+          );
+          hoursD = String(new Date(res.result.data.times).getHours()).padStart(
+            2,
+            "0"
+          );
+          minutesD = String(
+            new Date(res.result.data.times).getMinutes()
+          ).padStart(2, "0");
+
           // 会员手机号处理
           if (
             !res.result.data.phone &&
@@ -986,13 +998,13 @@ const CameraPage = () => {
   // 视频水印路径变化处理
   useEffect(() => {
     if (!videoMaskPath) return;
-    console.log(333)
+    console.log(333);
 
     // @@保存cover图片
     Taro.saveImageToPhotosAlbum({
       filePath: videoMaskPath,
     });
-    console.log(4444)
+    console.log(4444);
 
     const processVideo = async () => {
       Taro.showLoading({ title: "上传中...", mask: true });
@@ -1163,6 +1175,7 @@ const CameraPage = () => {
     }_${userInfo.type === "default" ? "" : "vip"}_${userInfo.openid}.${
       filePath.match(/\.(\w+)$/)[1]
     }`;
+    console.log("cloudPath: ", cloudPath);
 
     const res = await cloud.uploadFile({
       cloudPath,
