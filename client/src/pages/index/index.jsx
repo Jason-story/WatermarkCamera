@@ -986,10 +986,13 @@ const CameraPage = () => {
   // 视频水印路径变化处理
   useEffect(() => {
     if (!videoMaskPath) return;
+    console.log(333)
+
     // @@保存cover图片
-    // Taro.saveImageToPhotosAlbum({
-    //   filePath:videoMaskPath,
-    // });
+    Taro.saveImageToPhotosAlbum({
+      filePath: videoMaskPath,
+    });
+    console.log(4444)
 
     const processVideo = async () => {
       Taro.showLoading({ title: "上传中...", mask: true });
@@ -1452,6 +1455,7 @@ const CameraPage = () => {
                   left: "50%",
                   transform: "translateX(-50%) scale(1.15)",
                   bottom: "0",
+                  zIndex: 99999,
                 }}
               >
                 <Image
@@ -1802,7 +1806,7 @@ const CameraPage = () => {
             setShowTrueCode={setShowTrueCode}
             showHasCheck={showHasCheck}
             setShowHasCheck={setShowHasCheck}
-            maskScale={1}
+            maskScale={maskScale}
             setMaskScale={setMaskScale}
             editLabel={editLabel}
             setEditLabel={setEditLabel}

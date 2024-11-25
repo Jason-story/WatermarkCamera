@@ -48,10 +48,11 @@ const RenderWatermark = ({
   maskScale,
   setShowFloatLayout,
 }) => {
+  const newMaskScale = maskScale + 0.1;
   const isCamera = type === "camera";
   const shuiyinxiangjiName =
     getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
-  const renderLeftCopyright = ({ maskScale }) => {
+  const renderLeftCopyright = () => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
 
     if (
@@ -66,7 +67,7 @@ const RenderWatermark = ({
             position: "absolute",
             left: 0,
             bottom: 0,
-            transform: `scale(${maskScale})`,
+            transform: `scale(${newMaskScale})`,
             transformOrigin: "left bottom",
           }}
         >
@@ -88,7 +89,7 @@ const RenderWatermark = ({
             position: "absolute",
             left: 0,
             bottom: 0,
-            transform: `scale(${maskScale})`,
+            transform: `scale(${newMaskScale})`,
             transformOrigin: "left bottom",
           }}
         >
@@ -111,7 +112,7 @@ const RenderWatermark = ({
     } else {
     }
   };
-  const renderRightCopyright = ({ maskScale }) => {
+  const renderRightCopyright = () => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
     if (option?.copyright === "syxj") {
       return (
@@ -136,7 +137,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: 0,
                   bottom: 0,
-                  transform: `scale(${maskScale})`,
+                  transform: `scale(${newMaskScale})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -173,7 +174,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: 0,
                   bottom: 0,
-                  transform: `scale(${maskScale})`,
+                  transform: `scale(${newMaskScale})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -215,7 +216,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: 0,
                   bottom: 0,
-                  transform: `scale(${maskScale})`,
+                  transform: `scale(${newMaskScale})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -252,7 +253,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: "10px",
                   bottom: "10px",
-                  transform: `scale(${maskScale})`,
+                  transform: `scale(${newMaskScale})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -276,7 +277,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: 0,
                   bottom: 0,
-                  transform: `scale(${maskScale})`,
+                  transform: `scale(${newMaskScale})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -323,7 +324,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: 0,
                   bottom: 0,
-                  transform: `scale(${maskScale})`,
+                  transform: `scale(${newMaskScale})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -368,7 +369,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: "10px",
                   bottom: "10px",
-                  transform: `scale(${maskScale})`,
+                  transform: `scale(${newMaskScale})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -445,9 +446,12 @@ const RenderWatermark = ({
             style={{
               width: "100%",
               height: "100%",
-              // opacity:.05
+              // opacity:.2
             }}
-            src="https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/p.jpg"
+            src={
+              "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/p.jpg?t=" +
+              new Date()
+            }
           ></Image> */}
           {tempPath && (
             <Image
@@ -511,8 +515,8 @@ const RenderWatermark = ({
             setEditLabel,
           })}
         </View>
-        {renderLeftCopyright({ maskScale })}
-        {renderRightCopyright({ maskScale })}
+        {renderLeftCopyright()}
+        {renderRightCopyright()}
       </View>
     </Snapshot>
   );

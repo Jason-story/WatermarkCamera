@@ -80,6 +80,12 @@ const checkForUpdate = () => {
 // 字体配置
 const FONT_CONFIG = [
   {
+    family: "waterTop",
+    url: "https://gitee.com/jasonstory/fonts/raw/master/water_top.ttf",
+  }, {
+    family: "waterBottom",
+    url: "https://gitee.com/jasonstory/fonts/raw/master/water_bottom.ttf",
+  }, {
     family: "MiSans",
     url: "https://gitee.com/jasonstory/fonts/raw/master/subset-MiSans-Bold.ttf",
   },

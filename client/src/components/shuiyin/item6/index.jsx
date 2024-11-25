@@ -9,10 +9,7 @@ import {
 } from "../../utils";
 import "./index.scss";
 
-const Index = ({
-  maskScale,
-  editLabel,
-}) => {
+const Index = ({ maskScale, editLabel }) => {
   const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
   return (
     <View
@@ -23,16 +20,19 @@ const Index = ({
       }}
     >
       <View className="item6-time-box item6-flex">
-        <View className="item6-time">{`${time.hours}:${time.minutes}`}</View>
+        <View className="item6-time">
+          <Text>{`${time.hours}:${time.minutes}`}</Text>
+          <Text className="item-6-top-time">{`${time.hours}:${time.minutes}`}</Text>
+        </View>
         <View className="item6-line"></View>
         <View className="item6-date-box item6-flex">
           <View className="item6-date">
-            <View>{`${time.year}.${time.month}.${time.day}`}</View>
+            <View>{`${time.year}-${time.month}-${time.day}`}</View>
           </View>
           <View className="item6-weather">
             <Text>
               {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}{" "}
-              {getEditItem(editLabel, "tianqi").value} ℃
+              {"  " + getEditItem(editLabel, "tianqi").value} ℃
             </Text>
           </View>
         </View>

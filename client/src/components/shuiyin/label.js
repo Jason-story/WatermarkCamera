@@ -193,7 +193,6 @@ const label = {
       editTitle: false,
       switchVisible: true,
     },
-
     {
       key: "shijian",
       title: "时间",
@@ -218,14 +217,14 @@ const label = {
     {
       key: "jingdu",
       title: "经度",
-      visible: true,
+      visible: false,
       editTitle: true,
       switchVisible: true,
     },
     {
       key: "weidu",
       title: "纬度",
-      visible: true,
+      visible: false,
       editTitle: true,
       switchVisible: true,
     },

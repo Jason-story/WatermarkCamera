@@ -35,6 +35,7 @@ const QRCodePage = () => {
         success: function (res) {
           Taro.hideLoading();
           if (res.result?.data?.length > 0) {
+            console.log('res.result.data: ', res.result.data);
             setFiles(res.result.data);
           }
         },
