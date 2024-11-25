@@ -36,7 +36,7 @@ const Index = ({
           <View className="item9-weather">
             <Text>
               {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}
-              {getEditItem(editLabel, "tianqi").value} ℃
+              {'    '+getEditItem(editLabel, "tianqi").value} ℃
             </Text>
           </View>
         </View>

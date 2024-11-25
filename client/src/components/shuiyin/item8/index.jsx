@@ -8,25 +8,12 @@ import {
   getEditItem,
 } from "../../utils";
 import "./index.scss";
-import Cover from "./cover.png";
 
-const Index = ({
-  hours,
-  minutes,
-  title,
-  locationName,
-  weather,
-  weekly,
-  day,
-  month,
-  year,
-  remark,
-  latitude,
-  longitude,
-  fangdaoShuiyin,
-  editLabel,
-}) => {
-  console.log('getEditItem(editLabel, "fangdaowenzi").value: ', getEditItem(editLabel, "fangdaowenzi").value);
+const Index = ({ editLabel }) => {
+  console.log(
+    'getEditItem(editLabel, "fangdaowenzi").value: ',
+    getEditItem(editLabel, "fangdaowenzi").value
+  );
 
   return (
     <View className="item8-watermark-container" key={"item-8"}>

@@ -4,21 +4,7 @@ import { View, Text, Image } from "@tarojs/components";
 import { formatTextWithLineLimit } from "../../utils";
 import "./index.scss";
 
-const Index = ({
-  hours,
-  minutes,
-  title,
-  locationName,
-  weather,
-  weekly,
-  day,
-  maskScale,
-  month,
-  year,
-  remark,
-  editLabel,
-  setEditLabel,
-}) => {
+const Index = ({ maskScale, editLabel }) => {
   const bgItems = editLabel.filter((item) => item.bg && item.visible);
   const normalItems = editLabel.filter(
     (item) =>

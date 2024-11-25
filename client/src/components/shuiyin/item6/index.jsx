@@ -10,20 +10,7 @@ import {
 import "./index.scss";
 
 const Index = ({
-  hours,
-  minutes,
-  title,
-  locationName,
-  weather,
-  weekly,
-  day,
   maskScale,
-
-  month,
-  year,
-  remark,
-  latitude,
-  longitude,
   editLabel,
 }) => {
   const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
@@ -44,8 +31,7 @@ const Index = ({
           </View>
           <View className="item6-weather">
             <Text>
-              {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}{' '}
-
+              {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}{" "}
               {getEditItem(editLabel, "tianqi").value} ℃
             </Text>
           </View>
@@ -67,7 +53,7 @@ const Index = ({
           getEditItem(editLabel, "weidu").value
         }，${getEditItem(editLabel, "jingdu").value}`}</View>
       ) : null}
-      {getEditItem(editLabel, "beizhu").visible  && (
+      {getEditItem(editLabel, "beizhu").visible && (
         <View className="item6-remark item6-flex">
           <View
             className="item6-remark-text"

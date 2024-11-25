@@ -11,20 +11,7 @@ import "./index.scss";
 import Cover from "./cover.png";
 
 const Index = ({
-  hours,
-  minutes,
-  title,
-  locationName,
-  weather,
-  weekly,
-  day,
-  month,
-  year,
   maskScale,
-
-  remark,
-  latitude,
-  longitude,
   editLabel,
 }) => {
   const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
@@ -81,7 +68,7 @@ const Index = ({
               dangerouslySetInnerHTML={{
                 __html: formatTextWithLineLimit(
                   getEditItem(editLabel, "beizhu").value ||
-                  getEditItem(editLabel, "beizhu").title,
+                    getEditItem(editLabel, "beizhu").title,
                   10,
                   2
                 ),

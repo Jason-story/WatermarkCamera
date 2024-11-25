@@ -11,15 +11,7 @@ import {
 import "./index.scss";
 
 const Index = ({
-  hours,
-  minutes,
-  dakaName,
-  locationName,
-  weekly,
   maskScale,
-  day,
-  month,
-  year,
   editLabel,
 }) => {
   const time = parseDateString(getEditItem(editLabel, "shijian").value || "");

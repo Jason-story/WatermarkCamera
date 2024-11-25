@@ -5,19 +5,8 @@ import { formatTextWithLineLimit } from "../../utils";
 import "./index.scss";
 
 const Index = ({
-  hours,
-  minutes,
-  title,
-  locationName,
-  weather,
-  weekly,
-  day,
   maskScale,
-  month,
-  year,
-  remark,
   editLabel,
-  setEditLabel,
 }) => {
   const bgItems = editLabel.filter((item) => item.bg);
   const normalItems = editLabel.filter(
