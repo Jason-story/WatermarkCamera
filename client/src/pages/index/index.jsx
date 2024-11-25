@@ -629,15 +629,16 @@ const CameraPage = () => {
           setVideoMaskPath(filePath);
           return;
         }
-
         // 保存到相册并处理后续操作
         await handleSaveToAlbum(filePath, type);
       } catch (error) {
-        wx.showToast({
-          icon: "error",
-          title: "失败，请重试",
-        });
         setTempPath(undefined);
+        wx.showModal({
+          showCancel: false,
+          icon: "error",
+          title: "截图失败，请删除小程序后重新进入",
+        });
+
       } finally {
         // Taro.hideLoading();
       }
