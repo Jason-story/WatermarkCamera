@@ -638,7 +638,6 @@ const CameraPage = () => {
           icon: "error",
           title: "截图失败，请删除小程序后重新进入",
         });
-
       } finally {
         // Taro.hideLoading();
       }
@@ -1543,6 +1542,7 @@ const CameraPage = () => {
                 className="button-group"
                 style={{
                   padding: "0 15px",
+                  marginTop: 0,
                   width: "100%",
                   boxSizing: "border-box",
                   lineHeight: 1,
@@ -1575,6 +1575,30 @@ const CameraPage = () => {
 
             {/* 底部教程按钮 */}
             <View className="bottom-btns">
+              {fuckShenHe === false && (
+                <Button
+                  className="share-btn"
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: "/pages/vip/index",
+                    });
+                  }}
+                  style={{
+                    background: "linear-gradient(45deg, #00e7ff, #cc00ff)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "30px",
+                    padding: "0 20px",
+                    fontSize: "30rpx",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                    marginBottom: "15px",
+                    height: "40px",
+                  }}
+                >
+                  开通会员
+                </Button>
+              )}
               <Button
                 className="share-btn"
                 onClick={() => {
@@ -1583,16 +1607,16 @@ const CameraPage = () => {
                   });
                 }}
                 style={{
-                  background: "linear-gradient(45deg, #ff512f, #dd2476)",
+                  background: "linear-gradient(45deg, #efc80a, #f7006d)",
                   color: "white",
                   border: "none",
                   borderRadius: "30px",
                   padding: "0 20px",
-                  fontSize: "28rpx",
+                  fontSize: "30rpx",
                   cursor: "pointer",
                   fontWeight: "500",
-                  transition: "transform 0.2s, box-shadow 0.2s",
                   height: "40px",
+                  marginBottom: "50px",
                 }}
               >
                 使用教程
@@ -1618,10 +1642,21 @@ const CameraPage = () => {
                 </Text>
                 <Text
                   style={{
-                    margin: "0 auto 20px auto",
+                    margin: "0 auto 10px auto",
+                    width: "90%",
+                    textAlign:"center",
                   }}
                 >
-                  请按分钟填写每张照片时间间隔，默认1分钟
+                  请按分钟填写每张照片时间间隔，
+                </Text>
+                <Text
+                  style={{
+                    margin: "0 auto 20px auto",
+                    textAlign:"center",
+                    width: "90%",
+                  }}
+                >
+                  默认1分钟，一次最多9张
                 </Text>
 
                 <View>

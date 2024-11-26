@@ -299,10 +299,8 @@ const Index = () => {
                       <Text>
                         {item.key !== "1day" &&
                           item.key !== "dingzhi" &&
-                          "，平均每天" +
-                            item.text +
-                            "元" +
-                            (item.key === "year" ? "，推荐" : "")}
+                          item.key !== "never" &&
+                          "，平均每天" + item.text + "元"}
                       </Text>
                     </View>
                   </Label>
