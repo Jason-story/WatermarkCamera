@@ -153,7 +153,11 @@ const WatermarkPopup = ({
       onClose={() => {
         setEdit(false);
         setShowFloatLayout(!showFloatLayout);
-        if (getEditItem(editLabel, "daka")?.visible) {
+        if (
+          getEditItem(editLabel, "daka")?.visible &&
+          (getEditItem(editLabel, "daka")?.value === "修改" ||
+            getEditItem(editLabel, "daka")?.value.length !== 2)
+        ) {
           const index = editLabel.findIndex((item) => item.key === "daka");
           changeEditLabelItem(index, "打卡", "value");
         }

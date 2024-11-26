@@ -1647,7 +1647,7 @@ const CameraPage = () => {
                     textAlign:"center",
                   }}
                 >
-                  请按分钟填写每张照片时间间隔，
+                  请按分钟填写每张照片时间间隔
                 </Text>
                 <Text
                   style={{
