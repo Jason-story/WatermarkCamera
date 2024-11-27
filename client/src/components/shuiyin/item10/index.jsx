@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Taro from "@tarojs/taro";
 import { View, Text, Image } from "@tarojs/components";
-import { formatTextWithLineLimit } from "../../utils";
+import { formatTextWithLineLimit, getEditItem } from "../../utils";
 import "./index.scss";
 
 const Index = ({ maskScale, editLabel }) => {
@@ -12,9 +12,6 @@ const Index = ({ maskScale, editLabel }) => {
       item.key !== "gongchengmingcheng" &&
       item.key !== "shuiyinmingcheng" &&
       item.key !== "yanzhengmingcheng"
-  );
-  const gongchengmingcheng = editLabel.filter(
-    (item) => item.key == "gongchengmingcheng"
   );
 
   return (
@@ -30,7 +27,8 @@ const Index = ({ maskScale, editLabel }) => {
         <Text
           dangerouslySetInnerHTML={{
             __html: formatTextWithLineLimit(
-              gongchengmingcheng[0]?.value || gongchengmingcheng[0]?.title,
+              getEditItem(editLabel, "gongchengmingcheng").value ||
+                getEditItem(editLabel, "gongchengmingcheng").title,
               10,
               3
             ),

@@ -90,7 +90,7 @@ const CameraPage = () => {
   const [addPhoneNumber, setAddPhoneNumber] = useState(false);
   const [videoModal, setVideoModal] = useState(false);
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
-  const [dakaModal, setDakeModal] = useState(false);
+  // const [dakaModal, setDakeModal] = useState(false);
 
   // 相机相关状态
   const [cameraContext, setCameraContext] = useState(null);
@@ -399,17 +399,17 @@ const CameraPage = () => {
     }
 
     // 打卡标签检查
-    if (
-      getEditItem(editLabel, "daka")?.value === "修改" &&
-      getEditItem(editLabel, "daka")?.visible
-    ) {
-      setDakeModal(true);
-      return;
-    }
+    // if (
+    //   getEditItem(editLabel, "daka")?.value === "修改" &&
+    //   getEditItem(editLabel, "daka")?.visible
+    // ) {
+    //   setDakeModal(true);
+    //   return;
+    // }
 
     // 水印名称检查
     if (
-      userInfo.type !== "default" &&
+      // userInfo.type !== "default" &&
       !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
       getEditItem(editLabel, "shuiyinmingcheng")?.visible &&
       showTrueCode
@@ -553,6 +553,7 @@ const CameraPage = () => {
           userInfo.times >= app.$app.globalData.config.mianfeicishu &&
           userInfo.type === "default"
         ) {
+          Taro.hideLoading();
           setTempPath(undefined);
           setTiYanModalShow(true);
           setTimeout(() => {
@@ -561,7 +562,6 @@ const CameraPage = () => {
           }, 2500);
           return;
         }
-
         type === "camera" &&
           Taro.showLoading({ title: "处理中...", mask: true });
 
@@ -686,17 +686,17 @@ const CameraPage = () => {
       }
 
       // 打卡检查
-      if (
-        getEditItem(editLabel, "daka")?.value === "修改" &&
-        getEditItem(editLabel, "daka")?.visible
-      ) {
-        setDakeModal(true);
-        return;
-      }
+      // if (
+      //   getEditItem(editLabel, "daka")?.value === "修改" &&
+      //   getEditItem(editLabel, "daka")?.visible
+      // ) {
+      //   setDakeModal(true);
+      //   return;
+      // }
 
       // 水印名称检查
       if (
-        userInfo.type !== "default" &&
+        // userInfo.type !== "default" &&
         showTrueCode &&
         !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
         getEditItem(editLabel, "shuiyinmingcheng")?.visible
@@ -780,7 +780,13 @@ const CameraPage = () => {
 
         // 更新对应索引的值
         setEditLabel(newEditLabel);
-        if (piLiangCurrentIndex === xiangceTempFiles.length - 1) {
+        if (
+          piLiangCurrentIndex === xiangceTempFiles.length - 1 &&
+          !(
+            userInfo.times >= app.$app.globalData.config.mianfeicishu &&
+            userInfo.type === "default"
+          )
+        ) {
           setTimeout(
             () => {
               Taro.showToast({ title: "已保存到相册", icon: "success" });
@@ -922,16 +928,14 @@ const CameraPage = () => {
         success: function (res) {
           setUserInfo(res.result.data);
 
-          dayD = String(new Date(res.result.data.times).getDate()).padStart(
-            2,
-            "0"
-          );
-          hoursD = String(new Date(res.result.data.times).getHours()).padStart(
-            2,
-            "0"
-          );
+          dayD = String(
+            new Date(res.result.data.serverTimes).getDate()
+          ).padStart(2, "0");
+          hoursD = String(
+            new Date(res.result.data.serverTimes).getHours()
+          ).padStart(2, "0");
           minutesD = String(
-            new Date(res.result.data.times).getMinutes()
+            new Date(res.result.data.serverTimes).getMinutes()
           ).padStart(2, "0");
 
           // 会员手机号处理
@@ -1644,7 +1648,7 @@ const CameraPage = () => {
                   style={{
                     margin: "0 auto 10px auto",
                     width: "90%",
-                    textAlign:"center",
+                    textAlign: "center",
                   }}
                 >
                   请按分钟填写每张照片时间间隔
@@ -1652,7 +1656,7 @@ const CameraPage = () => {
                 <Text
                   style={{
                     margin: "0 auto 20px auto",
-                    textAlign:"center",
+                    textAlign: "center",
                     width: "90%",
                   }}
                 >
@@ -1726,7 +1730,7 @@ const CameraPage = () => {
             onLeftButtonClick={() => setShuiyinNameModal(false)}
           />
 
-          <CustomModal
+          {/* <CustomModal
             visible={dakaModal}
             title="提示"
             phoneValidation={false}
@@ -1758,7 +1762,7 @@ const CameraPage = () => {
               setEdit(true);
             }}
             onLeftButtonClick={() => setDakeModal(false)}
-          />
+          /> */}
 
           <CustomModal
             visible={shuiyinNameModal}

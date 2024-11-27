@@ -109,13 +109,13 @@ exports.main = async (event, context) => {
 
             return {
                 success: true,
-                data: { ...userData, todayUsageCount, useTime, share: true, times: new Date() },
+                data: { ...userData, todayUsageCount, useTime, share: true, serverTimes: new Date() },
                 message: '用户信息已更新或添加'
             };
         } else {
             return {
                 success: false,
-                data: { share: true, times: new Date() },
+                data: { share: true, serverTimes: new Date() },
                 errorMessage: '用户信息查询失败'
             };
         }
@@ -183,20 +183,20 @@ exports.main = async (event, context) => {
 
                     return {
                         success: true,
-                        data: { ...userData, todayUsageCount, share: true, times: new Date() },
+                        data: { ...userData, todayUsageCount, share: true, serverTimes: new Date() },
                         message: '用户信息已更新'
                     };
                 } else {
                     return {
                         success: false,
-                        data: { share: true, times: new Date() },
+                        data: { share: true, serverTimes: new Date() },
                         errorMessage: '用户信息查询失败'
                     };
                 }
             } else {
                 return {
                     success: false,
-                    data: { share: true, times: new Date() },
+                    data: { share: true, serverTimes: new Date() },
                     errorMessage: '用户信息更新失败，记录不存在'
                 };
             }
@@ -204,7 +204,7 @@ exports.main = async (event, context) => {
 
         return {
             success: false,
-            data: { share: true, times: new Date() },
+            data: { share: true, serverTimes: new Date() },
             errorMessage: e.message
         };
     }
