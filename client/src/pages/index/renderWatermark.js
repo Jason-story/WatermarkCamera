@@ -137,7 +137,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: 0,
                   bottom: 0,
-                  transform: `scale(${newMaskScale})`,
+                  transform: `scale(${newMaskScale - 0.1})`,
                   transformOrigin: "right bottom",
                 }}
               >
@@ -216,7 +216,7 @@ const RenderWatermark = ({
                   position: "absolute",
                   right: 0,
                   bottom: 0,
-                  transform: `scale(${newMaskScale})`,
+                  transform: `scale(${newMaskScale - 0.1})`,
                   transformOrigin: "right bottom",
                 }}
               >
