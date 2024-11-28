@@ -19,10 +19,18 @@
   font-size: 78px;
   font-family: "waterBottom";
   position: relative;
+  text-shadow: 1px 5px 20px rgba(0, 0, 0, 0.2);
+
   .item-6-top-time {
     position: absolute;
     font-family: "waterTop";
-    color: #f7e3f5;
+    color: #f9e8fa;
+    .green{
+      color:#bad3f1
+    }
+    .blue{
+      color:#b2f7ef
+    }
   }
 }
 .item6-line {

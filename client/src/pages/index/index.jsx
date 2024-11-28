@@ -8,7 +8,6 @@ import {
   Input,
   ScrollView,
 } from "@tarojs/components";
-import { AtInputNumber } from "taro-ui";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Taro from "@tarojs/taro";
 
@@ -27,7 +26,7 @@ import {
   mergeArrays,
   clearCacheIfNeeded,
 } from "../../components/utils.js";
-
+import InputNumber from "../../components/Number/index.jsx";
 // 第三方库导入
 import QQMapWX from "qqmap-wx-jssdk";
 
@@ -1588,7 +1587,7 @@ const CameraPage = () => {
                     });
                   }}
                   style={{
-                    background: "linear-gradient(45deg, #00e7ff, #cc00ff)",
+                    background: "linear-gradient(45deg,#cc00ff,#f4b281)",
                     color: "white",
                     border: "none",
                     borderRadius: "30px",
@@ -1664,17 +1663,16 @@ const CameraPage = () => {
                 </Text>
 
                 <View>
-                  <AtInputNumber
-                    placeholder="最小1，最大10"
+                  <InputNumber
                     min={1}
                     max={10}
                     step={1}
-                    width={100}
                     value={piliangeTime}
-                    onChange={(e) => {
-                      setPiliangeTime(e);
+                    onChange={(value) => {
+                      setPiliangeTime(value);
                     }}
-                  ></AtInputNumber>
+                    placeholder="最小1，最大10"
+                  ></InputNumber>
                 </View>
               </View>
             }

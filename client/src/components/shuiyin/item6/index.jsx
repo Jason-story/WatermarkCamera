@@ -21,8 +21,18 @@ const Index = ({ maskScale, editLabel }) => {
     >
       <View className="item6-time-box item6-flex">
         <View className="item6-time">
-          <Text>{`${time.hours}:${time.minutes}`}</Text>
-          <Text className="item-6-top-time">{`${time.hours}:${time.minutes}`}</Text>
+          <Text>
+            <Text>{`${time.hours?.slice(0, 1)}`}</Text>
+            <Text>{`${time.hours?.slice(1)}:`}</Text>
+            <Text>{`${time.minutes?.slice(0, 1)}`}</Text>
+            <Text>{`${time.minutes?.slice(1)}`}</Text>
+          </Text>
+          <Text className="item-6-top-time">
+            <Text className="green">{`${time.hours?.slice(0, 1)}`}</Text>
+            <Text>{`${time.hours?.slice(1)}:`}</Text>
+            <Text>{`${time.minutes?.slice(0, 1)}`}</Text>
+            <Text className="blue">{`${time.minutes?.slice(1)}`}</Text>
+          </Text>
         </View>
         <View className="item6-line"></View>
         <View className="item6-date-box item6-flex">
