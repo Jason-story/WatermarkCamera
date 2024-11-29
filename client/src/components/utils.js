@@ -1,3 +1,5 @@
+import Taro from "@tarojs/taro";
+
 export const formatTextWithLineLimit = (text, maxCharsPerLine, maxLines) => {
   // 初始化一个数组存储每一行的内容
   const lines = [];
@@ -140,7 +142,7 @@ export const mergeArrays = (newArr, oldArr, defaultArr) => {
 
   return arr;
 };
-const fs = wx.getFileSystemManager();
+const fs = Taro.getFileSystemManager();
 const CACHE_LIMIT = 30 * 1024; // 30MB缓存限制
 
 export const getCacheSize = (path) => {

@@ -2,11 +2,10 @@
   color: #fff;
   position: absolute;
   left: 16px;
-  bottom: 40px;
+  bottom: 46px;
   font-size: 26px;
   font-family: "HYQiHei 65J";
   transform-origin: left bottom;
-
 }
 .item2-badage {
   position: relative;
@@ -34,7 +33,7 @@
   .item2-location {
     position: relative;
     margin-bottom: 8px;
-    margin-top: -12px;
+    // margin-top: -12px;
     margin-left: -1px;
     opacity: 0.9;
     text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
@@ -58,10 +57,11 @@
   align-items: center;
   flex-direction: row;
   font-family: "Bebas";
-  margin-bottom: 10px;
-  font-size: 30px;
+  margin-bottom: 4px;
+  margin-top: 4px;
+  font-size: 28px;
   font-weight: bold;
-      text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
+  text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
 
   text {
     margin-right: 20px;
@@ -72,6 +72,10 @@
 .item2-dakaText,
 .item2-time {
   position: absolute;
+}
+.item2-tianqi {
+  font-family: "Bebas" !important;
+  margin: 0 !important;
 }
 .item2-time-box {
   position: absolute;

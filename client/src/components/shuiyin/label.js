@@ -87,6 +87,13 @@ const label = {
       editTitle: false,
       switchVisible: false,
     },
+    {
+      key: "tianqi",
+      title: "天气",
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+    },
   ],
   2: [
     {
@@ -481,6 +488,95 @@ const label = {
     {
       key: "weidu",
       title: "纬度",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+  ],
+  11: [
+    {
+      key: "shuiyinmingcheng",
+      title: "右下角水印",
+      // 是否隐藏
+      visible: true,
+      editTitle: false,
+      length: 4,
+      switchVisible: true,
+    },
+    {
+      key: "shijian",
+      title: "时间",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
+      value: formatDateTime.formatDate() + " " + formatDateTime.formatTime(),
+    },
+
+    {
+      key: "didian",
+      title: "地点",
+      visible: true,
+      editTitle: false,
+      switchVisible: false,
+    },
+  ],
+  12: [
+    {
+      key: "shuiyinmingcheng",
+      title: "右下角水印",
+      // 是否隐藏
+      visible: false,
+      editTitle: false,
+      switchVisible: true,
+    },
+
+    {
+      key: "gongchengmingcheng",
+      title: "工程名称",
+      // 是否隐藏
+      visible: true,
+      editTitle: true,
+      switchVisible: false,
+    },
+    {
+      key: "shijian",
+      title: "时间",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+    {
+      key: "didian",
+      title: "地址",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+    {
+      key: "shoujiandanwei",
+      title: "受检单位",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+    {
+      key: "xunjianyuan",
+      title: "巡检员",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+    {
+      key: "shifouchangtong",
+      title: "是否畅通",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+
+    {
+      key: "beizhu",
+      title: "备注",
       visible: true,
       editTitle: true,
       switchVisible: true,

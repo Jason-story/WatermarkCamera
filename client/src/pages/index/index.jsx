@@ -66,7 +66,7 @@ let hoursD = ""; //String(now.getHours()).padStart(2, "0");
 let minutesD = ""; //String(now.getMinutes()).padStart(2, "0");
 // let secondsD = String(now.getSeconds()).padStart(2, "0");
 
-const fs = wx.getFileSystemManager();
+const fs = Taro.getFileSystemManager();
 
 // 路由参数获取
 const inviteId = Taro.getCurrentInstance().router.params.id || "";
@@ -459,7 +459,7 @@ const CameraPage = () => {
 
   // 图片保存处理
   const handleSaveToAlbum = async (filePath, type) => {
-    await wx.saveImageToPhotosAlbum({
+    await Taro.saveImageToPhotosAlbum({
       filePath,
       success: async () => {
         // if (xiangceTempFiles.length === 1) {
@@ -499,7 +499,7 @@ const CameraPage = () => {
             filePath,
           });
           if (type === "camera") {
-            wx.showToast({
+            Taro.showToast({
               title: "已保存到相册",
               icon: "success",
             });
@@ -526,7 +526,7 @@ const CameraPage = () => {
       },
       fail: (error) => {
         console.error("保存到相册失败:", error);
-        wx.showToast({
+        Taro.showToast({
           icon: "error",
           title: "保存失败，请重试",
         });
@@ -620,7 +620,7 @@ const CameraPage = () => {
         });
 
         // 保存图片到本地文件系统
-        const filePath = `${wx.env.USER_DATA_PATH}/${+new Date()}.png`;
+        const filePath = `${Taro.env.USER_DATA_PATH}/${+new Date()}.png`;
         fs.writeFileSync(filePath, snapshotResult.data, "binary");
         setTempPath(undefined);
 
@@ -632,7 +632,7 @@ const CameraPage = () => {
         await handleSaveToAlbum(filePath, type);
       } catch (error) {
         setTempPath(undefined);
-        wx.showModal({
+        Taro.showModal({
           showCancel: false,
           icon: "error",
           title: "截图失败，请删除小程序后重新进入",
@@ -894,13 +894,13 @@ const CameraPage = () => {
   // 初始化加载
   useEffect(() => {
     // 清理缓存
-    clearCacheIfNeeded(wx.env.USER_DATA_PATH);
+    clearCacheIfNeeded(Taro.env.USER_DATA_PATH);
 
     // 初始化函数
     const init = async () => {
       // 初始化广告
-      if (wx.createInterstitialAd) {
-        interstitialAd = wx.createInterstitialAd({
+      if (Taro.createInterstitialAd) {
+        interstitialAd = Taro.createInterstitialAd({
           adUnitId: config.ad,
         });
         interstitialAd.onLoad(() => {});
@@ -978,7 +978,7 @@ const CameraPage = () => {
     }
 
     // 获取系统信息
-    wx.getSystemInfo({
+    Taro.getSystemInfo({
       success: function (res) {
         setScreenWidth(res.screenWidth);
         setSnapshotHeight(
@@ -1004,10 +1004,10 @@ const CameraPage = () => {
     console.log(333);
 
     // @@保存cover图片
-    Taro.saveImageToPhotosAlbum({
-      filePath: videoMaskPath,
-    });
-    console.log(4444);
+    // Taro.saveImageToPhotosAlbum({
+    //   filePath: videoMaskPath,
+    // });
+    // console.log(4444);
 
     const processVideo = async () => {
       Taro.showLoading({ title: "上传中...", mask: true });

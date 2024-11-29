@@ -8,8 +8,8 @@ const systemInfo = Taro.getSystemInfoSync();
 const checkForUpdate = () => {
   return new Promise((resolve, reject) => {
     try {
-      if (!wx.canIUse("getUpdateManager")) {
-        wx.showModal({
+      if (!Taro.canIUse("getUpdateManager")) {
+        Taro.showModal({
           title: "提示",
           content:
             "当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。",
@@ -19,7 +19,7 @@ const checkForUpdate = () => {
         return;
       }
 
-      const updateManager = wx.getUpdateManager();
+      const updateManager = Taro.getUpdateManager();
 
       // 检查更新
       updateManager.onCheckForUpdate((res) => {
@@ -32,7 +32,7 @@ const checkForUpdate = () => {
 
         // 监听下载完成
         updateManager.onUpdateReady(() => {
-          wx.showModal({
+          Taro.showModal({
             title: "更新提示",
             content: "新版本已经准备好，重启应用后生效。是否立即重启？",
             success: (modalRes) => {
@@ -58,7 +58,7 @@ const checkForUpdate = () => {
         // 监听下载失败
         updateManager.onUpdateFailed((error) => {
           console.error("版本下载失败：", error);
-          wx.showModal({
+          Taro.showModal({
             title: "更新提示",
             content:
               "新版本下载失败，请检查网络后重试。如果问题依然存在，请删除小程序后重新搜索打开。",
@@ -136,7 +136,7 @@ class App extends Component {
       // false 显示 true 隐藏
       // fuckShenHe:false,
       fuckShenHe:
-        wx.getAccountInfoSync().miniProgram.envVersion !== "release" &&
+        Taro.getAccountInfoSync().miniProgram.envVersion !== "release" &&
         systemInfo.platform !== "devtools",
     };
   }
@@ -144,7 +144,7 @@ class App extends Component {
   // 加载普通字体
   loadNormalFonts() {
     FONT_CONFIG.forEach((font) => {
-      wx.loadFontFace({
+      Taro.loadFontFace({
         family: font.family,
         global: true,
         scopes: ["webview", "native", "skyline"],

@@ -446,7 +446,7 @@ const RenderWatermark = ({
             style={{
               width: "100%",
               height: "100%",
-              // opacity:.2
+              opacity:.5
             }}
             src={
               "https://7379-sy-4gecj2zw90583b8b-1326662896.tcb.qcloud.la/do-not-delete/p.jpg?t=" +

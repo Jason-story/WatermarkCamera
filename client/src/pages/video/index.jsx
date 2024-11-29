@@ -91,7 +91,7 @@ const QRCodePage = () => {
         });
       },
       fail: (err) => {
-        wx.showToast({
+        Taro.showToast({
           title: "下载失败",
           icon: "none",
         });

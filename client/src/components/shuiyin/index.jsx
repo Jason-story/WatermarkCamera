@@ -9,6 +9,8 @@ import Shuiyin8 from "./item8";
 import Shuiyin9 from "./item9";
 import Shuiyin10 from "./item10";
 import Shuiyin11 from "./item11";
+import Shuiyin12 from "./item12";
+import Shuiyin13 from "./item13";
 import Shuiyin1Cover from "./item1/cover.png";
 import Shuiyin2Cover from "./item2/cover.png";
 import Shuiyin3Cover from "./item3/cover.png";
@@ -20,6 +22,8 @@ import Shuiyin8Cover from "./item8/cover.png";
 import Shuiyin9Cover from "./item9/cover.png";
 import Shuiyin10Cover from "./item10/cover.png";
 import Shuiyin11Cover from "./item11/cover.png";
+import Shuiyin12Cover from "./item12/cover.png";
+import Shuiyin13Cover from "./item13/cover.png";
 import editLabel from "./label";
 const config = [
   {
@@ -222,7 +226,8 @@ const config = [
       copyright: "jrsy",
       maskScale: true,
     },
-  }, {
+  },
+  {
     // 11
     component: Shuiyin11,
     label: editLabel[10],
@@ -238,6 +243,46 @@ const config = [
       hasWeather: true,
       hasJingWeiDu: true,
       hasRemark: false,
+      copyright: "jrsy",
+      maskScale: true,
+    },
+  },
+  {
+    // 12
+    component: Shuiyin12,
+    label: editLabel[11],
+    options: {
+      title: "今日水印相机-打卡",
+      vip: false,
+      cover: Shuiyin12Cover,
+      hasDakaLabel: false,
+      showRightCopyright: true,
+      showLeftCopyright: true,
+      hasTitle: false,
+      hasFangDao: false,
+      hasWeather: false,
+      hasJingWeiDu: false,
+      hasRemark: true,
+      copyright: "jrsy",
+      maskScale: true,
+    },
+  },
+  {
+    // 10
+    component: Shuiyin13,
+    label: editLabel[12],
+    options: {
+      title: "工程记录13",
+      vip: false,
+      cover: Shuiyin13Cover,
+      hasDakaLabel: false,
+      showRightCopyright: false,
+      showLeftCopyright: false,
+      hasTitle: true,
+      hasFangDao: false,
+      hasWeather: false,
+      hasJingWeiDu: false,
+      hasRemark: true,
       copyright: "jrsy",
       maskScale: true,
     },

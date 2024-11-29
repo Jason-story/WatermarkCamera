@@ -178,7 +178,7 @@ const Index = () => {
     }
     const price = vipConfig.find((item) => item.key === selected).price;
     let plateform = "无";
-    wx.getSystemInfo({
+    Taro.getSystemInfo({
       success: function (res) {
         plateform = res.platform;
       },
@@ -214,7 +214,7 @@ const Index = () => {
     //下面开始执行小程序支付
     //支付流程：小程序A 点击付款->跳转到 “迅虎支付” 小程序 -> 自动发起微信支付 ->支付成功后携带支付结果返回小程序A
 
-    wx.navigateToMiniProgram({
+    Taro.navigateToMiniProgram({
       appId: "wx2574b5c5ee8da56b", //支付网关为：https://api.xunhupay.com 跳转小程序APPID：wx2574b5c5ee8da56b，其他支付网关跳转小程序APPID：wx402faa5bd5eda155
       path: "pages/hpj_cashier/cashier", //支付页面 固定值 不可修改
       extraData: data, //携带的参数 参考API文档
@@ -238,7 +238,7 @@ const Index = () => {
               showCancel: false,
               success: (res) => {
                 if (res.confirm) {
-                  wx.reLaunch({
+                  Taro.reLaunch({
                     url: "/pages/index/index",
                   });
                 }

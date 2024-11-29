@@ -10,10 +10,7 @@ import {
 } from "../../utils";
 import "./index.scss";
 
-const Index = ({
-  maskScale,
-  editLabel,
-}) => {
+const Index = ({ maskScale, editLabel }) => {
   const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
   return (
     <View
@@ -46,6 +43,12 @@ const Index = ({
               }}
             ></View>
           </View>
+          {getEditItem(editLabel, "tianqi").visible && (
+            <View className="item2-location item2-tianqi">
+              <View className="item2-dot"></View>
+              <View>{getEditItem(editLabel, "tianqi").value + " ℃"}</View>
+            </View>
+          )}
         </View>
       </View>
     </View>
