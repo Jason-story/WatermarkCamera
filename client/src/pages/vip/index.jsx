@@ -84,7 +84,7 @@ const Index = () => {
   const [selected, setSelected] = useState("");
   const [isShowModal, setIsShowModal] = useState(false);
   const [vipConfig, setVipConfig] = useState([]);
-
+  // const [selectedPlan, setSelectedPlan] = useState(2);
   Taro.useShareAppMessage((res) => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
@@ -152,10 +152,11 @@ const Index = () => {
         const [key, title, totaldays = "", amount] = item.split("|");
         return {
           key,
-          title:
-            key !== "dingzhi"
-              ? title + "会员" + amount + "元"
-              : title + amount + "元",
+          title,
+          popular: price.current === key,
+          // key !== "dingzhi"
+          //   ? title + "会员" + amount + "元"
+          //   : title + amount + "元",
           price: amount,
           text: (amount / totaldays).toFixed(3),
         };
@@ -253,63 +254,82 @@ const Index = () => {
     check();
   });
 
-  console.log("fuckShenHe: ", fuckShenHe);
   return (
     <View className="index">
-      <View className="user-info">
-        {fuckShenHe === false ? (
-          <View className="user-details" style={{ marginBottom: "20px" }}>
-            <View>
-              <Text style={{ fontWeight: "bold" }}>会员权益</Text>
+      {fuckShenHe === false && (
+        <View className="header">
+          <View className="header-content">
+            <View className="vip-title">会员权益</View>
+            <View className="subtitle">🚀 不限使用次数</View>
+            <View className="subtitle">
+              💥 批量处理，单次最多9张(需半年及以上会员)
             </View>
-            <View>• 不限使用次数</View>
-            <View>• 批量处理，单次最多9张(需半年及以上会员)</View>
-            <View>• 去除封面广告以外的所有广告</View>
-            <View>• 高清水印图片</View>
-            <View>• 视频加水印(需半年及以上会员)</View>
-            <View>• 添加微信，随时提供客服支持</View>
+            <View className="subtitle">🎬 视频加水印(需半年及以上会员)</View>
+            <View className="subtitle" style={{ marginBottom: "20px" }}>
+              🚫 去除封面广告以外的所有广告
+            </View>
+            <View className="vip-title">注意事项</View>
+            {globalConfig.jiaochengtext.map((item, index) => {
+              return (
+                <View className="subtitle" key={index}>
+                  • {item}
+                </View>
+              );
+            })}
           </View>
-        ) : (
-          "暂无"
+          <View className="header-background"></View>
+        </View>
+      )}
+      <View className="user-info">
+        {fuckShenHe === false && (
+          <View className="plans-container">
+            {vipConfig.map((plan) => {
+              console.log("plan: ", plan);
+              return (
+                <View
+                  key={plan.key}
+                  className={`plan-card ${
+                    plan.key === selected ? "selected" : ""
+                  } ${plan.popular ? "popular" : ""}`}
+                  onClick={() => setSelected(plan.key)}
+                >
+                  {plan.popular && (
+                    <span className="popular-tag">最受欢迎</span>
+                  )}
+                  <View className="h3">{plan.title}</View>
+                  <View className="price-container">
+                    <Text className="discount-price">¥{plan.price}</Text>
+                    <Text className="original-price">
+                      ¥{(plan.price * 1.3).toFixed(3)}
+                    </Text>
+                    {plan.key !== "1day" && plan.key !== "never" && (
+                      <Text
+                        className="original-price"
+                        style={{
+                          textDecoration: "none",
+                          color: "#536DFE",
+                        }}
+                      >
+                        {plan.text}元/天
+                      </Text>
+                    )}
+                  </View>
+                  <Text className="duration">{plan.duration}</Text>
+                </View>
+              );
+            })}
+          </View>
         )}
 
-        {fuckShenHe === false ? (
-          <View style={{ width: "100%" }}>
-            <RadioGroup
-              onChange={(e) => {
-                setSelected(e.detail.value);
-              }}
-            >
-              {vipConfig.map((item) => {
-                return (
-                  <Label className="vip-item" key={item.key}>
-                    <View>
-                      <Radio
-                        value={item.key}
-                        checked={price.current === item.key}
-                      />
-                    </View>
-                    <View
-                      className="vip-title"
-                      style={{
-                        color: item.key === price.current ? "#f22c3d" : "",
-                      }}
-                    >
-                      <Text>{item.title}</Text>
-                      <Text>
-                        {item.key !== "1day" &&
-                          item.key !== "dingzhi" &&
-                          item.key !== "never" &&
-                          "，平均每天" + item.text + "元"}
-                      </Text>
-                    </View>
-                  </Label>
-                );
-              })}
-            </RadioGroup>
-          </View>
-        ) : null}
-        <View style={{ width: "100%", marginTop: "20px" }}>
+        <View
+          style={{
+            width: "100%",
+            marginTop: "20px",
+            position: "fixed",
+            left: 0,
+            bottom: 0,
+          }}
+        >
           {fuckShenHe === false && (
             <View>
               <View
@@ -324,16 +344,13 @@ const Index = () => {
               </View>
               <Button
                 style={{
-                  background: "linear-gradient(45deg,#536DFE, #64B5F6)",
+                  background: "linear-gradient(45deg, #4b4ef4, #9d00ff)",
                   color: "white",
                   border: "none",
-                  borderRadius: "25px",
-                  padding: "0 20px",
-                  fontSize: "30rpx",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  marginBottom: "10px",
+                  borderRadius: 0,
+                  fontSize: "48rpx",
+                  fontWeight: "bold",
+                  padding: "10px 0",
                 }}
                 type="default"
                 className="guide-btn"
@@ -345,7 +362,7 @@ const Index = () => {
               </Button>
             </View>
           )}
-          {!fuckShenHe && (
+          {/* {!fuckShenHe && (
             <Button
               openType="contact"
               style={{
@@ -369,10 +386,10 @@ const Index = () => {
             >
               联系客服
             </Button>
-          )}
+          )} */}
         </View>
 
-        {fuckShenHe === false && (
+        {/* {fuckShenHe === false && (
           <View className="user-details" style={{ marginTop: "20px" }}>
             <View>
               <Text style={{ fontWeight: "bold" }}>注意事项</Text>
@@ -391,7 +408,7 @@ const Index = () => {
               );
             })}
           </View>
-        )}
+        )} */}
       </View>
     </View>
   );

@@ -1,33 +1,26 @@
 .index {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
   background-color: #fff;
-  padding-top: 40px;
   font-size: 30px;
+  overflow-x: hidden;
 }
 
 .user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 60px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  flex: 1;
   width: 100%;
-  height: 100%;
+  min-height: 50%;
   overflow-x: hidden;
+  padding-bottom: 270px;
   .vip-item {
     display: flex;
-  flex-direction: row;
+    flex-direction: row;
 
     align-items: center;
     margin-bottom: 10px;
   }
-  .vip-title{
+  .vip-title {
     margin-left: 18px;
   }
   .user-header {
@@ -61,7 +54,7 @@
 
     .user-item {
       display: flex;
-  flex-direction: row;
+      flex-direction: row;
 
       justify-content: space-between;
       padding: 20px 0;
@@ -99,4 +92,210 @@
   height: 160px;
   border-radius: 50%;
   margin-bottom: 20px;
+}
+
+.header {
+  position: relative;
+  padding: 20px 40px 90px 40px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #4b4ef4 0%, #9d00ff 100%);
+  transform: skewY(-6deg);
+  transform-origin: top left;
+  z-index: 0;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.header .vip-title {
+  margin: 0;
+  font-size: 40px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 30px;
+  text-align: left;
+  padding-left: 40px;
+}
+
+.plans-container {
+  display: flex;
+  flex-wrap: wrap; /* 允许换行 */
+  justify-content: space-between; /* 子元素之间平均分布 */
+  gap: 16px; /* 子元素间距 */
+  margin: 0 auto; /* 居中对齐 */
+  max-width: calc(100% - 32px); /* 最大宽度限制 */
+  box-sizing: border-box; /* 包括内边距和边框 */
+  flex-direction: row;
+  padding: 40px 0;
+}
+.plan-card {
+  flex: 1 1 calc((100% - 32px) / 3); /* 每行 3 个，宽度自动计算 */
+  max-width: calc((100% - 32px) / 3); /* 最大宽度，避免超出 */
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.95)
+  );
+}
+
+.plan-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card.selected {
+  border-color: #6366f1;
+  background: linear-gradient(135deg, #f0f2ff 0%, #e8eaff 100%);
+}
+
+.plan-card.popular {
+  border-color: #ffd700;
+}
+
+.popular-tag {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+  color: #333;
+  padding: 12px 24px;
+  border-radius: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card .h3 {
+  margin: 0 0 12px;
+  font-size: 30px;
+  color: #1a1a1a;
+}
+
+.price-container {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.discount-price {
+  font-size: 38px;
+  font-weight: bold;
+  color:#f43f5e;
+  margin-right: 8px;
+}
+
+.original-price {
+  font-size: 28px;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.duration {
+  font-size: 28px;
+  color: #6b7280;
+}
+
+.benefits-section,
+.notices-section {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.95)
+  );
+  border-radius: 20px;
+  padding: 24px;
+  margin: 0 16px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.benefits-section h2,
+.notices-section h2 {
+  font-size: 40px;
+  margin: 0 0 20px;
+  color: #1a1a1a;
+  text-align: left;
+  background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.benefits-list,
+.notices-list {
+  text-align: left;
+}
+
+.benefit-item,
+.notice-item {
+  margin-bottom: 16px;
+  font-size: 15px;
+  color: #4b5563;
+  padding-left: 8px;
+  border-left: 3px solid transparent;
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.1) 0%,
+    rgba(99, 102, 241, 0) 100%
+  );
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.benefit-item:hover,
+.notice-item:hover {
+  transform: translateX(4px);
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.15) 0%,
+    rgba(99, 102, 241, 0) 100%
+  );
+}
+
+.purchase-button {
+  width: calc(100% - 32px);
+  margin: 24px 16px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+}
+
+.purchase-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, #5558e6 0%, #7c4feb 100%);
 }
