@@ -735,6 +735,7 @@ text {
       font-family: PTMono;
       color: rgba(255, 255, 255, 1);
       margin-top: 2px;
+
     }
   }
 }
@@ -749,6 +750,12 @@ text {
 .fangweima {
   text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
   font-weight: 500;
+  &.jrsy {
+    background-image: url('../../images/bg_code.png');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center bottom;
+  }
 }
 .syxj-icon {
   background: url("../../images/icon-2.png") no-repeat center;

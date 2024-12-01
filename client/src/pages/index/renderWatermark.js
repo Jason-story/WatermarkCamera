@@ -52,8 +52,10 @@ const RenderWatermark = ({
   const isCamera = type === "camera";
   const shuiyinxiangjiName =
     getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
+    
   const renderLeftCopyright = () => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
+
 
     if (
       option?.copyright === "mk" &&
@@ -186,7 +188,7 @@ const RenderWatermark = ({
                   {/* )} */}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
-                    <Text className="fangweima">{fangweimaText}</Text>
+                    <Text className="fangweima jrsy">{fangweimaText}</Text>
                   </View>
                   {/* 输入什么就显示什么 */}
                   {/* {!shuiyinxiangjiName.includes("今日水印") ? ( */}
@@ -290,7 +292,7 @@ const RenderWatermark = ({
                   {/* )} */}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
-                    <Text className="fangweima">{fangweimaText}</Text>
+                    <Text className="fangweima jrsy">{fangweimaText}</Text>
                   </View>
 
                   {/* 输入什么就显示什么 */}
@@ -337,7 +339,7 @@ const RenderWatermark = ({
                   )}
                   <View className="fw-box">
                     <Image src={Fw} className="fwm"></Image>
-                    <Text className="fangweima">{fangweimaText}</Text>
+                    <Text className="fangweima jrsy">{fangweimaText}</Text>
                   </View>
 
                   {/* 输入什么就显示什么 */}
