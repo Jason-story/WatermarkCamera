@@ -26,34 +26,15 @@ const WatermarkPopup = ({
   setShowFloatLayout,
   setEdit,
   updateShuiyinIndex,
-
   // 水印保存配置
   isShuiyinSaved,
   saveIsShuiyinSaved,
   // 用户信息
   userInfo,
-  // 水印右下角防伪信息
-  showTrueCode,
-  setShowTrueCode,
-  shuiyinxiangjiName,
-  setShuiyinxiangjiName,
-  // 左下角验证标记
-  showHasCheck,
-  setShowHasCheck,
   setMaskScale,
   editLabel,
   setEditLabel,
 }) => {
-  function debounce(func, delay) {
-    let timer;
-    return function () {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(this, arguments);
-      }, delay);
-    };
-  }
-
   const time = parseDateString(getEditItem(editLabel, "shijian")?.value || "");
   const scrollViewRef = useRef(null);
   const [height, setHeight] = useState("100%");
@@ -350,7 +331,11 @@ const WatermarkPopup = ({
                             onFocus={handleFocus}
                             adjustPosition={false}
                             onBlur={handleBlur}
-                            disabled={item.defaultValue}
+                            disabled={
+                              item.defaultValue ||
+                              (item.key === "shuiyinmingcheng" &&
+                                userInfo.type === "default")
+                            }
                             value={
                               item.defaultValue
                                 ? item.defaultValue
@@ -377,7 +362,7 @@ const WatermarkPopup = ({
                             <View className="input-tips">
                               {userInfo.type !== "default"
                                 ? "可填写 今日水印、马克水印"
-                                : "填写水印名称。开通会员可获得专属图标 😎"}
+                                : "开通会员可填写并解锁右下角专属图标 😎"}
                             </View>
                           )}
                           {item.key === "daka" && (

@@ -260,15 +260,19 @@ const Index = () => {
         <View className="header">
           <View className="header-content">
             <View className="vip-title">会员权益</View>
-            <View className="subtitle">🚀 不限使用次数</View>
-            <View className="subtitle">
-              💥 批量处理，单次最多9张(需半年及以上会员)
+            {globalConfig.hyqy.map((item, index) => {
+              return (
+                <View className="subtitle" key={index}>
+                  {item}
+                </View>
+              );
+            })}
+            <View
+              className="vip-title"
+              style={{ marginBottom: "4px", marginTop: "10px" }}
+            >
+              注意事项
             </View>
-            <View className="subtitle">🎬 视频加水印(需半年及以上会员)</View>
-            <View className="subtitle" style={{ marginBottom: "20px" }}>
-              🚫 去除封面广告以外的所有广告
-            </View>
-            <View className="vip-title">注意事项</View>
             {globalConfig.jiaochengtext.map((item, index) => {
               return (
                 <View className="subtitle" key={index}>
@@ -294,7 +298,7 @@ const Index = () => {
                   onClick={() => setSelected(plan.key)}
                 >
                   {plan.popular && (
-                    <span className="popular-tag">最受欢迎</span>
+                    <span className="popular-tag">最多购买</span>
                   )}
                   <View className="h3">{plan.title}</View>
                   <View className="price-container">
@@ -311,6 +315,17 @@ const Index = () => {
                         }}
                       >
                         {plan.text}元/天
+                      </Text>
+                    )}
+                    {plan.key === "1day" && (
+                      <Text
+                        className="original-price"
+                        style={{
+                          textDecoration: "none",
+                          color: "#536DFE",
+                        }}
+                      >
+                        不划算
                       </Text>
                     )}
                   </View>

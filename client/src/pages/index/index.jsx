@@ -408,7 +408,7 @@ const CameraPage = () => {
 
     // 水印名称检查
     if (
-      // userInfo.type !== "default" &&
+      userInfo.type !== "default" &&
       !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
       getEditItem(editLabel, "shuiyinmingcheng")?.visible &&
       showTrueCode
@@ -695,7 +695,7 @@ const CameraPage = () => {
 
       // 水印名称检查
       if (
-        // userInfo.type !== "default" &&
+        userInfo.type !== "default" &&
         showTrueCode &&
         !getEditItem(editLabel, "shuiyinmingcheng")?.value &&
         getEditItem(editLabel, "shuiyinmingcheng")?.visible
@@ -709,7 +709,7 @@ const CameraPage = () => {
         setPiLiangCurrentIndex(0);
         setXiangceTempFiles([]);
         const res = await Taro.chooseMedia({
-          count: type === "piliang" ? 9 : 1,
+          count: type === "piliang" ? 20 : 1,
           mediaType: ["image"],
           sourceType: ["album"],
         });
@@ -1659,7 +1659,7 @@ const CameraPage = () => {
                     width: "90%",
                   }}
                 >
-                  默认1分钟，一次最多9张
+                  默认1分钟，一次最多20张
                 </Text>
 
                 <View>

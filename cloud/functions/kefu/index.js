@@ -75,7 +75,7 @@ exports.main = async (event, context) => {
         //     content: '开通会员请到 小程序-我的-点击id 复制文字发送给我。并选择会员类型。'
         // });
         // 会员价格
-        // const imageBuffer = await downloadImage('cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/kefu/WechatIMG366.jpg');
+        // const imageBuffer = await downloadImage('cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/do-not-delete/vip.jpg');
         // const uploadResult = await uploadToWechat(imageBuffer);
         // await sendCustomerServiceMessage(userOpenId, 'image', {
         //     media_id: uploadResult.mediaId
