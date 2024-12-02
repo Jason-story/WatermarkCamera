@@ -150,7 +150,6 @@ class App extends Component {
         scopes: ["webview", "native", "skyline"],
         source: `url("${font.url}")`,
         success: () => {
-          console.log(`${font.family} 字体加载成功`);
         },
         fail: (err) => {
           console.error(`${font.family} 字体加载失败:`, err);

@@ -57,7 +57,22 @@ function getOrderNo(str) {
   outTradeNo = str + new Date().getTime() + outTradeNo; //时间戳，用来生成订单号。
   return outTradeNo;
 }
+function isWithinTimeRanges(serverTime) {
+  const hours = String(new Date(serverTime).getHours()).padStart(2, "0");
 
+  const isNight = hours >= 21 || hours < 8; // 晚上9点到早上8点
+  const isAfternoon = hours >= 12 && hours < 13; // 中午12点到下午1点
+
+  return isNight || isAfternoon;
+}
+
+function countNumbersEvenOrOdd(str) {
+  // 使用正则表达式匹配所有数字
+  const numbers = (str || "").match(/\d/g) || [];
+
+  // 返回数字个数是否为偶数
+  return numbers.length % 2 === 0;
+}
 /**
  *
  * @param {金额} long_data
@@ -84,6 +99,8 @@ const Index = () => {
   const [selected, setSelected] = useState("");
   const [isShowModal, setIsShowModal] = useState(false);
   const [vipConfig, setVipConfig] = useState([]);
+  const appid = Taro.getAccountInfoSync().miniProgram.appId;
+  const config = appConfigs[appid];
   // const [selectedPlan, setSelectedPlan] = useState(2);
   Taro.useShareAppMessage((res) => {
     return {
@@ -106,8 +123,6 @@ const Index = () => {
       title: "加载中...",
     });
     const init = async () => {
-      const appid = Taro.getAccountInfoSync().miniProgram.appId;
-      const config = appConfigs[appid];
       if (config.type === "shared") {
         cloud = await new Taro.cloud.Cloud({
           resourceAppid: config.resourceAppid,
@@ -123,17 +138,15 @@ const Index = () => {
 
       cloud.callFunction({
         name: "addUser",
-        success: function (res) {
-          setLoading(true);
-          setUserInfo(res.result.data);
-        },
-      });
-
-      cloud.callFunction({
-        name: "getPrice",
-        success: function (res) {
-          setPrice(res.result.data);
-          Taro.hideLoading();
+        success: async function (res) {
+          await setUserInfo(res.result.data);
+          cloud.callFunction({
+            name: "getPrice",
+            success: function (res) {
+              setPrice(res.result.data);
+              Taro.hideLoading();
+            },
+          });
         },
       });
     };
@@ -148,15 +161,23 @@ const Index = () => {
     }
     price && setSelected(price.current);
     if (price) {
-      const data = price?.[config["priceMap"]]?.map((item) => {
-        const [key, title, totaldays = "", amount] = item.split("|");
+      const data = price?.["jiage"]?.map((item) => {
+        let [key, title, totaldays = "", amount] = item.split("|");
+        amount =
+          countNumbersEvenOrOdd(userInfo.openid) === true
+            ? amount * 1 - config.zhekoujiage + 10
+            : amount * 1 - config.zhekoujiage;
+
+        amount =
+          isWithinTimeRanges(userInfo.serverTimes) === true
+            ? amount - 10
+            : amount;
+
         return {
           key,
           title,
           popular: price.current === key,
-          // key !== "dingzhi"
-          //   ? title + "会员" + amount + "元"
-          //   : title + amount + "元",
+          // 根据openid 来定价 偶数 加10  奇数不变
           price: amount,
           text: (amount / totaldays).toFixed(3),
         };

@@ -18,7 +18,10 @@ exports.main = async (event, context) => {
     const offset = 8 * 60 * 60 * 1000; // 北京时间比UTC时间快8小时
     const today = new Date(Date.now() + offset); // 当前UTC时间加上偏移量
     const todayStr = today.toISOString().split('T')[0]; // 格式化为 YYYY-MM-DD
-
+    const serverTimes = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Shanghai',
+        hour12: false
+    });
     let todayUsageCount = 0;
 
     try {
@@ -109,13 +112,13 @@ exports.main = async (event, context) => {
 
             return {
                 success: true,
-                data: { ...userData, todayUsageCount, useTime, share: true, serverTimes: new Date() },
+                data: { ...userData, todayUsageCount, useTime, share: true, serverTimes },
                 message: '用户信息已更新或添加'
             };
         } else {
             return {
                 success: false,
-                data: { share: true, serverTimes: new Date() },
+                data: { share: true, serverTimes },
                 errorMessage: '用户信息查询失败'
             };
         }
@@ -183,20 +186,20 @@ exports.main = async (event, context) => {
 
                     return {
                         success: true,
-                        data: { ...userData, todayUsageCount, share: true, serverTimes: new Date() },
+                        data: { ...userData, todayUsageCount, share: true, serverTimes },
                         message: '用户信息已更新'
                     };
                 } else {
                     return {
                         success: false,
-                        data: { share: true, serverTimes: new Date() },
+                        data: { share: true, serverTimes },
                         errorMessage: '用户信息查询失败'
                     };
                 }
             } else {
                 return {
                     success: false,
-                    data: { share: true, serverTimes: new Date() },
+                    data: { share: true, serverTimes },
                     errorMessage: '用户信息更新失败，记录不存在'
                 };
             }
@@ -204,7 +207,7 @@ exports.main = async (event, context) => {
 
         return {
             success: false,
-            data: { share: true, serverTimes: new Date() },
+            data: { share: true, serverTimes },
             errorMessage: e.message
         };
     }
