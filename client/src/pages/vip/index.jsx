@@ -97,7 +97,6 @@ const Index = () => {
   const [price, setPrice] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState("");
-  const [isShowModal, setIsShowModal] = useState(false);
   const [vipConfig, setVipConfig] = useState([]);
   const appid = Taro.getAccountInfoSync().miniProgram.appId;
   const config = appConfigs[appid];
@@ -139,6 +138,7 @@ const Index = () => {
       cloud.callFunction({
         name: "addUser",
         success: async function (res) {
+          setLoading(true);
           await setUserInfo(res.result.data);
           cloud.callFunction({
             name: "getPrice",
@@ -246,7 +246,16 @@ const Index = () => {
   }
   useDidShow(() => {
     if (!loading) return;
+    const startTime = Date.now();
+    let checkTimer = null;
+    console.log(33333)
     const check = async () => {
+      if (Date.now() - startTime > 60000) {
+        clearTimeout(checkTimer);
+        return;
+      }
+      console.log(1111);
+
       cloud.callFunction({
         name: "addUser",
         success: function (res) {
@@ -267,7 +276,7 @@ const Index = () => {
               },
             });
           } else {
-            setTimeout(check, 3000);
+            checkTimer = setTimeout(check, 2000);
           }
         },
       });

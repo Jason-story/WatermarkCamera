@@ -89,7 +89,7 @@ const CameraPage = () => {
   const [addPhoneNumber, setAddPhoneNumber] = useState(false);
   const [videoModal, setVideoModal] = useState(false);
   const [tiyanModalShow, setTiYanModalShow] = useState(false);
-  // const [dakaModal, setDakeModal] = useState(false);
+  const [dakaModal, setDakeModal] = useState(false);
 
   // 相机相关状态
   const [cameraContext, setCameraContext] = useState(null);
@@ -398,13 +398,13 @@ const CameraPage = () => {
     }
 
     // 打卡标签检查
-    // if (
-    //   getEditItem(editLabel, "daka")?.value === "修改" &&
-    //   getEditItem(editLabel, "daka")?.visible
-    // ) {
-    //   setDakeModal(true);
-    //   return;
-    // }
+    if (
+      getEditItem(editLabel, "daka")?.value === "修改" &&
+      getEditItem(editLabel, "daka")?.visible
+    ) {
+      setDakeModal(true);
+      return;
+    }
 
     // 水印名称检查
     if (
@@ -685,13 +685,13 @@ const CameraPage = () => {
       }
 
       // 打卡检查
-      // if (
-      //   getEditItem(editLabel, "daka")?.value === "修改" &&
-      //   getEditItem(editLabel, "daka")?.visible
-      // ) {
-      //   setDakeModal(true);
-      //   return;
-      // }
+      if (
+        getEditItem(editLabel, "daka")?.value === "修改" &&
+        getEditItem(editLabel, "daka")?.visible
+      ) {
+        setDakeModal(true);
+        return;
+      }
 
       // 水印名称检查
       if (
@@ -1728,7 +1728,7 @@ const CameraPage = () => {
             onLeftButtonClick={() => setShuiyinNameModal(false)}
           />
 
-          {/* <CustomModal
+          <CustomModal
             visible={dakaModal}
             title="提示"
             phoneValidation={false}
@@ -1760,7 +1760,7 @@ const CameraPage = () => {
               setEdit(true);
             }}
             onLeftButtonClick={() => setDakeModal(false)}
-          /> */}
+          />
 
           <CustomModal
             visible={shuiyinNameModal}
