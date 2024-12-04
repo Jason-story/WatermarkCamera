@@ -35,10 +35,12 @@ import Touming from "../../images/touming.png";
 import ShareImg from "../../images/logo.jpg";
 import VipImg from "../../images/vip.png";
 import PiliangImg from "../../images/piliang.png";
+import Pengyouquan from "../../images/pengyouquan.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import XiangceIcon from "../../images/xiangce.png";
+import menuIcon from "../../images/menu.png";
 import KefuIcon from "../../images/kefu.png";
 import ShuiyinIcon from "../../images/shuiyin.png";
 import AddMyApp from "../../images/add-my-app.png";
@@ -136,6 +138,7 @@ const CameraPage = () => {
   const [videoMaskPath, setVideoMaskPath] = useState("");
   const [piliangVisible, setPiliangVisible] = useState(false);
   const [piliangeTime, setPiliangeTime] = useState(1);
+  const [showSharePage, setSharePageShow] = useState(false);
 
   // 防伪码生成
   const [fangweimaText, setFangweimaText] = useState(generateRandomString(4));
@@ -1170,7 +1173,9 @@ const CameraPage = () => {
     path: "/pages/index/index?id=" + userInfo.openid,
     imageUrl: ShareImg,
   }));
-
+  Taro.useShareTimeline(() => ({
+    title: "分享你一款可修改时间、位置的水印相机",
+  }));
   // 上传图片
   const uploadImage = async (filePath) => {
     const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${
@@ -1513,13 +1518,11 @@ const CameraPage = () => {
                   </Button>
                   <Text>批量</Text>
                 </View>
-                {/* 我的按钮 */}
-                {/* <View className="xiangce kefu" style={{ marginRight: "auto" }}>
+                <View className="xiangce kefu" style={{ marginRight: "auto" }}>
                   <Button
                     onClick={() => {
-                      Taro.navigateTo({
-                        url: "/pages/me/index",
-                      });
+                      console.log(22);
+                      setSharePageShow(true);
                     }}
                     style={{
                       background: "none",
@@ -1532,10 +1535,10 @@ const CameraPage = () => {
                       height: "39px",
                     }}
                   >
-                    <Image src={KefuIcon} className="xiangceIcon" />
+                    <Image src={Pengyouquan} className="xiangceIcon" />
                   </Button>
-                  <Text>我的</Text>
-                </View> */}
+                  <Text>免费用</Text>
+                </View>
               </View>
             </View>
 
@@ -1862,6 +1865,57 @@ const CameraPage = () => {
             editLabel={editLabel}
             setEditLabel={setEditLabel}
           />
+        </View>
+      )}
+      {showSharePage && (
+        <View className="share-container">
+          <View className="share-card">
+            <View className="View">
+              <View className="icon-circle"></View>
+              <View className="share-title">分享到朋友圈</View>
+            </View>
+            <View className="reward-container">
+              <View className="reward-title">分享奖励</View>
+              <View className="reward-content">
+                <View>集齐</View>
+                <View className="reward-badge">30个赞</View>
+                <View>免费使用</View>
+                <View className="reward-badge">24小时</View>
+              </View>
+            </View>
+            <View className="steps-container">
+              <View className="steps-title">分享步骤</View>
+              <View className="share-step">
+                <View className="step-number">1</View>
+                <View className="step-text menuicon">
+                  <View>点击右上角的</View>
+                  <Image src={menuIcon}></Image>
+                  <View>菜单按钮</View>
+                </View>
+              </View>
+              <View className="share-step">
+                <View className="step-number">2</View>
+                <View className="step-text">
+                  在弹出的菜单中选择"分享到朋友圈"
+                </View>
+              </View>
+              <View className="share-step">
+                <View className="step-number">3</View>
+                <View className="step-text">
+                  集齐后在首页点击『客服』按钮凭朋友圈截图兑换
+                </View>
+              </View>
+            </View>
+
+            <button
+              className="home-button"
+              onClick={() => {
+                setSharePageShow(false);
+              }}
+            >
+              返回首页
+            </button>
+          </View>
         </View>
       )}
     </ScrollView>

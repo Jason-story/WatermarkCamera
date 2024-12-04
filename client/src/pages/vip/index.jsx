@@ -248,13 +248,11 @@ const Index = () => {
     if (!loading) return;
     const startTime = Date.now();
     let checkTimer = null;
-    console.log(33333)
     const check = async () => {
       if (Date.now() - startTime > 60000) {
         clearTimeout(checkTimer);
         return;
       }
-      console.log(1111);
 
       cloud.callFunction({
         name: "addUser",
@@ -336,17 +334,19 @@ const Index = () => {
                     <Text className="original-price">
                       ¥{(plan.price * 1.3).toFixed(3)}
                     </Text>
-                    {plan.key !== "1day" && plan.key !== "never" && (
-                      <Text
-                        className="original-price"
-                        style={{
-                          textDecoration: "none",
-                          color: "#536DFE",
-                        }}
-                      >
-                        {plan.text}元/天
-                      </Text>
-                    )}
+                    {plan.key !== "1day" &&
+                      plan.key !== "never" &&
+                      plan.key !== "dingzhi" && (
+                        <Text
+                          className="original-price"
+                          style={{
+                            textDecoration: "none",
+                            color: "#536DFE",
+                          }}
+                        >
+                          {plan.text}元/天
+                        </Text>
+                      )}
                     {plan.key === "1day" && (
                       <Text
                         className="original-price"

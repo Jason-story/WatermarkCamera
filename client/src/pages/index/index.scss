@@ -735,7 +735,6 @@ text {
       font-family: PTMono;
       color: rgba(255, 255, 255, 1);
       margin-top: 2px;
-
     }
   }
 }
@@ -751,7 +750,7 @@ text {
   text-shadow: 0.1rpx 0.1rpx 0.1rpx rgba(0, 0, 0, 0.2);
   font-weight: 500;
   &.jrsy {
-    background-image: url('../../images/bg_code.png');
+    background-image: url("../../images/bg_code.png");
     background-repeat: no-repeat;
     background-size: 100% auto;
     background-position: center bottom;
@@ -802,5 +801,176 @@ text {
     view {
       padding-left: 10px;
     }
+  }
+}
+
+/* Layout styles */
+.share-container {
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(135deg, #9333ea, #ec4899, #f97316);
+  z-index: 9999999;
+  padding-top: 5rem;
+  overflow: hidden;
+}
+
+.share-card {
+  max-width: 95%;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 2rem 1rem;
+}
+
+.share-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.icon-circle {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: linear-gradient(to right, #9333ea, #db2777);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-circle::before {
+  content: "↗";
+  color: white;
+  font-size: 2rem;
+}
+
+.share-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #9333ea;
+}
+
+/* Steps section */
+.steps-container {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.75rem;
+  padding: 1.5rem 1rem 0 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.steps-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.share-step {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.step:last-child {
+  margin-bottom: 0;
+}
+
+.step-number {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #f3e8ff;
+  color: #9333ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 20px;
+}
+
+.step-text {
+  color: #374151;
+  margin: 0;
+}
+
+/* Reward section */
+.reward-container {
+  background: linear-gradient(to right, #faf5ff, #fdf2f8);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.reward-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #7e22ce;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reward-content {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  view {
+    flex-shrink: 0;
+  }
+}
+
+.reward-badge {
+  padding: 0.1rem 0.4rem;
+  background: linear-gradient(to right, #9333ea, #db2777);
+  color: white;
+  border-radius: 9999px;
+  margin: 0 0.5rem;
+}
+
+/* Home button */
+.home-button {
+  width: 100%;
+  padding: 0.3rem 2rem;
+  background: linear-gradient(to right, #9333ea, #db2777);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.menuicon {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  View {
+    flex-shrink: 0;
+  }
+  image {
+    width: 100px;
+    height: 30px;
   }
 }
