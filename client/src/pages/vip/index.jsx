@@ -60,7 +60,7 @@ function getOrderNo(str) {
 function isWithinTimeRanges(serverTime) {
   const hours = String(new Date(serverTime).getHours()).padStart(2, "0");
 
-  const isNight = hours >= 21 || hours < 8; // 晚上9点到早上8点
+  const isNight = hours >= 22 || hours < 7; // 晚上9点到早上8点
   const isAfternoon = hours >= 12 && hours < 13; // 中午12点到下午1点
 
   return isNight || isAfternoon;
@@ -104,14 +104,13 @@ const Index = () => {
   Taro.useShareAppMessage((res) => {
     return {
       title: "分享你一款可修改时间、位置的水印相机",
-      path: "/pages/index/index?id=" + userInfo.openid,
+      path: "/pages/index/index?invite_id=" + userInfo.openid,
       imageUrl: ShareImg,
     };
   });
 
   const globalConfig = app.$app.globalData.config;
-
-  let inviteId = Taro.getCurrentInstance().router.params.id || "";
+  let inviteId = app.$app.globalData.invite_id;
   Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
     if (res.data) {
       inviteId = res.data;
@@ -170,8 +169,8 @@ const Index = () => {
 
         amount =
           isWithinTimeRanges(userInfo.serverTimes) === true
-            ? amount - 10
-            : amount;
+            ? amount - 10 - userInfo.youhui * 1
+            : amount - userInfo.youhui * 1;
 
         return {
           key,
@@ -308,6 +307,16 @@ const Index = () => {
                 </View>
               );
             })}
+            <View
+              style={{
+                color: "#ffed00",
+                marginTop: "10px",
+                padding: "0 20px",
+                textAlign: "left",
+              }}
+            >
+              每邀请一个好友成功拍照一次，会员价优惠1元，最多邀请10人即最多优惠10元
+            </View>
           </View>
           <View className="header-background"></View>
         </View>
@@ -316,7 +325,6 @@ const Index = () => {
         {fuckShenHe === false && (
           <View className="plans-container">
             {vipConfig.map((plan) => {
-              console.log("plan: ", plan);
               return (
                 <View
                   key={plan.key}

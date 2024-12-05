@@ -70,10 +70,6 @@ let minutesD = ""; //String(now.getMinutes()).padStart(2, "0");
 
 const fs = Taro.getFileSystemManager();
 
-// 路由参数获取
-const inviteId = Taro.getCurrentInstance().router.params.id || "";
-const zphsId = Taro.getCurrentInstance().router.params.zphsId || "";
-
 // 文件系统配置
 
 // 小程序配置
@@ -147,7 +143,11 @@ const CameraPage = () => {
   );
 
   // 全局状态
-  app.$app.globalData.zphsId = zphsId;
+  app.$app.globalData.zphsId =
+    Taro.getCurrentInstance().router.params.zphsId || "";
+  app.$app.globalData.invite_id =
+    Taro.getCurrentInstance().router.params.invite_id || "";
+
   let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   // ===== 核心功能函数 =====
@@ -495,11 +495,18 @@ const CameraPage = () => {
           const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${
             Date.now() % 1000
           }_${userInfo.type === "default" ? "" : "vip"}_${userInfo.openid}.png`;
-
           console.log("cloudPath: ", cloudPath);
+
           await cloud.uploadFile({
             cloudPath,
             filePath,
+          });
+          await cloud.callFunction({
+            name: "invite",
+            data: {
+              invite_id:
+                Taro.getCurrentInstance().router.params.invite_id || "",
+            },
           });
           if (type === "camera") {
             Taro.showToast({
@@ -976,9 +983,9 @@ const CameraPage = () => {
     init();
 
     // 处理邀请存档
-    if (inviteId) {
-      Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
-    }
+    // if (inviteId) {
+    //   Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
+    // }
 
     // 获取系统信息
     Taro.getSystemInfo({
@@ -1170,7 +1177,7 @@ const CameraPage = () => {
   // ===== 分享配置 =====
   Taro.useShareAppMessage(() => ({
     title: "分享你一款可修改时间、位置的水印相机",
-    path: "/pages/index/index?id=" + userInfo.openid,
+    path: "/pages/index/index?invite_id=" + userInfo.openid,
     imageUrl: ShareImg,
   }));
   Taro.useShareTimeline(() => ({
@@ -1183,7 +1190,6 @@ const CameraPage = () => {
     }_${userInfo.type === "default" ? "" : "vip"}_${userInfo.openid}.${
       filePath.match(/\.(\w+)$/)[1]
     }`;
-    console.log("cloudPath: ", cloudPath);
 
     const res = await cloud.uploadFile({
       cloudPath,
@@ -1391,7 +1397,7 @@ const CameraPage = () => {
                   <Button
                     onClick={() => {
                       Taro.navigateTo({
-                        url: `/pages/vip/index?type=${userInfo.type}&id=${inviteId}`,
+                        url: `/pages/vip/index?type=${userInfo.type}`,
                       });
                     }}
                     style={{
@@ -1905,6 +1911,15 @@ const CameraPage = () => {
                   集齐后在首页点击『客服』按钮凭朋友圈截图兑换
                 </View>
               </View>
+            </View>
+            <View
+              style={{
+                marginTop: "-1rem",
+                marginBottom: "1rem",
+                fontSize: "0.85rem",
+              }}
+            >
+              每个用户限领取一次
             </View>
 
             <button

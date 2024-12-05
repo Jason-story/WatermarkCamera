@@ -21,7 +21,7 @@ exports.main = async (event, context) => {
     const serverTimes = new Date().toLocaleString('en-US', {
         timeZone: 'Asia/Shanghai',
         hour12: false
-    });
+    }).replace(/ 24:(\d{2}:\d{2})/, " 00:$1")
     let todayUsageCount = 0;
 
     try {

@@ -2,13 +2,12 @@
 const cloud = require('wx-server-sdk');
 
 // 初始化云开发环境
-cloud.init({
-    env: cloud.DYNAMIC_CURRENT_ENV
-});
+cloud.init();
 
 // 获取数据库引用
 const db = cloud.database();
 const _ = db.command;
+// 清空指定 inviteId 的邀请记录
 
 // 云函数入口函数
 exports.main = async (event, context) => {
@@ -45,8 +44,22 @@ exports.main = async (event, context) => {
         never: 999999,
         dingzhi: 1
     };
+    // 初始化事务
 
     try {
+        const { data: records } = await transaction
+            .collection('invites')
+            .where({
+                openid
+            })
+            .get();
+        if (records && records.length > 0) {
+            // 执行删除操作
+            for (const record of records) {
+                await transaction.collection('invites').doc(record._id).remove();
+            }
+        }
+
         const currentInfo = await transaction
             .collection('users')
             .where({
@@ -64,7 +77,7 @@ exports.main = async (event, context) => {
         }
         // 更新用户信息
         if (type === 'dingzhi') {
-            type = 'default';
+            type = 'year';
         }
         await transaction
             .collection('users')
@@ -74,42 +87,13 @@ exports.main = async (event, context) => {
             .update({
                 data: {
                     type: type,
+                    youhui: 0,
                     plateform,
                     pay_time: currentTime,
                     end_time: endTime
                 }
             });
-        // 更新用户信息
-        const user = await transaction
-            .collection('users')
-            .where({
-                openid: inviteId
-            })
-            .get();
-
-        // 更新邀请来源用户信息
-        if (openid !== inviteId) {
-            // 检查用户是否存在
-            if (user.data.length > 0) {
-                const userType = user.data[0].type;
-
-                // 根据 type 的值决定使用的 multiplier
-                const multiplier = userType === 'default' ? 0.05 : 0.2;
-                const incrementValue = (price * multiplier).toFixed(2) * 1; // 保留两位小数，并转为数值
-
-                // 更新用户的 mone 字段
-                await transaction
-                    .collection('users')
-                    .where({
-                        openid: inviteId
-                    })
-                    .update({
-                        data: {
-                            mone: _.inc(incrementValue) // 根据计算的值增加 mone
-                        }
-                    });
-            }
-        }
+        await transaction.commit();
 
         return {
             msg: '用户信息更新成功'

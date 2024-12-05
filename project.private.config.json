@@ -15,7 +15,7 @@
         {
           "name": "pages/index/index",
           "pathName": "pages/index/index",
-          "query": "",
+          "query": "invite_id=oliMS7a2SGZsqPigG1bzpPz8Lk3Y",
           "launchMode": "default",
           "scene": null
         }
