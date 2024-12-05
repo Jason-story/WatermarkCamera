@@ -144,14 +144,9 @@ const CameraPage = () => {
 
   // 全局状态
   app.$app.globalData.zphsId =
-    Taro.getCurrentInstance().router.params.zphsId || "";
+    Taro.getCurrentInstance().router?.params?.zphsId || "";
   app.$app.globalData.invite_id =
-    Taro.getCurrentInstance().router.params.invite_id || "";
-
-  console.log(
-    "Taro.getCurrentInstance().router.params.invite_id: ",
-    Taro.getCurrentInstance().router.params.invite_id
-  );
+    Taro.getCurrentInstance().router?.params?.invite_id || "";
   let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   // ===== 核心功能函数 =====
@@ -505,12 +500,12 @@ const CameraPage = () => {
             cloudPath,
             filePath,
           });
-          if (Taro.getCurrentInstance().router.params.invite_id) {
+          if (Taro.getCurrentInstance().router?.params.invite_id) {
             await cloud.callFunction({
               name: "invite",
               data: {
                 invite_id:
-                  Taro.getCurrentInstance().router.params.invite_id || "",
+                  Taro.getCurrentInstance().router?.params.invite_id || "",
               },
               success: function (data) {
                 console.log("invited success", data);
