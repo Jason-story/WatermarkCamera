@@ -58,7 +58,13 @@ import "./index.scss";
 let interstitialAd = null;
 const app = getApp();
 let cloud = "";
+let showAddMyAppLocalStorge = false;
 
+Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
+  if (res.data) {
+    showAddMyAppLocalStorge = res.data;
+  }
+});
 // 当前时间相关常量
 let now = new Date();
 // let yearD = now.getFullYear();
@@ -142,12 +148,18 @@ const CameraPage = () => {
     generateRandomString(4)
   );
 
+  let inviteId = Taro.getCurrentInstance().router?.params?.invite_id || "";
   // 全局状态
   app.$app.globalData.zphsId =
     Taro.getCurrentInstance().router?.params?.zphsId || "";
-  app.$app.globalData.invite_id =
-    Taro.getCurrentInstance().router?.params?.invite_id || "";
+  app.$app.globalData.invite_id = inviteId;
+
   let fuckShenHe = app.$app.globalData.fuckShenHe;
+
+  // 处理邀请存档
+  if (inviteId) {
+    Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
+  }
 
   // ===== 核心功能函数 =====
   // 天气获取
@@ -500,12 +512,11 @@ const CameraPage = () => {
             cloudPath,
             filePath,
           });
-          if (Taro.getCurrentInstance().router?.params.invite_id) {
+          if (inviteId) {
             await cloud.callFunction({
               name: "invite",
               data: {
-                invite_id:
-                  Taro.getCurrentInstance().router?.params.invite_id || "",
+                invite_id: inviteId,
               },
               success: function (data) {
                 console.log("invited success", data);
@@ -989,11 +1000,6 @@ const CameraPage = () => {
 
     init();
 
-    // 处理邀请存档
-    // if (inviteId) {
-    //   Taro.setStorage({ key: "createVipFromInviteId", data: inviteId });
-    // }
-
     // 获取系统信息
     Taro.getSystemInfo({
       success: function (res) {
@@ -1341,8 +1347,18 @@ const CameraPage = () => {
           </View>
 
           {/* 添加到我的小程序提示 */}
-          {showAddMyApp && (
-            <View className="add-my-app" onClick={() => setAddMyAppShow(false)}>
+          {showAddMyApp && !showAddMyAppLocalStorge && (
+            <View
+              className="add-my-app"
+              onClick={() => {
+                Taro.setStorage({
+                  key: "showAddMyAppLocalStorge",
+                  data: true,
+                });
+
+                setAddMyAppShow(false);
+              }}
+            >
               <Image src={AddMyApp} />
             </View>
           )}

@@ -9,7 +9,7 @@ import "./index.scss";
 const inviteId = Taro.getCurrentInstance().router?.params.id || "";
 const app = getApp();
 let cloud = "";
-const UserInfo = ({ totalQuota, userId, endTime, userType }) => {
+const UserInfo = ({ totalQuota, userId, endTime, userType,userInfo }) => {
   let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   const onCopyText = (text) => {
@@ -91,10 +91,10 @@ const UserInfo = ({ totalQuota, userId, endTime, userType }) => {
             </View>
             <Text className="value">{userId || "xxx"}</Text>
           </View>
-          {/* <View className="user-item">
-            <Text className="label">待提现</Text>
-            <Text className="value">{userInfo.mone || "0"}元</Text>
-          </View> */}
+          <View className="user-item">
+            <Text className="label">我的佣金</Text>
+            <Text className="value">{userInfo.yongjin || "0"}元</Text>
+          </View>
           {/* <View className="user-item">
             <Text className="label">邀请获赠总次数</Text>
             <Text className="value">{inviteCount || 0}</Text>

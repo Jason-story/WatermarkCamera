@@ -13,52 +13,63 @@ const _ = db.command;
 // 云函数入口函数
 exports.main = async (event, context) => {
     const wxContext = cloud.getWXContext();
-    const OPENID = wxContext.OPENID || wxContext.FROM_OPENID;// 被邀请者
-
+    const OPENID = wxContext.OPENID; // 被邀请者
     const invite_id = event.invite_id; // 邀请者
-    if (!invite_id) return;
+    console.log('event: ', event);
+    console.log('invite_id: ', invite_id);
     if (invite_id === OPENID) {
         return {
             success: false,
-            message: '不能邀请自己'
+            message: 'You cannot invite yourself'
         };
     }
 
     const transaction = await db.startTransaction();
 
     try {
-        // 检查被邀请者(OPENID)是否曾经被邀请过
-        const inviteeCheck = await transaction
+        const now = new Date();
+        const today = new Date(now);
+        today.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(today);
+        endOfDay.setHours(23, 59, 59, 999);
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        // 检查邀请者(invite_id)在过去24小时内是否已经邀请过
+        const inviterCheck = await transaction
             .collection('invites')
             .where({
-                openid: OPENID
-            })
-            .count();
-        const yaoqingrenshu = await transaction
-            .collection('invites')
-            .where({
-                invite_id
+                invite_id: invite_id,
+                timestamp: _.gte(yesterday)
             })
             .count();
 
-        if (yaoqingrenshu.total >= 10) {
+        if (inviterCheck.total >= 1) {
             await transaction.rollback();
             return {
                 success: false,
                 invite_id,
-                OPENID,
                 event,
-                message: '最多邀请10人'
+                message: '24小时内已邀请过'
             };
         }
-        if (inviteeCheck.total >= 1) {
+
+        // 检查被邀请者(OPENID)今天被邀请的次数
+        const inviteeCheck = await transaction
+            .collection('invites')
+            .where({
+                openid: OPENID,
+                timestamp: _.gte(today).and(_.lte(endOfDay))
+            })
+            .count();
+
+        if (inviteeCheck.total >= 3) {
             await transaction.rollback();
             return {
                 success: false,
                 invite_id,
-                OPENID,
                 event,
-                message: '该用户已被邀请过'
+                message: '今日已被邀请3次'
             };
         }
 
@@ -75,18 +86,18 @@ exports.main = async (event, context) => {
             return {
                 success: false,
                 event,
-                OPENID,
+
                 message: 'User not found'
             };
         }
 
-        // 更新邀请用户的 youhui
+        // 更新邀请用户的 invite_count
         await transaction
             .collection('users')
             .doc(userCheck.data[0]._id)
             .update({
                 data: {
-                    youhui: _.inc(1)
+                    invite_count: _.inc(1)
                 }
             });
 
@@ -96,7 +107,7 @@ exports.main = async (event, context) => {
                 invite_id: invite_id,
                 openid: OPENID,
                 _createTime: +new Date(),
-                timestamp: new Date()
+                timestamp: now
             }
         });
 
@@ -105,15 +116,12 @@ exports.main = async (event, context) => {
             success: true,
             invite_id,
             event,
-            OPENID,
             message: '邀请成功'
         };
     } catch (e) {
         await transaction.rollback();
         return {
             success: false,
-            invite_id,
-            OPENID,
             message: 'Transaction failed',
             error: e
         };

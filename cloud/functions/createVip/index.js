@@ -93,10 +93,41 @@ exports.main = async (event, context) => {
                     end_time: endTime
                 }
             });
+        const user = await transaction
+            .collection('users')
+            .where({
+                openid: inviteId
+            })
+            .get();
+        // 更新邀请来源用户返佣
+        if (openid !== inviteId) {
+            // 检查用户是否存在
+            if (user.data.length > 0) {
+                const userType = user.data[0].type;
+
+                // 根据 type 的值决定使用的 multiplier
+                const multiplier = 0.15;
+                const incrementValue = (price * multiplier).toFixed(2) * 1; // 保留两位小数，并转为数值
+
+                // 更新用户的 yongjin 字段
+                await transaction
+                    .collection('users')
+                    .where({
+                        openid: inviteId
+                    })
+                    .update({
+                        data: {
+                            yongjin: _.inc(incrementValue) // 根据计算的值增加 yongjin
+                        }
+                    });
+            }
+        }
+
         await transaction.commit();
 
         return {
             openid,
+            inviteId,
             msg: '用户信息更新成功'
         };
     } catch (error) {
