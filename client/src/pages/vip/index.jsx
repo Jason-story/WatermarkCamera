@@ -169,8 +169,14 @@ const Index = () => {
 
         amount =
           isWithinTimeRanges(userInfo.serverTimes) === true
-            ? amount - 10 - userInfo.youhui * 1
-            : amount - userInfo.youhui * 1;
+            ? amount -
+              10 -
+              (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0)
+            : amount -
+              (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0);
+        amount = amount.toFixed(2);
+        console.log("amount: ", amount);
+        console.log("userInfo.youhui * 1: ", userInfo.youhui * 1);
 
         return {
           key,
@@ -315,7 +321,19 @@ const Index = () => {
                 textAlign: "left",
               }}
             >
-              每邀请一个好友成功拍照一次，会员价优惠1元，最多邀请10人即最多优惠10元
+              每邀请一个好友成功拍照一次优惠1元，最多邀请10人（即最多优惠10元）
+            </View>
+            <View
+              style={{
+                color: "#ffed00",
+                padding: "0 20px",
+                marginTop: "10px",
+                textAlign: "left",
+                fontSize: "16px",
+                fontWeight: "bolder",
+              }}
+            >
+              当前优惠 {userInfo.youhui || 0} 元
             </View>
           </View>
           <View className="header-background"></View>
@@ -388,9 +406,10 @@ const Index = () => {
               <View
                 style={{
                   color: "#f22c",
+                  background: "#fff",
                   fontSize: "14px",
                   textAlign: "center",
-                  marginBottom: "5px",
+                  padding: "5px",
                 }}
               >
                 为防止失联，开通会员后，请输入正确的手机号。

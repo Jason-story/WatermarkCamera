@@ -50,7 +50,7 @@ exports.main = async (event, context) => {
         const { data: records } = await transaction
             .collection('invites')
             .where({
-                openid
+                invite_id: openid
             })
             .get();
         if (records && records.length > 0) {
@@ -96,6 +96,7 @@ exports.main = async (event, context) => {
         await transaction.commit();
 
         return {
+            openid,
             msg: '用户信息更新成功'
         };
     } catch (error) {

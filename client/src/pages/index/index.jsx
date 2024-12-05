@@ -148,6 +148,10 @@ const CameraPage = () => {
   app.$app.globalData.invite_id =
     Taro.getCurrentInstance().router.params.invite_id || "";
 
+  console.log(
+    "Taro.getCurrentInstance().router.params.invite_id: ",
+    Taro.getCurrentInstance().router.params.invite_id
+  );
   let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   // ===== 核心功能函数 =====
@@ -506,6 +510,12 @@ const CameraPage = () => {
             data: {
               invite_id:
                 Taro.getCurrentInstance().router.params.invite_id || "",
+            },
+            success: function (data) {
+              console.log("invited success", data);
+            },
+            fail: function (err) {
+              console.error("invited failed", err);
             },
           });
           if (type === "camera") {

@@ -44,6 +44,7 @@ exports.main = async (event, context) => {
             return {
                 success: false,
                 invite_id,
+                OPENID,
                 event,
                 message: '最多邀请10人'
             };
@@ -53,6 +54,7 @@ exports.main = async (event, context) => {
             return {
                 success: false,
                 invite_id,
+                OPENID,
                 event,
                 message: '该用户已被邀请过'
             };
@@ -71,6 +73,7 @@ exports.main = async (event, context) => {
             return {
                 success: false,
                 event,
+                OPENID,
                 message: 'User not found'
             };
         }
@@ -100,12 +103,15 @@ exports.main = async (event, context) => {
             success: true,
             invite_id,
             event,
+            OPENID,
             message: '邀请成功'
         };
     } catch (e) {
         await transaction.rollback();
         return {
             success: false,
+            invite_id,
+            OPENID,
             message: 'Transaction failed',
             error: e
         };

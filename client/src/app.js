@@ -23,7 +23,6 @@ const checkForUpdate = () => {
 
       // 检查更新
       updateManager.onCheckForUpdate((res) => {
-        console.log("检查更新结果：", res);
 
         if (!res.hasUpdate) {
           resolve(false);
