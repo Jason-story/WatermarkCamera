@@ -505,19 +505,21 @@ const CameraPage = () => {
             cloudPath,
             filePath,
           });
-          await cloud.callFunction({
-            name: "invite",
-            data: {
-              invite_id:
-                Taro.getCurrentInstance().router.params.invite_id || "",
-            },
-            success: function (data) {
-              console.log("invited success", data);
-            },
-            fail: function (err) {
-              console.error("invited failed", err);
-            },
-          });
+          if (Taro.getCurrentInstance().router.params.invite_id) {
+            await cloud.callFunction({
+              name: "invite",
+              data: {
+                invite_id:
+                  Taro.getCurrentInstance().router.params.invite_id || "",
+              },
+              success: function (data) {
+                console.log("invited success", data);
+              },
+              fail: function (err) {
+                console.error("invited failed", err);
+              },
+            });
+          }
           if (type === "camera") {
             Taro.showToast({
               title: "已保存到相册",

@@ -13,8 +13,10 @@ const _ = db.command;
 // 云函数入口函数
 exports.main = async (event, context) => {
     const wxContext = cloud.getWXContext();
-    const OPENID = wxContext.OPENID; // 被邀请者
+    const OPENID = wxContext.OPENID || wxContext.FROM_OPENID;// 被邀请者
+
     const invite_id = event.invite_id; // 邀请者
+    if (!invite_id) return;
     if (invite_id === OPENID) {
         return {
             success: false,
