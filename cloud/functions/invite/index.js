@@ -39,7 +39,7 @@ exports.main = async (event, context) => {
             })
             .count();
 
-        if (yaoqingrenshu.total >= 10) {
+        if (yaoqingrenshu.total >= 5) {
             await transaction.rollback();
             return {
                 success: false,
