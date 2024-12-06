@@ -10,10 +10,7 @@ import {
 import "./index.scss";
 import Cover from "./cover.png";
 
-const Index = ({
-  maskScale,
-  editLabel,
-}) => {
+const Index = ({ maskScale, editLabel }) => {
   const time = parseDateString(getEditItem(editLabel, "shijian").value || "");
 
   return (
@@ -77,7 +74,7 @@ const Index = ({
           </View>
         )}
       </View>
-      <Image src={Cover}></Image>
+      {getEditItem(editLabel, "bgShow").visible && <Image src={Cover}></Image>}
     </View>
   );
 };

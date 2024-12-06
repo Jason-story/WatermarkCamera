@@ -252,6 +252,15 @@ const label = {
       editTitle: false,
       switchVisible: true,
     },
+    {
+      key: "bgShow",
+      title: "背景图片",
+      // 是否隐藏
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+      defaultValue: "无法修改，只能显示或隐藏",
+    },
 
     {
       key: "gongchengmingcheng",

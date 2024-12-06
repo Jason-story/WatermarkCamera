@@ -37,6 +37,9 @@ import VipImg from "../../images/vip.png";
 import PiliangImg from "../../images/piliang.png";
 import Pengyouquan from "../../images/pengyouquan.png";
 import fanzhuanImg from "../../images/fanzhuan.png";
+import ratio1 from "../../images/ratio_1.png";
+import ratio2 from "../../images/ratio_2.png";
+import ratio3 from "../../images/ratio_3.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
 import XiangceIcon from "../../images/xiangce.png";
@@ -59,8 +62,12 @@ let interstitialAd = null;
 const app = getApp();
 let cloud = "";
 let showAddMyAppLocalStorge = false;
-
-Taro.getStorage({ key: "createVipFromInviteId" }).then((res) => {
+const biliMap = {
+  1: 4 / 3,
+  2: 16 / 9,
+  3: 1 / 1,
+};
+Taro.getStorage({ key: "showAddMyAppLocalStorge" }).then((res) => {
   if (res.data) {
     showAddMyAppLocalStorge = res.data;
   }
@@ -141,6 +148,7 @@ const CameraPage = () => {
   const [piliangVisible, setPiliangVisible] = useState(false);
   const [piliangeTime, setPiliangeTime] = useState(1);
   const [showSharePage, setSharePageShow] = useState(false);
+  const [bili, setBili] = useState(1);
 
   // 防伪码生成
   const [fangweimaText, setFangweimaText] = useState(generateRandomString(4));
@@ -457,7 +465,7 @@ const CameraPage = () => {
     if (camera) {
       const proportion = ShuiyinDoms[currentShuiyinIndex].options?.proportion
         ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
-        : (screenWidth / 3) * 4;
+        : screenWidth  * biliMap[bili];
 
       await setSnapshotHeight(proportion);
 
@@ -896,6 +904,9 @@ const CameraPage = () => {
   const fanzhuanClick = () => {
     setDevicePosition((prev) => (prev === "back" ? "front" : "back"));
   };
+  const biliClick = () => {
+    setBili((prev) => (prev % 3) + 1);
+  };
 
   // 闪光灯控制
   const shanguangClick = () => {
@@ -1008,7 +1019,7 @@ const CameraPage = () => {
           ShuiyinDoms[currentShuiyinIndex].options?.proportion
             ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
                 res.screenWidth
-            : (res.screenWidth / 3) * 4
+            : res.screenWidth  * biliMap[bili]
         );
       },
     });
@@ -1226,7 +1237,7 @@ const CameraPage = () => {
               height: ShuiyinDoms[currentShuiyinIndex].options?.proportion
                 ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
                   screenWidth
-                : (screenWidth / 3) * 4,
+                : screenWidth *biliMap[bili],
             }}
           >
             <Marquee />
@@ -1295,6 +1306,7 @@ const CameraPage = () => {
                   setShowFloatLayout={setShowFloatLayout}
                   maskScale={maskScale}
                   editLabel={editLabel}
+                  bili={bili}
                 />
 
                 {/* 相册模式水印 */}
@@ -1319,6 +1331,7 @@ const CameraPage = () => {
                   setShowFloatLayout={setShowFloatLayout}
                   maskScale={maskScale}
                   editLabel={editLabel}
+                  bili={bili}
                 />
 
                 {/* 相机控制按钮 */}
@@ -1328,6 +1341,11 @@ const CameraPage = () => {
                       {zoomLevel}
                       <View className="icon-x" />
                     </View>
+                  </View>
+                  <View className={"bili-icon"} onClick={biliClick}>
+                    {bili === 1 && <Image src={ratio1} />}
+                    {bili === 2 && <Image src={ratio2} />}
+                    {bili === 3 && <Image src={ratio3} />}
                   </View>
                   <View className="fanzhuan-icon" onClick={fanzhuanClick}>
                     <Image src={fanzhuanImg} />

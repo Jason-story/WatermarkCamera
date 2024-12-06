@@ -47,15 +47,15 @@ const RenderWatermark = ({
   setEdit,
   maskScale,
   setShowFloatLayout,
+  bili,
 }) => {
   const newMaskScale = maskScale + 0.1;
   const isCamera = type === "camera";
   const shuiyinxiangjiName =
     getEditItem(editLabel, "shuiyinmingcheng")?.value || "";
-    
+
   const renderLeftCopyright = () => {
     const option = ShuiyinDoms[currentShuiyinIndex].options;
-
 
     if (
       option?.copyright === "mk" &&
@@ -390,11 +390,16 @@ const RenderWatermark = ({
       }
     }
   };
+  const biliMap = {
+    1: 4 / 3,
+    2: 16 / 9,
+    3: 1 / 1,
+  };
   // 相机时 第一个snap 高度3：4 或者按照比例设置
   const height = isCamera
     ? ShuiyinDoms[currentShuiyinIndex].options?.proportion
       ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
-      : (screenWidth / 3) * 4
+      : screenWidth * biliMap[bili]
     : snapshotHeight;
 
   return (
