@@ -308,6 +308,14 @@ const label = {
       switchVisible: true,
     },
     {
+      key: "zuobiaoxi",
+      title: "坐标",
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+      value: "GCJ02 坐标系",
+    },
+    {
       key: "beizhu",
       title: "备注",
       visible: true,
@@ -473,6 +481,13 @@ const label = {
     },
 
     {
+      key: "biaoti",
+      title: "标题",
+      visible: true,
+      editTitle: true,
+      switchVisible: true,
+    },
+    {
       key: "shijian",
       title: "时间",
       visible: true,
@@ -485,6 +500,13 @@ const label = {
       title: "地点",
       visible: true,
       editTitle: true,
+      switchVisible: true,
+    },
+    {
+      key: "tianqi",
+      title: "天气",
+      visible: true,
+      editTitle: false,
       switchVisible: true,
     },
     {

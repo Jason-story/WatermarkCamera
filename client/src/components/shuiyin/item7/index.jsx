@@ -34,6 +34,12 @@ const Index = ({ maskScale, editLabel }) => {
             <View>{`${getEditItem(editLabel, "jingdu").value}`}</View>
           </View>
         )}
+        {getEditItem(editLabel, "zuobiaoxi").visible && (
+          <View className="item7-label-item">
+            <View className="item7-label-title">坐标:</View>
+            <View>{`${getEditItem(editLabel, "zuobiaoxi").value}`}</View>
+          </View>
+        )}
         <View className="item7-label-item">
           <View className="item7-label-title">时间:</View>
           <View>{`${time.year}-${time.month}-${time.day} ${time.hours}:${time.minutes}`}</View>

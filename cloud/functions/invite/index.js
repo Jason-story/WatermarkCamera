@@ -17,7 +17,7 @@ exports.main = async (event, context) => {
     const invite_id = event.invite_id; // 邀请者
     console.log('event: ', event);
     console.log('invite_id: ', invite_id);
-    if (invite_id === OPENID) {
+    if (invite_id === OPENID || !invite_id) {
         return {
             success: false,
             message: 'You cannot invite yourself'

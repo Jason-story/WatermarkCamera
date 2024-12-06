@@ -10,7 +10,19 @@
   overflow: hidden;
   transform-origin: left bottom;
   transition: transform 0.3s ease;
+}
+.item11-border-box {
   border-left: 5px solid #f5c452;
+}
+.item1-biaoti {
+  font-size: 28px;
+  padding-left: 0 !important;
+  margin-bottom: 16px !important;
+}
+.item11-value {
+  text {
+    line-height: 1.2;
+  }
 }
 .item11-title {
   padding: 14px 30px 14px 45px;
@@ -54,13 +66,13 @@
   flex-direction: row;
   margin-bottom: 10px;
   align-items: baseline;
-  &:last-child{
+  &:last-child {
     margin-bottom: 0;
   }
 
   &-bg {
     padding: 0 0 0 0;
-    color:#fff;
+    color: #fff;
   }
   .item11-label-title {
     flex-shrink: 0;

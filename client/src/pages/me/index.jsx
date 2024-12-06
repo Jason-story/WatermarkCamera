@@ -9,7 +9,7 @@ import "./index.scss";
 const inviteId = Taro.getCurrentInstance().router?.params.id || "";
 const app = getApp();
 let cloud = "";
-const UserInfo = ({ totalQuota, userId, endTime, userType,userInfo }) => {
+const UserInfo = ({ totalQuota, userId, endTime, userType, userInfo }) => {
   let fuckShenHe = app.$app.globalData.fuckShenHe;
 
   const onCopyText = (text) => {
@@ -206,13 +206,11 @@ const Index = () => {
     };
     init();
   }, []);
-  Taro.useShareAppMessage((res) => {
-    return {
-      title: "分享你一款可修改时间、位置的水印相机",
-      path: "/pages/index/index?id=" + data.openid,
-      imageUrl: ShareImg,
-    };
-  });
+  Taro.useShareAppMessage(() => ({
+    title: "分享你一款可修改时间、位置的水印相机",
+    path: "/pages/index/index?invite_id=" + data.openid,
+    imageUrl: ShareImg,
+  }));
   return (
     <View className="index">
       <UserInfo

@@ -7,6 +7,7 @@ const imgs = ["1.png", "2.png", "3.png", "4.png", "5.png"];
 const prefix = "https://gitee.com/jasonstory/fonts/raw/master/img/";
 const QRCodePage = () => {
   const config = app.$app.globalData.config;
+
   return (
     <View className="qr-code-page">
       {/* <View className="user-details">
