@@ -97,7 +97,7 @@ exports.main = async (event, context) => {
             .doc(userCheck.data[0]._id)
             .update({
                 data: {
-                    invite_count: _.inc(1)
+                    youhui: _.inc(2)
                 }
             });
 
