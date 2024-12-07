@@ -42,7 +42,11 @@ const Index = ({ maskScale, editLabel }) => {
         )}
         <View className="item7-label-item">
           <View className="item7-label-title">时间:</View>
-          <View>{`${time.year}-${time.month}-${time.day} ${time.hours}:${time.minutes}`}</View>
+          <View>{`${time.year}-${time.month}-${time.day} ${time.hours}:${
+            time.minutes
+          }:${Math.floor(Math.random() * 60)
+            .toString()
+            .padStart(2, "0")}`}</View>
         </View>
         {getEditItem(editLabel, "tianqi").visible && (
           <View className="item7-label-item">
