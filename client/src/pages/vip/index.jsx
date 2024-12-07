@@ -41,29 +41,12 @@ function wxPaySign(params, key) {
   return md5.md5(paramStr).toString().toLowerCase();
 }
 
-/**
- * 生成订单号
- * @param {订单号前缀} str
- */
-function getOrderNo(str) {
-  let outTradeNo = ""; //订单号
-  for (
-    var i = 0;
-    i < 6;
-    i++ //6位随机数，用以加在时间戳后面。
-  ) {
-    outTradeNo += Math.floor(Math.random() * 10);
-  }
-  outTradeNo = str + new Date().getTime() + outTradeNo; //时间戳，用来生成订单号。
-  return outTradeNo;
-}
 function isWithinTimeRanges(serverTime) {
   const hours = String(new Date(serverTime).getHours()).padStart(2, "0");
 
   const isNight = hours >= 22 || hours < 7; // 晚上9点到早上8点
-  const isAfternoon = hours >= 12 && hours < 13; // 中午12点到下午1点
 
-  return isNight || isAfternoon;
+  return isNight;
 }
 
 function countNumbersEvenOrOdd(str) {
@@ -72,23 +55,6 @@ function countNumbersEvenOrOdd(str) {
 
   // 返回数字个数是否为偶数
   return numbers.length % 2 === 0;
-}
-/**
- *
- * @param {金额} long_data
- * @param { 可选,格式化金额精度, 即小数点位数. 如: 3 标示保留小数点后三位, 默认为2位} length
- */
-function formatMoney(long_data, length) {
-  length = length > 0 && length <= 20 ? length : 2;
-  long_data =
-    parseFloat((long_data + "").replace(/[^\d\.-]/g, "")).toFixed(length) + "";
-  let l = long_data.split(".")[0].split("").reverse();
-  let r = long_data.split(".")[1];
-  let t = "";
-  for (let i = 0; i < l.length; i++) {
-    t += l[i] + ((i + 1) % 3 == 0 && i + 1 != l.length ? "," : "");
-  }
-  return t.split("").reverse().join("") + "." + r;
 }
 let fuckShenHe = true;
 
@@ -164,13 +130,13 @@ const Index = () => {
         let [key, title, totaldays = "", amount] = item.split("|");
         amount =
           countNumbersEvenOrOdd(userInfo.openid) === true
-            ? amount * 1 - config.zhekoujiage + 10
+            ? amount * 1 - config.zhekoujiage + 5
             : amount * 1 - config.zhekoujiage;
 
         amount =
           isWithinTimeRanges(userInfo.serverTimes) === true
             ? amount -
-              10 -
+              5 -
               (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0)
             : amount -
               (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0);
