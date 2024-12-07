@@ -5,6 +5,17 @@ import "taro-ui/dist/style/index.scss";
 
 const systemInfo = Taro.getSystemInfoSync();
 
+Taro.getStorage({ key: "debug" })
+  .then((res) => {
+    res.data;
+  })
+  .catch((err) => {
+    Taro.setStorage({
+      key: "debug",
+      data: true,
+    });
+  });
+
 const checkForUpdate = () => {
   return new Promise((resolve, reject) => {
     try {
@@ -23,7 +34,6 @@ const checkForUpdate = () => {
 
       // 检查更新
       updateManager.onCheckForUpdate((res) => {
-
         if (!res.hasUpdate) {
           resolve(false);
           return;
@@ -81,10 +91,12 @@ const FONT_CONFIG = [
   {
     family: "waterTop",
     url: "https://gitee.com/jasonstory/fonts/raw/master/water_top.ttf",
-  }, {
+  },
+  {
     family: "waterBottom",
     url: "https://gitee.com/jasonstory/fonts/raw/master/water_bottom.ttf",
-  }, {
+  },
+  {
     family: "MiSans",
     url: "https://gitee.com/jasonstory/fonts/raw/master/subset-MiSans-Bold.ttf",
   },
@@ -129,15 +141,21 @@ class App extends Component {
       miSansLoaded: false,
       shouldRerender: false,
     };
-
     this.globalData = {
       config: {},
-      // false 显示 true 隐藏
-      // fuckShenHe:false,
-      fuckShenHe:
-        Taro.getAccountInfoSync().miniProgram.envVersion !== "release" &&
-        systemInfo.platform !== "devtools",
     };
+
+    Taro.getStorage({ key: "debug" }).then((res) => {
+      console.log("res.data: ", res.data);
+      this.globalData = {
+        config: {},
+        // false 显示 true 隐藏
+        fuckShenHe: res.data,
+        // ? res.data
+        // : Taro.getAccountInfoSync().miniProgram.envVersion !== "release" &&
+        //   systemInfo.platform !== "devtools",
+      };
+    });
   }
 
   // 加载普通字体
@@ -148,8 +166,7 @@ class App extends Component {
         global: true,
         scopes: ["webview", "native", "skyline"],
         source: `url("${font.url}")`,
-        success: () => {
-        },
+        success: () => {},
         fail: (err) => {
           console.error(`${font.family} 字体加载失败:`, err);
         },
@@ -168,7 +185,7 @@ class App extends Component {
         console.error("更新检查发生错误：", error);
       }
     }
-    initApp()
+    initApp();
   }
 
   componentDidUpdate(prevProps, prevState) {

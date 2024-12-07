@@ -20,6 +20,7 @@ const appid = Taro.getAccountInfoSync().miniProgram.appId;
 const config = appConfigs[appid];
 const app = getApp();
 let cloud = "";
+let jianmianjiage = 10;
 const getRandomNumber = (minNum = 1000000000, maxNum = 99999999999999) =>
   parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
 
@@ -43,10 +44,14 @@ function wxPaySign(params, key) {
 
 function isWithinTimeRanges(serverTime) {
   const hours = String(new Date(serverTime).getHours()).padStart(2, "0");
+  const xingqiji = new Date(serverTime).getDay();
 
   const isNight = hours >= 22 || hours < 7; // 晚上9点到早上8点
-
-  return isNight;
+  const isZhoumo = xingqiji === 6 || xingqiji === 0; //周六周日优惠
+  if (isZhoumo) {
+    jianmianjiage = 15;
+  }
+  return isNight || isZhoumo;
 }
 
 function countNumbersEvenOrOdd(str) {
@@ -130,13 +135,13 @@ const Index = () => {
         let [key, title, totaldays = "", amount] = item.split("|");
         amount =
           countNumbersEvenOrOdd(userInfo.openid) === true
-            ? amount * 1 - config.zhekoujiage + 5
+            ? amount * 1 - config.zhekoujiage + 10
             : amount * 1 - config.zhekoujiage;
-
+        // 夜晚减免10元 周末 减免 15元
         amount =
           isWithinTimeRanges(userInfo.serverTimes) === true
             ? amount -
-              5 -
+              jianmianjiage -
               (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0)
             : amount -
               (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0);

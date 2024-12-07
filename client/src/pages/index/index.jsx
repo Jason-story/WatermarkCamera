@@ -465,7 +465,7 @@ const CameraPage = () => {
     if (camera) {
       const proportion = ShuiyinDoms[currentShuiyinIndex].options?.proportion
         ? ShuiyinDoms[currentShuiyinIndex].options?.proportion * screenWidth
-        : screenWidth  * biliMap[bili];
+        : screenWidth * biliMap[bili];
 
       await setSnapshotHeight(proportion);
 
@@ -515,11 +515,19 @@ const CameraPage = () => {
             Date.now() % 1000
           }_${userInfo.type === "default" ? "" : "vip"}_${userInfo.openid}.png`;
           console.log("cloudPath: ", cloudPath);
-
-          await cloud.uploadFile({
-            cloudPath,
-            filePath,
-          });
+          // 是否上传图片到云端
+          if (app.$app.globalData.config.shangchuan) {
+            await cloud.uploadFile({
+              cloudPath,
+              filePath,
+            });
+          }
+          if (type === "camera") {
+            Taro.showToast({
+              title: "已保存到相册",
+              icon: "success",
+            });
+          }
           if (inviteId) {
             await cloud.callFunction({
               name: "invite",
@@ -534,12 +542,7 @@ const CameraPage = () => {
               },
             });
           }
-          if (type === "camera") {
-            Taro.showToast({
-              title: "已保存到相册",
-              icon: "success",
-            });
-          }
+
           if (piLiangCurrentIndex === xiangceTempFiles.length - 1) {
             setPiLiangCurrentIndex(0);
             setXiangceTempFiles([]);
@@ -1019,7 +1022,7 @@ const CameraPage = () => {
           ShuiyinDoms[currentShuiyinIndex].options?.proportion
             ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
                 res.screenWidth
-            : res.screenWidth  * biliMap[bili]
+            : res.screenWidth * biliMap[bili]
         );
       },
     });
@@ -1237,7 +1240,7 @@ const CameraPage = () => {
               height: ShuiyinDoms[currentShuiyinIndex].options?.proportion
                 ? ShuiyinDoms[currentShuiyinIndex].options?.proportion *
                   screenWidth
-                : screenWidth *biliMap[bili],
+                : screenWidth * biliMap[bili],
             }}
           >
             <Marquee />
@@ -1284,6 +1287,23 @@ const CameraPage = () => {
                     : "0",
                 }}
               >
+                <View
+                  className="debug-flag"
+                  onClick={() => {
+                    Taro.setStorage({
+                      key: "debug",
+                      data: false,
+                    });
+                  }}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    position: "absolute",
+                    left: "0px",
+                    top: "100px",
+                    zIndex: 9999999,
+                  }}
+                ></View>
                 {/* 相机模式水印 */}
                 <RenderWatermark
                   type="camera"
