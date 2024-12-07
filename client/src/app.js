@@ -2,19 +2,21 @@ import { Component } from "react";
 import Taro from "@tarojs/taro";
 import "./app.scss";
 import "taro-ui/dist/style/index.scss";
-
-const systemInfo = Taro.getSystemInfoSync();
-
-Taro.getStorage({ key: "debug" })
-  .then((res) => {
-    res.data;
-  })
-  .catch((err) => {
-    Taro.setStorage({
+async function initDebugSetting() {
+  try {
+    const res = await Taro.getStorage({ key: "debug" });
+    return res.data;
+  } catch (err) {
+    const isRelease =
+      Taro.getAccountInfoSync().miniProgram.envVersion === "release";
+    const debugValue = !isRelease;
+    await Taro.setStorage({
       key: "debug",
-      data: true,
+      data: debugValue,
     });
-  });
+    return debugValue;
+  }
+}
 
 const checkForUpdate = () => {
   return new Promise((resolve, reject) => {
@@ -145,17 +147,17 @@ class App extends Component {
       config: {},
     };
 
-    Taro.getStorage({ key: "debug" }).then((res) => {
-      console.log("res.data: ", res.data);
-      this.globalData = {
-        config: {},
-        // false 显示 true 隐藏
-        fuckShenHe: res.data,
-        // ? res.data
-        // : Taro.getAccountInfoSync().miniProgram.envVersion !== "release" &&
-        //   systemInfo.platform !== "devtools",
-      };
-    });
+    // Taro.getStorage({ key: "debug" }).then((res) => {
+    //   console.log("res.data: ", res.data);
+    //   this.globalData = {
+    //     config: {},
+    //     // false 显示 true 隐藏
+    //     fuckShenHe: res.data,
+    //     // ? res.data
+    //     // : Taro.getAccountInfoSync().miniProgram.envVersion !== "release" &&
+    //     //   systemInfo.platform !== "devtools",
+    //   };
+    // });
   }
 
   // 加载普通字体
@@ -176,6 +178,16 @@ class App extends Component {
 
   async componentDidMount() {
     this.loadNormalFonts();
+    try {
+      const debugValue = await initDebugSetting();
+      console.log('debugValue: ', debugValue);
+      this.globalData = {
+        config: {},
+        fuckShenHe: debugValue,
+      };
+    } catch (error) {
+      console.error("获取 debug 设置失败: ", error);
+    }
     // 使用示例
     async function initApp() {
       try {

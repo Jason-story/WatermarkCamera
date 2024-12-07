@@ -163,6 +163,7 @@ const CameraPage = () => {
   app.$app.globalData.invite_id = inviteId;
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
+  console.log('app.$app.globalData: ', app.$app.globalData);
 
   // 处理邀请存档
   if (inviteId) {
