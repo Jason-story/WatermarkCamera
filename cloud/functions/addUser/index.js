@@ -18,10 +18,12 @@ exports.main = async (event, context) => {
     const offset = 8 * 60 * 60 * 1000; // 北京时间比UTC时间快8小时
     const today = new Date(Date.now() + offset); // 当前UTC时间加上偏移量
     const todayStr = today.toISOString().split('T')[0]; // 格式化为 YYYY-MM-DD
-    const serverTimes = new Date().toLocaleString('en-US', {
-        timeZone: 'Asia/Shanghai',
-        hour12: false
-    }).replace(/ 24:(\d{2}:\d{2})/, " 00:$1")
+    const serverTimes = new Date()
+        .toLocaleString('en-US', {
+            timeZone: 'Asia/Shanghai',
+            hour12: false
+        })
+        .replace(/ 24:(\d{2}:\d{2})/, ' 00:$1');
     let todayUsageCount = 0;
 
     try {
@@ -85,7 +87,7 @@ exports.main = async (event, context) => {
                 times: event.remark === '成功使用' ? 1 : 0,
                 userToApp: event.userToApp,
                 useTime: +new Date(), // 更新上次记录日期
-
+                source: event.source,
                 lastUsageDate: todayStr // 记录上次使用日期
             };
             await transaction.collection('users').add({ data: newUser });

@@ -10,7 +10,6 @@ import {
 } from "@tarojs/components";
 import { createCameraContext, useDidShow } from "@tarojs/taro";
 import Taro from "@tarojs/taro";
-
 // 自定义组件导入
 import Marquee from "../../components/Marquee";
 import CustomModal from "../../components/modal";
@@ -163,7 +162,7 @@ const CameraPage = () => {
   app.$app.globalData.invite_id = inviteId;
 
   let fuckShenHe = app.$app.globalData.fuckShenHe;
-  console.log('app.$app.globalData: ', app.$app.globalData);
+  // console.log('app.$app.globalData: ', app.$app.globalData);
 
   // 处理邀请存档
   if (inviteId) {
@@ -966,7 +965,10 @@ const CameraPage = () => {
       // 添加用户信息
       cloud.callFunction({
         name: "addUser",
-        data: { userToApp: config.userToApp },
+        data: {
+          userToApp: config.userToApp,
+          source: Taro.getCurrentInstance().router?.params,
+        },
         success: function (res) {
           setUserInfo(res.result.data);
 

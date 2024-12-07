@@ -17,7 +17,7 @@ import Shuiyin3Cover from "./item3/cover.png";
 import Shuiyin4Cover from "./item4/cover.png";
 import Shuiyin5Cover from "./item5/cover.png";
 import Shuiyin6Cover from "./item6/cover.png";
-import Shuiyin7Cover from "./item7/cover.png";
+import Shuiyin7Cover from "./item7/cover-1.png";
 import Shuiyin8Cover from "./item8/cover.png";
 import Shuiyin9Cover from "./item9/cover.png";
 import Shuiyin10Cover from "./item10/cover.png";
