@@ -65,21 +65,23 @@ exports.main = async (event, context) => {
 
     try {
         // 发送欢迎文本消息
-        await sendCustomerServiceMessage(userOpenId, 'text', {
-            content:
-                // '您好，欢迎使用水印相机。如果您要开通会员请复制下面链接到浏览器中打开。如有问题请留言，我会第一时间回复您。'
-                '感谢使用，会员可以解锁右下角专属图标，会员不议价、不退款，请充分了解后购买，承诺永不失联，请放心使用'
-        });
-        // 发送微信号
+        // await sendCustomerServiceMessage(userOpenId, 'text', {
+        //     content:
+        //         // '您好，欢迎使用水印相机。如果您要开通会员请复制下面链接到浏览器中打开。如有问题请留言，我会第一时间回复您。'
+        //         '你好，邀请好友有优惠和15%佣金，可到会员页查看。会员可以解锁右下角专属图标，会员不议价、不退款、不试用，承诺永不失联，请放心使用'
+        // });
+        // // 发送微信号
         // await sendCustomerServiceMessage(userOpenId, 'text', {
         //     content: '开通会员请到 小程序-我的-点击id 复制文字发送给我。并选择会员类型。'
         // });
         // 会员价格
-        // const imageBuffer = await downloadImage('cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/do-not-delete/vip.jpg');
-        // const uploadResult = await uploadToWechat(imageBuffer);
-        // await sendCustomerServiceMessage(userOpenId, 'image', {
-        //     media_id: uploadResult.mediaId
-        // });
+        const imageBuffer = await downloadImage(
+            'cloud://ly-9gjnymq6d9d7ca23.6c79-ly-9gjnymq6d9d7ca23-1330414900/do-not-delete/kefu.png'
+        );
+        const uploadResult = await uploadToWechat(imageBuffer);
+        await sendCustomerServiceMessage(userOpenId, 'image', {
+            media_id: uploadResult.mediaId
+        });
 
         return 'success';
     } catch (error) {
