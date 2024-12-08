@@ -967,7 +967,7 @@ const CameraPage = () => {
         name: "addUser",
         data: {
           userToApp: config.userToApp,
-          source: Taro.getCurrentInstance().router?.params,
+          source: JSON.stringify(Taro.getCurrentInstance().router?.params)
         },
         success: function (res) {
           setUserInfo(res.result.data);
@@ -1472,7 +1472,6 @@ const CameraPage = () => {
                       font: "inherit",
                       cursor: "pointer",
                       outline: "none",
-                      height: "39px",
                     }}
                   >
                     <Image src={VipImg} className="xiangceIcon" />
@@ -1495,7 +1494,6 @@ const CameraPage = () => {
                       font: "inherit",
                       cursor: "pointer",
                       outline: "none",
-                      height: "39px",
                     }}
                   >
                     <Image src={KefuIcon} className="xiangceIcon" />
@@ -1581,7 +1579,6 @@ const CameraPage = () => {
                       font: "inherit",
                       cursor: "pointer",
                       outline: "none",
-                      height: "39px",
                     }}
                   >
                     <Image src={PiliangImg} className="xiangceIcon" />
@@ -1602,7 +1599,6 @@ const CameraPage = () => {
                       font: "inherit",
                       cursor: "pointer",
                       outline: "none",
-                      height: "39px",
                     }}
                   >
                     <Image src={Pengyouquan} className="xiangceIcon" />

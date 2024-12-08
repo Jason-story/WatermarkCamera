@@ -1,26 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Image,
-  RadioGroup,
-  Radio,
-  Label,
-  Text,
-  Button,
-} from "@tarojs/components";
-import { AtModal, AtModalHeader, AtModalContent, AtModalAction } from "taro-ui";
+import { View, Text, Button } from "@tarojs/components";
 import { useDidShow } from "@tarojs/taro";
 import Taro from "@tarojs/taro";
 import ShareImg from "../../images/logo.jpg";
 import { appConfigs } from "../../appConfig.js";
-import Close from "../../images/close.png";
 import "./index.scss";
 const md5 = require("./md5.js");
-const appid = Taro.getAccountInfoSync().miniProgram.appId;
-const config = appConfigs[appid];
 const app = getApp();
 let cloud = "";
-let jianmianjiage = 10;
 const getRandomNumber = (minNum = 1000000000, maxNum = 99999999999999) =>
   parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
 
@@ -44,9 +31,7 @@ function wxPaySign(params, key) {
 
 function isWithinTimeRanges(serverTime) {
   const hours = String(new Date(serverTime).getHours()).padStart(2, "0");
-
-  const isNight = hours >= 22 || hours < 7; // 晚上9点到早上8点
-
+  const isNight = hours >= 21 || hours < 7; // 晚上9点到早上7点
   return isNight;
 }
 function countNumbersEvenOrOdd(str) {
@@ -127,9 +112,10 @@ const Index = () => {
     price && setSelected(price.current);
     if (price) {
       const xingqiji = new Date(userInfo.serverTimes).getDay();
-      const isZhoumo = xingqiji === 6 || xingqiji === 0; //周六周日优惠
-      if (isZhoumo) {
-        price.jiage.unshift("1day|24小时|1|25");
+      const isZhoumo = xingqiji === 6 || xingqiji === 0;
+      //非周六周日 隐藏按天付费
+      if (!isZhoumo) {
+        price.jiage.shift();
       }
 
       const data = price?.["jiage"]?.map((item) => {
@@ -138,11 +124,11 @@ const Index = () => {
           countNumbersEvenOrOdd(userInfo.openid) === true
             ? amount * 1 - config.zhekoujiage + 10
             : amount * 1 - config.zhekoujiage;
-        // 夜晚减免10元 周末 减免 15元
+        // 夜晚减免10元
         amount =
           isWithinTimeRanges(userInfo.serverTimes) === true
             ? amount -
-              jianmianjiage -
+              10 -
               (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0)
             : amount -
               (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0);
@@ -324,7 +310,7 @@ const Index = () => {
       <View className="user-info">
         {fuckShenHe === false && (
           <View className="plans-container">
-            {vipConfig.map((plan) => {
+            {vipConfig.map((plan, index) => {
               return (
                 <View
                   key={plan.key}
@@ -340,7 +326,7 @@ const Index = () => {
                   <View className="price-container">
                     <Text className="discount-price">¥{plan.price}</Text>
                     <Text className="original-price">
-                      ¥{(plan.price * 1.3).toFixed(3)}
+                      ¥{(plan.price * (1.3 + (index + 1) / 15)).toFixed(3)}
                     </Text>
                     {plan.key !== "1day" &&
                       plan.key !== "never" &&
