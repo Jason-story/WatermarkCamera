@@ -44,16 +44,11 @@ function wxPaySign(params, key) {
 
 function isWithinTimeRanges(serverTime) {
   const hours = String(new Date(serverTime).getHours()).padStart(2, "0");
-  const xingqiji = new Date(serverTime).getDay();
 
   const isNight = hours >= 22 || hours < 7; // 晚上9点到早上8点
-  const isZhoumo = xingqiji === 6 || xingqiji === 0; //周六周日优惠
-  if (isZhoumo) {
-    jianmianjiage = 15;
-  }
-  return isNight || isZhoumo;
-}
 
+  return isNight;
+}
 function countNumbersEvenOrOdd(str) {
   // 使用正则表达式匹配所有数字
   const numbers = (str || "").match(/\d/g) || [];
@@ -131,6 +126,12 @@ const Index = () => {
     }
     price && setSelected(price.current);
     if (price) {
+      const xingqiji = new Date(userInfo.serverTimes).getDay();
+      const isZhoumo = xingqiji === 6 || xingqiji === 0; //周六周日优惠
+      if (isZhoumo) {
+        price.jiage.unshift("1day|24小时|1|25");
+      }
+
       const data = price?.["jiage"]?.map((item) => {
         let [key, title, totaldays = "", amount] = item.split("|");
         amount =
@@ -156,6 +157,7 @@ const Index = () => {
           text: (amount / totaldays).toFixed(3),
         };
       });
+
       setVipConfig(data);
     }
   }, [price]);
@@ -353,7 +355,7 @@ const Index = () => {
                           {plan.text}元/天
                         </Text>
                       )}
-                    {plan.key === "1day" && (
+                    {/* {plan.key === "1day" && (
                       <Text
                         className="original-price"
                         style={{
@@ -363,7 +365,7 @@ const Index = () => {
                       >
                         不划算
                       </Text>
-                    )}
+                    )} */}
                   </View>
                   <Text className="duration">{plan.duration}</Text>
                 </View>
