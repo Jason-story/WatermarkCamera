@@ -528,20 +528,6 @@ const CameraPage = () => {
               icon: "success",
             });
           }
-          if (inviteId) {
-            await cloud.callFunction({
-              name: "invite",
-              data: {
-                invite_id: inviteId,
-              },
-              success: function (data) {
-                console.log("invited success", data);
-              },
-              fail: function (err) {
-                console.error("invited failed", err);
-              },
-            });
-          }
 
           if (piLiangCurrentIndex === xiangceTempFiles.length - 1) {
             setPiLiangCurrentIndex(0);
@@ -962,12 +948,21 @@ const CameraPage = () => {
         cloud = Taro.cloud;
       }
 
+      // 获取当前路由参数
+      const params = Taro.getCurrentInstance().router?.params || {};
+
+      // 创建一个新对象，移除 $taroTimestamp 字段
+      const cleanedParams = Object.fromEntries(
+        Object.entries(params).filter(([key]) => key !== "$taroTimestamp")
+      );
+      console.log("cleanedParams: ", cleanedParams);
+
       // 添加用户信息
       cloud.callFunction({
         name: "addUser",
         data: {
           userToApp: config.userToApp,
-          source: JSON.stringify(Taro.getCurrentInstance().router?.params)
+          source: JSON.stringify(cleanedParams),
         },
         success: function (res) {
           setUserInfo(res.result.data);
@@ -1013,6 +1008,21 @@ const CameraPage = () => {
           setCurrentShuiyinIndex(res.result.data.shuiyinindex);
         },
       });
+
+      if (inviteId) {
+        await cloud.callFunction({
+          name: "invite",
+          data: {
+            invite_id: inviteId,
+          },
+          success: function (data) {
+            console.log("invited success", data);
+          },
+          fail: function (err) {
+            console.error("invited failed", err);
+          },
+        });
+      }
     };
 
     init();
@@ -1285,8 +1295,8 @@ const CameraPage = () => {
                 style={{
                   bottom: showFloatLayout
                     ? ShuiyinDoms[currentShuiyinIndex].options.proportion
-                      ? "65%"
-                      : "55%"
+                      ? "62%"
+                      : { 1: "52%", 2: "65%", 3: "27%" }[bili]
                     : "0",
                 }}
               >

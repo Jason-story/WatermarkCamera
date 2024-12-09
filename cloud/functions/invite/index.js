@@ -39,7 +39,7 @@ exports.main = async (event, context) => {
             })
             .count();
 
-        if (yaoqingrenshu.total >= 5) {
+        if (yaoqingrenshu.total >= 10) {
             await transaction.rollback();
             return {
                 success: false,
@@ -84,7 +84,7 @@ exports.main = async (event, context) => {
             .doc(userCheck.data[0]._id)
             .update({
                 data: {
-                    youhui: _.inc(2)
+                    youhui: _.inc(1)
                 }
             });
 
