@@ -488,11 +488,24 @@ const CameraPage = () => {
         //   Taro.showLoading({ title: "处理中..." });
         // }
 
+        // if (userData.inviteCount - userData.inviteUseCount > 0) {
+        //   updateData.inviteUseCount = userData.inviteUseCount + 1;
+        // }
+
         // 更新用户信息
         const { result } = await cloud.callFunction({
           name: "addUser",
-          data: { remark: "成功使用" },
+          data: {
+            remark: "成功使用",
+            inviteUseCount:
+              userInfo.inviteCount - userInfo.inviteUseCount > 0
+                ? (userInfo.inviteUseCount || 0) + 1
+                : userInfo.inviteCount,
+          },
         });
+        if (result.data.inviteCount - result.data.inviteUseCount > 0) {
+          result.data.type = "invite";
+        }
 
         setUserInfo(result.data);
 
@@ -965,6 +978,13 @@ const CameraPage = () => {
           source: JSON.stringify(cleanedParams),
         },
         success: function (res) {
+          if (
+            res.result.data.inviteCount - res.result.data.inviteUseCount >
+            0
+          ) {
+            res.result.data.type = "invite";
+          }
+
           setUserInfo(res.result.data);
 
           dayD = String(
@@ -1948,15 +1968,18 @@ const CameraPage = () => {
           <View className="share-card">
             <View className="View">
               <View className="icon-circle"></View>
-              <View className="share-title">分享到朋友圈</View>
+              <View className="share-title">转发给好友</View>
             </View>
             <View className="reward-container">
               <View className="reward-title">分享奖励</View>
-              <View className="reward-content">
-                <View>集齐</View>
-                <View className="reward-badge">30个赞</View>
-                <View>免费使用</View>
-                <View className="reward-badge">24小时</View>
+              <View
+                className="reward-content"
+                style={{ justifyContent: "center" }}
+              >
+                <View style={{ flexGrow: 1 }}>好友打开一次小程序赠送你</View>
+                <View className="reward-badge" style={{ marginTop: "5px" }}>
+                  一次使用次数
+                </View>
               </View>
             </View>
             <View className="steps-container">
@@ -1972,13 +1995,22 @@ const CameraPage = () => {
               <View className="share-step">
                 <View className="step-number">2</View>
                 <View className="step-text">
-                  在弹出的菜单中选择"分享到朋友圈"
+                  在弹出的菜单中选择 "发送给朋友"
                 </View>
               </View>
               <View className="share-step">
                 <View className="step-number">3</View>
+                <View className="step-text">好友点开小程序则你获赠一次</View>
+              </View>
+              <View className="share-step">
+                <View className="step-number">4</View>
+                <View className="step-text">刷新小程序使用</View>
+              </View>
+              <View className="share-step">
+                <View className="step-number">5</View>
                 <View className="step-text">
-                  集齐后在首页点击『客服』按钮凭朋友圈截图兑换
+                  每个用户最多可邀请10个好友，即最多获赠10次，可到 "我的"
+                  页面查看
                 </View>
               </View>
             </View>
@@ -1989,7 +2021,7 @@ const CameraPage = () => {
                 fontSize: "0.85rem",
               }}
             >
-              每个用户限领取一次
+              *此活动每个用户限参加一次
             </View>
 
             <button

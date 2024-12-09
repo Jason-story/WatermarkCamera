@@ -52,6 +52,7 @@ const UserInfo = ({ totalQuota, userId, endTime, userType, userInfo }) => {
 
   // 使用示例
   const config = {
+    invite: "普通用户（邀请得次数）",
     default: "普通用户",
     month: "包月会员",
     "1day": "一天会员",
@@ -95,10 +96,12 @@ const UserInfo = ({ totalQuota, userId, endTime, userType, userInfo }) => {
             <Text className="label">我的佣金</Text>
             <Text className="value">{userInfo.yongjin || "0"}元</Text>
           </View>
-          {/* <View className="user-item">
-            <Text className="label">邀请获赠总次数</Text>
-            <Text className="value">{inviteCount || 0}</Text>
-          </View> */}
+          <View className="user-item">
+            <Text className="label">使用次数/分享获赠次数</Text>
+            <Text className="value">
+              {userInfo.inviteUseCount || 0}/{userInfo.inviteCount || 0}
+            </Text>
+          </View>
           <View className="user-item">
             <Text className="label">使用次数</Text>
             <Text className="value">
@@ -218,7 +221,7 @@ const Index = () => {
         nickname={userInfo.nickname}
         freeQuota={userInfo.freeQuota}
         totalQuota={data.times}
-        inviteCount={data.invite_count}
+        // inviteCount={data.invite_count}
         todayCount={data.todayUsageCount}
         userId={data.openid}
         userInfo={data}
