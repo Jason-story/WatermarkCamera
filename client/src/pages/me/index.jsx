@@ -71,7 +71,7 @@ const UserInfo = ({ totalQuota, userId, endTime, userType, userInfo }) => {
             <Text className="label">我的等级</Text>
             <Text className="value">{config[userType]}</Text>
           </View>
-          {userType !== "default" && (
+          {userType !== "default" && userType !== "invite" && (
             <View className="user-item">
               <Text className="label">会员到期时间</Text>
               <Text className="value">{formatDate(endTime)}</Text>
@@ -97,7 +97,7 @@ const UserInfo = ({ totalQuota, userId, endTime, userType, userInfo }) => {
             <Text className="value">{userInfo.yongjin || "0"}元</Text>
           </View>
           <View className="user-item">
-            <Text className="label">使用次数/分享获赠次数</Text>
+            <Text className="label">分享使用次数/分享获赠次数</Text>
             <Text className="value">
               {userInfo.inviteUseCount || 0}/{userInfo.inviteCount || 0}
             </Text>
@@ -203,6 +203,17 @@ const Index = () => {
       cloud.callFunction({
         name: "addUser",
         success: function (res) {
+          res.result.data.inviteUseCount = res.result.data.inviteUseCount
+            ? res.result.data.inviteUseCount
+            : 0;
+          if (
+            res.result.data.inviteCount - res.result.data.inviteUseCount >
+            0
+          ) {
+            res.result.data.type = "invite";
+          }
+
+          console.log("res.result.data: ", res.result.data);
           setData(res.result.data);
         },
       });

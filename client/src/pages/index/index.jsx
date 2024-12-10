@@ -503,6 +503,9 @@ const CameraPage = () => {
                 : userInfo.inviteCount,
           },
         });
+        result.data.inviteUseCount = result.data.inviteUseCount
+          ? result.data.inviteUseCount
+          : 0;
         if (result.data.inviteCount - result.data.inviteUseCount > 0) {
           result.data.type = "invite";
         }
@@ -968,7 +971,6 @@ const CameraPage = () => {
       const cleanedParams = Object.fromEntries(
         Object.entries(params).filter(([key]) => key !== "$taroTimestamp")
       );
-      console.log("cleanedParams: ", cleanedParams);
 
       // 添加用户信息
       cloud.callFunction({
@@ -978,6 +980,10 @@ const CameraPage = () => {
           source: JSON.stringify(cleanedParams),
         },
         success: function (res) {
+          res.result.data.inviteUseCount = res.result.data.inviteUseCount
+            ? res.result.data.inviteUseCount
+            : 0;
+
           if (
             res.result.data.inviteCount - res.result.data.inviteUseCount >
             0
@@ -985,6 +991,7 @@ const CameraPage = () => {
             res.result.data.type = "invite";
           }
 
+          console.log("res.result.data: ", res.result.data);
           setUserInfo(res.result.data);
 
           dayD = String(

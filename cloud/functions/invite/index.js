@@ -26,7 +26,7 @@ exports.main = async (event, context) => {
 
     try {
         // 检查被邀请者(OPENID)是否曾经被邀请过
-        const inviteeCheck = await transaction
+        const inviteCheck = await transaction
             .collection('invites')
             .where({
                 openid: OPENID
@@ -49,7 +49,7 @@ exports.main = async (event, context) => {
                 message: '最多邀请10人'
             };
         }
-        if (inviteeCheck.total >= 1) {
+        if (inviteCheck.total >= 1) {
             await transaction.rollback();
             return {
                 success: false,
@@ -79,13 +79,17 @@ exports.main = async (event, context) => {
         }
 
         // 更新邀请用户的 youhui
+        const userDoc = await db.collection('users').doc(userCheck.data[0]._id).get();
+
+        let inviteCount = userDoc.data.inviteCount || 0;
+
         await transaction
             .collection('users')
             .doc(userCheck.data[0]._id)
             .update({
                 data: {
                     youhui: _.inc(1),
-                    inviteCount: _.inc(1)
+                    inviteCount: _.set(inviteCount + 1)
                 }
             });
 

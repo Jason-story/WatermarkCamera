@@ -64,7 +64,7 @@ exports.main = async (event, context) => {
 
                 // 更新 times 字段
                 updateData.times = _.inc(1);
-               
+
                 if (userData.inviteCount - userData.inviteUseCount > 0) {
                     updateData.inviteUseCount = userData.inviteUseCount + 1;
                 }
@@ -115,7 +115,14 @@ exports.main = async (event, context) => {
 
             return {
                 success: true,
-                data: { ...userData, todayUsageCount, useTime, share: true, serverTimes },
+                data: {
+                    ...userData,
+                    todayUsageCount,
+                    inviteUseCount: userData.inviteUseCount ? userData.inviteUseCount : 0,
+                    useTime,
+                    share: true,
+                    serverTimes
+                },
                 message: '用户信息已更新或添加'
             };
         } else {
@@ -189,7 +196,13 @@ exports.main = async (event, context) => {
 
                     return {
                         success: true,
-                        data: { ...userData, todayUsageCount, share: true, serverTimes },
+                        data: {
+                            ...userData,
+                            inviteUseCount: userData.inviteUseCount ? userData.inviteUseCount : 0,
+                            todayUsageCount,
+                            share: true,
+                            serverTimes
+                        },
                         message: '用户信息已更新'
                     };
                 } else {
