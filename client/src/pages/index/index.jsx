@@ -506,7 +506,10 @@ const CameraPage = () => {
         result.data.inviteUseCount = result.data.inviteUseCount
           ? result.data.inviteUseCount
           : 0;
-        if (result.data.inviteCount - result.data.inviteUseCount > 0) {
+        if (
+          result.data.inviteCount == 10 &&
+          result.data.inviteCount - result.data.inviteUseCount > 0
+        ) {
           result.data.type = "invite";
         }
 
@@ -985,8 +988,8 @@ const CameraPage = () => {
             : 0;
 
           if (
-            res.result.data.inviteCount - res.result.data.inviteUseCount >
-            0
+            res.result.data.inviteCount == 10 &&
+            res.result.data.inviteCount - res.result.data.inviteUseCount > 0
           ) {
             res.result.data.type = "invite";
           }
@@ -2011,25 +2014,45 @@ const CameraPage = () => {
               </View>
               <View className="share-step">
                 <View className="step-number">4</View>
-                <View className="step-text">刷新小程序使用</View>
+                <View className="step-text">邀请满10人后，刷新小程序使用</View>
               </View>
-              <View className="share-step">
+              {/* <View className="share-step">
                 <View className="step-number">5</View>
                 <View className="step-text">
-                  每个用户最多可邀请10个好友，即最多获赠10次，可到 "我的"
-                  页面查看
+                  每个用户最多可邀请10个好友，即最多获赠10次，
+                  <Text
+                    style={{
+                      color: "#ff4d4f",
+                    }}
+                  >
+                    需要邀请满10人后才可以使用
+                  </Text>
+                  ，可到 "我的" 页面查看
                 </View>
-              </View>
+              </View> */}
             </View>
-            <View
+            <Text
               style={{
                 marginTop: "-1rem",
                 marginBottom: "1rem",
+                lineHeight: "1.4",
                 fontSize: "0.85rem",
+                display: "inline-flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              *此活动每个用户限参加一次
-            </View>
+              *此活动每个用户限参加一次，每个用户最多可邀请10个好友，即最多获赠10次，
+              <Text
+                style={{
+                  color: "#ff6666",
+                }}
+              >
+                需要邀请满10人后才可以使用
+              </Text>
+              ，可到 "我的" 页面查看
+            </Text>
 
             <button
               className="home-button"
