@@ -122,8 +122,17 @@ const Index = () => {
         let [key, title, totaldays = "", amount] = item.split("|");
         amount =
           countNumbersEvenOrOdd(userInfo.openid) === true
-            ? amount * 1 - config.zhekoujiage + 10
-            : amount * 1 - config.zhekoujiage;
+            ? amount * 1 -
+              config.zhekoujiage -
+              (config.type === "shared"
+                ? globalConfig.childyouhui * 1 || 0
+                : 0) +
+              10
+            : amount * 1 -
+              config.zhekoujiage -
+              (config.type === "shared"
+                ? globalConfig.childyouhui * 1 || 0
+                : 0);
         // 夜晚减免10元
         amount =
           isWithinTimeRanges(userInfo.serverTimes) === true
