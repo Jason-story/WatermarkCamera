@@ -76,7 +76,7 @@ exports.main = async (event, context) => {
         // });
         // 会员价格
         const imageBuffer = await downloadImage(
-            'cloud://ly-9gjnymq6d9d7ca23.6c79-ly-9gjnymq6d9d7ca23-1330414900/do-not-delete/kefu.png'
+            'cloud://sy-4gecj2zw90583b8b.7379-sy-4gecj2zw90583b8b-1326662896/do-not-delete/kefu.png'
         );
         const uploadResult = await uploadToWechat(imageBuffer);
         await sendCustomerServiceMessage(userOpenId, 'image', {

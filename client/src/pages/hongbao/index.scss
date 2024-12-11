@@ -9,7 +9,7 @@
     }
     .user-item {
       display: flex;
-  flex-direction: row;
+      flex-direction: row;
 
       justify-content: space-between;
       padding: 20px 0;
@@ -38,7 +38,7 @@
 
   .qr-code-container {
     display: flex;
-  flex-direction: row;
+    flex-direction: row;
     flex-wrap: wrap;
   }
 
