@@ -5,6 +5,7 @@ export default {
     "pages/me/index",
     "pages/jiaocheng/index",
     "pages/video/index",
+    "pages/hongbao/index",
     "pages/mianze/index"
   ],
   requiredPrivateInfos: ["getLocation"],

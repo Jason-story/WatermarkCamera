@@ -41,6 +41,7 @@ import ratio2 from "../../images/ratio_2.png";
 import ratio3 from "../../images/ratio_3.png";
 import shanguangdengImg from "../../images/shan-on.png";
 import shanguangdengOffImg from "../../images/shan-off.png";
+import hongbaoImg from "../../images/hongbao.png";
 import XiangceIcon from "../../images/xiangce.png";
 import menuIcon from "../../images/menu.png";
 import KefuIcon from "../../images/kefu.png";
@@ -508,7 +509,8 @@ const CameraPage = () => {
           : 0;
         if (
           result.data.inviteCount == 10 &&
-          result.data.inviteCount - result.data.inviteUseCount > 0
+          result.data.inviteCount - result.data.inviteUseCount > 0 &&
+          result.data.type === "default"
         ) {
           result.data.type = "invite";
         }
@@ -989,7 +991,8 @@ const CameraPage = () => {
 
           if (
             res.result.data.inviteCount == 10 &&
-            res.result.data.inviteCount - res.result.data.inviteUseCount > 0
+            res.result.data.inviteCount - res.result.data.inviteUseCount > 0 &&
+            res.result.data.type === "default"
           ) {
             res.result.data.type = "invite";
           }
@@ -1421,6 +1424,16 @@ const CameraPage = () => {
                           : shanguangdengImg
                       }
                     />
+                  </View>{" "}
+                  <View
+                    className="shanguangdeng-icon hongbao-icon"
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: `/pages/hongbao/index`,
+                      });
+                    }}
+                  >
+                    <Image src={hongbaoImg} />
                   </View>
                 </View>
               </View>
