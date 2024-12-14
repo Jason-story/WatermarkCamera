@@ -135,12 +135,13 @@ const Index = () => {
                 : 0);
         // 夜晚减免10元
         amount =
-          isWithinTimeRanges(userInfo.serverTimes) === true
-            ? amount -
-              10 -
-              (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0)
-            : amount -
-              (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0);
+          // isWithinTimeRanges(userInfo.serverTimes) === true
+          //   ? amount -
+          //     10 -
+          // (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0)
+          // :
+
+          amount - (userInfo.youhui !== undefined ? userInfo.youhui * 1 : 0);
         amount = amount.toFixed(2);
 
         return {

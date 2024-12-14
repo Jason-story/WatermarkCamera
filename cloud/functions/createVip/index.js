@@ -38,6 +38,7 @@ exports.main = async (event, context) => {
     const config = {
         '1day': 1,
         month: 30,
+        twoMonth: 60,
         threeMonth: 90,
         halfYearMonth: 180,
         year: 365,
