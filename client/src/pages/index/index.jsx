@@ -149,6 +149,7 @@ const CameraPage = () => {
   const [piliangeTime, setPiliangeTime] = useState(1);
   const [showSharePage, setSharePageShow] = useState(false);
   const [bili, setBili] = useState(1);
+  const [videoVipModalShow, setVideoVipModalShow] = useState(false);
 
   // 防伪码生成
   const [fangweimaText, setFangweimaText] = useState(generateRandomString(4));
@@ -246,11 +247,8 @@ const CameraPage = () => {
       userInfo.type !== "year" &&
       userInfo.type !== "never"
     ) {
-      Taro.showToast({
-        title: "此功能只对半年及以上会员开放,最大支持50M视频",
-        icon: "none",
-        duration: 3000,
-      });
+      setVideoVipModalShow(true);
+      setVideoVipModalShow(true);
     }
   };
 
@@ -406,11 +404,7 @@ const CameraPage = () => {
       userInfo.type !== "year" &&
       userInfo.type !== "never"
     ) {
-      Taro.showToast({
-        title: "此功能只对半年及以上会员开放,最大支持50M视频",
-        icon: "none",
-        duration: 3000,
-      });
+      setVideoVipModalShow(true);
       return;
     }
 
@@ -721,11 +715,7 @@ const CameraPage = () => {
       if (selected === "视频水印") {
         const validMemberTypes = ["halfYearMonth", "year", "never"];
         if (!validMemberTypes.includes(userInfo.type)) {
-          Taro.showToast({
-            title: "此功能只对半年及以上会员开放,最大支持50M视频",
-            icon: "none",
-            duration: 3000,
-          });
+          setVideoVipModalShow(true);
           return;
         }
       }
@@ -1943,7 +1933,27 @@ const CameraPage = () => {
               </View>
             }
             showLeftButton={false}
+            onRightButtonClick={() => {
+              Taro.navigateTo({
+                url: "/pages/vip/index",
+              });
+            }}
             rightButtonText="重新开通"
+          />
+          <CustomModal
+            visible={videoVipModalShow}
+            phoneValidation={false}
+            title="提示"
+            customInput={
+              <View style={{ width: "100%" }}>
+                视频加水印功能只对半年及以上会员开放
+              </View>
+            }
+            showLeftButton={false}
+            onRightButtonClick={() => {
+              setVideoVipModalShow(false);
+            }}
+            rightButtonText="关闭"
           />
 
           <CustomModal

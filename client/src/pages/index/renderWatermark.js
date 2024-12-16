@@ -503,6 +503,23 @@ const RenderWatermark = ({
           </View>
         )}
         <View className="mask-inner-box">
+          {selected === "视频水印" &&
+            userInfo.type !== "default" &&
+            isCamera && (
+              <View
+                style={{
+                  textAlign: "center",
+                  fontSize: "60px",
+                  color: "#fff",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                视频水印
+              </View>
+            )}
           {ShuiyinDoms[currentShuiyinIndex].component({
             hours,
             minutes,

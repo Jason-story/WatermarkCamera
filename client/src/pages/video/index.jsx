@@ -35,7 +35,7 @@ const QRCodePage = () => {
         success: function (res) {
           Taro.hideLoading();
           if (res.result?.data?.length > 0) {
-            console.log('res.result.data: ', res.result.data);
+            console.log("res.result.data: ", res.result.data);
             setFiles(res.result.data);
           }
         },
@@ -107,7 +107,7 @@ const QRCodePage = () => {
       <View className="user-details">
         <View>为了保护隐私，所有视频都会在每天0点清空，请及时下载</View>
         <View style={{ marginTop: "15px" }}>
-          视频上传后，请稍等2~3分钟后，您的水印视频会显示在这里，您可以下载。
+          视频上传后，请稍等3~5分钟后，视频会显示在这里，您可以下载。
         </View>
       </View>
       <View>
