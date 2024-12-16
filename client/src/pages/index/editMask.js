@@ -291,7 +291,7 @@ const WatermarkPopup = ({
                           <Picker
                             mode="date"
                             value={`${time.year}-${time.month}-${time.day}`}
-                            disabled={userInfo.type === "default"}
+                            // disabled={userInfo.type === "default"}
                             onChange={(e) => {
                               changeEditLabelItem(
                                 index,
@@ -305,7 +305,7 @@ const WatermarkPopup = ({
                           </Picker>
                           <Picker
                             mode="time"
-                            disabled={userInfo.type === "default"}
+                            // disabled={userInfo.type === "default"}
                             value={`${time.hours}:${time.minutes}`}
                             onChange={(e) => {
                               changeEditLabelItem(
@@ -375,10 +375,10 @@ const WatermarkPopup = ({
                           )}
                         </View>
                       )}
-                      {item.key === "shijian" &&
+                      {/* {item.key === "shijian" &&
                         userInfo.type === "default" && (
                           <View className="input-tips">开通会员可修改时间</View>
-                        )}
+                        )} */}
                     </View>
                   </View>
                 );
