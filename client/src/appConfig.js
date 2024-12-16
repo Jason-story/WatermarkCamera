@@ -9,6 +9,7 @@ const appConfigs = {
     containerName: "express-loc1",
     ad: "adunit-39ab5f712a4521b4",
     zhekoujiage: 0,
+    umaId: "66611f12940d5a4c4966190b",
   },
   // 可修改定位水印相机 被共享
   wxb5e2af22e727269d: {
@@ -24,6 +25,7 @@ const appConfigs = {
     userToApp: "子小程序",
     ad: "adunit-58e7bd94d036305e",
     zhekoujiage: 0.01,
+    umaId: "675fa02a8f232a05f1d68b81",
   },
 
   wx8d21222bcb51c801: {
@@ -35,6 +37,7 @@ const appConfigs = {
     containerId: "prod-5gzgeq4v5542b918",
     containerName: "express-ptcb",
     zhekoujiage: 0.02,
+    umaId:'675fa93f7e5e6a4eebbb5ba1'
   },
   wx66918b8c0abc4288: {
     // 自定义水印照片 ly 主小程序
@@ -49,6 +52,8 @@ const appConfigs = {
     containerName: "express-ptcb",
     userToApp: "子小程序",
     zhekoujiage: 0.03,
+    umaId:'675fa9757e5e6a4eebbb5ba4'
+
   },
 };
 
