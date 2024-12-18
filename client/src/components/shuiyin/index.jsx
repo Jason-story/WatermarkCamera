@@ -39,7 +39,7 @@ const config = [
       showLeftCopyright: true,
       hasTitle: false,
       hasFangDao: false,
-      hasWeather: false,
+      hasWeather: true,
       hasJingWeiDu: false,
       hasRemark: true,
       copyright: "jrsy",

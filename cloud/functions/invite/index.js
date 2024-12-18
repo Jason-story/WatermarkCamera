@@ -39,14 +39,14 @@ exports.main = async (event, context) => {
             })
             .count();
 
-        if (yaoqingrenshu.total >= 15) {
+        if (yaoqingrenshu.total >= 10) {
             await transaction.rollback();
             return {
                 success: false,
                 invite_id,
                 OPENID,
                 event,
-                message: '最多邀请15人'
+                message: '最多邀请10人'
             };
         }
         if (inviteCheck.total >= 1) {

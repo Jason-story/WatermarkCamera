@@ -179,7 +179,7 @@ const WatermarkPopup = ({
                     >
                       <Image mode="aspectFit" src={item.options.cover}></Image>
                       {item.options.vip && (
-                        <View className="vip-arrow">半年及以上会员专属</View>
+                        <View className="vip-arrow">包年会员专属</View>
                       )}
                     </View>
                   </View>

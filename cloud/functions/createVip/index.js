@@ -80,6 +80,10 @@ exports.main = async (event, context) => {
         if (type === 'dingzhi') {
             type = 'year';
         }
+        let perm = '';
+        if (type === 'year') {
+            perm = 'all';
+        }
         await transaction
             .collection('users')
             .where({
@@ -88,6 +92,7 @@ exports.main = async (event, context) => {
             .update({
                 data: {
                     type: type,
+                    perm,
                     youhui: 0,
                     plateform,
                     pay_time: currentTime,

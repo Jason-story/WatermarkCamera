@@ -53,6 +53,7 @@ exports.main = async (event, context) => {
 
             if (Date.now() > userData.end_time) {
                 updateData.type = 'default';
+                updateData.perm = '';
                 updateData.end_time = '';
             }
 

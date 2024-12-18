@@ -51,6 +51,20 @@ const Index = ({ maskScale, editLabel }) => {
             <Text>{`${time.year}.${time.month}.${time.day}`}</Text>
             {getWeekdayCN(`${time.year}-${time.month}-${time.day}`)}
           </View>
+
+          {getEditItem(editLabel, "tianqi").visible && (
+            <View className={"item1-tianqi"}>
+              <Text
+                dangerouslySetInnerHTML={{
+                  __html: formatTextWithLineLimit(
+                    getEditItem(editLabel, "tianqi").value + " ℃",
+                    30,
+                    1
+                  ),
+                }}
+              ></Text>
+            </View>
+          )}
         </View>
       </View>
       {/* 备注 */}

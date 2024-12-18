@@ -45,7 +45,13 @@ const label = {
       editTitle: false,
       switchVisible: false,
     },
-
+    {
+      key: "tianqi",
+      title: "天气",
+      visible: true,
+      editTitle: false,
+      switchVisible: true,
+    },
     {
       key: "beizhu",
       title: "备注",

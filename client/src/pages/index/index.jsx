@@ -241,13 +241,7 @@ const CameraPage = () => {
     }
     setSelected(option);
 
-    if (
-      option === "视频水印" &&
-      userInfo.type !== "halfYearMonth" &&
-      userInfo.type !== "year" &&
-      userInfo.type !== "never"
-    ) {
-      setVideoVipModalShow(true);
+    if (option === "视频水印" && userInfo.perm !== "all") {
       setVideoVipModalShow(true);
     }
   };
@@ -436,14 +430,12 @@ const CameraPage = () => {
 
     // VIP水印检查
     if (
-      userInfo.type !== "halfYearMonth" &&
-      userInfo.type !== "year" &&
-      userInfo.type !== "never" &&
+      userInfo.perm !== "all" &&
       ShuiyinDoms[currentShuiyinIndex].options.vip
     ) {
       Taro.showModal({
         title: "提示",
-        content: "此款水印为半年及以上会员专属，请开通会员后使用",
+        content: "此款水印为包年会员专属，请开通后使用",
         showCancel: false,
         success(res) {
           if (res.confirm) {
@@ -502,7 +494,7 @@ const CameraPage = () => {
           ? result.data.inviteUseCount
           : 0;
         if (
-          result.data.inviteCount == 15 &&
+          result.data.inviteCount == 10 &&
           result.data.inviteCount - result.data.inviteUseCount > 0 &&
           result.data.type === "default"
         ) {
@@ -980,7 +972,7 @@ const CameraPage = () => {
             : 0;
 
           if (
-            res.result.data.inviteCount == 15 &&
+            res.result.data.inviteCount == 10 &&
             res.result.data.inviteCount - res.result.data.inviteUseCount > 0 &&
             res.result.data.type === "default"
           ) {
@@ -1753,7 +1745,7 @@ const CameraPage = () => {
                     margin: "0 auto 10px auto",
                   }}
                 >
-                  此功能只对半年及以上会员开放
+                  此功能只对包年会员开放
                 </Text>
                 <Text
                   style={{
@@ -1798,11 +1790,7 @@ const CameraPage = () => {
                 });
                 return;
               }
-              if (
-                userInfo.type === "halfYearMonth" ||
-                userInfo.type === "year" ||
-                userInfo.type === "never"
-              ) {
+              if (userInfo.perm === "all") {
                 setPiliangVisible(false);
                 selectImgFromXiangce("piliang");
               } else {
@@ -1946,7 +1934,7 @@ const CameraPage = () => {
             title="提示"
             customInput={
               <View style={{ width: "100%" }}>
-                视频加水印功能只对半年及以上会员开放
+                视频加水印功能只对包年会员开放
               </View>
             }
             showLeftButton={false}
@@ -2037,7 +2025,7 @@ const CameraPage = () => {
               </View>
               <View className="share-step">
                 <View className="step-number">4</View>
-                <View className="step-text">邀请满15人后，刷新小程序使用</View>
+                <View className="step-text">邀请满10人后，刷新小程序使用</View>
               </View>
               {/* <View className="share-step">
                 <View className="step-number">5</View>
@@ -2066,13 +2054,13 @@ const CameraPage = () => {
                 alignItems: "center",
               }}
             >
-              *此活动每个用户限参加一次，每个用户最多可邀请15个好友，即最多获赠15次，
+              *此活动每个用户限参加一次，每个用户最多可邀请10个好友，即最多获赠10次，
               <Text
                 style={{
                   color: "#ff6666",
                 }}
               >
-                需要邀请满15人后才可以使用
+                需要邀请满10人后才可以使用
               </Text>
               ，可到 "我的" 页面查看
             </Text>
