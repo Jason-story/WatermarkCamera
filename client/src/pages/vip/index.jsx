@@ -335,9 +335,9 @@ const Index = () => {
                   <View className="h3">{plan.title}</View>
                   <View className="price-container">
                     <Text className="discount-price">¥{plan.price}</Text>
-                    <Text className="original-price">
+                    {/* <Text className="original-price">
                       ¥{(plan.price * (1.3 + (index + 1) / 15)).toFixed(3)}
-                    </Text>
+                    </Text> */}
                     {plan.key !== "1day" &&
                       plan.key !== "never" &&
                       plan.key !== "dingzhi" && (
@@ -351,17 +351,31 @@ const Index = () => {
                           {plan.text}元/天
                         </Text>
                       )}
-                    {/* {plan.key === "1day" && (
+                    {plan.key === "year" && (
                       <Text
                         className="original-price"
                         style={{
                           textDecoration: "none",
-                          color: "#536DFE",
+                          color: "#f43f5e",
+                          fontSize:'14px',
+                          marginTop:'5px'
                         }}
                       >
-                        不划算
+                        • 图片批量处理
                       </Text>
-                    )} */}
+                    )}
+                    {plan.key === "year" && (
+                      <Text
+                        className="original-price"
+                        style={{
+                          textDecoration: "none",
+                          color: "#f43f5e",
+                          fontSize:'14px'
+                        }}
+                      >
+                        • 视频加水印
+                      </Text>
+                    )}
                   </View>
                   <Text className="duration">{plan.duration}</Text>
                 </View>
