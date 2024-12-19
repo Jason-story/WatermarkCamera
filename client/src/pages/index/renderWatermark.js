@@ -485,7 +485,7 @@ const RenderWatermark = ({
           <View
             style={{
               color: "rgba(0,0,0,.7)",
-              fontSize: "20px",
+              fontSize: "30px",
               position: "absolute",
               fontFamily: "NotoSansHans",
               fontWeight: "bold",

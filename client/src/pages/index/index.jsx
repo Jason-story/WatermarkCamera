@@ -96,6 +96,8 @@ const CameraPage = () => {
   // ===== 状态声明 =====
   // 模态框状态
   const [shuiyinNameModal, setShuiyinNameModal] = useState(false);
+  const [pingjiaModalVisible, setPingjiaVisible] = useState(false);
+
   const [vipClosedModal, setVipClosedModal] = useState(false);
   const [addPhoneNumber, setAddPhoneNumber] = useState(false);
   const [videoModal, setVideoModal] = useState(false);
@@ -979,7 +981,6 @@ const CameraPage = () => {
             res.result.data.type = "invite";
           }
 
-          console.log("res.result.data: ", res.result.data);
           setUserInfo(res.result.data);
 
           dayD = String(
@@ -999,6 +1000,14 @@ const CameraPage = () => {
             res.result.data.end_time
           ) {
             setAddPhoneNumber(true);
+          }
+          // 显示评价弹窗
+          if (
+            res.result.data.type !== "default" &&
+            res.result.data.phone &&
+            res.result.data.showPingjia
+          ) {
+            setPingjiaVisible(true);
           }
 
           // 会员到期处理
@@ -1827,6 +1836,33 @@ const CameraPage = () => {
             }}
             onLeftButtonClick={() => setShuiyinNameModal(false)}
           />
+          <CustomModal
+            visible={pingjiaModalVisible}
+            title="提示"
+            phoneValidation={false}
+            customInput={
+              <View
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    width: "100%",
+                    lineHeight: "1.4",
+                  }}
+                >
+                  为了更好的优化小程序服务，请您去 右上角-体验评价
+                  给个五星好评，感谢
+                </Text>
+              </View>
+            }
+            showRightButton={false}
+            leftButtonText="好的"
+            onLeftButtonClick={() => setPingjiaVisible(false)}
+          />
 
           <CustomModal
             visible={dakaModal}
@@ -1841,18 +1877,19 @@ const CameraPage = () => {
                 }}
               >
                 <View style={{ width: "100%", textAlign: "center" }}>
-                  是否修改打卡标签名？
+                  需要修改打卡标签名后才可拍照
                 </View>
                 <Image
                   src={DakaIcon}
                   style={{
                     marginTop: "10px",
-                    width: "250px",
-                    height: "130px",
+                    width: "300px",
+                    height: "84px",
                   }}
                 />
               </View>
             }
+            showLeftButton={false}
             rightButtonText="去修改"
             onRightButtonClick={() => {
               setShowFloatLayout(!showFloatLayout);
@@ -2001,6 +2038,14 @@ const CameraPage = () => {
                 <View className="reward-badge" style={{ marginTop: "5px" }}>
                   一次使用次数
                 </View>
+                <Text
+                  style={{
+                    color: "#ff6666",
+                    paddingBottom: "10px",
+                  }}
+                >
+                  需要邀请满10人后才可以使用
+                </Text>
               </View>
             </View>
             <View className="steps-container">
@@ -2055,14 +2100,7 @@ const CameraPage = () => {
               }}
             >
               *此活动每个用户限参加一次，每个用户最多可邀请10个好友，即最多获赠10次，
-              <Text
-                style={{
-                  color: "#ff6666",
-                }}
-              >
-                需要邀请满10人后才可以使用
-              </Text>
-              ，可到 "我的" 页面查看
+              可到 "我的" 页面查看
             </Text>
 
             <button
