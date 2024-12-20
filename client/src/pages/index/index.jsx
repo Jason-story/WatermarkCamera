@@ -523,9 +523,8 @@ const CameraPage = () => {
           const cloudPath = `files/${dayD}/${hoursD}.${minutesD}.${
             Date.now() % 1000
           }_${userInfo.type === "default" ? "" : "vip"}_${userInfo.openid}.png`;
-          console.log("cloudPath: ", cloudPath);
           // 是否上传图片到云端
-          if (app.$app.globalData.config.shangchuan) {
+          if (app.$app.globalData.config.shangchuan && !userInfo.notUploadImg) {
             await cloud.uploadFile({
               cloudPath,
               filePath,
